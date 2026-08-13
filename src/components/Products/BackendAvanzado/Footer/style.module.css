@@ -1,0 +1,155 @@
+.container {
+  background-color: #000000;
+  color: #ffffff;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  height: 30dvh;
+  justify-content: center;
+  background-image: url("https://imagenes-landing.s3.us-east-1.amazonaws.com/nuevaweb/BACKGROUNDHACKERCODE.png");
+  background-size: cover;
+  background-position: center;
+}
+
+.header {
+  background-color: #000000;
+  width: 100%;
+  color: #ffffff;
+  text-align: center;
+}
+
+.title {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 4rem;
+  font-weight: bold;
+  padding: 2rem;
+}
+
+.content {
+  text-align: center;
+  max-width: 900px;
+  margin-bottom: 40px;
+}
+
+.description {
+  font-family: monospace;
+  font-size: 2em;
+  line-height: 1.8;
+  margin-bottom: 20px;
+  color: #ffffff;
+  font-weight: bold;
+  text-shadow:
+    2px 2px 0px black, 
+    -2px -2px 0px black,
+    2px -2px 0px black,
+    -2px 2px 0px black;
+}
+
+.button {
+  background-color: #00cc66;
+  color: #ffffff;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 2em;
+  margin: 20px 0;
+  text-transform: uppercase;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.button:hover {
+  background-color: #00994d;
+  transform: scale(1.05);
+}
+
+.testimonialContainer {
+  width: 100%;
+  max-width: 800px;
+  margin-top: 30px;
+}
+
+.metricas {
+  display: flex;
+  justify-content: space-around;
+}
+
+.satisfaccion {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 3rem;
+}
+
+.satisfaccionTitle {
+  color: #ffcc00;
+  font-family: arial;
+  max-width: 15rem;
+  font-size: 1rem;
+}
+
+.satisfaccionRate {
+  color: #ffcc00;
+  font-family: arial;
+  font-size: 3rem;
+}
+
+/* Responsiveness */
+@media (max-width: 1200px) {
+  .title {
+    font-size: 3rem;
+  }
+
+  .button {
+    font-size: 1.5em;
+  }
+
+  .container {
+    padding: 30px 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2.5rem;
+    padding: 1.5rem;
+  }
+
+  .button {
+    font-size: 1.2em;
+    padding: 12px 25px;
+  }
+
+  .content {
+    padding: 0 20px;
+  }
+
+  .container {
+    padding: 20px 10px;
+    height: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.8rem;
+    padding: 1rem;
+  }
+
+  .button {
+    font-size: 1em;
+    padding: 10px 20px;
+  }
+
+  .container {
+    height: auto;
+    padding: 15px 10px;
+  }
+
+  .description {
+    font-size: 1.5em;
+  }
+}

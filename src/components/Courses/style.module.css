@@ -1,0 +1,39 @@
+.coursesSection {
+  background: linear-gradient(135deg, #f0f4ff 0%, #e0ecff 100%);
+  padding: 0 20px 60px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+form {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.MuiFormControl-root {
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+.MuiInputBase-root,
+.MuiInputLabel-root {
+  font-size: 16px;
+}
+
+.MuiButton-root {
+  padding: 10px 30px;
+  font-weight: bold;
+  font-size: 16px;
+  text-transform: none;
+  border-radius: 12px;
+}
+
+.derechos {
+  margin-top: 40px;
+  color: #555;
+  font-size: 0.85rem;
+}

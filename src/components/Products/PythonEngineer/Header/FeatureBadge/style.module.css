@@ -1,0 +1,77 @@
+@font-face {
+    font-family: 'Lovelo';
+    src: url('../../../../fonts/LoveloLineBold.otf') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.features_container {
+    display: flex;
+    flex-direction: row;
+    margin-right: 2dvw;
+    gap: 50px;
+    align-items: center;
+    justify-content: right;
+
+  }
+  
+  .feature_badge {
+    clip-path: polygon(100% 0, 100% 70%, 50% 100%, 0 70%, 0 0, 50% 15%);
+    height: 25dvh;
+    width: 10dvw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(70deg, #ff00ff, #00ffff);
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    text-transform: uppercase;
+    font-size: clamp(1rem, 1.3rem, 1.5rem);
+    background-size: 200% 200%;
+    animation: gradientAnimation 3s infinite linear;
+
+  }
+
+  .badge_description{
+    text-align: center;
+    font-family: 'Lovelo', sans-serif;
+  }
+
+
+  @keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* QUERIES */
+
+@media (max-width: 1050px) {
+    .features_container{
+        justify-content: space-around;
+    }
+
+    .feature_badge {
+        width: 15dvw;
+    }
+}
+
+@media (max-width: 500px) {
+    .features_container{
+        justify-content: space-around;
+        flex-wrap: wrap;
+    }
+
+    .feature_badge {
+        width: 25dvw;
+    }
+}

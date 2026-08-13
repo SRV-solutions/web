@@ -1,0 +1,350 @@
+@font-face {
+  font-family: 'Retro';
+  src: url('../../fonts/retro.otf') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Harry';
+  src: url('../../fonts/harry.TTF') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Contenedor principal */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  background-image: url("https://imagenes-landing.s3.us-east-1.amazonaws.com/nuevaweb/UPSELLBACKGROUND.webp");
+  background-size: cover;
+  min-height: 100dvh;
+  color: white;
+  font-family: Arial, sans-serif;
+  justify-content: space-around;
+  /* Asegura que el contenido esté distribuido de forma equilibrada */
+}
+
+/* Títulos */
+.title {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.mainProduct {
+  font-size: 1.25rem;
+  margin-bottom: 15px;
+}
+
+.description {
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+  text-align: center;
+  text-shadow: 2px 2px 0px #48e, -2px -2px 0px #48e, 2px -2px 0px #48e, -2px 2px 0px #48e;
+  font-family: "Poppins";
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  margin-top: 20px;
+}
+
+/* Detalles de la oferta */
+.offerDetails {
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.offerDetails ul {
+  padding-left: 20px;
+}
+
+.productList {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.productItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 15px;
+  width: 250px;
+  background-color: #333;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.productImage {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 10px;
+}
+
+.productName {
+  font-size: 4rem;
+  font-family: "Retro";
+  font-weight: 100;
+  text-align: center;
+  color: #f4b03d;
+}
+
+.discountedPrice {
+  font-size: 1rem;
+  color: #ff4500;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.originalPrice {
+  font-size: 1rem;
+  text-decoration: line-through;
+  color: #888;
+  margin-top: 5px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  justify-content: center;
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  appearance: none;
+  background-color: #555;
+  border-radius: 4px;
+  position: relative;
+}
+
+.checkbox:checked {
+  background-color: #ff4500;
+}
+
+.checkbox:checked::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  width: 10px;
+  height: 10px;
+  background-color: white;
+  border-radius: 50%;
+}
+
+.totalPrice {
+  font-size: 1.25rem;
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* Botón de pago */
+.payButton {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #ff4500;
+  color: white;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+.payButton:hover {
+  background-color: #ff6347;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .mainProduct {
+    font-size: 1.1rem;
+  }
+
+  .description {
+    font-size: 1rem;
+  }
+
+  .subtitle {
+    font-size: 1.25rem;
+  }
+
+  .productItem {
+    width: 100%;
+    max-width: 300px;
+    margin: 10px 0;
+  }
+
+  .productImage {
+    width: 40px;
+    height: 40px;
+  }
+
+  .checkbox {
+    width: 18px;
+    height: 18px;
+  }
+
+  .payButton {
+    padding: 12px 20px;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.2rem;
+  }
+
+  .mainProduct {
+    font-size: 1rem;
+  }
+
+  .description {
+    font-size: 0.9rem;
+  }
+
+  .productItem {
+    width: 100%;
+    max-width: 90%;
+  }
+
+  .productImage {
+    width: 30px;
+    height: 30px;
+  }
+
+  .checkbox {
+    width: 15px;
+    height: 15px;
+  }
+
+  .payButton {
+    padding: 14px 25px;
+    font-size: 1.2rem;
+  }
+}
+
+/* style.module.css */
+
+/* Animación para el tachado del precio base */
+.strikeThrough {
+  text-decoration: line-through;
+  color: gray;
+  transition: all 0.3s ease;
+}
+
+/* Animación para el precio nuevo en verde y parpadeo */
+.blink {
+  color: green;
+  animation: blinkAnimation 1s infinite;
+}
+
+@keyframes blinkAnimation {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes blinking {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.green-blink {
+  color: green;
+  animation: blinking 1s infinite;
+}
+
+.smallImage {
+  max-width: 20%;
+  height: auto;
+}
+
+.productContainer {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+}
+
+.description_aditional {
+  text-shadow: 1.4px 1.4px 0px #48e, -1.4px -1.4px 0px #48e, 1.4px -1.4px 0px #48e, -1.4px 1.4px 0px #48e;
+  font-size: 1.6rem !important;
+  font-family: "Retro" !important;
+}
+.copy {
+  font-weight: bold;
+  color: red;
+  text-shadow:
+    -1px -1px 0 white,
+    1px -1px 0 white,
+    -1px 1px 0 white,
+    1px 1px 0 white;
+  margin-left: 5%;
+  position: relative; /* Necesario para que el tooltip se posicione correctamente */
+}
+
+/* El contenedor emergente (tooltip) */
+.tooltip {
+  position: absolute;
+  bottom: 100%; /* Aparece arriba del texto */
+  left: 50%;
+  transform: translateX(-50%);
+  visibility: hidden; /* Oculto por defecto */
+  background-color: #00a3ff; /* Fondo oscuro */
+  padding: 8px;
+  border-radius: 5px;
+  font-size: 1rem; /* Ajusta el tamaño de la fuente */
+  white-space: normal; /* Permite que el texto se ajuste dentro del contenedor */
+  word-wrap: break-word; /* Rompe las palabras largas para que se ajusten */
+  z-index: 10;
+  width: fit-content; /* Ajusta el ancho a lo que desees */
+  height: fit-content; /* Ajusta la altura para hacerlo cuadrado */
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centra el texto dentro del tooltip */
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out; /* Añade una animación suave */
+  text-shadow: none;
+  color: yellow;
+  border: 1px solid #ff9b33;
+  overflow: hidden; /* Asegura que el texto no se salga del cuadro */
+}
+
+/* Mostrar el tooltip cuando se hace hover sobre el p */
+.copy:hover .tooltip {
+  visibility: visible; /* Hace visible el tooltip al hacer hover */
+  opacity: 1; /* Hace que el tooltip sea visible */
+}

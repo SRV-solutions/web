@@ -1,0 +1,114 @@
+
+@font-face {
+    font-family: 'Bebas';
+    src: url('../../../../fonts/BebasNeue-Regular.ttf') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+.container{
+    background-color: #15162d;
+    background-image: url('https://imagenes-landing.s3.us-east-1.amazonaws.com/nuevaweb/BACKGROUNDPYTHON.webp');
+    background-position: right;
+    background-size: contain;
+    background-repeat: no-repeat;
+    height: fit-content;
+}
+
+.header_section{
+    padding-left: 5%;
+    padding-top: 3%;
+}
+
+.header_title{
+    color: #fff;
+    font-family: 'Bebas', sans-serif;
+    font-size: clamp(1rem, 10vw, 11rem);
+}
+
+.list_container{
+    list-style: none;
+    color: #fff;
+    width: 60dvw;
+    display: flex;
+    flex-direction: column;
+    gap: 3dvw;
+    margin-top: 2dvw;
+    margin-left: 1dvw;
+}
+
+.list_item_container{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.image_item{
+    width: 4dvw;
+}
+
+.list_item{
+    font-family: sans-serif;
+    font-size: clamp(1rem, 5vw, 1.7rem);
+    text-align: left;
+}
+
+.button_container{
+    display: flex;
+    justify-content: right;
+    margin-right: 10dvw;
+    padding-bottom: 3dvw;
+}
+
+.button{
+    border: 0;
+    background-image: linear-gradient(
+        150deg,
+        #9500ff,
+        #09f,
+        #00DDFF
+    );
+    border-radius: 8px;
+    color: #fff;
+    display: flex;
+    font-size: 25px;
+    padding: 4px;
+    cursor: pointer;
+    transition: .3s;
+    
+}
+
+.button span{
+    background-color: #111;
+    padding: 16px 24px;
+    border-radius: 6px;
+    transition: .3s;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.button:hover span{
+    background: none;
+}
+
+.button:active{
+    transform: scale(0.9);
+}
+
+@media (max-width: 800px) {
+    .container{
+        background-image: none;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .button_container{
+        padding-top: 4dvw;
+        margin-right: 0;
+        margin-left: 15px;
+    }
+}

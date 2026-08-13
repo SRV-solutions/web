@@ -1,0 +1,145 @@
+
+.container{
+    background-color: #15162d;
+    height: 100dvh;
+}
+
+.header{
+    color: white;
+    text-shadow: 
+        0.8px 0.8px 0px #00ffff,
+        -0.8px -0.8px 0px #ff13df,
+        0.8px -0.8px 0px #ff13df,
+        -0.8px 0.8px 0px #00ffff ;
+    font-family: 'Arial Black', sans-serif;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 1.5dvw;
+}
+
+.header h3{
+    font-size: clamp(2rem, 5dvw, 3.5rem);
+}
+
+.header h4{
+    font-size: clamp(.5rem, 4dvw, 1.9rem);
+}
+
+.python{
+    color: #48e;
+    font-size: clamp(2rem, 5dvw, 3rem);
+    text-shadow: none;
+    background-color: #23243f;
+    padding: 0px 4px;
+}
+
+.description_container{
+    background-image: linear-gradient(135deg, #1b0b3d, #24104f, #2a1560, #2f1864);
+    width: 70dvw;
+    height: 55dvh;
+    border-radius: 10px;
+    margin: 3dvw auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.description_container p{
+ color: #fff;
+ font-family: sans-serif;
+ padding: 3dvw;
+ font-size: clamp(1.3rem, 2dvw, 2rem);
+ text-align: justify;
+}
+
+.button_container{
+    display: flex;
+    justify-content: right;
+}
+
+.button{
+    border: 0;
+    background-image: linear-gradient(
+        150deg,
+        #9500ff,
+        #09f,
+        #00DDFF
+    );
+    border-radius: 8px;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+    padding: 4px;
+    cursor: pointer;
+    transition: transform .3s;
+}
+
+.button span{
+    background-color: #111;
+    padding: 16px 24px;
+    border-radius: 6px;
+    transition: background .3s;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.button:hover span{
+    background: none;
+}
+
+.button:active{
+    transform: scale(0.9);
+}
+
+@media (max-width: 800px) {
+    .description_container{
+        width: 80dvw;
+    }
+
+    .button{
+        padding: 2px;
+    }
+
+    .button span{
+        padding: 8px 10px;
+    }
+}
+
+@media (max-width: 800px) {
+    .description_container{
+        width: 95dvw;
+    }
+
+    .button{
+        padding: 4px;
+        font-size: 16px;
+    }
+
+    .button span{
+        padding: 10px;
+    }
+}
+
+@media (max-width: 400px) {
+    .description_container{
+        width: 95dvw;
+        height: fit-content;
+    }
+
+    .button{
+        padding: 4px;
+        font-size: 14px;
+    }
+
+    .button span{
+        padding: 10px;
+    }
+}

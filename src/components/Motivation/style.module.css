@@ -1,0 +1,57 @@
+@font-face {
+    font-family: 'Retro';
+    src: url('../../fonts/retro.otf') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+/* Aseguramos que la raíz y el body no tengan márgenes y ocupen toda la pantalla */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100dvh;
+    overflow: hidden; /* Opcional: evita barras de desplazamiento si todo encaja */
+}
+
+.motivation_container {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centra el contenido verticalmente si lo deseas */
+    align-items: center;     /* Centra el contenido horizontalmente */
+    gap: 2dvh;
+    padding: 2dvh;
+    box-sizing: border-box;  /* Fundamental para que el padding no rompa el ancho/alto del 100% */
+    width: 100vw;            /* 100% del ancho de la ventana */
+    height: 100dvh;          /* 100% del alto dinámico de la ventana */
+    background-color: #000;
+    color: #fff;
+    font-family: 'Retro', sans-serif;
+    font-size: 2dvw;
+    font-weight: 100;
+    letter-spacing: .1rem;
+}
+
+.orange{
+    color: #f6950a;
+}
+
+.green{
+    color: #30a05a;
+}
+
+.blue{
+    color: #0b78fb;
+}
+
+@media (max-width: 800px) {
+    .motivation_container{
+        font-size: 3dvw;
+    }
+}
+
+@media (max-width: 768px) {
+    .motivation_container{
+        margin-top: 10dvh;
+    }
+}

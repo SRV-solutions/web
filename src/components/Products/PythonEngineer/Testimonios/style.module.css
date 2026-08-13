@@ -1,0 +1,221 @@
+@font-face {
+  font-family: 'Poppins';
+  src: url('../../../../fonts/Poppins-Bold.ttf') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'PoppinsRegular';
+  src: url('../../../../fonts/Poppins-Regular.ttf') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.testimonios_container {
+  height: fit-content; /* Asegura que el contenedor ocupe todo el alto de la ventana */
+  min-height: 100dvh; /* Asegura que la altura mínima sea el 100% */
+  background-image: url(https://imagenes-landing.s3.us-east-1.amazonaws.com/nuevaweb/BACKGROUNDPYTHONPLANO.png);
+  background-size: cover;
+  background-position: center; /* Asegura que la imagen de fondo esté centrada */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Alineación vertical */
+  padding-bottom: 5%; /* Asegura que haya algo de espacio al final */
+  margin: 0 auto; /* Centra el contenedor */
+  width: 100%; /* Asegura que ocupe todo el ancho disponible */
+  box-sizing: border-box; /* Asegura que el padding no afecte el tamaño del contenedor */
+  
+}
+
+.testimonios_header {
+  padding-top: 5%;
+  color: white;
+  font-size: clamp(3rem, 10dvw, 5rem);
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  margin: 0; /* Asegura que no haya márgenes indeseados */
+}
+
+.section-cards_container {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 4%;
+  flex-wrap: wrap; /* Permite que los testimonios se acomoden en varias filas si es necesario */
+  gap: 2%; /* Agrega un espacio entre los testimonios */
+  justify-content: center; /* Centra las tarjetas dentro del contenedor */
+  width: 100%; /* Asegura que el contenedor de las tarjetas ocupe todo el ancho disponible */
+  box-sizing: border-box; /* Asegura que no haya desbordes por padding */
+}
+
+.card_container {
+  background: linear-gradient(130deg, #13072e 80%, #3f2182 20%);
+  width: 40dvh;
+  height: auto; /* Altura automática para que se ajuste al contenido */
+  border-radius: 20px;
+  padding: 2%;
+  font-family: 'Poppins', sans-serif;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: filter .5s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  margin-bottom: 5%; /* Asegura que no se amontonen los testimonios */
+  max-width: 100%; /* Garantiza que las tarjetas no se desborden */
+}
+
+.card_quoter {
+  color: #3f2182;
+  font-size: 4rem;
+}
+
+.card_container h5 {
+  font-size: 2rem;
+  margin: 0;
+}
+
+.card_container p {
+  margin-top: 5%;
+  margin-bottom: 5%;
+  font-family: 'PoppinsRegular';
+  flex-grow: 1;
+}
+
+.stars_container {
+  display: flex;
+  gap: 2%;
+  justify-content: center;
+}
+
+.star_icon {
+  font-size: 1.8rem;
+}
+
+.card_people {
+  margin-top: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5%;
+}
+
+.card_people img {
+  width: 20%;
+  height: auto;
+  border-radius: 50%;
+}
+
+.card_container:hover {
+  filter: brightness(1.2);
+}
+
+/* Media Queries */
+@media (max-width: 1650px) {
+  .testimonios_container{
+    overflow: hidden;
+    height: fit-content;
+  }
+
+  .card_container {
+    width: 40dvh; /* Ajuste de ancho */
+    height: auto; /* Altura automática */
+  }
+
+  .testimonios_header {
+    font-size: 4rem;
+  }
+
+  .card_container h5 {
+    font-size: 1.8rem;
+  }
+
+  .star_icon {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 1150px) {
+  .section-cards_container {
+    justify-content: center; /* Centra las tarjetas a partir de esta resolución */
+    gap: 5%; /* Agrega más espacio entre las tarjetas */
+  }
+
+  .card_container {
+    width: 45dvh; /* Ajusta el tamaño para pantallas más pequeñas */
+    height: auto; /* Ajusta la altura automáticamente */
+    max-width: 100%; /* Evita que las tarjetas se desborden */
+  }
+}
+
+@media (max-width: 1024px) { /* Para tablet */
+  .testimonios_container {
+    height: fit-content;
+    overflow: hidden;
+  }
+
+  .testimonios_header {
+    font-size: 3rem;
+  }
+
+  .section-cards_container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .card_container {
+    width: 70dvh;
+    height: auto;
+    margin-bottom: 5%;
+  }
+
+  .card_container h5 {
+    font-size: 1.6rem;
+  }
+
+  .card_container p {
+    font-size: 1.2rem;
+  }
+
+  .card_people img {
+    width: 25%;
+  }
+
+  .card_quoter {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 768px) { /* Para celulares */
+  .testimonios_header {
+    font-size: 2.5rem;
+  }
+
+  .section-cards_container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .card_container {
+    width: 30dvh;
+    height: auto; /* Altura automática */
+    margin-bottom: 5%;
+    padding: 5%;
+  }
+
+  .card_container h5 {
+    font-size: 1.4rem;
+  }
+
+  .card_container p {
+    font-size: 1rem;
+  }
+
+  .card_people img {
+    width: 30%;
+  }
+
+  .card_quoter {
+    font-size: 2.5rem;
+  }
+}

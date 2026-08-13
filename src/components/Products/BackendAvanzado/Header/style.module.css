@@ -1,0 +1,121 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-color: #000;
+  min-height: 100vh;
+  color: #fff;
+  padding: 20px;
+  font-family: "Arial", sans-serif;
+  position: relative;
+}
+
+.header {
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 3rem;
+  color: #fff;
+  font-weight: bold;
+  margin: 10px 0;
+  text-shadow: 2px 2px 0px black, -2px -2px 0px black, 2px -2px 0px black,
+    -2px 2px 0px black;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  margin: 10px 0;
+  color: #fff;
+  text-shadow: 2px 2px 0px black, -2px -2px 0px black, 2px -2px 0px black,
+    -2px 2px 0px black;
+}
+
+.subcontainer {
+  background-image: url("https://imagenes-landing.s3.us-east-1.amazonaws.com/nuevaweb/BACKGROUNDHACKER.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  width: 100%;
+  padding: 50px 20px;
+  gap: 20px;
+  color: #fff;
+}
+
+.subcontainerLeft {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+.courseTitle {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #ff0000;
+  margin-bottom: 20px;
+}
+
+.description {
+  font-size: 1.1rem;
+  line-height: 1.8;
+}
+
+.subcontainerRight {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 20px;
+  padding: 20px;
+}
+
+.stat {
+  text-align: left;
+}
+
+.number {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #ff0000;
+  margin: 0;
+}
+
+.statDescription {
+  font-size: 1.2rem;
+  margin: 5px 0;
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .subcontainer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .subcontainerLeft,
+  .subcontainerRight {
+    align-items: center;
+  }
+
+  .number {
+    font-size: 2.5rem;
+  }
+
+  .courseTitle {
+    font-size: 2.5rem;
+  }
+}

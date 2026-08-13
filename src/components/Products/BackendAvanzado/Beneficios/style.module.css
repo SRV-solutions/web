@@ -1,0 +1,125 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #000;
+  min-height: 100vh;
+  color: #fff;
+  padding: 20px;
+  font-family: "Arial", sans-serif;
+  text-align: center;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 2px 2px 0px black, -2px -2px 0px black;
+  margin-bottom: 40px;
+}
+
+.subcontainer {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.benefit {
+  text-align: left;
+}
+
+.benefitTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ff0000;
+}
+
+.benefitDescription {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.image {
+  margin: 0 0 0 3rem;
+  flex: 1;
+  background-image: url("https://imagenes-landing.s3.us-east-1.amazonaws.com/nuevaweb/COMPUHACKER.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 33vh;
+  width: 33vh;
+  border-radius: 10%;
+}
+
+.right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+}
+
+.number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #ff0000;
+}
+
+.statDescription {
+  font-size: 1.2rem;
+  color: #fff;
+}
+
+.ctaButton {
+  margin-top: 40px;
+  background-color: #00c853;
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.ctaButton:hover {
+  background-color: #00b342;
+}
+
+@media (max-width: 768px) {
+  .subcontainer {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .image {
+    height: 200px;
+    width: 200px;
+  }
+
+  .number {
+    font-size: 2rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+}

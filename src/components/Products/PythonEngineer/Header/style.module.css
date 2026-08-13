@@ -1,0 +1,109 @@
+@font-face {
+    font-family: 'Lovelo';
+    src: url('../../../../fonts/LoveloLineBold.otf') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.container {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    background-color: #15162d;
+    background-image: url('https://imagenes-landing.s3.us-east-1.amazonaws.com/nuevaweb/FONDOGAMER.webp');
+    background-size: cover;
+    height: 95dvh;
+    font-family: 'Arial', sans-serif;
+    color: #fff;
+}
+
+.header_container {
+    padding-top: 5dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.title_container{
+    font-family: 'Arial Black', sans-serif;
+    padding: .8dvw;
+    font-size: clamp(1rem, 2.3vw, 3rem);
+    text-shadow: 
+    0.8px 0.8px 0px #00ffff,
+    -0.8px -0.8px 0px #ff13df,
+    0.8px -0.8px 0px #ff13df,
+    -0.8px 0.8px 0px #00ffff ;
+}
+
+.header_description{
+    padding: .8dvw;
+    text-align: center;
+    font-size: clamp(.8rem, 1.4vw, 1.6rem);
+    text-shadow: 
+    1.5px 1.5px 0 #3f2182, 
+    -1.5px -1.5px 0 #3f2182,
+    1.5px -1.5px 0 #3f2182,
+    -1.5px 1.5px 0 #3f2182;
+}
+
+.button_container{
+    display: flex;
+    justify-content: right;
+    margin-right: 10dvw;
+    margin-top: 100px;
+}
+
+.header_button{
+    border: 0;
+    background-image: linear-gradient(
+        150deg,
+        #9500ff,
+        #09f,
+        #00DDFF
+    );
+    border-radius: 8px;
+    color: #fff;
+    display: flex;
+    font-size: 25px;
+    padding: 4px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.header_button span{
+    background-color: #111;
+    padding: 16px 24px;
+    border-radius: 6px;
+    transition: .3s;
+}
+
+.header_button:hover span{
+    background: none;
+}
+
+.header_button:active{
+    transform: scale(0.9);
+}
+
+@media (max-width: 500px) {
+    .container{
+        height: fit-content;
+    }
+
+    .button_container{
+        justify-content: center;
+        margin-right: 0;
+        padding-bottom: 20px;
+    }
+}
+
+@media (max-height: 600px) {
+    .container{
+        height: fit-content;
+    }
+
+    .button_container{
+        padding-bottom: 20px;
+    }
+}

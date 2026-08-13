@@ -1,0 +1,184 @@
+/* Estilo general */
+.container {
+  background-color: #1a1a1a;
+  color: #ffffff;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: auto;
+  padding: 2rem 1rem;
+}
+
+.subContainer {
+  width: 100%;
+}
+
+.heading {
+  font-family: sans-serif;
+  font-weight: bold;
+  color: #ffc107;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+}
+
+/* Contenedor de elementos */
+.itemsContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.leftSection {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  text-align: left;
+  transition: transform 0.3s ease;
+  margin: 1rem;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+}
+
+.image {
+  width: 12rem;
+}
+
+.textContent {
+  font-family: sans-serif;
+  display: flex;
+  flex-direction: column;
+  margin-left: -4rem;
+  color: #ffffff;
+  font-weight: bold;
+  text-shadow:
+    2px 2px 0px black, 
+    -2px -2px 0px black,
+    2px -2px 0px black,
+    -2px 2px 0px black;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ffc107;
+}
+
+.description {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Sección derecha */
+.rightSection {
+  flex: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.characterImage {
+  width: 45%;
+}
+
+/* Botón */
+.button {
+  margin-top: 2rem;
+  padding: 15px 30px;
+  width: 300px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffffff;
+  background-color: #28a745;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.button:hover {
+  background-color: #218838;
+}
+
+.shiftRight {
+  margin-left: 150px;
+}
+
+/* 📱 Responsive Design */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .itemsContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .leftSection {
+    align-items: center;
+  }
+
+  .card {
+    flex-direction: column;
+    text-align: center;
+    margin: 1rem 0;
+  }
+
+  .textContent {
+    margin-left: 0;
+    margin-top: 1rem;
+  }
+
+  .shiftRight {
+    margin-left: 0;
+  }
+
+  .characterImage {
+    width: 60%;
+  }
+}
+
+/* Móvil */
+@media (max-width: 768px) {
+  .heading {
+    font-size: 1.5rem;
+  }
+
+  .itemsContainer {
+    gap: 1rem;
+  }
+
+  .card {
+    margin: 0.5rem 0;
+  }
+
+  .image {
+    width: 10rem;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+
+  .description {
+    font-size: 14px;
+  }
+
+  .button {
+    width: 80%;
+    font-size: 16px;
+    padding: 10px 20px;
+  }
+
+  .characterImage {
+    width: 80%;
+  }
+}

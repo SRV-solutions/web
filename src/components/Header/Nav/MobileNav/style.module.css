@@ -1,0 +1,155 @@
+/* STYLES MOBILE */
+.mobileHeader {
+    background-color: #1f1f1f;
+    color: #ddd;
+    font-family: sans-serif;
+    user-select: none;
+}
+
+.navbar {
+    background-color: #1f1f1f;
+    height: 10dvh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    box-sizing: border-box;
+    padding-left: 1.5dvw;
+    padding-right: 1.5dvw;
+    user-select: none;
+}
+
+.logoContainer {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    user-select: none;
+}
+
+.logo {
+    transition: transform 0.7s;
+    width: clamp(80px, 1dvw, 100px);
+}
+
+.logo:hover {
+    transform: rotate(360deg);
+}
+
+.menuButton {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 2rem;
+    user-select: none;
+}
+
+.mobileMenu {
+    background-color: #1f1f1f;
+    position: fixed;  /* Fijamos el menú a la pantalla */
+    top: 10dvh; /* Lo alineamos debajo de la navbar */
+    left: 0;
+    width: 100%;
+    padding: 2rem 1.5dvw;
+    box-sizing: border-box;
+    z-index: 99;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-height: calc(100vh - 10dvh); /* Aseguramos que el menú no ocupe toda la pantalla */
+    overflow-y: auto; /* Habilitamos el scroll si es necesario */
+    user-select: none;
+}
+
+.menuItem {
+    margin-bottom: 1rem;
+}
+
+.menuTitle {
+    color: #fff;
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 0.5rem 0;
+    transition: color 0.2s ease;
+    user-select: none;
+}
+
+.menuTitle:hover {
+    color: #ffd700;
+}
+
+.subMenu {
+    list-style: none;
+    padding-left: 1rem;
+    margin-top: 1rem;
+    user-select: none;
+}
+
+.subMenuItem {
+    color: #ddd;
+    font-size: 1rem;
+    padding: 0.5rem 0;
+    display: block;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    user-select: none;
+}
+
+.subMenuItem:hover {
+    color: #ffd700;
+}
+
+/* Animations for dropdown */
+.subMenu li {
+    opacity: 0;
+    animation: fadeIn 0.3s forwards;
+    user-select: none;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Chevron icons */
+.drop_flecha {
+    margin-left: 0.5vw;
+    vertical-align: middle;
+}
+
+@media screen and (min-width: 768px) {
+    /* Adjustments for larger screen sizes if needed */
+    .mobileMenu {
+        display: none;
+    }
+}
+
+
+.socialIconsContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+}
+
+.socialIcon {
+    color: #fff;
+    transition: color 0.3s ease;
+    user-select: none;
+}
+
+.socialIcon:hover {
+    color: #ffd700;
+}

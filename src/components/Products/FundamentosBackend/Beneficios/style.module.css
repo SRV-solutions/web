@@ -1,0 +1,157 @@
+/* ✅ Estilo base para el contenedor y tarjetas */
+
+.container {
+  height: auto; /* Ajusta la altura automáticamente */
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  padding: 20px;
+  background-color: #1a1a1a; /* Fondo oscuro */
+  flex-wrap: wrap; /* Permite ajustar las tarjetas en pantallas pequeñas */
+  gap: 20px; /* Espacio entre tarjetas */
+}
+
+.card {
+  margin-top: 4rem;
+  flex: 1 1 250px; /* Flexible con tamaño base de 250px */
+  max-width: 300px; /* Máximo ancho */
+  min-height: 600px;
+  background-color: #007bff; /* Azul */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  text-align: center;
+  color: #ffffff;
+  transition: transform 0.2s;
+  position: relative;
+  border-radius: 6rem;
+  border: 3px solid #ffc107; /* Amarillo */
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+}
+
+.image {
+  width: 200%;
+  max-width: 300px;
+  margin-bottom: 15px;
+}
+
+.title {
+  padding: 1.5rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  position: absolute;
+  top: -4rem;
+  left: -3rem;
+  background-color: #ffffff;
+  color: #000000;
+  border-radius: 10px;
+  display: inline-block;
+  z-index: 1;
+  box-shadow: 9px 9px 11px rgba(0, 0, 0, 1);
+}
+
+.description {
+  font-size: 1.3rem;
+  font-family: Arial, sans-serif;
+  color: #ffffff;
+  width: 150%;
+  line-height: 1.6;
+  margin-top: 60px;
+  font-weight: bold;
+  text-shadow:
+    1.6px 1.6px 0px black, 
+    -1.6px -1.6px 0px black,
+    1.6px -1.6px 0px black,
+    -1.6px 1.6px 0px black;
+}
+
+/* ✅ RESPONSIVE DESIGN */
+
+/* 📱 Pantallas pequeñas (móviles) */
+@media (max-width: 600px) {
+  .container {
+    justify-content: center; /* Centra las tarjetas */
+    padding: 10px;
+    gap: 15px;
+  }
+
+  .card {
+    flex: 1 1 100%; /* Ocupa el 100% del ancho */
+    max-width: 90%;
+    min-height: 500px;
+    border-radius: 3rem;
+  }
+
+  .title {
+    font-size: 16px;
+    top: -3rem;
+    left: -2rem;
+    padding: 1rem;
+  }
+
+  .description {
+    font-size: 1.1rem;
+    width: 100%;
+    margin-top: 40px;
+  }
+}
+
+/* 💻 Pantallas medianas (tablets) */
+@media (max-width: 900px) {
+  .container {
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .card {
+    flex: 1 1 45%; /* Ocupa el 45% del ancho */
+    max-width: 45%;
+    min-height: 550px;
+  }
+
+  .title {
+    font-size: 18px;
+    top: -3.5rem;
+    left: -2.5rem;
+    padding: 1.2rem;
+  }
+
+  .description {
+    font-size: 1.2rem;
+    width: 120%;
+    margin-top: 50px;
+  }
+}
+
+/* 🖥️ Pantallas grandes (escritorio) */
+@media (min-width: 1200px) {
+  .container {
+    justify-content: space-around;
+    gap: 30px;
+  }
+
+  .card {
+    max-width: 300px;
+  }
+
+  .title {
+    font-size: 20px;
+    top: -4rem;
+    left: -3rem;
+    padding: 1.5rem;
+  }
+
+  .description {
+    font-size: 1.3rem;
+    width: 150%;
+    margin-top: 60px;
+  }
+}

@@ -1,20 +1,28 @@
-@font-face {
-  font-family: 'Retro';
-  src: url('../../fonts/retro.otf') format('woff');
-  font-weight: normal;
-  font-style: normal;
+
+
+/* Offset global para navegación y scroll suave */
+:global(html) {
+  scroll-behavior: smooth;
 }
 
+/* Desplazamiento preciso al hacer scroll a subsecciones evitando solape con el Navbar */
+.section, 
+.serviceCard {
+  scroll-margin-top: 90px;
+}
+
+/* Contenedor principal de la Home */
 .homeContainer {
   background-color: #000000;
   color: #ffffff;
-  font-family: 'Retro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   min-height: 100vh;
   width: 100%;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
   overflow-x: hidden;
+  padding-top: 70px; /* Offset para el Navbar fijo */
 }
 
 /* Colores de Marca */
@@ -30,15 +38,14 @@
 
 /* Hero Section */
 .hero {
-  min-height: 85vh;
+  min-height: 60vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: top;
   align-items: center;
   text-align: center;
   padding: 4rem 2rem;
   background: radial-gradient(circle at center, #111111 0%, #000000 100%);
-  border-bottom: 1px solid #1a1a1a;
 }
 
 .badge {
@@ -52,11 +59,13 @@
 }
 
 .heroTitle {
-  font-size: clamp(2rem, 5vw, 4.5rem);
-  line-height: 1.1;
-  max-width: 900px;
+  font-family: system-ui, sans-serif;
+  font-size: clamp(1.8rem, 5vw, 3.5rem);
+  line-height: 1.2;
+  max-width: 1200px;
   margin: 0 0 1.5rem 0;
   letter-spacing: 0.05rem;
+  text-transform: uppercase;
 }
 
 .heroSubtitle {
@@ -65,7 +74,6 @@
   color: #cccccc;
   line-height: 1.6;
   margin: 0 0 2.5rem 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .heroActions {
@@ -85,7 +93,7 @@
   text-decoration: none;
   border-radius: 4px;
   letter-spacing: 0.05rem;
-  transition: transform 0.2s, background-color 0.2s;
+  transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
 .btnPrimary:hover {
@@ -103,7 +111,7 @@
   text-decoration: none;
   border-radius: 4px;
   letter-spacing: 0.05rem;
-  transition: background-color 0.2s, transform 0.2s;
+  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .btnSecondary:hover {
@@ -126,18 +134,19 @@
 }
 
 .sectionTitle {
+  font-family: system-ui, sans-serif;
   font-size: clamp(1.8rem, 3.5vw, 2.8rem);
   margin-bottom: 0.8rem;
   letter-spacing: 0.05rem;
+  text-transform: uppercase;
 }
 
 .sectionDescription {
   color: #888888;
   font-size: 1.1rem;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* Grilla de Servicios (Software a Medida) */
+/* Grilla de Servicios */
 .servicesGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -149,14 +158,18 @@
   border: 1px solid #1f1f1f;
   border-radius: 8px;
   padding: 2.5rem 2rem;
-  transition: border-color 0.3s;
+  transition: border-color 0.3s ease, transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .serviceCard:hover {
   border-color: #f6950a;
+  transform: translateY(-2px);
 }
 
 .serviceCard h3 {
+  font-family: system-ui, sans-serif;
   font-size: 1.4rem;
   margin: 0 0 1rem 0;
 }
@@ -164,8 +177,23 @@
 .serviceCard p {
   color: #a0a0a0;
   line-height: 1.6;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 0.95rem;
+  flex: 1;
+}
+
+.cardLink {
+  display: inline-block;
+  margin-top: 1.5rem;
+  color: #f6950a;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: opacity 0.2s ease;
+}
+
+.cardLink:hover {
+  opacity: 0.8;
+  text-decoration: underline;
 }
 
 /* Sección de Educación Gratuita */
@@ -178,7 +206,6 @@
 }
 
 .educationWrapper p {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   color: #d1d1d1;
   max-width: 750px;
   margin: 1.5rem auto 2rem auto;
@@ -193,7 +220,6 @@
 }
 
 .manifestoText {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 1.15rem;
   line-height: 1.8;
   color: #c4c4c4;
@@ -203,6 +229,7 @@
   margin-top: 2rem;
   font-size: 1.3rem;
   line-height: 1.5;
+  font-weight: 600;
 }
 
 /* Responsive */
@@ -220,7 +247,8 @@
     width: 100%;
   }
 
-  .btnPrimary, .btnSecondary {
+  .btnPrimary,
+  .btnSecondary {
     width: 100%;
     text-align: center;
     box-sizing: border-box;

@@ -37,10 +37,10 @@ function Layout({ children }) {
   return (
     <>
       <Helmet>
-        <meta name="description" content="Aprende desarrollo web con JavaScript, Python y otras tecnologías backend avanzadas." />
+        <meta name="description" content="Aprende desarrollo web Gratis con JavaScript, Python y otras tecnologías backend avanzadas." />
         <meta name="keywords" content="desarrollo web, backend, JavaScript, Python, desarrollo de software, programación backend" />
         <meta name="author" content="wearesrv" />
-        <meta property="og:title" content="Cursos de Desarrollo Web - Aprende Backend y Más" />
+        <meta property="og:title" content="Cursos de Desarrollo Web - Aprende Gratis Backend y Más" />
         <meta property="og:description" content="Cursos completos sobre desarrollo backend con JavaScript y Python." />
         <meta property="og:url" content="https://wearesrv.com" />
       </Helmet>

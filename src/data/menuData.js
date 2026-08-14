@@ -1,5 +1,5 @@
 const WHATSAPP_URL = "https://wa.me/5491123869799?text=Hola,%20quiero%20cotizar%20un%20software";
-const YOUTUBE_URL = "https://www.youtube.com/@weareSRV";
+const YOUTUBE_URL = "https://www.youtube.com/@weareSRV/playlists";
 const DISCORD_URL = "https://discord.com/invite/QuAmDxrNMu";
 
 const menuData = [
@@ -8,9 +8,9 @@ const menuData = [
     disabled: false,
     links: [
       { label: "Software a Medida", to: WHATSAPP_URL, isExternal: true },
-      { label: "Backend & APIs", to: "/#servicios", isExternal: false },
-      { label: "Plataformas Web & SaaS", to: "/#servicios", isExternal: false },
-      { label: "Automatización & Cloud", to: "/#servicios", isExternal: false },
+      { label: "Backend & APIs", to: "/#backend", isExternal: false },
+      { label: "Plataformas Web & SaaS", to: "/#saas", isExternal: false },
+      { label: "Automatización & Cloud", to: "/#automatizacion", isExternal: false },
     ],
   },
   {
@@ -36,7 +36,7 @@ const menuData = [
     title: "NOSOTROS",
     disabled: false,
     links: [
-      { label: "Manifiesto", to: "/#educacion", isExternal: false },
+      { label: "Manifiesto", to: "/#manifiesto", isExternal: false },
       { label: "Cotizaciones", to: WHATSAPP_URL, isExternal: true },
     ],
   },

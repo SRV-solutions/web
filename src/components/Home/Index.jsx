@@ -1,17 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import styles from './style.module.css';
 
-const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/@weareSRV/playlists'; // Coloca aquí el link final de tu playlist
-
-// Configuración de WhatsApp (Argentina: +54 9 + código de área + número)
+const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/@weareSRV/playlists';
 const PHONE_NUMBER = '5491123869799';
 const WHATSAPP_MESSAGE = encodeURIComponent('Hola, quiero cotizar un software');
 const WHATSAPP_URL = `https://wa.me/${PHONE_NUMBER}?text=${WHATSAPP_MESSAGE}`;
 
 export default function Home() {
+  const { hash } = useLocation();
+
+  // Escucha cambios en el hash de la URL (/#servicios, /#backend, etc.) y hace scroll suave
+  useEffect(() => {
+    if (hash) {
+      const elementId = hash.replace('#', '');
+      const element = document.getElementById(elementId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [hash]);
+
   return (
     <div className={styles.homeContainer}>
-      {/* Hero Principal: Software a Medida */}
+      {/* Hero Principal */}
       <section className={styles.hero}>
         <div className={`${styles.badge} ${styles.green}`}>Tech Studio & Education</div>
         <h1 className={styles.heroTitle}>
@@ -45,23 +57,52 @@ export default function Home() {
         </div>
 
         <div className={styles.servicesGrid}>
-          <div className={styles.serviceCard}>
+          {/* Tarjeta 1: Backend */}
+          <div id="backend" className={styles.serviceCard}>
             <h3 className={styles.orange}>Backend & APIs</h3>
             <p>
               Desarrollo de microservicios, bases de datos optimizadas e integraciones complejas en Node.js, Python y arquitecturas cloud resilientes.
             </p>
+            <a 
+              href={WHATSAPP_URL} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className={styles.cardLink}
+            >
+              Consultar por Backend →
+            </a>
           </div>
-          <div className={styles.serviceCard}>
+
+          {/* Tarjeta 2: SaaS */}
+          <div id="saas" className={styles.serviceCard}>
             <h3 className={styles.blue}>Plataformas Web & SaaS</h3>
             <p>
               Diseño y desarrollo end-to-end de aplicaciones de alto tráfico preparadas para operar con estabilidad operativa total.
             </p>
+            <a 
+              href={WHATSAPP_URL} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className={styles.cardLink}
+            >
+              Consultar por SaaS →
+            </a>
           </div>
-          <div className={styles.serviceCard}>
-            <h3 className={styles.green}>Automatización & Datos</h3>
+
+          {/* Tarjeta 3: Automatización */}
+          <div id="automatizacion" className={styles.serviceCard}>
+            <h3 className={styles.green}>Automatización & Cloud</h3>
             <p>
               Sistemas de procesamiento de datos, automatización de flujos críticos y optimización de rendimiento sobre infraestructura existente.
             </p>
+            <a 
+              href={WHATSAPP_URL} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className={styles.cardLink}
+            >
+              Consultar por Automatización →
+            </a>
           </div>
         </div>
       </section>
@@ -87,7 +128,7 @@ export default function Home() {
       </section>
 
       {/* Manifiesto SRV */}
-      <section className={styles.section}>
+      <section id="manifiesto" className={styles.section}>
         <div className={styles.manifestoWrapper}>
           <h2 className={styles.sectionTitle}>
             Nuestra <span className={styles.green}>Filosofía</span>

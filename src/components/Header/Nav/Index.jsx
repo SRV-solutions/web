@@ -1,5 +1,6 @@
+import React from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { FaInstagram, FaTiktok, FaYoutube, FaDiscord, FaChevronDown } from "react-icons/fa";
 import menuData from '../../../data/menuData';
 import MobileNav from './MobileNav/Index';
@@ -7,17 +8,51 @@ import styles from './style.module.css';
 
 const Nav = () => {
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
+  const location = useLocation();
 
   if (isMobile) {
     return <MobileNav />;
   }
+
+  // Función para volver arriba de todo suavemente
+  const handleLogoClick = (e) => {
+    if (location.pathname === "/") {
+      e.preventDefault(); // Evita recargar si ya estás en la Home
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+      // Limpia cualquier hash de la URL si lo hubiera
+      window.history.pushState(null, "", "/");
+    }
+  };
+
+  // Manejador de clics para desplazamientos dentro de la misma página (hash)
+  const handleNavClick = (e, targetUrl) => {
+    if (targetUrl.includes("#")) {
+      const hashId = targetUrl.split("#")[1];
+      const element = document.getElementById(hashId);
+
+      // Si estamos en la Home '/', hacemos scroll directo sin recargar
+      if (location.pathname === "/" && element) {
+        e.preventDefault();
+        element.scrollIntoView({ behavior: "smooth" });
+        window.history.pushState(null, "", targetUrl);
+      }
+    }
+  };
 
   return (
     <header className={styles.header}>
       <nav className={styles.navbar} aria-label="Navegación principal">
         {/* LOGO */}
         <div className={styles.logo_container}>
-          <Link to="/" className={styles.link_logo} aria-label="Inicio">
+          <Link 
+            to="/" 
+            className={styles.link_logo} 
+            aria-label="Inicio"
+            onClick={handleLogoClick}
+          >
             <img className={styles.logo} src="/SRV-LOGO.png" alt="Logo de SRV" />
           </Link>
         </div>
@@ -41,16 +76,32 @@ const Nav = () => {
 
                 {!menu.disabled && (
                   <ul className={styles.dropdown_menu}>
-                    {menu.links.map((link, idx) => (
-                      <li key={idx} className={styles.dropdown_list_item}>
-                        <Link
-                          to={link.to || "#"}
-                          className={styles.dropdown_link}
-                        >
-                          {link.label.toUpperCase()}
-                        </Link>
-                      </li>
-                    ))}
+                    {menu.links.map((link, idx) => {
+                      const isExternal = link.isExternal || link.to.startsWith("http");
+
+                      return (
+                        <li key={idx} className={styles.dropdown_list_item}>
+                          {isExternal ? (
+                            <a
+                              href={link.to}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={styles.dropdown_link}
+                            >
+                              {link.label.toUpperCase()}
+                            </a>
+                          ) : (
+                            <a
+                              href={link.to}
+                              className={styles.dropdown_link}
+                              onClick={(e) => handleNavClick(e, link.to)}
+                            >
+                              {link.label.toUpperCase()}
+                            </a>
+                          )}
+                        </li>
+                      );
+                    })}
                   </ul>
                 )}
               </li>

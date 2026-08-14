@@ -37,7 +37,7 @@ const MobileNav = () => {
         <header className={styles.mobileHeader}>
             <div className={styles.navbar}>
                 <Link to="/" className={styles.logoContainer}>
-                    <img src="https://imagenes-landing.s3.us-east-1.amazonaws.com/nuevaweb/logotipo.png" alt="Logo" className={styles.logo} />
+                    <img src="/SRV-LOGO.png" className={styles.logo} />
                 </Link>
                 <button className={styles.menuButton} onClick={toggleMenu}>
                     {menuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}

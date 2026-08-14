@@ -11,7 +11,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   position: fixed;
   top: 0;
   left: 0;
@@ -27,9 +27,14 @@
   align-items: center;
 }
 
+.link_logo {
+  display: flex;
+  align-items: center;
+}
+
 .logo {
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  width: 55px;
+  width: 50px;
   height: auto;
 }
 
@@ -59,9 +64,10 @@
 .dropdown_title_btn {
   background: transparent;
   border: none;
-  color: #fff;
-  font-weight: 600;
-  font-size: 0.95rem;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.05rem;
   cursor: pointer;
   padding: 0.75rem 1rem;
   border-radius: 6px 6px 0 0;
@@ -73,7 +79,7 @@
 
 .dropdown:hover .dropdown_title_btn {
   background-color: #2b2b2b;
-  color: #ffd700;
+  color: #f6950a;
 }
 
 .drop_flecha {
@@ -90,13 +96,16 @@
   position: absolute;
   top: 100%;
   left: 0;
-  min-width: 180px;
+  min-width: 220px;
+  white-space: nowrap;
   background-color: #2b2b2b;
   list-style: none;
   margin: 0;
   padding: 0.5rem 0;
   border-radius: 0 0 6px 6px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  border: 1px solid #333333;
+  border-top: none;
   opacity: 0;
   visibility: hidden;
   transform: translateY(-8px);
@@ -115,17 +124,18 @@
 
 .dropdown_link {
   display: block;
-  padding: 0.6rem 1.2rem;
+  padding: 0.7rem 1.2rem;
   text-decoration: none;
   color: #e0e0e0;
   font-size: 0.85rem;
+  font-weight: 500;
   letter-spacing: 0.5px;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .dropdown_link:hover {
   background-color: #383838;
-  color: #ffd700;
+  color: #f6950a;
 }
 
 /* Redes */
@@ -136,14 +146,14 @@
 }
 
 .icons {
-  color: #888;
+  color: #888888;
   display: flex;
   align-items: center;
   transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .icons:hover {
-  color: #ffd700;
+  color: #f6950a;
   transform: translateY(-2px);
 }
 

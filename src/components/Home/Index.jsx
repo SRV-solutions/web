@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import styles from './style.module.css';
 
 const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/@weareSRV/playlists';
@@ -41,6 +41,12 @@ export default function Home() {
           >
             Cotizar Software a Medida
           </a>
+
+          {/* BOTÓN AL CURSO DE BASES DE DATOS EN LA HERO */}
+          <Link to="/inscripcion" className={styles.btnCourse}>
+            Curso Bases de Datos Intensivo
+          </Link>
+
           <a href="#educacion" className={styles.btnSecondary}>Ver Cursos Gratuitos</a>
         </div>
       </section>
@@ -103,6 +109,18 @@ export default function Home() {
             >
               Consultar por Automatización →
             </a>
+          </div>
+
+          {/* TARJETA DESTACADA: CURSO DE BASES DE DATOS */}
+          <div className={`${styles.serviceCard} ${styles.highlightCard}`}>
+            <span className={styles.cardBadge}>Inicio: 2 Sept</span>
+            <h3 className={styles.blue}>Curso Bases de Datos</h3>
+            <p>
+              Formación intensiva de 4 meses en PostgreSQL y MySQL. Teoría relacional, DDL/DML, Joins, Stored Procedures y optimización.
+            </p>
+            <Link to="/inscripcion" className={styles.cardBtnLink}>
+              Inscribirme Ahora →
+            </Link>
           </div>
         </div>
       </section>

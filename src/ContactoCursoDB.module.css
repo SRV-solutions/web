@@ -1,0 +1,390 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
+
+/* Contenedor general en Fondo Negro Puro */
+.section {
+  padding: 3rem 2rem;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+  background-color: #000000;
+  color: #ffffff;
+}
+
+/* Layout de 2 columnas */
+.fullLayout {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.stickyColumn {
+  position: sticky;
+  top: 100px;
+}
+
+.cardContainer {
+  background: #0d0d0d;
+  border: 1px solid #0b78fb;
+  border-radius: 12px;
+  padding: 2rem 1.8rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
+  transition: border-color 0.3s ease;
+}
+
+.cardContainer:hover {
+  border-color: #f6950a;
+}
+
+/* Colores de marca pura */
+.orange { color: #f6950a; }
+.blue { color: #0b78fb; }
+
+/* Header e Info */
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: 50px;
+  margin-bottom: 0.8rem;
+}
+
+.badge.blue {
+  border: 1px solid #0b78fb;
+  color: #0b78fb;
+  background-color: transparent;
+}
+
+.badgeBlue {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.3rem 0.8rem;
+  border-radius: 50px;
+  border: 1px solid #0b78fb;
+  color: #0b78fb;
+}
+
+.title {
+  font-size: 1.8rem;
+  font-weight: 900;
+  margin: 0 0 0.6rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+  color: #ffffff;
+}
+
+.description {
+  color: #ffffff;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+}
+
+/* Grilla de detalles */
+.detailsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.8rem;
+  background: #000000;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #0b78fb;
+}
+
+.detailItem {
+  display: flex;
+  flex-direction: column;
+}
+
+.detailLabel {
+  font-size: 0.7rem;
+  color: #f6950a;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.detailValue {
+  font-size: 0.85rem;
+  color: #ffffff;
+  font-weight: 700;
+  margin-top: 0.2rem;
+}
+
+/* Formulario */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  margin-top: 1.5rem;
+  border-top: 1px solid #0b78fb;
+  padding-top: 1.5rem;
+}
+
+.formTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  color: #f6950a;
+  text-transform: uppercase;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.input {
+  font-family: 'Roboto', sans-serif;
+  background-color: #000000;
+  border: 1px solid #0b78fb;
+  border-radius: 6px;
+  padding: 0.75rem 0.9rem;
+  color: #ffffff;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input:focus {
+  border-color: #f6950a;
+  box-shadow: 0 0 0 2px rgba(246, 149, 10, 0.4);
+}
+
+.input::placeholder {
+  color: #888888;
+}
+
+.btnSubmit {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f6950a;
+  color: #000000;
+  padding: 0.9rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 900;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  letter-spacing: 0.05rem;
+  text-transform: uppercase;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  margin-top: 0.4rem;
+}
+
+.btnSubmit:hover:not(:disabled) {
+  background-color: #ffffff;
+  color: #000000;
+  transform: translateY(-2px);
+}
+
+.btnSubmit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Éxito */
+.successMessage {
+  text-align: center;
+  padding: 1.8rem 1rem;
+  background: #000000;
+  border-radius: 8px;
+  border: 1px solid #0b78fb;
+  margin-top: 1.5rem;
+}
+
+.successIcon {
+  width: 42px;
+  height: 42px;
+  background-color: rgba(11, 120, 251, 0.2);
+  color: #0b78fb;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin: 0 auto 1rem auto;
+}
+
+/* Columna Derecha */
+.contentColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.subTitle {
+  font-size: 1.4rem;
+  font-weight: 900;
+  margin: 0 0 1.2rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+  color: #ffffff;
+}
+
+/* Tarjetas de Módulos */
+.modulesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.2rem;
+}
+
+.moduleCard {
+  background: #0d0d0d;
+  border: 1px solid #0b78fb;
+  border-radius: 8px;
+  padding: 1.2rem;
+  position: relative;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.moduleCard:hover {
+  border-color: #f6950a;
+  transform: translateY(-2px);
+}
+
+.moduleNum {
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: #f6950a;
+  border: 1px solid #f6950a;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+.moduleCard h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0.8rem 0 0.4rem 0;
+  color: #ffffff;
+}
+
+.moduleCard p {
+  color: #ffffff;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  margin: 0;
+  opacity: 0.85;
+}
+
+/* Tabla del Calendario */
+.calendarWrapper {
+  background: #0d0d0d;
+  border: 1px solid #0b78fb;
+  border-radius: 12px;
+  padding: 1.8rem;
+}
+
+.calendarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.calendarHeader .subTitle {
+  margin: 0;
+}
+
+.tableResponsive {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.table th {
+  background-color: #000000;
+  color: #f6950a;
+  padding: 0.85rem 1rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05rem;
+  border-bottom: 1px solid #0b78fb;
+}
+
+.table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid #0b78fb;
+  color: #ffffff;
+}
+
+.table tbody tr:hover {
+  background-color: #000000;
+}
+
+.classCol {
+  font-weight: 900;
+  color: #0b78fb;
+  width: 70px;
+}
+
+.dateCol {
+  font-weight: 900;
+  color: #f6950a;
+  white-space: nowrap;
+  width: 80px;
+}
+
+.moduleTag {
+  font-size: 0.75rem;
+  color: #ffffff;
+  border: 1px solid #0b78fb;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.titleCol {
+  line-height: 1.4;
+  color: #ffffff;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .fullLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .stickyColumn {
+    position: static;
+  }
+}
+
+@media (max-width: 600px) {
+  .section {
+    padding: 2rem 1rem;
+  }
+
+  .calendarWrapper {
+    padding: 1.2rem 0.8rem;
+  }
+
+  .table th, .table td {
+    padding: 0.6rem 0.5rem;
+  }
+}

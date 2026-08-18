@@ -5,6 +5,7 @@ import Header from './components/Header/Index';
 import Footer from './components/Footer/Index';
 import Home from './components/Home/Index';
 import { trackPageView } from './data/metaPixel.js';
+import ContactoCursoDB from './ContactoCursoDB.jsx';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function AppContent() {
     <Layout>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/inscripcion" element={<ContactoCursoDB />} />
       </Routes>
     </Layout>
   );

@@ -93,7 +93,7 @@ export default function ContactoCursoDB() {
                   onSubmit={handleSubmit}
                   className={styles.form}
                 >
-                  <h3 className={styles.formTitle}>Inscríbete Ahora</h3>
+                  <h3 className={styles.formTitle}>Inscribite Ahora</h3>
 
                   <div className={styles.inputGroup}>
                     <label htmlFor="nombre" className={styles.label}>Nombre Completo</label>
@@ -155,7 +155,7 @@ export default function ContactoCursoDB() {
               <div className={styles.moduleCard}>
                 <span className={styles.moduleNum}>01</span>
                 <h4>Fundamentos y Teoría Relacional</h4>
-                <p>MER, entidades, relaciones, teoría de conjuntos y álgebra relacional[cite: 1].</p>
+                <p>MER, entidades, relaciones, teoría de conjuntos y álgebra relacional.</p>
               </div>
               <div className={styles.moduleCard}>
                 <span className={styles.moduleNum}>02</span>

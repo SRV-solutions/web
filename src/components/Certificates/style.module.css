@@ -1,0 +1,219 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Montserrat:wght@400;600;800&family=Great+Vibes&display=swap');
+
+.wrapperSection {
+  background-color: #000000;
+  min-height: 85vh;
+  padding: 3rem 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Marco Exterior Horizontal con Gradiente de Colores SRV */
+.certificateOuterBorder {
+  width: 100%;
+  max-width: 950px; /* Formato panorámico de título */
+  padding: 6px;
+  background: linear-gradient(135deg, #00f2fe 0%, #0b78fb 30%, #f6950a 70%, #b224ef 100%);
+  border-radius: 12px;
+  box-shadow: 0 0 40px rgba(11, 120, 251, 0.35);
+}
+
+/* Lienzo Interno del Certificado */
+.certificateCanvas {
+  background-color: #0c0c0e;
+  border-radius: 8px;
+  padding: 3rem 3.5rem;
+  text-align: center;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Estilo para el Logo en Imagen PNG */
+.logoContainer {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.srvLogoImg {
+  height: 65px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0px 0px 12px rgba(255, 255, 255, 0.4));
+}
+
+/* Título de la Formación / Curso */
+.courseTitle {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 2px;
+  margin: 0 0 2rem 0;
+  text-transform: uppercase;
+}
+
+/* Nombre del Alumno */
+.studentName {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.7rem;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 3px;
+  margin: 0 auto 0.6rem auto;
+}
+
+/* Línea Punteada / Separador */
+.dividerLine {
+  width: 50%;
+  margin: 0 auto 0.8rem auto;
+  border-bottom: 1px dashed #666666;
+}
+
+.metaData {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.9rem;
+  color: #cccccc;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 2rem;
+}
+
+.statement {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.78rem;
+  color: #dddddd;
+  letter-spacing: 1.5px;
+  max-width: 650px;
+  margin: 0 auto 1rem auto;
+  line-height: 1.6;
+}
+
+.certCodeNotice {
+  font-size: 0.75rem;
+  color: #f6950a;
+  letter-spacing: 1px;
+  margin-bottom: 2.5rem;
+}
+
+/* Sección de Firmas */
+.signaturesGrid {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  margin-top: 2rem;
+  padding: 0 1rem;
+}
+
+.signatureBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 250px;
+}
+
+.handwrittenSignatureAlt {
+  font-family: 'Great Vibes', cursive;
+  font-size: 1.6rem;
+  color: #ffffff;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+
+.sigLine {
+  width: 100%;
+  height: 1px;
+  background-color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.sigName {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 1px;
+}
+
+.sigRole {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.65rem;
+  color: #aaaaaa;
+  margin-top: 0.2rem;
+  letter-spacing: 1px;
+}
+
+/* Feedback States */
+.loadingContainer {
+  text-align: center;
+  color: #aaaaaa;
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(11, 120, 251, 0.2);
+  border-top-color: #0b78fb;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem auto;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.errorCard {
+  text-align: center;
+  padding: 2rem;
+  background-color: #0d0d0d;
+  border: 1px solid #ff4d4d;
+  border-radius: 8px;
+  max-width: 450px;
+  color: #ffffff;
+}
+
+.errorIcon {
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255, 77, 77, 0.2);
+  color: #ff4d4d;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem auto;
+  font-weight: bold;
+}
+
+.btnBack {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  background-color: #f6950a;
+  color: #000000;
+  text-decoration: none;
+  font-weight: 800;
+  border-radius: 4px;
+}
+
+/* Responsivo para pantallas pequeñas */
+@media (max-width: 768px) {
+  .certificateCanvas {
+    padding: 2rem 1.2rem;
+  }
+  .srvLogoImg {
+    height: 45px;
+  }
+  .courseTitle {
+    font-size: 1.1rem;
+  }
+  .studentName {
+    font-size: 1.2rem;
+  }
+}

@@ -117,10 +117,10 @@ export default function Certificates() {
             {/* Firmas Institucionales */}
             <div className={styles.signaturesGrid}>
               <div className={styles.signatureBlock}>
-                <div className={styles.handwrittenSignatureAlt}>Marcos Costa Schmite</div>
+                <div className={styles.handwrittenSignatureAlt}>Marcos Roberto Costa Schmite</div>
                 <div className={styles.sigLine}></div>
                 <span className={styles.sigName}>MARCOS ROBERTO COSTA SCHMITE</span>
-                <span className={styles.sigRole}>CTO</span>
+                <span className={styles.sigRole}>Educador</span>
               </div>
             </div>
           </div>

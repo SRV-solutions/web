@@ -17,7 +17,7 @@ export default function Footer() {
         <div className={styles.data_srv}>
           <img
             className={styles.logo_footer}
-            src="./SRV-LOGO.png"
+            src="/SRV-LOGO.png"
             alt="SRV Logo"
           />
           <div className={styles.srv_location}>

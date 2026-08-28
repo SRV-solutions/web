@@ -35,6 +35,7 @@ export default function Certificates() {
             dni: row[2],
             codigo: row[3],
             formacion: row[4] || 'Bases de Datos Intensivo', // fallback por defecto
+            nota: row[6]
           }));
 
         // Búsqueda por código o DNI
@@ -112,6 +113,9 @@ export default function Certificates() {
 
             <p className={styles.certCodeNotice}>
               CÓDIGO DE VERIFICACIÓN OFICIAL: <strong>{user.codigo}</strong>
+            </p>
+            <p className={styles.certCodeNotice}>
+              NOTA: <strong>{user.nota}</strong>
             </p>
 
             {/* Firmas Institucionales */}

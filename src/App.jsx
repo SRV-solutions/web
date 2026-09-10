@@ -7,6 +7,7 @@ import Home from './components/Home/Index';
 import { trackPageView } from './data/metaPixel.js';
 import ContactoCursoDB from './ContactoCursoDB.jsx';
 import ContactoCursoRedes from './ContactoCursoRedes.jsx';
+import ContactoCursoProgramacion from './ContactoCursoProgramacion.jsx';
 import Certificates from './components/Certificates/Index.jsx';
 
 function App() {
@@ -30,6 +31,7 @@ function AppContent() {
         <Route path="/" element={<Home />} />
         <Route path="/inscripcion" element={<ContactoCursoDB />} />
         <Route path="/redes/inscripcion" element={<ContactoCursoRedes/>} />
+        <Route path="/backend/inscripcion" element={<ContactoCursoProgramacion/>} />
         <Route path="/certificates/:id" element={<Certificates />} />
       </Routes>
     </Layout>

@@ -1,3 +1,4 @@
+/* Variables y Estilos Base */
 .header {
   background-color: #1f1f1f;
   color: #ddd;
@@ -5,11 +6,12 @@
   user-select: none;
 }
 
+/* NAVBAR DESKTOP: Layout de 3 columnas (1fr, Auto-centrado, 1fr) */
 .navbar {
   background-color: #1f1f1f;
   height: 70px;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr; /* Columna Izq, Centro exacto, Columna Der */
   align-items: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   position: fixed;
@@ -18,23 +20,25 @@
   width: 100%;
   z-index: 1000;
   box-sizing: border-box;
-  padding: 0 2rem;
+  padding: 0 1.5rem;
 }
 
-/* Logo */
+/* 1. LOGO (Alineado totalmente a la izquierda) */
 .logo_container {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
 }
 
 .link_logo {
   display: flex;
   align-items: center;
+  text-decoration: none;
 }
 
 .logo {
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  width: 50px;
+  width: 45px;
   height: auto;
 }
 
@@ -42,19 +46,25 @@
   transform: rotate(360deg);
 }
 
-/* Menú principal */
+/* En Desktop, el wrapper actúa como sub-grid transparente */
+.mobile_wrapper {
+  display: contents;
+}
+
+/* 2. MENÚ PRINCIPAL (Alineado perfectamente al Centro) */
 .menu_container {
-  flex: 1;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .list_menu {
   list-style: none;
   display: flex;
-  gap: 1.5rem;
+  gap: 1.25rem;
   margin: 0;
   padding: 0;
+  align-items: center;
 }
 
 .dropdown {
@@ -62,57 +72,60 @@
 }
 
 .dropdown_title_btn {
-  background: transparent;
-  border: none;
+  position: relative;
+  overflow: hidden;
+  background-color: #0d0d0d;
   color: #ffffff;
+  border: 1px solid #0b78fb;
+  border-radius: 6px;
+  padding: 0.55rem 1rem;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   letter-spacing: 0.05rem;
   cursor: pointer;
-  padding: 0.75rem 1rem;
-  border-radius: 6px 6px 0 0;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  justify-content: space-between;
+  gap: 0.5rem;
+  transition: border-color 0.3s ease, background-color 0.2s ease, color 0.2s ease;
 }
 
-.dropdown:hover .dropdown_title_btn {
-  background-color: #2b2b2b;
+.dropdown_title_btn:hover,
+.dropdown_title_btn.active {
+  border-color: #f6950a;
   color: #f6950a;
 }
 
 .drop_flecha {
   font-size: 0.75rem;
-  transition: transform 0.2s ease;
+  transition: transform 0.3s ease;
 }
 
-.dropdown:hover .drop_flecha {
+.drop_flecha.rotate {
   transform: rotate(180deg);
 }
 
-/* Submenú desplegable */
+/* Menú Desplegable */
 .dropdown_menu {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 0.25rem);
   left: 0;
-  min-width: 220px;
-  white-space: nowrap;
+  min-width: 200px;
   background-color: #2b2b2b;
   list-style: none;
   margin: 0;
   padding: 0.5rem 0;
-  border-radius: 0 0 6px 6px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  border-radius: 6px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
   border: 1px solid #333333;
-  border-top: none;
   opacity: 0;
   visibility: hidden;
   transform: translateY(-8px);
   transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+  z-index: 10;
 }
 
-.dropdown:hover .dropdown_menu {
+.dropdown_menu.show {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
@@ -123,7 +136,10 @@
 }
 
 .dropdown_link {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
   padding: 0.7rem 1.2rem;
   text-decoration: none;
   color: #e0e0e0;
@@ -138,11 +154,12 @@
   color: #f6950a;
 }
 
-/* Redes */
-.icons_container {
+/* 3. REDES SOCIALES (Alineadas totalmente a la derecha) */
+.social_container {
   display: flex;
   align-items: center;
-  gap: 1.2rem;
+  justify-content: flex-end;
+  gap: 1.25rem;
 }
 
 .icons {
@@ -150,6 +167,7 @@
   display: flex;
   align-items: center;
   transition: color 0.2s ease, transform 0.2s ease;
+  text-decoration: none;
 }
 
 .icons:hover {
@@ -161,9 +179,136 @@
   font-size: 1.25rem;
 }
 
-/* Deshabilitados */
+/* Botón Hamburguesa */
+.hamburger_btn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  z-index: 1001;
+}
+
+/* Badge y Shimmer */
+.shimmer::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.25) 50%,
+    transparent 70%
+  );
+  transform: rotate(30deg);
+  animation: shimmer 3s infinite ease-in-out;
+  pointer-events: none;
+}
+
+.badge_new {
+  position: relative;
+  overflow: hidden;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #ff416c, #ff4b2b);
+  padding: 0.15rem 0.45rem;
+  border-radius: 12px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 0 8px rgba(255, 65, 108, 0.5);
+  animation: pulse 2s infinite;
+}
+
 .disabled {
   opacity: 0.4;
   cursor: not-allowed;
   pointer-events: none;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%) rotate(30deg); }
+  100% { transform: translateX(100%) rotate(30deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 8px rgba(255, 65, 108, 0.5); }
+  50% { transform: scale(1.08); box-shadow: 0 0 14px rgba(255, 65, 108, 0.8); }
+}
+
+/* RESPONSIVE DESIGN (Media Query Móvil) */
+@media (max-width: 900px) {
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .hamburger_btn {
+    display: block;
+  }
+
+  /* El wrapper agrupador pasa a ser el contenedor que se desliza */
+  .mobile_wrapper {
+    display: flex;
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 70px);
+    background-color: #1f1f1f;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 2rem;
+    box-sizing: border-box;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+  }
+
+  .mobile_wrapper.mobile_open {
+    transform: translateX(0);
+  }
+
+  .menu_container {
+    width: 100%;
+  }
+
+  .list_menu {
+    flex-direction: column;
+    width: 100%;
+    gap: 1rem;
+  }
+
+  .dropdown,
+  .dropdown_title_btn {
+    width: 100%;
+  }
+
+  .dropdown_menu {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    box-shadow: none;
+    border: none;
+    background-color: #171717;
+    margin-top: 0.5rem;
+    display: none;
+  }
+
+  .dropdown_menu.show {
+    display: block;
+  }
+
+  /* Redes Sociales al fondo del menú desplegable móvil */
+  .social_container {
+    margin-top: auto;
+    padding-top: 2rem;
+    justify-content: center;
+    width: 100%;
+  }
 }

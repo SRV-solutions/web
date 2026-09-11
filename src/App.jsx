@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet';
 import Header from './components/Header/Index';
 import Footer from './components/Footer/Index';
 import Home from './components/Home/Index';
-import { initMetaPixels, trackPageView } from './data/metaPixel.js';
+import { initMetaPixels, trackPageView } from './metaPixel.js';
 import ContactoCursoDB from './ContactoCursoDB.jsx';
 import ContactoCursoRedes from './ContactoCursoRedes.jsx';
 import ContactoCursoProgramacion from './ContactoCursoProgramacion.jsx';

@@ -8,7 +8,7 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2637718689217791"
     crossorigin="anonymous"></script>
 
-  <!-- Meta Pixel Script (Permanecen en el <head>) -->
+  <!-- Meta Pixel Scripts (Ambos Píxeles integrados) -->
   <script>
     !function(f,b,e,v,n,t,s)
     {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -18,7 +18,14 @@
     t.src=v;s=b.getElementsByTagName(e)[0];
     s.parentNode.insertBefore(t,s)}(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
+    
+    // Primer Píxel
     fbq('init', '1130313889388888');
+    
+    // Segundo Píxel añadido
+    fbq('init', '1616499123394079');
+    
+    // Registra PageView en ambos píxeles a la vez
     fbq('track', 'PageView');
   </script>
 
@@ -56,10 +63,12 @@
 </head>
 
 <body>
-  <!-- Meta Pixel Noscript (Movido aquí para cumplir la especificación HTML5) -->
+  <!-- Meta Pixel Noscript (Para usuarios con JavaScript desactivado) -->
   <noscript>
     <img height="1" width="1" style="display:none"
       src="https://www.facebook.com/tr?id=1130313889388888&ev=PageView&noscript=1" />
+    <img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=1616499123394079&ev=PageView&noscript=1" />
   </noscript>
 
   <div id="root"></div>

@@ -6,10 +6,9 @@ const PHONE_NUMBER = "5491123869799";
 const WHATSAPP_MESSAGE = encodeURIComponent("Hola, quiero cotizar un software");
 const WHATSAPP_URL = `https://wa.me/${PHONE_NUMBER}?text=${WHATSAPP_MESSAGE}`;
 const YOUTUBE_PLAYLIST_URL = "https://www.youtube.com/@weareSRV/playlists";
+const CURRENT_YEAR = new Date().getFullYear();
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear();
-
   return (
     <footer className={styles.footer_container}>
       <div className={styles["footer_data-container"]}>
@@ -19,6 +18,10 @@ export default function Footer() {
             className={styles.logo_footer}
             src="/SRV-LOGO.png"
             alt="SRV Logo"
+            width="130"
+            height="45"
+            loading="lazy"
+            decoding="async"
           />
           <div className={styles.srv_location}>
             <p>Ciudad Autónoma de Buenos Aires</p>
@@ -161,7 +164,7 @@ export default function Footer() {
 
       <div className={styles.bottom_bar}>
         <p className={styles.derechos}>
-          © {currentYear} <span className={styles.orange}>SRV</span>. Todos los derechos reservados.
+          © {CURRENT_YEAR} <span className={styles.orange}>SRV</span>. Todos los derechos reservados.
         </p>
       </div>
     </footer>

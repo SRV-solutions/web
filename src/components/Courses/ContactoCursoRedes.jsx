@@ -1,28 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import styles from './ContactoCursoRedes.module.css';
 
 const GOOGLE_FORM_ACTION_URL =
   'https://docs.google.com/forms/d/e/1FAIpQLSc7qxFjwEjIznKNoJes6i5dQHHbZZaDTovYgeKPlUOX94LCWw/formResponse';
+
 const ENTRY_NOMBRE = 'entry.1681211851';
 const ENTRY_EMAIL = 'entry.1652703216';
 const ENTRY_TELEFONO = 'entry.1195006180';
 
 const CRONOGRAMA = [
-  // Módulo I
   { clase: 1, fecha: '13/10', modulo: 'Módulo I', titulo: 'Introducción a Servidores y Laboratorio Virtual' },
   { clase: 2, fecha: '14/10', modulo: 'Módulo I', titulo: 'Consola Linux (Bash) I: Navegación y Archivos' },
   { clase: 3, fecha: '20/10', modulo: 'Módulo I', titulo: 'Consola Linux (Bash) II: Permisos y Usuarios' },
   { clase: 4, fecha: '21/10', modulo: 'Módulo I', titulo: 'Gestión de Procesos Servicios y Paquetes' },
   { clase: 5, fecha: '27/10', modulo: 'Módulo I', titulo: 'Servidores Web Locales y Acceso Remoto SSH' },
   { clase: 6, fecha: '28/10', modulo: 'Módulo I', titulo: 'Práctica Integradora Linux & SysAdmin' },
-  // Módulo II
   { clase: 7, fecha: '03/11', modulo: 'Módulo II', titulo: 'Introducción a Redes y el Modelo OSI' },
   { clase: 8, fecha: '04/11', modulo: 'Módulo II', titulo: 'Modelo TCP/IP y Encapsulamiento' },
   { clase: 9, fecha: '10/11', modulo: 'Módulo II', titulo: 'Direccionamiento IPv4 y Clases de Red' },
   { clase: 10, fecha: '11/11', modulo: 'Módulo II', titulo: 'Servicios Fundamentales: DNS y DHCP' },
   { clase: 11, fecha: '17/11', modulo: 'Módulo II', titulo: 'Capas de Transporte: TCP vs UDP e ICMP' },
   { clase: 12, fecha: '18/11', modulo: 'Módulo II', titulo: 'Cisco Packet Tracer I: Primeras Topologías' },
-  // Módulo III
   { clase: 13, fecha: '24/11', modulo: 'Módulo III', titulo: 'Switched Networks: Capa de Enlace y MAC' },
   { clase: 14, fecha: '25/11', modulo: 'Módulo III', titulo: 'Configuración de Switches y VLANs en Cisco' },
   { clase: 15, fecha: '01/12', modulo: 'Módulo III', titulo: 'Fundamentos de Enrutamiento (Routing)' },
@@ -33,7 +31,6 @@ const CRONOGRAMA = [
   { clase: 20, fecha: '16/12', modulo: 'Módulo III', titulo: 'Enrutamiento Dinámico (OSPF)' },
   { clase: 21, fecha: '22/12', modulo: 'Módulo III', titulo: 'Seguridad y Traducción de Direcciones (NAT/PAT)' },
   { clase: 22, fecha: '23/12', modulo: 'Módulo III', titulo: 'Taller Integrador de Redes en Packet Tracer' },
-  // Módulo IV
   { clase: 23, fecha: '29/12', modulo: 'Módulo IV', titulo: 'Introducción a la Nube y AWS IAM' },
   { clase: 24, fecha: '30/12', modulo: 'Módulo IV', titulo: 'Networking en la Nube: AWS VPC' },
   { clase: 25, fecha: '05/01', modulo: 'Módulo IV', titulo: 'Servidores Virtuales en Cloud: AWS EC2' },
@@ -46,23 +43,55 @@ const CRONOGRAMA = [
   { clase: 32, fecha: '27/01', modulo: 'Módulo IV', titulo: 'Pruebas de Carga Optimización de Costos y Cierre' },
 ];
 
-export default function ContactoCursoRedes() {
+function ContactoCursoRedes() {
+  const [formData, setFormData] = useState({ nombre: '', email: '', telefono: '' });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setSubmitted(true);
-    }, 800);
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const body = new FormData();
+    body.append(ENTRY_NOMBRE, formData.nombre);
+    body.append(ENTRY_EMAIL, formData.email);
+    body.append(ENTRY_TELEFONO, formData.telefono);
+
+    try {
+      await fetch(GOOGLE_FORM_ACTION_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: body,
+      });
+      setSubmitted(true);
+    } catch (err) {
+      console.error(err);
+      setSubmitted(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const renderedRows = useMemo(() => {
+    return CRONOGRAMA.map((item) => (
+      <tr key={item.clase} className={styles.tableRow}>
+        <td className={styles.classCol}>#{item.clase}</td>
+        <td className={styles.dateCol}>{item.fecha}</td>
+        <td>
+          <span className={styles.moduleTag}>{item.modulo}</span>
+        </td>
+        <td className={styles.titleCol}>{item.titulo}</td>
+      </tr>
+    ));
+  }, []);
 
   return (
     <section id="curso-redes" className={styles.section}>
       <div className={styles.fullLayout}>
-        
-        {/* COLUMNA IZQUIERDA: Formulario de Inscripción y Promoción */}
         <div className={styles.stickyColumn}>
           <div className={styles.cardContainer}>
             <div className={styles.header}>
@@ -74,7 +103,6 @@ export default function ContactoCursoRedes() {
                 Aprende Administración Linux, Redes TCP/IP, Subneteo y Despliegue en AWS desde cero con laboratorios reales.
               </p>
 
-              {/* BANNER DE PRECIO CON ANIMACIÓN MARKETINERA */}
               <div className={styles.promoCard}>
                 <div className={styles.promoBadge}>🔥 66% OFF - BECA DERECHO DE EXAMEN</div>
                 <div className={styles.priceContainer}>
@@ -83,7 +111,7 @@ export default function ContactoCursoRedes() {
                     <span className={styles.oldPrice}>$240.000</span>
                   </div>
                   <div className={styles.currentPriceBox}>
-                    <span className={styles.priceTag}>Inversión Unica</span>
+                    <span className={styles.priceTag}>Inversión Única</span>
                     <div className={styles.mainPrice}>
                       $80.000 <span className={styles.currency}>ARS</span>
                     </div>
@@ -115,63 +143,55 @@ export default function ContactoCursoRedes() {
             </div>
 
             {!submitted ? (
-              <>
-                <iframe
-                  name="hidden_iframe_redes"
-                  id="hidden_iframe_redes"
-                  style={{ display: 'none' }}
-                />
+              <form onSubmit={handleSubmit} className={styles.form}>
+                <h3 className={styles.formTitle}>Asegurar Vacante Promocional</h3>
 
-                <form
-                  action={GOOGLE_FORM_ACTION_URL}
-                  method="POST"
-                  target="hidden_iframe_redes"
-                  onSubmit={handleSubmit}
-                  className={styles.form}
-                >
-                  <h3 className={styles.formTitle}>Asegurar Vacante Promocional</h3>
+                <div className={styles.inputGroup}>
+                  <label htmlFor="nombre" className={styles.label}>Nombre Completo</label>
+                  <input
+                    type="text"
+                    id="nombre"
+                    name="nombre"
+                    value={formData.nombre}
+                    onChange={handleChange}
+                    required
+                    placeholder="Ej: Carlos Gómez"
+                    className={styles.input}
+                  />
+                </div>
 
-                  <div className={styles.inputGroup}>
-                    <label htmlFor="nombre" className={styles.label}>Nombre Completo</label>
-                    <input
-                      type="text"
-                      id="nombre"
-                      name={ENTRY_NOMBRE}
-                      required
-                      placeholder="Ej: Carlos Gómez"
-                      className={styles.input}
-                    />
-                  </div>
+                <div className={styles.inputGroup}>
+                  <label htmlFor="email" className={styles.label}>Correo Electrónico</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    placeholder="ejemplo@correo.com"
+                    className={styles.input}
+                  />
+                </div>
 
-                  <div className={styles.inputGroup}>
-                    <label htmlFor="email" className={styles.label}>Correo Electrónico</label>
-                    <input
-                      type="email"
-                      id="email"
-                      name={ENTRY_EMAIL}
-                      required
-                      placeholder="ejemplo@correo.com"
-                      className={styles.input}
-                    />
-                  </div>
+                <div className={styles.inputGroup}>
+                  <label htmlFor="telefono" className={styles.label}>Número de Teléfono / Colegio</label>
+                  <input
+                    type="text"
+                    id="telefono"
+                    name="telefono"
+                    value={formData.telefono}
+                    onChange={handleChange}
+                    required
+                    placeholder="Ej: +54 9 11 1234-5678"
+                    className={styles.input}
+                  />
+                </div>
 
-                  <div className={styles.inputGroup}>
-                    <label htmlFor="telefono" className={styles.label}>Número de Teléfono / Colegio</label>
-                    <input
-                      type="text"
-                      id="telefono"
-                      name={ENTRY_TELEFONO}
-                      required
-                      placeholder="Ej: +54 9 11 1234-5678"
-                      className={styles.input}
-                    />
-                  </div>
-
-                  <button type="submit" disabled={loading} className={styles.btnSubmit}>
-                    {loading ? 'Enviando...' : 'Quiero la Beca y Mi Vacante'}
-                  </button>
-                </form>
-              </>
+                <button type="submit" disabled={loading} className={styles.btnSubmit}>
+                  {loading ? 'Enviando...' : 'Quiero la Beca y Mi Vacante'}
+                </button>
+              </form>
             ) : (
               <div className={styles.successMessage}>
                 <div className={styles.successIcon}>✓</div>
@@ -182,9 +202,7 @@ export default function ContactoCursoRedes() {
           </div>
         </div>
 
-        {/* COLUMNA DERECHA: Contenido y Cronograma */}
         <div className={styles.contentColumn}>
-          
           <div className={styles.modulesSummary}>
             <h3 className={styles.subTitle}>Módulos del Programa</h3>
             <div className={styles.modulesGrid}>
@@ -227,25 +245,14 @@ export default function ContactoCursoRedes() {
                     <th>Temario</th>
                   </tr>
                 </thead>
-                <tbody>
-                  {CRONOGRAMA.map((item) => (
-                    <tr key={item.clase}>
-                      <td className={styles.classCol}>#{item.clase}</td>
-                      <td className={styles.dateCol}>{item.fecha}</td>
-                      <td>
-                        <span className={styles.moduleTag}>{item.modulo}</span>
-                      </td>
-                      <td className={styles.titleCol}>{item.titulo}</td>
-                    </tr>
-                  ))}
-                </tbody>
+                <tbody>{renderedRows}</tbody>
               </table>
             </div>
           </div>
-
         </div>
-
       </div>
     </section>
   );
 }
+
+export default React.memo(ContactoCursoRedes);

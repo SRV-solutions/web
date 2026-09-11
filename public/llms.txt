@@ -1,0 +1,14 @@
+# SRV - Tu Academia de Desarrollo Web
+
+> Academia de formación online especializada en desarrollo backend, programación en JavaScript y Python, administración de bases de datos, redes TCP/IP y Cloud Computing con AWS.
+
+## Cursos Disponibles
+
+- [Cursos de Programación](https://wearesrv.com/): Formación avanzada en desarrollo web backend con JavaScript y Python.
+- [Curso de Redes e Infraestructura Cloud](https://wearesrv.com/#curso-redes): Curso intensivo práctico de 4 meses cubriendo Linux SysAdmin, Redes TCP/IP, Subneteo FLSM/VLSM y despliegue en AWS (EC2, VPC, S3, RDS).
+- [Bases de Datos](https://wearesrv.com/): Gestión, diseño y optimización de bases de datos para desarrollo backend.
+
+## Información General
+
+- **Modalidad**: 100% Virtual con clases en vivo y acceso a laboratorios prácticos.
+- **Sitio Web Oficial**: https://wearesrv.com

@@ -1,14 +1,23 @@
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useSearchParams, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import Header from './components/Header/Index';
-import Footer from './components/Footer/Index';
-import Home from './components/Home/Index';
 import { initMetaPixels, trackPageView } from './data/metaPixel.js';
-import ContactoCursoDB from './components/Courses/ContactoCursoDB.jsx';
-import ContactoCursoRedes from './components/Courses/ContactoCursoRedes.jsx';
-import ContactoCursoProgramacion from './components/Courses/ContactoCursoProgramacion.jsx';
-import Certificates from './components/Certificates/Index.jsx';
+
+// Importación diferida (Code Splitting) de las páginas
+const Header = lazy(() => import('./components/Header/Index'));
+const Footer = lazy(() => import('./components/Footer/Index'));
+const Home = lazy(() => import('./components/Home/Index'));
+const ContactoCursoDB = lazy(() => import('./components/Courses/ContactoCursoDB.jsx'));
+const ContactoCursoRedes = lazy(() => import('./components/Courses/ContactoCursoRedes.jsx'));
+const ContactoCursoProgramacion = lazy(() => import('./components/Courses/ContactoCursoProgramacion.jsx'));
+const Certificates = lazy(() => import('./components/Certificates/Index.jsx'));
+
+// Spinner / Loader liviano mientras descarga el componente solicitado
+const PageLoader = () => (
+  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+    <span>Cargando...</span>
+  </div>
+);
 
 function App() {
   return (
@@ -21,25 +30,25 @@ function App() {
 function AppContent() {
   const location = useLocation();
 
-  // Inicializa ambos Pixeles una sola vez al cargar la app
   useEffect(() => {
     initMetaPixels();
   }, []);
 
-  // Rastra el cambio de pantalla en React Router para ambos Pixeles
   useEffect(() => {
     trackPageView();
   }, [location.pathname]);
 
   return (
     <Layout>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/inscripcion" element={<ContactoCursoDB />} />
-        <Route path="/redes/inscripcion" element={<ContactoCursoRedes/>} />
-        <Route path="/backend/inscripcion" element={<ContactoCursoProgramacion/>} />
-        <Route path="/certificates/:id" element={<Certificates />} />
-      </Routes>
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/inscripcion" element={<ContactoCursoDB />} />
+          <Route path="/redes/inscripcion" element={<ContactoCursoRedes />} />
+          <Route path="/backend/inscripcion" element={<ContactoCursoProgramacion />} />
+          <Route path="/certificates/:id" element={<Certificates />} />
+        </Routes>
+      </Suspense>
     </Layout>
   );
 }
@@ -59,9 +68,11 @@ function Layout({ children }) {
         <meta property="og:url" content="https://wearesrv.com" />
       </Helmet>
 
-      {showHeader && <Header />}
-      <main>{children}</main>
-      <Footer />
+      <Suspense fallback={null}>
+        {showHeader && <Header />}
+        <main>{children}</main>
+        <Footer />
+      </Suspense>
     </>
   );
 }

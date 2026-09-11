@@ -312,3 +312,11 @@
     width: 100%;
   }
 }
+/* Abrir dropdown en Hover solo en pantallas de escritorio (> 900px) */
+@media (min-width: 901px) {
+  .dropdown:hover .dropdown_menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+}

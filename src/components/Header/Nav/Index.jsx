@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
+// Se mantienen los íconos; para optimizar aún más se pueden reemplazar por SVGs inline
 import {
   FaInstagram,
   FaTiktok,
@@ -18,36 +19,36 @@ const Nav = () => {
   const location = useLocation();
   const navRef = useRef(null);
 
-  // Cerrar menú mobile al cambiar de ruta
+  // Cerrar menú móvil y dropdowns al cambiar de ruta
   useEffect(() => {
     setMobileMenuOpen(false);
     setActiveDropdown(null);
-  }, [location]);
+  }, [location.pathname]);
 
-  // Cerrar dropdowns al hacer clic afuera
+  // Manejador optimizado para detectar clics fuera del menú
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (navRef.current && !navRef.current.contains(event.target)) {
         setActiveDropdown(null);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
+
+    document.addEventListener("mousedown", handleClickOutside, { passive: true });
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const toggleMobileMenu = () => {
+  const toggleMobileMenu = useCallback(() => {
     setMobileMenuOpen((prev) => !prev);
-  };
+  }, []);
 
-  const handleDropdownToggle = (index) => {
+  const handleDropdownToggle = useCallback((index) => {
     setActiveDropdown((prev) => (prev === index ? null : index));
-  };
+  }, []);
 
   const handleLogoClick = (e) => {
     if (location.pathname === "/") {
       e.preventDefault();
       window.scrollTo({ top: 0, behavior: "smooth" });
-      window.history.pushState(null, "", "/");
     }
   };
 
@@ -59,7 +60,6 @@ const Nav = () => {
       if (location.pathname === "/" && element) {
         e.preventDefault();
         element.scrollIntoView({ behavior: "smooth" });
-        window.history.pushState(null, "", targetUrl);
         setMobileMenuOpen(false);
       }
     }
@@ -68,7 +68,7 @@ const Nav = () => {
   return (
     <header className={styles.header} ref={navRef}>
       <nav className={styles.navbar} aria-label="Navegación principal">
-        {/* 1. SECCIÓN IZQUIERDA: LOGO */}
+        {/* LOGO CON DIMENSIONES DEFINIDAS Y LCP OPTIMIZADO */}
         <div className={styles.logo_container}>
           <Link
             to="/"
@@ -80,27 +80,30 @@ const Nav = () => {
               className={styles.logo}
               src="/SRV-LOGO.png"
               alt="Logo de SRV"
+              width="45"
+              height="45"
+              fetchPriority="high"
             />
           </Link>
         </div>
 
-        {/* BOTÓN MÓVIL (HAMBURGUESA) */}
+        {/* BOTÓN MÓVIL */}
         <button
           className={styles.hamburger_btn}
           onClick={toggleMobileMenu}
           aria-label={mobileMenuOpen ? "Cerrar menú" : "Abrir menú"}
           aria-expanded={mobileMenuOpen}
+          type="button"
         >
           {mobileMenuOpen ? <FaTimes /> : <FaBars />}
         </button>
 
-        {/* CONTENEDOR DESPLEGABLE MÓVIL (SÓLO ENTRA EN ACCIÓN EN MÓVIL) */}
+        {/* CONTENEDOR DESPLEGABLE MÓVIL */}
         <div
           className={`${styles.mobile_wrapper} ${
             mobileMenuOpen ? styles.mobile_open : ""
           }`}
         >
-          {/* 2. SECCIÓN CENTRO: BOTONES DE NAVEGACIÓN */}
           <div className={styles.menu_container}>
             <ul className={styles.list_menu}>
               {menuData.map((menu, index) => {
@@ -112,12 +115,6 @@ const Nav = () => {
                     className={`${styles.dropdown} ${
                       menu.disabled ? styles.disabled : ""
                     }`}
-                    onMouseEnter={() =>
-                      window.innerWidth > 900 && setActiveDropdown(index)
-                    }
-                    onMouseLeave={() =>
-                      window.innerWidth > 900 && setActiveDropdown(null)
-                    }
                   >
                     <button
                       type="button"
@@ -183,7 +180,7 @@ const Nav = () => {
             </ul>
           </div>
 
-          {/* 3. SECCIÓN DERECHA: REDES SOCIALES */}
+          {/* REDES SOCIALES */}
           <div className={styles.social_container}>
             <a
               className={styles.icons}

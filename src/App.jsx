@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet';
 import Header from './components/Header/Index';
 import Footer from './components/Footer/Index';
 import Home from './components/Home/Index';
-import { trackPageView } from './data/metaPixel.js';
+import { initMetaPixels, trackPageView } from './data/metaPixel.js';
 import ContactoCursoDB from './ContactoCursoDB.jsx';
 import ContactoCursoRedes from './ContactoCursoRedes.jsx';
 import ContactoCursoProgramacion from './ContactoCursoProgramacion.jsx';
@@ -21,6 +21,12 @@ function App() {
 function AppContent() {
   const location = useLocation();
 
+  // Inicializa ambos Pixeles una sola vez al cargar la app
+  useEffect(() => {
+    initMetaPixels();
+  }, []);
+
+  // Rastra el cambio de pantalla en React Router para ambos Pixeles
   useEffect(() => {
     trackPageView();
   }, [location.pathname]);

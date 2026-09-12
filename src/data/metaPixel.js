@@ -1,13 +1,11 @@
 import ReactPixel from 'react-facebook-pixel';
 
-// Pone aquí tus dos IDs de Meta Pixel
-const PIXEL_IDS = [
-  '1616499123394079' // Pixel 2 (reemplázalo por tu segundo ID)
-];
+const PIXEL_ID = '1616499123394079';
 
 let initialized = false;
 
-export const initMetaPixels = () => {
+// Inicializa el Pixel
+export const initMetaPixel = () => {
   if (initialized) return;
 
   const options = {
@@ -15,25 +13,30 @@ export const initMetaPixels = () => {
     debug: false,
   };
 
-  // Inicializa cada uno de los pixeles
-  PIXEL_IDS.forEach((pixelId) => {
-    ReactPixel.init(pixelId, {}, options);
-  });
-
+  ReactPixel.init(PIXEL_ID, {}, options);
   initialized = true;
 };
 
+// Envía evento de PageView
 export const trackPageView = () => {
   if (!initialized) {
-    initMetaPixels();
+    initMetaPixel();
   }
-  // Envía el evento de PageView a todos los pixeles activos
   ReactPixel.pageView();
 };
 
-export const trackCustomEvent = (event, data = {}) => {
+// Envía eventos estándar (Purchase, Lead, AddToCart, etc.)
+export const trackEvent = (eventName, data = {}) => {
   if (!initialized) {
-    initMetaPixels();
+    initMetaPixel();
   }
-  ReactPixel.track(event, data);
+  ReactPixel.track(eventName, data);
+};
+
+// Envía eventos personalizados
+export const trackCustomEvent = (eventName, data = {}) => {
+  if (!initialized) {
+    initMetaPixel();
+  }
+  ReactPixel.trackCustom(eventName, data);
 };

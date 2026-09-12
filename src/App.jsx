@@ -6,13 +6,13 @@ import {
   useLocation,
 } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { initMetaPixels, trackPageView } from "./data/metaPixel.js";
+import { initMetaPixel, trackPageView } from "./data/metaPixel.js";
 
-// ✅ Header y Footer estáticos para mantener el Layout estable en móviles
+// Layout estático
 import Header from "./components/Header/Index";
 import Footer from "./components/Footer/Index";
 
-// ✅ Code Splitting solo para las páginas principales
+// Code Splitting de páginas
 const Home = lazy(() => import("./components/Home/Index"));
 const ContactoCursoDB = lazy(
   () => import("./components/Courses/ContactoCursoDB.jsx")
@@ -25,7 +25,7 @@ const ContactoCursoProgramacion = lazy(
 );
 const Certificates = lazy(() => import("./components/Certificates/Index.jsx"));
 
-// 🚀 PageLoader moderno con animación del Logo WEARESRV.COM
+// PageLoader con animación
 const PageLoader = () => (
   <div
     style={{
@@ -38,7 +38,6 @@ const PageLoader = () => (
       padding: "2rem 0",
     }}
   >
-    {/* Estilos CSS dinámicos e inyectados */}
     <style>
       {`
         @keyframes srvPulse {
@@ -70,10 +69,9 @@ const PageLoader = () => (
       `}
     </style>
 
-    {/* Logo Animado */}
     <div className="srv-logo-anim" style={{ marginBottom: "1.5rem" }}>
       <img
-        src="/logo.png" // 👈 Asegúrate de que tu imagen esté en public/logo.png o cambia por tu import/ruta
+        src="/logo.png"
         alt="WEARESRV.COM"
         style={{
           height: "55px",
@@ -81,7 +79,6 @@ const PageLoader = () => (
           objectFit: "contain",
         }}
         onError={(e) => {
-          // Fallback en texto si la imagen falla o está cargando
           e.target.style.display = "none";
           if (e.target.nextSibling) {
             e.target.nextSibling.style.display = "block";
@@ -102,7 +99,6 @@ const PageLoader = () => (
       </span>
     </div>
 
-    {/* Barra de Progreso animada */}
     <div
       style={{
         width: "140px",
@@ -125,7 +121,6 @@ const PageLoader = () => (
       />
     </div>
 
-    {/* Texto secundario */}
     <span
       style={{
         marginTop: "0.8rem",
@@ -151,26 +146,22 @@ export default function App() {
 function AppContent() {
   const location = useLocation();
 
+  // Inicializa el Pixel al cargar la app
   useEffect(() => {
-    // Inicialización no bloqueante al montar la app
-    const timer = setTimeout(() => {
-      Promise.resolve()
-        .then(() => initMetaPixels())
-        .catch((e) => console.warn("Meta Pixel bloqueado por el navegador:", e));
-    }, 1000);
-
-    return () => clearTimeout(timer);
+    try {
+      initMetaPixel();
+    } catch (e) {
+      console.warn("Meta Pixel no pudo inicializarse:", e);
+    }
   }, []);
 
+  // Envía el PageView inmediatamente en cada cambio de ruta
   useEffect(() => {
-    // Tracking diferido con limpieza de temporizador al cambiar de ruta
-    const timer = setTimeout(() => {
-      Promise.resolve()
-        .then(() => trackPageView())
-        .catch((e) => console.warn("Tracking bloqueado:", e));
-    }, 800);
-
-    return () => clearTimeout(timer);
+    try {
+      trackPageView();
+    } catch (e) {
+      console.warn("Tracking de página bloqueado:", e);
+    }
   }, [location.pathname]);
 
   return (

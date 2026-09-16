@@ -389,7 +389,7 @@ function ContactoCursoRedes() {
 
                 <div className={styles.inputGroup}>
                   <label htmlFor="telefono" className={styles.label}>
-                    Número de Teléfono / Colegio
+                    Número de Teléfono
                   </label>
                   <input
                     type="text"

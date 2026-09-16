@@ -241,7 +241,7 @@ function ContactoCursoRedes() {
 
       // 3. SOLO SI EL ENVÍO TUVO ÉXITO -> Disparar Pixel y CAPI
       trackEvent(
-        "AddToCart",
+        "Purchase",
         {
           content_name: "Curso Redes & AWS",
           currency: "ARS",
@@ -257,7 +257,7 @@ function ContactoCursoRedes() {
           body: JSON.stringify({
             ...formData,
             event_id: eventId,
-            event_name: "AddToCart",
+            event_name: "Purchase",
           }),
         });
       } catch (apiErr) {

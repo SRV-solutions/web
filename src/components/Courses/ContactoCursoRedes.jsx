@@ -220,29 +220,13 @@ function ContactoCursoRedes() {
     e.preventDefault();
     setLoading(true);
 
-    // 1. Generar identificador único de desduplicación
+    // 1. Generar id único para desduplicar
     const eventId =
       typeof crypto !== "undefined" && crypto.randomUUID
         ? crypto.randomUUID()
-        : `lead_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+        : `cart_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
-    // 2. Evento Meta Pixel (Nivel Cliente)
-    trackEvent("Lead", { content_name: "Curso Redes & AWS" }, eventId);
-
-    // 3. Envío al backend / CAPI (Nivel Servidor) - Con manejo de error por si la API no existe aún
-    try {
-      await fetch("/api/lead", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ...formData, event_id: eventId }),
-      });
-    } catch (apiErr) {
-      console.warn("No se pudo enviar el evento al CAPI backend:", apiErr);
-    }
-
-    // 4. Envío de datos a Google Forms
+    // 2. Envío de datos a Google Forms
     const body = new FormData();
     body.append(ENTRY_NOMBRE, formData.nombre);
     body.append(ENTRY_EMAIL, formData.email);
@@ -254,10 +238,37 @@ function ContactoCursoRedes() {
         mode: "no-cors",
         body: body,
       });
-    } catch (err) {
-      console.error("Error al enviar a Google Forms:", err);
-    } finally {
+
+      // 3. SOLO SI EL ENVÍO TUVO ÉXITO -> Disparar Pixel y CAPI
+      trackEvent(
+        "AddToCart",
+        {
+          content_name: "Curso Redes & AWS",
+          currency: "ARS",
+          value: 80000,
+        },
+        eventId,
+      );
+
+      try {
+        await fetch("/api/lead", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...formData,
+            event_id: eventId,
+            event_name: "AddToCart",
+          }),
+        });
+      } catch (apiErr) {
+        console.warn("No se pudo enviar CAPI al servidor:", apiErr);
+      }
+
+      // 4. Cambiar pantalla a éxito
       setSubmitted(true);
+    } catch (err) {
+      console.error("Error al enviar el formulario:", err);
+    } finally {
       setLoading(false);
     }
   };

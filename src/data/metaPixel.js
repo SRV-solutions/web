@@ -4,7 +4,7 @@ const PIXEL_ID = '1616499123394079';
 
 let initialized = false;
 
-// Inicializa el Pixel
+// Inicializa el Pixel de Meta
 export const initMetaPixel = () => {
   if (initialized) return;
 
@@ -17,26 +17,46 @@ export const initMetaPixel = () => {
   initialized = true;
 };
 
-// Envía evento de PageView
-export const trackPageView = () => {
+/**
+ * Envía el evento PageView con soporte para desduplicación vía event_id
+ * @param {string|null} eventId ID único generado en App.jsx (o por tu servidor)
+ */
+export const trackPageView = (eventId = null) => {
   if (!initialized) {
     initMetaPixel();
   }
-  ReactPixel.pageView();
+
+  // ReactPixel permite enviar las opciones (como eventID) en el segundo parámetro de pageView
+  const options = eventId ? { eventID: eventId } : {};
+  ReactPixel.pageView({}, options);
 };
 
-// Envía eventos estándar (Purchase, Lead, AddToCart, etc.)
-export const trackEvent = (eventName, data = {}) => {
+/**
+ * Envía eventos estándar de Meta (Lead, Purchase, AddToCart, etc.)
+ * @param {string} eventName Nombre del evento (ej: 'Lead')
+ * @param {object} data Payload adicional del evento
+ * @param {string|null} eventId ID único para desduplicar con Conversions API (CAPI)
+ */
+export const trackEvent = (eventName, data = {}, eventId = null) => {
   if (!initialized) {
     initMetaPixel();
   }
-  ReactPixel.track(eventName, data);
+
+  const options = eventId ? { eventID: eventId } : {};
+  ReactPixel.track(eventName, data, options);
 };
 
-// Envía eventos personalizados
-export const trackCustomEvent = (eventName, data = {}) => {
+/**
+ * Envía eventos personalizados
+ * @param {string} eventName Nombre personalizado del evento
+ * @param {object} data Payload adicional del evento
+ * @param {string|null} eventId ID único para desduplicar con CAPI
+ */
+export const trackCustomEvent = (eventName, data = {}, eventId = null) => {
   if (!initialized) {
     initMetaPixel();
   }
-  ReactPixel.trackCustom(eventName, data);
+
+  const options = eventId ? { eventID: eventId } : {};
+  ReactPixel.trackCustom(eventName, data, options);
 };

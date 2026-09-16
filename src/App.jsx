@@ -1,4 +1,4 @@
-import React, { useEffect, lazy, Suspense } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -155,10 +155,17 @@ function AppContent() {
     }
   }, []);
 
-  // Envía el PageView inmediatamente en cada cambio de ruta
+  // Envía el PageView con un event_id único en cada cambio de ruta
   useEffect(() => {
     try {
-      trackPageView();
+      // Genera un UUID único para el evento
+      const eventId =
+        typeof crypto !== "undefined" && crypto.randomUUID
+          ? crypto.randomUUID()
+          : `pageview_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+
+      // Envía el evento pasando el eventId
+      trackPageView(eventId);
     } catch (e) {
       console.warn("Tracking de página bloqueado:", e);
     }

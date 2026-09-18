@@ -224,7 +224,7 @@ function ContactoCursoRedes() {
     const eventId =
       typeof crypto !== "undefined" && crypto.randomUUID
         ? crypto.randomUUID()
-        : `cart_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+        : `purchase_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
     // 2. Envío de datos a Google Forms
     const body = new FormData();
@@ -239,17 +239,18 @@ function ContactoCursoRedes() {
         body: body,
       });
 
-      // 3. SOLO SI EL ENVÍO TUVO ÉXITO -> Disparar Pixel y CAPI
+      // 3. Disparar Meta Pixel (Cliente)
       trackEvent(
         "Purchase",
         {
           content_name: "Curso Redes & AWS",
           currency: "ARS",
-          value: 80000,
+          value: 80000, // Número entero o decimal > 0
         },
         eventId,
       );
 
+      // 4. Disparar CAPI (Servidor) con value y currency explícitos
       try {
         await fetch("/api/lead", {
           method: "POST",
@@ -258,13 +259,16 @@ function ContactoCursoRedes() {
             ...formData,
             event_id: eventId,
             event_name: "Purchase",
+            currency: "ARS",
+            value: 80000,
+            content_name: "Curso Redes & AWS",
           }),
         });
       } catch (apiErr) {
         console.warn("No se pudo enviar CAPI al servidor:", apiErr);
       }
 
-      // 4. Cambiar pantalla a éxito
+      // 5. Cambiar pantalla a éxito
       setSubmitted(true);
     } catch (err) {
       console.error("Error al enviar el formulario:", err);

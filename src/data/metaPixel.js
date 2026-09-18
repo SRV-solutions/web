@@ -4,7 +4,6 @@ const PIXEL_ID = '1616499123394079';
 
 let initialized = false;
 
-// Inicializa el Pixel de Meta
 export const initMetaPixel = () => {
   if (initialized) return;
 
@@ -17,46 +16,34 @@ export const initMetaPixel = () => {
   initialized = true;
 };
 
-/**
- * Envía el evento PageView con soporte para desduplicación vía event_id
- * @param {string|null} eventId ID único generado en App.jsx (o por tu servidor)
- */
 export const trackPageView = (eventId = null) => {
   if (!initialized) {
     initMetaPixel();
   }
 
-  // ReactPixel permite enviar las opciones (como eventID) en el segundo parámetro de pageView
   const options = eventId ? { eventID: eventId } : {};
   ReactPixel.pageView({}, options);
 };
 
-/**
- * Envía eventos estándar de Meta (Lead, Purchase, AddToCart, etc.)
- * @param {string} eventName Nombre del evento (ej: 'Lead')
- * @param {object} data Payload adicional del evento
- * @param {string|null} eventId ID único para desduplicar con Conversions API (CAPI)
- */
 export const trackEvent = (eventName, data = {}, eventId = null) => {
   if (!initialized) {
     initMetaPixel();
   }
 
-  const options = eventId ? { eventID: eventId } : {};
-  ReactPixel.track(eventName, data, options);
+  // Asegurar que eventID vaya en las opciones del tercer parámetro
+  const options = eventId ? { eventID: eventId } : undefined;
+  
+  // Garantizar que data contenga las propiedades necesarias
+  const eventData = { ...data };
+
+  ReactPixel.track(eventName, eventData, options);
 };
 
-/**
- * Envía eventos personalizados
- * @param {string} eventName Nombre personalizado del evento
- * @param {object} data Payload adicional del evento
- * @param {string|null} eventId ID único para desduplicar con CAPI
- */
 export const trackCustomEvent = (eventName, data = {}, eventId = null) => {
   if (!initialized) {
     initMetaPixel();
   }
 
-  const options = eventId ? { eventID: eventId } : {};
+  const options = eventId ? { eventID: eventId } : undefined;
   ReactPixel.trackCustom(eventName, data, options);
 };

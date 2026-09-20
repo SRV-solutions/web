@@ -1,5 +1,4 @@
-// netlify/functions/lead.js
-const crypto = require("crypto");
+import crypto from "node:crypto";
 
 // Función auxiliar para hashear datos personales con SHA-256
 function hashData(data) {
@@ -10,7 +9,7 @@ function hashData(data) {
     .digest("hex");
 }
 
-exports.handler = async (event) => {
+export const handler = async (event) => {
   // Solo permitir solicitudes POST
   if (event.httpMethod !== "POST") {
     return {
@@ -21,7 +20,16 @@ exports.handler = async (event) => {
 
   try {
     const body = JSON.parse(event.body || "{}");
-    const { nombre, email, telefono, event_id, event_name, currency, value, content_name } = body;
+    const {
+      nombre,
+      email,
+      telefono,
+      event_id,
+      event_name,
+      currency,
+      value,
+      content_name,
+    } = body;
 
     const pixelId = process.env.META_PIXEL_ID;
     const accessToken = process.env.META_ACCESS_TOKEN;
@@ -36,18 +44,20 @@ exports.handler = async (event) => {
     // Normalizar teléfono (remover caracteres no numéricos)
     const cleanPhone = telefono ? telefono.replace(/\D/g, "") : "";
 
-    // Construir el payload según el Graph API de Meta
+    // Construir el payload para el Graph API de Meta
     const payload = {
       data: [
         {
           event_name: event_name || "Purchase",
           event_time: Math.floor(Date.now() / 1000),
-          event_id: event_id, // Se usa para la deduplicación con el Pixel cliente
+          event_id: event_id,
           action_source: "website",
           user_data: {
             em: [hashData(email)],
             ph: cleanPhone ? [hashData(cleanPhone)] : undefined,
-            client_ip_address: event.headers["x-nf-client-connection-ip"] || event.headers["client-ip"],
+            client_ip_address:
+              event.headers["x-nf-client-connection-ip"] ||
+              event.headers["client-ip"],
             client_user_agent: event.headers["user-agent"],
           },
           custom_data: {
@@ -59,7 +69,7 @@ exports.handler = async (event) => {
       ],
     };
 
-    // Enviar evento a la API Graph de Meta
+    // Enviar evento a la API Graph de Meta (fetch ya está disponible de forma nativa en Node 18+)
     const metaResponse = await fetch(
       `https://graph.facebook.com/v19.0/${pixelId}/events?access_token=${accessToken}`,
       {

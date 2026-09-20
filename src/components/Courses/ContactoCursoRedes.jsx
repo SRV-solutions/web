@@ -220,43 +220,48 @@ function ContactoCursoRedes() {
     e.preventDefault();
     setLoading(true);
 
-    // 1. Generar id único para desduplicar
+    // 1. Generar id único de evento para deduplicación entre Pixel y CAPI
     const eventId =
       typeof crypto !== "undefined" && crypto.randomUUID
         ? crypto.randomUUID()
         : `purchase_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
-    // 2. Envío de datos a Google Forms
+    // 2. Preparar el cuerpo para Google Forms
     const body = new FormData();
     body.append(ENTRY_NOMBRE, formData.nombre);
     body.append(ENTRY_EMAIL, formData.email);
     body.append(ENTRY_TELEFONO, formData.telefono);
 
     try {
+      // 3. Enviar datos a Google Forms (mode: 'no-cors' no genera respuesta legible, pero se ejecuta)
       await fetch(GOOGLE_FORM_ACTION_URL, {
         method: "POST",
         mode: "no-cors",
         body: body,
       });
 
-      // 3. Disparar Meta Pixel (Cliente)
-      trackEvent(
-        "Purchase",
-        {
-          content_name: "Curso Redes & AWS",
-          currency: "ARS",
-          value: 80000, // Número entero o decimal > 0
-        },
-        eventId,
-      );
+      // 4. Disparar Meta Pixel (Lado del Cliente)
+      if (typeof trackEvent === "function") {
+        trackEvent(
+          "Purchase",
+          {
+            content_name: "Curso Redes & AWS",
+            currency: "ARS",
+            value: 80000,
+          },
+          eventId,
+        );
+      }
 
-      // 4. Disparar CAPI (Servidor) con value y currency explícitos
+      // 5. Disparar CAPI (Lado del Servidor) en paralelo/asíncrono
       try {
         await fetch("/api/lead", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            ...formData,
+            nombre: formData.nombre,
+            email: formData.email,
+            telefono: formData.telefono,
             event_id: eventId,
             event_name: "Purchase",
             currency: "ARS",
@@ -265,18 +270,17 @@ function ContactoCursoRedes() {
           }),
         });
       } catch (apiErr) {
-        console.warn("No se pudo enviar CAPI al servidor:", apiErr);
+        console.warn("Error al enviar evento CAPI:", apiErr);
       }
 
-      // 5. Cambiar pantalla a éxito
+      // 6. Cambiar a estado de éxito tras completar el flujo
       setSubmitted(true);
     } catch (err) {
-      console.error("Error al enviar el formulario:", err);
+      console.error("Error crítico al procesar el formulario:", err);
     } finally {
       setLoading(false);
     }
   };
-
   const renderedRows = useMemo(() => {
     return CRONOGRAMA.map((item) => (
       <tr key={item.clase} className={styles.tableRow}>

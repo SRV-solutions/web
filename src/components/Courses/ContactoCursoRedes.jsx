@@ -220,40 +220,43 @@ function ContactoCursoRedes() {
     e.preventDefault();
     setLoading(true);
 
-    // 1. Generar id único de evento para deduplicación entre Pixel y CAPI
+    // Generar id único de evento para deduplicación entre Pixel y CAPI
     const eventId =
       typeof crypto !== "undefined" && crypto.randomUUID
         ? crypto.randomUUID()
         : `purchase_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
-    // 2. Preparar el cuerpo para Google Forms
+    // Preparar el cuerpo para Google Forms
     const body = new FormData();
     body.append(ENTRY_NOMBRE, formData.nombre);
     body.append(ENTRY_EMAIL, formData.email);
     body.append(ENTRY_TELEFONO, formData.telefono);
 
     try {
-      // 3. Enviar datos a Google Forms (mode: 'no-cors' no genera respuesta legible, pero se ejecuta)
+      // Enviar a Google Forms
       await fetch(GOOGLE_FORM_ACTION_URL, {
         method: "POST",
         mode: "no-cors",
         body: body,
       });
 
-      // 4. Disparar Meta Pixel (Lado del Cliente)
+      // 1. Disparar Meta Pixel (Cliente) enviando los datos del usuario enriquecidos
       if (typeof trackEvent === "function") {
         trackEvent(
           "Purchase",
           {
             content_name: "Curso Redes & AWS",
             currency: "ARS",
-            value: 80000,
+            value: 80000.0,
+            em: formData.email,
+            ph: formData.telefono,
+            fn: formData.nombre,
           },
           eventId,
         );
       }
 
-      // 5. Disparar CAPI (Lado del Servidor) en paralelo/asíncrono
+      // 2. Disparar CAPI (Servidor)
       try {
         await fetch("/api/lead", {
           method: "POST",
@@ -265,7 +268,7 @@ function ContactoCursoRedes() {
             event_id: eventId,
             event_name: "Purchase",
             currency: "ARS",
-            value: 80000,
+            value: 80000.0,
             content_name: "Curso Redes & AWS",
           }),
         });
@@ -273,7 +276,6 @@ function ContactoCursoRedes() {
         console.warn("Error al enviar evento CAPI:", apiErr);
       }
 
-      // 6. Cambiar a estado de éxito tras completar el flujo
       setSubmitted(true);
     } catch (err) {
       console.error("Error crítico al procesar el formulario:", err);
@@ -281,6 +283,7 @@ function ContactoCursoRedes() {
       setLoading(false);
     }
   };
+
   const renderedRows = useMemo(() => {
     return CRONOGRAMA.map((item) => (
       <tr key={item.clase} className={styles.tableRow}>

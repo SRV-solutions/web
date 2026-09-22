@@ -37,7 +37,9 @@ export const handler = async (event) => {
     if (!pixelId || !accessToken) {
       return {
         statusCode: 500,
-        body: JSON.stringify({ error: "Faltan variables de entorno en Netlify" }),
+        body: JSON.stringify({
+          error: "Faltan variables de entorno en Netlify",
+        }),
       };
     }
 
@@ -62,7 +64,7 @@ export const handler = async (event) => {
           },
           custom_data: {
             currency: currency || "ARS",
-            value: value || 80000,
+            value: value ? Number(value) : 80000.0,
             content_name: content_name || "Curso Redes & AWS",
           },
         },
@@ -76,7 +78,7 @@ export const handler = async (event) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
-      }
+      },
     );
 
     const metaData = await metaResponse.json();

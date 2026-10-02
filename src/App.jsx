@@ -178,10 +178,10 @@ function AppContent() {
           <Route path="/" element={<Home />} />
           <Route path="/inscripcion" element={<ContactoCursoDB />} />
           <Route path="/redes/inscripcion" element={<ContactoCursoRedes />} />
-          <Route
+          {/* <Route
             path="/backend/inscripcion"
             element={<ContactoCursoProgramacion />}
-          />
+          /> */}
           <Route path="/certificates/:id" element={<Certificates />} />
         </Routes>
       </Suspense>

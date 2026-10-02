@@ -44,12 +44,12 @@ const menuData = [
         to: "/redes/inscripcion",
         isNew: true
       },
-      {
-        label: "BackEnder",
-        to: "/backend/inscripcion",
-        isExternal: false,
-        isNew: true
-      },
+      // {
+      //   label: "BackEnder",
+      //   to: "/backend/inscripcion",
+      //   isExternal: false,
+      //   isNew: true
+      // },
     ],
   },
   {

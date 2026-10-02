@@ -27,7 +27,7 @@ const menuData = [
         to: "/inscripcion",
         isExternal: false,
       },
-      { label: "Ruta Backend (YouTube)", to: YOUTUBE_URL, isExternal: true },
+      { label: "Ruta Backend", to: YOUTUBE_URL, isExternal: true },
       { label: "Python Engineer", to: YOUTUBE_URL, isExternal: true },
       { label: "Fundamentos Backend", to: YOUTUBE_URL, isExternal: true },
     ],

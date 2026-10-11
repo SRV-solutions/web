@@ -189,7 +189,7 @@ function AppContent() {
           <Route path="/inscripcion" element={<ContactoCursoDB />} />
           <Route path="/redes/inscripcion" element={<ContactoCursoRedes />} />
           <Route path="/python/inscripcion" element={<ContactoCursoPython />} />
-          <Route path="/gracias/python" element={<GraciasPython />} />
+          <Route path="/python/gracias" element={<GraciasPython />} />
           {/* <Route
             path="/backend/inscripcion"
             element={<ContactoCursoProgramacion />}

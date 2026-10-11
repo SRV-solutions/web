@@ -13,6 +13,16 @@ import Header from "./components/Header/Index";
 import Footer from "./components/Footer/Index";
 
 // Code Splitting de páginas
+
+// Agrega esta línea junto a tus otros imports de cursos:
+const ContactoCursoPython = lazy(
+  () => import("./components/Courses/Python.jsx")
+);
+
+const GraciasPython = lazy(
+  () => import("./components/Courses/GraciasPython.jsx")
+);
+
 const Home = lazy(() => import("./components/Home/Index"));
 const ContactoCursoDB = lazy(
   () => import("./components/Courses/ContactoCursoDB.jsx")
@@ -178,6 +188,8 @@ function AppContent() {
           <Route path="/" element={<Home />} />
           <Route path="/inscripcion" element={<ContactoCursoDB />} />
           <Route path="/redes/inscripcion" element={<ContactoCursoRedes />} />
+          <Route path="/python/inscripcion" element={<ContactoCursoPython />} />
+          <Route path="/gracias/python" element={<GraciasPython />} />
           {/* <Route
             path="/backend/inscripcion"
             element={<ContactoCursoProgramacion />}
@@ -214,7 +226,7 @@ function Layout({ children }) {
       </Helmet>
 
       <Header />
-      <main style={{ minHeight: "80vh" }}>{children}</main>
+      <main >{children}</main>
       <Footer />
     </>
   );

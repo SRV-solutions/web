@@ -1,3 +1,5 @@
+import { label } from "framer-motion/client";
+
 const WHATSAPP_URL =
   "https://wa.me/5491123869799?text=Hola,%20quiero%20cotizar%20un%20software";
 const YOUTUBE_URL = "https://www.youtube.com/@weareSRV/playlists";
@@ -22,11 +24,6 @@ const menuData = [
     title: "CURSOS GRATIS",
     disabled: false,
     links: [
-      {
-        label: "Base de datos | Avanzado",
-        to: "/inscripcion",
-        isExternal: false,
-      },
       { label: "Ruta Backend", to: YOUTUBE_URL, isExternal: true },
       { label: "Fundamentos Backend", to: YOUTUBE_URL, isExternal: true },
     ],
@@ -44,10 +41,17 @@ const menuData = [
         isNew: true
       },
       {
+<<<<<<< Updated upstream
         label: "Python Engineer",
         to: "/python/inscripcion",
         isNew: true
       },
+=======
+        label: "Full Stack",
+        to: "/full-stack/inscripcion",
+        isNew: true
+      }
+>>>>>>> Stashed changes
       // {
       //   label: "BackEnder",
       //   to: "/backend/inscripcion",

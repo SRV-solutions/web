@@ -11,6 +11,7 @@ import { initMetaPixel, trackPageView } from "./data/metaPixel.js";
 // Layout estático
 import Header from "./components/Header/Index";
 import Footer from "./components/Footer/Index";
+import ContactoCursoWeb from "./components/Courses/ContactoCursoWeb";
 
 // Code Splitting de páginas
 
@@ -186,10 +187,14 @@ function AppContent() {
       <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/inscripcion" element={<ContactoCursoDB />} />
+          {/* <Route path="/inscripcion" element={<ContactoCursoDB />} /> */}
           <Route path="/redes/inscripcion" element={<ContactoCursoRedes />} />
+<<<<<<< Updated upstream
           <Route path="/python/inscripcion" element={<ContactoCursoPython />} />
           <Route path="/python/gracias" element={<GraciasPython />} />
+=======
+          <Route path="/full-stack/inscripcion" element={<ContactoCursoWeb />} />
+>>>>>>> Stashed changes
           {/* <Route
             path="/backend/inscripcion"
             element={<ContactoCursoProgramacion />}

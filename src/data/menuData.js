@@ -28,7 +28,6 @@ const menuData = [
         isExternal: false,
       },
       { label: "Ruta Backend", to: YOUTUBE_URL, isExternal: true },
-      { label: "Python Engineer", to: YOUTUBE_URL, isExternal: true },
       { label: "Fundamentos Backend", to: YOUTUBE_URL, isExternal: true },
     ],
   },
@@ -42,6 +41,11 @@ const menuData = [
       {
         label: "Redes y AWS",
         to: "/redes/inscripcion",
+        isNew: true
+      },
+      {
+        label: "Python Engineer",
+        to: "/python/inscripcion",
         isNew: true
       },
       // {

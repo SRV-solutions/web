@@ -8,11 +8,13 @@ export default function GraciasPython() {
   const paymentId = searchParams.get("payment_id");
 
   useEffect(() => {
-    console.log(status);
     
     if (status === "approved") {
       // Disparar Purchase en Meta Pixel al volver con éxito
       if (typeof trackEvent === "function") {
+        console.log(paymentId);
+        console.log(status);
+        
         trackEvent("Purchase", {
           content_name: "Infoproducto Python Completo",
           currency: "ARS",

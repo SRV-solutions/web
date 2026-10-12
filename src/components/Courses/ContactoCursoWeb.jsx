@@ -23,28 +23,30 @@ const CURSOS = [
     nombre: "Frontend Web + Lógica",
     corto: "Frontend",
     dias: "Lunes y Miércoles",
-    semanas: 8,
-    clases: 16,
-    horasCatedra: 60,
+    semanas: 9,
+    clases: 18,
+    horasCatedra: 67.5,
     stack:
-      "HTML5, CSS3, Flexbox/Grid, JavaScript desde cero, Async, React + Vite, Hooks, estados y deploy.",
+      "HTML, CSS, Flexbox/Grid, JavaScript desde cero, DOM, clases, async/await, React + Vite, Hooks, React Router y deploy.",
     cronograma: [
-      { clase: 1, fecha: "18/01", bloque: "HTML & CSS", titulo: "Fundamentos Web y HTML5 Semántico" },
-      { clase: 2, fecha: "20/01", bloque: "HTML & CSS", titulo: "Estilos CSS3 y Modelo de Caja" },
-      { clase: 3, fecha: "25/01", bloque: "HTML & CSS", titulo: "Layouts Modernos con Flexbox" },
-      { clase: 4, fecha: "27/01", bloque: "HTML & CSS", titulo: "CSS Grid y Responsive Design" },
-      { clase: 5, fecha: "01/02", bloque: "JavaScript", titulo: "Lógica de Programación y Variables en JS" },
-      { clase: 6, fecha: "03/02", bloque: "JavaScript", titulo: "Bucles, Arrays y Objetos Literales" },
-      { clase: 7, fecha: "08/02", bloque: "JavaScript", titulo: "Funciones y Métodos de Arrays (map, filter, reduce)" },
-      { clase: 8, fecha: "10/02", bloque: "JavaScript", titulo: "Manipulación del DOM y Eventos" },
-      { clase: 9, fecha: "15/02", bloque: "JavaScript", titulo: "Asincronía, Promesas y Fetch API" },
-      { clase: 10, fecha: "17/02", bloque: "React", titulo: "Introducción a React con Vite" },
-      { clase: 11, fecha: "22/02", bloque: "React", titulo: "Componentes, Props y Modularización" },
-      { clase: 12, fecha: "24/02", bloque: "React", titulo: "Manejo de Estado con useState" },
-      { clase: 13, fecha: "01/03", bloque: "React", titulo: "Efectos Secundarios y useEffect" },
-      { clase: 14, fecha: "03/03", bloque: "React", titulo: "Custom Hooks y Arquitectura React" },
-      { clase: 15, fecha: "08/03", bloque: "React", titulo: "Estilado Profesional (Tailwind CSS / Modules)" },
-      { clase: 16, fecha: "10/03", bloque: "React", titulo: "Deploy en Vercel, Proyectos y Salida Laboral" },
+      { clase: 1, fecha: "18/01", bloque: "HTML", titulo: "Cómo funciona la web, VS Code, estructura del documento HTML, texto, enlaces, imágenes, listas, HTML semántico y formularios. Práctica: CV personal." },
+      { clase: 2, fecha: "20/01", bloque: "HTML, CSS", titulo: "Fundamentos de CSS, selectores, cascada, especificidad, herencia, unidades, colores, tipografía, modelo de caja, fondos, bordes y degradados." },
+      { clase: 3, fecha: "25/01", bloque: "HTML, CSS", titulo: "Display, posicionamiento y Flexbox." },
+      { clase: 4, fecha: "27/01", bloque: "HTML, CSS", titulo: "Grid, responsive design (media queries, mobile first), transiciones y variables CSS." },
+      { clase: 5, fecha: "01/02", bloque: "HTML, CSS, JS", titulo: "Introducción a JavaScript, variables, tipos de datos, operadores y strings." },
+      { clase: 6, fecha: "03/02", bloque: "HTML, CSS, JS", titulo: "Condicionales, bucles y funciones (scope y callbacks)." },
+      { clase: 7, fecha: "08/02", bloque: "HTML, CSS, JS", titulo: "Arrays y sus métodos, objetos, desestructuración y spread." },
+      { clase: 8, fecha: "10/02", bloque: "HTML, CSS, JS", titulo: "DOM, eventos y manipulación de HTML." },
+      { clase: 9, fecha: "15/02", bloque: "HTML, CSS, JS", titulo: "Formularios y validación, JSON y localStorage." },
+      { clase: 10, fecha: "17/02", bloque: "HTML, CSS, JS", titulo: "Clases (constructor, métodos), módulos y organización del código." },
+      { clase: 11, fecha: "22/02", bloque: "HTML, CSS, JS", titulo: "Asincronía, promesas, async/await y Fetch API." },
+      { clase: 12, fecha: "24/02", bloque: "React", titulo: "Introducción a Node, npm y React, Vite, JSX, componentes, props y estilos con CSS Modules." },
+      { clase: 13, fecha: "01/03", bloque: "React", titulo: "Renderizado de listas, renderizado condicional y useState." },
+      { clase: 14, fecha: "03/03", bloque: "React", titulo: "Eventos, formularios controlados y comunicación entre componentes." },
+      { clase: 15, fecha: "08/03", bloque: "React", titulo: "useEffect, fetch en React, estado de carga." },
+      { clase: 16, fecha: "10/03", bloque: "React", titulo: "Manejo de errores en peticiones HTTP, depuración y Custom Hooks." },
+      { clase: 17, fecha: "15/03", bloque: "React", titulo: "React Router: rutas, parámetros, navegación, layouts y página 404." },
+      { clase: 18, fecha: "17/03", bloque: "React", titulo: "Deploy web en Vercel y cierre del curso." },
     ],
   },
   {
@@ -99,7 +101,7 @@ function getOferta(planId, preventa) {
         nombre: "Frontend Web + Lógica",
         precio: 140000,
         cuotas: "2 cuotas fijas de $70.000",
-        resumen: "16 clases · 60 hs cátedra · Lunes y Miércoles",
+        resumen: "18 clases · 67,5 hs cátedra · Lunes y Miércoles",
       };
     case "backend":
       return {
@@ -120,7 +122,7 @@ function getOferta(planId, preventa) {
             nombre: "Pack Fullstack",
             precio: 220000,
             cuotas: "3 cuotas fijas de $73.333",
-            resumen: "Ambos cursos: 36 clases y 135 hs cátedra. Ahorrás $80.000.",
+            resumen: "Ambos cursos: 38 clases y 142,5 hs cátedra. Ahorrás $80.000.",
           };
   }
 }
@@ -132,6 +134,7 @@ const diaDeSemana = (fecha) => {
 };
 
 const fmt = (n) => "$" + n.toLocaleString("es-AR");
+const fmtHoras = (n) => n.toLocaleString("es-AR");
 const pad = (n) => String(n).padStart(2, "0");
 
 /* ---------- Validación del formulario ---------- */
@@ -726,7 +729,7 @@ function ContactoCursoWeb() {
                   <h4>{c.nombre}</h4>
                   <p>{c.stack}</p>
                   <span className={styles.moduleMeta}>
-                    {c.dias} · {c.semanas} semanas · {c.horasCatedra} hs cát.
+                    {c.dias} · {c.semanas} semanas · {fmtHoras(c.horasCatedra)} hs cát.
                   </span>
                 </button>
               ))}
@@ -741,7 +744,7 @@ function ContactoCursoWeb() {
                 <span className={styles.moduleNum}>01 + 02</span>
                 <h4>Pack Fullstack</h4>
                 <p>
-                  Ambos cursos en paralelo: 36 clases y 135 hs cátedra en 10
+                  Ambos cursos en paralelo: 38 clases y 142,5 hs cátedra en 10
                   semanas.
                 </p>
                 <span className={styles.moduleMeta}>
@@ -794,7 +797,7 @@ function ContactoCursoWeb() {
                 </div>
                 <div className={styles.detailItem}>
                   <span className={styles.detailLabel}>Carga</span>
-                  <span className={styles.detailValue}>{curso.horasCatedra} hs cátedra</span>
+                  <span className={styles.detailValue}>{fmtHoras(curso.horasCatedra)} hs cátedra</span>
                 </div>
               </div>
 

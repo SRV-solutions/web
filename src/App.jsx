@@ -189,12 +189,9 @@ function AppContent() {
           <Route path="/" element={<Home />} />
           {/* <Route path="/inscripcion" element={<ContactoCursoDB />} /> */}
           <Route path="/redes/inscripcion" element={<ContactoCursoRedes />} />
-<<<<<<< Updated upstream
           <Route path="/python/inscripcion" element={<ContactoCursoPython />} />
           <Route path="/python/gracias" element={<GraciasPython />} />
-=======
           <Route path="/full-stack/inscripcion" element={<ContactoCursoWeb />} />
->>>>>>> Stashed changes
           {/* <Route
             path="/backend/inscripcion"
             element={<ContactoCursoProgramacion />}

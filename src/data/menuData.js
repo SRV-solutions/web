@@ -41,17 +41,14 @@ const menuData = [
         isNew: true
       },
       {
-<<<<<<< Updated upstream
         label: "Python Engineer",
         to: "/python/inscripcion",
         isNew: true
-      },
-=======
+      },{
         label: "Full Stack",
         to: "/full-stack/inscripcion",
         isNew: true
       }
->>>>>>> Stashed changes
       // {
       //   label: "BackEnder",
       //   to: "/backend/inscripcion",

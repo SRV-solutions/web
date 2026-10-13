@@ -12,9 +12,6 @@ export default function GraciasPython() {
     if (status === "approved") {
       // Disparar Purchase en Meta Pixel al volver con éxito
       if (typeof trackEvent === "function") {
-        console.log(paymentId);
-        console.log(status);
-        
         trackEvent("Purchase", {
           content_name: "Infoproducto Python Completo",
           currency: "ARS",

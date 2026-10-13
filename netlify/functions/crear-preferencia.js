@@ -15,18 +15,17 @@ export async function handler(event, context) {
     const preference = new Preference(client);
     console.log(preference);
 
-    const bodyData = JSON.parse(event.body || "{}");
-    const titulo = bodyData.titulo || "Master en Python Desde Cero - WEARESRV";
-    const precio = Number(bodyData.precio) || 80000;
+    const PRECIO_FIJO = 80000;
+    const TITULO_FIJO = "Master en Python Desde Cero - WEARESRV";
 
     const response = await preference.create({
       body: {
         items: [
           {
             id: "curso-python-infoproducto",
-            title: titulo,
+            title: TITULO_FIJO,
             quantity: 1,
-            unit_price: precio,
+            unit_price: PRECIO_FIJO,
             currency_id: "ARS",
           },
         ],

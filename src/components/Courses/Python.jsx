@@ -117,6 +117,7 @@ export default function Python() {
       setLoading(false);
     }
   };
+  
   return (
     <section id="curso-python" className={styles.section}>
       <div className={styles.fullLayout}>

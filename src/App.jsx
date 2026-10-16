@@ -3,6 +3,7 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
+  Navigate,
   useLocation,
 } from "react-router-dom";
 import { Helmet } from "react-helmet";
@@ -25,6 +26,7 @@ const GraciasCurso = lazy(
   () => import("./components/Courses/GraciasCurso.jsx")
 );
 const Certificates = lazy(() => import("./components/Certificates/Index.jsx"));
+const ElDevelop = lazy(() => import("./components/ElDevelop/Index.jsx"));
 const NotFound = lazy(() => import("./components/NotFound/Index.jsx"));
 
 // PageLoader con animación
@@ -180,6 +182,8 @@ function AppContent() {
           <Route path="/full-stack/inscripcion" element={<ContactoCursoWeb />} />
           <Route path="/full-stack/gracias" element={<GraciasCurso cursoKey="intensivo" />} />
           <Route path="/certificates/:id" element={<Certificates />} />
+          <Route path="/el-develop" element={<ElDevelop />} />
+          <Route path="/potrero-it" element={<Navigate to="/el-develop" replace />} />
           {/* Cualquier link viejo o inexistente (ej. cursos que ya cerraron) */}
           <Route path="*" element={<NotFound />} />
         </Routes>
@@ -217,4 +221,4 @@ function Layout({ children }) {
       <Footer />
     </>
   );
-}
+}

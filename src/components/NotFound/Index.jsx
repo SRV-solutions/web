@@ -18,6 +18,7 @@ export default function NotFound() {
         <meta name="robots" content="noindex" />
       </Helmet>
 
+
       <span className={styles.code}>404</span>
       <h1 className={styles.title}>
         Esta página <span className={styles.orange}>no existe</span>

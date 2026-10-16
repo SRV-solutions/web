@@ -22,6 +22,29 @@ const CHALLENGES = [
   },
 ];
 
+// Desafíos difíciles (dificultad 3+): en columna, justify y align cambian de eje
+const HARD_CHALLENGES = [
+  {
+    goal: "En columna (flex-direction: column), centrá el botón en el medio",
+    need: { display: "flex", "flex-direction": "column", "justify-content": "center", "align-items": "center" },
+  },
+  {
+    goal: "En columna, mandá el botón abajo de todo y a la izquierda",
+    need: { display: "flex", "flex-direction": "column", "justify-content": "flex-end", "align-items": "flex-start" },
+  },
+  {
+    goal: "En columna, botón arriba y a la derecha",
+    need: { display: "flex", "flex-direction": "column", "justify-content": "flex-start", "align-items": "flex-end" },
+  },
+];
+
+const HARD_CHIPS = [
+  ["flex-direction", "column"],
+  ["flex-direction", "row"],
+  ["justify-content", "space-between"],
+  ["align-items", "stretch"],
+];
+
 const POOL = [
   ["display", "flex"],
   ["display", "block"],
@@ -38,11 +61,11 @@ const POOL = [
 
 const camel = (prop) => prop.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
 
-export default function FlexboxDefender({ timeMult, onFinish }) {
-  const total = 30 * timeMult;
+export default function FlexboxDefender({ timeMult, diff = 1, onFinish }) {
+  const total = [30, 26, 24, 20][diff - 1] * timeMult;
   const finishOnce = useFinishOnce(onFinish);
-  const challenge = useMemo(() => pick(CHALLENGES), []);
-  const chips = useMemo(() => shuffle(POOL), []);
+  const challenge = useMemo(() => pick(diff >= 3 ? HARD_CHALLENGES : CHALLENGES), [diff]);
+  const chips = useMemo(() => shuffle(diff >= 2 ? [...POOL, ...HARD_CHIPS] : POOL), [diff]);
   const [applied, setApplied] = useState({ display: "block" });
   const [won, setWon] = useState(false);
   const left = useCountdown(total, !won, () => finishOnce(false));

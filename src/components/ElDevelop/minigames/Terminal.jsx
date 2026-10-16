@@ -1,16 +1,20 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import styles from "../style.module.css";
-import { TERMINAL_COMMANDS } from "../data";
+import { TERMINAL_COMMANDS, TERMINAL_COMMANDS_PRO } from "../data";
 import { shuffle } from "../helpers";
 import { useCountdown, useFinishOnce, TimerBar } from "./common";
 
-const COUNT = 3;
 
 // Tipear comandos cortos en una terminal
-export default function Terminal({ timeMult, onFinish }) {
+export default function Terminal({ timeMult, diff = 1, onFinish }) {
+  const COUNT = [3, 4, 4, 5][diff - 1];
   const finishOnce = useFinishOnce(onFinish);
-  const commands = useMemo(() => shuffle(TERMINAL_COMMANDS).slice(0, COUNT), []);
-  const total = 40 * timeMult;
+  const commands = useMemo(() => {
+    // a partir de dificultad 2 se mezclan comandos largos de verdad
+    const pro = diff >= 2 ? shuffle(TERMINAL_COMMANDS_PRO).slice(0, diff - 1) : [];
+    return shuffle([...pro, ...shuffle(TERMINAL_COMMANDS).slice(0, COUNT - pro.length)]);
+  }, [diff, COUNT]);
+  const total = [40, 45, 45, 48][diff - 1] * timeMult;
   const [idx, setIdx] = useState(0);
   const [value, setValue] = useState("");
   const [history, setHistory] = useState([]);

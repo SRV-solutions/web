@@ -109,3 +109,13 @@ export function incidentLose(s, lines) {
   fx(s, { mental, xp: -1 });
   lines.push("Se cayó prod. Post-mortem con tu nombre en el título.");
 }
+
+// Dificultad de los minijuegos (1 a 4): sube con tu carrera. La entrevista de Big Tech es la más difícil.
+export function difficulty(s) {
+  if (s.phase === 4) return 4;
+  return [1, 1, 2, 2, 3, 3][Math.min(s.level, 5)];
+}
+
+// Los dos minijuegos de tu rol: los incidentes y hackathons eligen uno al azar
+export const roleMinigames = (s) => [role(s).minigame, role(s).minigame2];
+export const roleMinigame = (s) => pick(roleMinigames(s));

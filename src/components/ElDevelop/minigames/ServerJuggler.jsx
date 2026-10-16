@@ -3,17 +3,18 @@ import styles from "../style.module.css";
 import { rand, randInt } from "../helpers";
 import { useFinishOnce, TimerBar } from "./common";
 
-const DURATION = 18;
 const MAX_PODS = 5;
 const LB_COOLDOWN = 7;
 const NAMES = ["api-1", "api-2", "worker", "auth"];
 
-export default function ServerJuggler({ timeMult, onFinish }) {
+export default function ServerJuggler({ timeMult, diff = 1, onFinish }) {
+  const DURATION = [18, 21, 24, 27][diff - 1];
+  const presion = 1 + 0.25 * (diff - 1); // más tráfico y picos más fuertes
   const finishOnce = useFinishOnce(onFinish);
   const [, setFrame] = useState(0);
   const g = useRef({
     loads: NAMES.map(() => rand(15, 30)),
-    rates: NAMES.map(() => rand(2, 4)),
+    rates: NAMES.map(() => rand(2, 4) * presion),
     spike: null,
     spikeIn: 2,
     pods: MAX_PODS,
@@ -47,7 +48,7 @@ export default function ServerJuggler({ timeMult, onFinish }) {
       }
 
       s.loads = s.loads.map((load, i) => {
-        const extra = s.spike && s.spike.idx === i ? 12 : 0;
+        const extra = s.spike && s.spike.idx === i ? 12 * presion : 0;
         return load + ((s.rates[i] + extra) * dt) / timeMult;
       });
 
@@ -70,7 +71,7 @@ export default function ServerJuggler({ timeMult, onFinish }) {
       setFrame((f) => f + 1);
     }, 50);
     return () => clearInterval(id);
-  }, [timeMult, finishOnce]);
+  }, [timeMult, finishOnce, DURATION, presion]);
 
   const s = g.current;
 

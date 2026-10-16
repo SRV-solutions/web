@@ -320,7 +320,7 @@ function scheduleEvent(s, focus) {
     return;
   }
   if (chance(0.45)) {
-    const pool = RANDOM_EVENTS.filter((e) => e.when(s));
+    const pool = RANDOM_EVENTS.filter((e) => (!e.roles || e.roles.includes(s.role)) && e.when(s));
     const total = pool.reduce((acc, e) => acc + e.weight, 0);
     let roll = Math.random() * total;
     for (const e of pool) {

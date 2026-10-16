@@ -4,17 +4,17 @@ import { CAPA8_TICKETS } from "../data";
 import { shuffle } from "../helpers";
 import { useCountdown, useFinishOnce, TimerBar } from "./common";
 
-const COUNT = 5;
-const REQUIRED = 3;
 
 // Clasificar tickets: ¿bug real o error de Capa 8?
-export default function Capa8({ timeMult, onFinish }) {
+export default function Capa8({ timeMult, diff = 1, onFinish }) {
+  const COUNT = [5, 6, 7, 8][diff - 1];
+  const REQUIRED = [3, 4, 5, 6][diff - 1];
   const finishOnce = useFinishOnce(onFinish);
-  const tickets = useMemo(() => shuffle(CAPA8_TICKETS).slice(0, COUNT), []);
+  const tickets = useMemo(() => shuffle(CAPA8_TICKETS).slice(0, COUNT), [COUNT]);
   const [idx, setIdx] = useState(0);
   const [correct, setCorrect] = useState(0);
   const [feedback, setFeedback] = useState(null);
-  const perTicket = 14 * timeMult;
+  const perTicket = [14, 12, 10, 9][diff - 1] * timeMult;
 
   const answer = (isCapa8) => {
     if (feedback) return;
@@ -35,6 +35,8 @@ export default function Capa8({ timeMult, onFinish }) {
     <TicketView
       key={idx}
       ticket={tickets[idx]}
+      count={COUNT}
+      required={REQUIRED}
       number={idx + 1}
       correct={correct}
       perTicket={perTicket}
@@ -44,11 +46,11 @@ export default function Capa8({ timeMult, onFinish }) {
   );
 }
 
-function TicketView({ ticket, number, correct, perTicket, feedback, onAnswer }) {
+function TicketView({ ticket, count, required, number, correct, perTicket, feedback, onAnswer }) {
   const left = useCountdown(perTicket, !feedback, () => onAnswer(!ticket.capa8));
   return (
     <div>
-      <TimerBar left={left} total={perTicket} label={`Ticket ${number}/${COUNT} · Bien: ${correct} (necesitás ${REQUIRED})`} />
+      <TimerBar left={left} total={perTicket} label={`Ticket ${number}/${count} · Bien: ${correct} (necesitás ${required})`} />
       <div className={styles.ticket}>
         <span className={styles.ticketId}>#INC-{4000 + number * 137}</span>
         <p>{ticket.text}</p>

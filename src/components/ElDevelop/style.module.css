@@ -1759,3 +1759,40 @@ a.btn {
   background: rgba(239, 68, 68, 0.12);
   border: 1px solid rgba(239, 68, 68, 0.5);
 }
+
+/* ---------- Minijuegos de clasificación (uno por rol) ---------- */
+.sorterBins {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+
+.sorterBin {
+  min-height: 3.4rem;
+  padding: 0.8rem;
+  border-radius: 12px;
+  border: 2px solid var(--blue);
+  background: #000;
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.sorterBin:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: var(--orange);
+}
+
+.sorterBin:disabled {
+  cursor: default;
+}
+
+.diffStars {
+  margin: 0 0 0.8rem;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--orange);
+}

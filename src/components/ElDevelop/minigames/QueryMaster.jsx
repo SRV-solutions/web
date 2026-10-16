@@ -3,8 +3,10 @@ import styles from "../style.module.css";
 import { randInt, pick } from "../helpers";
 import { useCountdown, useFinishOnce, TimerBar } from "./common";
 
-const ROWS = 3;
-const COLS = 4;
+// Tamaño del tablero según la dificultad
+const SIZES = [[3, 4], [4, 5], [4, 6], [5, 6]];
+let ROWS = 3;
+let COLS = 4;
 // Bits de conexión: N=1, E=2, S=4, W=8
 const DIRS = [
   { bit: 1, dr: -1, dc: 0, opp: 4 },
@@ -96,8 +98,9 @@ function Tile({ mask, lit }) {
   );
 }
 
-export default function QueryMaster({ timeMult, onFinish }) {
-  const total = 45 * timeMult;
+export default function QueryMaster({ timeMult, diff = 1, onFinish }) {
+  [ROWS, COLS] = SIZES[diff - 1];
+  const total = [45, 50, 55, 55][diff - 1] * timeMult;
   const finishOnce = useFinishOnce(onFinish);
   const initial = useMemo(() => generate(), []);
   const [grid, setGrid] = useState(initial.grid);

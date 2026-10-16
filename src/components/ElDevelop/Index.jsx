@@ -12,6 +12,9 @@ import {
   BEHAVIORAL_QUESTIONS,
   MERGE_CONFLICTS,
   FIND_BUG,
+  ROLE_TECH_QUESTIONS,
+  ROLE_DESIGN,
+  SORTER_SETS,
 } from "./data";
 import { EVENTS } from "./events";
 import {
@@ -27,7 +30,7 @@ import {
   livingCost,
   SAVE_VERSION,
 } from "./engine";
-import { fmtArs, fmtUsd, price, role } from "./helpers";
+import { fmtArs, fmtUsd, price, role, difficulty } from "./helpers";
 import FlexboxDefender from "./minigames/FlexboxDefender";
 import QueryMaster from "./minigames/QueryMaster";
 import ServerJuggler from "./minigames/ServerJuggler";
@@ -39,6 +42,7 @@ import BugBash from "./minigames/BugBash";
 import Terminal from "./minigames/Terminal";
 import Memotest from "./minigames/Memotest";
 import GitFlow from "./minigames/GitFlow";
+import Sorter from "./minigames/Sorter";
 import {
   SharePanel,
   ShareModal,
@@ -187,7 +191,8 @@ function Setup({ onStart }) {
               ★ {r.skill}: {r.skillDesc}
             </span>
             <span className={styles.roleGame}>
-              🎮 {MINIGAMES[r.minigame].icon} {MINIGAMES[r.minigame].name}
+              🎮 {MINIGAMES[r.minigame].icon} {MINIGAMES[r.minigame].name} · {MINIGAMES[r.minigame2].icon}{" "}
+              {MINIGAMES[r.minigame2].name}
             </span>
           </button>
         ))}
@@ -426,8 +431,16 @@ function MinigameView({ game, onDone }) {
   const id = game.pending.game;
   const info = MINIGAMES[id];
   const r = role(game);
-  const timeMult = (game.inv.keyboard ? 1.1 : 1) * (game.inv.monitor ? 1.1 : 1) * (r.minigame === id ? 1.3 : 1);
-  const quizTime = Math.max(12, 16 + (game.stats.logic - 50) / 8) * timeMult;
+  const esDelRol = r.minigame === id || r.minigame2 === id;
+  const timeMult = (game.inv.keyboard ? 1.1 : 1) * (game.inv.monitor ? 1.1 : 1) * (esDelRol ? 1.3 : 1);
+  // En el final de la facu (nivel 0) la dificultad es 1; en la entrevista de Big Tech, 4
+  const diff = difficulty(game);
+  const quizTime = Math.max(9, 16 + (game.stats.logic - 50) / 8 - (diff - 1) * 2) * timeMult;
+  // Preguntas de código según el rol: un frontend no revisa SQL, un data no revisa Docker
+  const delRol = (pool) => {
+    const filtrado = pool.filter((q) => !q.roles || q.roles.includes(r.id));
+    return filtrado.length >= 3 ? filtrado : pool;
+  };
 
   const finish = (w) => {
     setWin(w);
@@ -436,7 +449,8 @@ function MinigameView({ game, onDone }) {
 
   let body = null;
   if (phase === "play") {
-    const common = { timeMult, onFinish: finish };
+    const common = { timeMult, diff, onFinish: finish };
+    const quizCount = [3, 3, 4, 5][diff - 1];
     switch (id) {
       case "css":
         body = <FlexboxDefender {...common} />;
@@ -467,17 +481,34 @@ function MinigameView({ game, onDone }) {
       case "gitflow":
         body = <GitFlow {...common} />;
         break;
+      case "htmlcssjs":
+      case "statuscodes":
+      case "comandos":
+      case "phishing":
+      case "graficos":
+      case "moscow":
+      case "triage":
+      case "bugofeature":
+        body = <Sorter set={SORTER_SETS[id]} {...common} />;
+        break;
       case "merge":
-        body = <Quiz pool={MERGE_CONFLICTS} count={3} required={2} timePerQ={15 * timeMult} mono onFinish={finish} />;
+        body = (
+          <Quiz pool={delRol(MERGE_CONFLICTS)} count={quizCount} required={quizCount - 1} timePerQ={[15, 13, 11, 10][diff - 1] * timeMult} mono onFinish={finish} />
+        );
         break;
       case "findbug":
-        body = <Quiz pool={FIND_BUG} count={3} required={2} timePerQ={20 * timeMult} mono onFinish={finish} />;
+        body = (
+          <Quiz pool={delRol(FIND_BUG)} count={quizCount} required={quizCount - 1} timePerQ={[20, 17, 15, 13][diff - 1] * timeMult} mono onFinish={finish} />
+        );
         break;
       case "algo":
         body = <Quiz pool={ALGO_QUESTIONS} count={4} required={2} timePerQ={quizTime} onFinish={finish} />;
         break;
+      case "techq":
+        body = <Quiz pool={ROLE_TECH_QUESTIONS[r.id]} count={5} required={[3, 3, 4, 4][diff - 1]} timePerQ={quizTime} onFinish={finish} />;
+        break;
       case "design":
-        body = <DesignPicker {...common} />;
+        body = <DesignPicker {...common} design={ROLE_DESIGN[r.id]} />;
         break;
       case "behavioral":
         body = <Quiz pool={BEHAVIORAL_QUESTIONS} count={3} required={2} timePerQ={quizTime + 6} onFinish={finish} />;
@@ -500,10 +531,14 @@ function MinigameView({ game, onDone }) {
       {phase === "brief" && (
         <>
           <p className={styles.text}>{info.howTo}</p>
+          <p className={styles.diffStars}>
+            Dificultad: {"★".repeat(diff)}
+            {"☆".repeat(4 - diff)}
+          </p>
           {timeMult > 1 && (
             <p className={styles.muted}>
               ⏱️ Bonus de tiempo x{timeMult.toFixed(2)}
-              {r.minigame === id ? ` (${r.skill})` : ""}
+              {esDelRol ? ` (${r.skill})` : ""}
               {game.inv.keyboard ? " (Teclado RGB)" : ""}
               {game.inv.monitor ? " (Segundo monitor)" : ""}
             </p>

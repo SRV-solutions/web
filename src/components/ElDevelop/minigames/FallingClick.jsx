@@ -4,11 +4,12 @@ import { FALLING_SETS } from "../data";
 import { rand, pick, chance } from "../helpers";
 import { useFinishOnce, TimerBar } from "./common";
 
-const DURATION = 20;
-const LIVES = 5;
 
 // Minijuego genérico de "lluvia": Hack the Hacker, Data Cleaning y Prioritizer
-export default function FallingClick({ variant, timeMult, onFinish }) {
+export default function FallingClick({ variant, timeMult, diff = 1, onFinish }) {
+  const DURATION = [20, 22, 25, 28][diff - 1];
+  const LIVES = [5, 4, 3, 3][diff - 1];
+  const velocidad = 1 + 0.22 * (diff - 1);
   const set = FALLING_SETS[variant];
   const finishOnce = useFinishOnce(onFinish);
   const [, setFrame] = useState(0);
@@ -35,7 +36,7 @@ export default function FallingClick({ variant, timeMult, onFinish }) {
           text: pick(bad ? set.bad : set.good),
           x: rand(2, 62),
           y: -12,
-          speed: rand(11, 16) + elapsed * 0.3,
+          speed: (rand(11, 16) + elapsed * 0.3) * velocidad,
         });
         s.spawnIn = Math.max(0.7, rand(0.9, 1.3) - elapsed * 0.01);
       }
@@ -65,7 +66,7 @@ export default function FallingClick({ variant, timeMult, onFinish }) {
       setFrame((f) => f + 1);
     }, 40);
     return () => clearInterval(id);
-  }, [set, timeMult, finishOnce]);
+  }, [set, timeMult, finishOnce, DURATION, velocidad]);
 
   const s = g.current;
 

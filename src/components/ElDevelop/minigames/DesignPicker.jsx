@@ -1,16 +1,15 @@
 import React, { useMemo, useState } from "react";
 import styles from "../style.module.css";
-import { DESIGN_PIECES } from "../data";
 import { shuffle } from "../helpers";
 import { useCountdown, useFinishOnce, TimerBar } from "./common";
 
-const MIN_GOOD = 3;
-const MAX_BAD = 1;
 
-export default function DesignPicker({ timeMult, onFinish }) {
-  const total = 40 * timeMult;
+export default function DesignPicker({ timeMult, diff = 1, design, onFinish }) {
+  const MIN_GOOD = [3, 4, 4, 5][diff - 1];
+  const MAX_BAD = diff >= 3 ? 0 : 1;
+  const total = [40, 36, 34, 32][diff - 1] * timeMult;
   const finishOnce = useFinishOnce(onFinish);
-  const pieces = useMemo(() => shuffle(DESIGN_PIECES), []);
+  const pieces = useMemo(() => shuffle(design.pieces), [design]);
   const [selected, setSelected] = useState(new Set());
   const [sent, setSent] = useState(false);
 
@@ -43,7 +42,9 @@ export default function DesignPicker({ timeMult, onFinish }) {
     <div>
       <TimerBar left={left} total={total} label="Tiempo para la pizarra" />
       <p className={styles.mgGoal}>
-        🏗️ Elegí al menos {MIN_GOOD} componentes que escalen. Más de {MAX_BAD} pifiada y te bochan.
+        🏗️ {design.prompt}
+        <br />
+        Elegí al menos {MIN_GOOD} piezas correctas. {MAX_BAD === 0 ? "Sin ninguna pifiada." : `Más de ${MAX_BAD} pifiada y te bochan.`}
       </p>
       <div className={styles.designGrid}>
         {pieces.map((p) => {

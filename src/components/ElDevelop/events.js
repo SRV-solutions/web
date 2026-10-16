@@ -1,4 +1,4 @@
-import { LEVELS, SALARY_USD } from "./data";
+import { LEVELS, SALARY_USD, ROLE_DESIGN } from "./data";
 import {
   fx,
   price,
@@ -11,6 +11,8 @@ import {
   incidentWin,
   incidentLose,
   fmtArs,
+  pick,
+  roleMinigame,
 } from "./helpers";
 
 function finishInterview(s, lines) {
@@ -43,6 +45,9 @@ const interviewRound = (game, next) => ({
     next ? s.queue.push(next) : finishInterview(s, lines);
   },
 });
+
+// Roles que programan: ven los eventos de código y servidores
+const DEV = ["frontend", "backend", "devops", "security", "data", "qa"];
 
 export const EVENTS = {
   // ---------- FASE 1: EL HOLA MUNDO ----------
@@ -222,19 +227,26 @@ export const EVENTS = {
   },
 
   onboarding: {
-    title: "🌿 Onboarding: tu primer Pull Request",
-    text: "Primer día. Te dieron una notebook, un buzo de la empresa y te pidieron subir un cambio 'para que vayas conociendo el flujo'.",
+    title: "🌿 Onboarding: tu primera tarea",
+    text: (s) =>
+      DEV.includes(s.role)
+        ? "Primer día. Te dieron una notebook, un buzo de la empresa y te pidieron subir un cambio 'para que vayas conociendo el flujo'."
+        : "Primer día. Te dieron una notebook, un buzo de la empresa y tu primera tarea real 'para que vayas conociendo cómo laburamos'.",
     options: [
       {
-        label: "🌿 Hacer el flujo de Git",
-        minigame: "gitflow",
+        label: "💪 Resolver la primera tarea",
+        minigame: (s) => (DEV.includes(s.role) ? "gitflow" : role(s).minigame),
         onWin: (s, lines) => {
           fx(s, { xp: 3, network: 3 });
-          lines.push("PR aprobado en el primer día. El Tech Lead te puso un 🚀 en Slack.");
+          lines.push("Tarea aprobada en el primer día. Tu líder te puso un 🚀 en Slack.");
         },
         onLose: (s, lines) => {
           fx(s, { mental: -5 });
-          lines.push("Pusheaste directo a main en tu primer día. Clásico. Te pusieron un meme en el canal.");
+          lines.push(
+            DEV.includes(s.role)
+              ? "Pusheaste directo a main en tu primer día. Clásico. Te pusieron un meme en el canal."
+              : "Primer día y ya hubo que corregirte. Clásico. Te pusieron un meme en el canal."
+          );
         },
       },
       {
@@ -366,7 +378,7 @@ export const EVENTS = {
   recruiter_bigtech: {
     title: "🌍 ¡Te escribió un recruiter de una Big Tech!",
     text: (s) =>
-      `"Hi! We loved your profile 🚀". ${s.interview.company} quiere entrevistarte. Son 3 rondas: Live Coding, System Design y Behavioral. Necesitás ganar 2 de 3.`,
+      `"Hi! We loved your profile 🚀". ${s.interview.company} quiere entrevistarte. Son 3 rondas: Entrevista técnica, System Design y Behavioral. Necesitás ganar 2 de 3.`,
     options: [
       {
         label: "🚀 Aceptar: ¡vamos con todo!",
@@ -387,13 +399,13 @@ export const EVENTS = {
     ],
   },
   entrevista_r1: {
-    title: "💻 Ronda 1: Live Coding",
-    text: "Tres entrevistadores senior te miran en vivo. Uno tiene la cámara apagada (sospechoso).",
-    options: [interviewRound("algo", "entrevista_r2")],
+    title: "💻 Ronda 1: Entrevista técnica",
+    text: (s) => `Tres entrevistadores senior te hacen preguntas técnicas de ${role(s).name}. Uno tiene la cámara apagada (sospechoso).`,
+    options: [interviewRound("techq", "entrevista_r2")],
   },
   entrevista_r2: {
     title: "🏗️ Ronda 2: System Design",
-    text: "Diseñá la arquitectura de una app de mensajería para 100 millones de usuarios. Pista: no alcanza con un servidor abajo del escritorio.",
+    text: (s) => `${ROLE_DESIGN[s.role].prompt} Elegí bien las piezas: acá se nota quién tiene experiencia.`,
     options: [interviewRound("design", "entrevista_r3")],
   },
   entrevista_r3: {
@@ -407,7 +419,7 @@ export const EVENTS = {
     title: "🔥 Bug crítico en producción",
     text: (s) => `Son las 3 AM y suena el PagerDuty. Como ${role(s).name}, te toca apagar el incendio. Nadie sabe quién deployó. Todos sospechan del pasante.`,
     options: [
-      { label: "🧑‍💻 ¡A apagar el incendio!", minigame: (s) => role(s).minigame, onWin: incidentWin, onLose: incidentLose },
+      { label: "🧑‍💻 ¡A apagar el incendio!", minigame: roleMinigame, onWin: incidentWin, onLose: incidentLose },
     ],
   },
 
@@ -605,7 +617,7 @@ export const EVENTS = {
     options: [
       {
         label: "🚀 Participar",
-        minigame: (s) => role(s).minigame,
+        minigame: roleMinigame,
         onWin: (s, lines) => {
           fx(s, { network: 10, ars: price(s, 300000), energy: -10 });
           lines.push("¡Ganaste el hackathon! Premio en efectivo y foto con un cheque gigante.");
@@ -1154,6 +1166,533 @@ export const EVENTS = {
       },
     ],
   },
+
+  // ---------- SITUACIONES PROPIAS DE CADA ROL ----------
+  // Frontend
+  figma_18hs: {
+    title: "🎨 El Figma final llegó a las 18:00",
+    text: "El diseñador te mandó 'unos cambiecitos' para mañana a primera hora: 14 pantallas nuevas.",
+    options: [
+      {
+        label: "🧩 Maquetar con cada cosa en su capa",
+        minigame: "htmlcssjs",
+        onWin: (s, lines) => {
+          fx(s, { xp: 4, network: 2 });
+          lines.push("Terminaste a las 20 y quedó pixel perfect. El diseñador te mandó un sticker de aplausos.");
+        },
+        onLose: (s, lines) => {
+          fx(s, { mental: -6, xp: -1 });
+          lines.push("Pusiste las animaciones en JavaScript y la validación en CSS. Se notó en la demo.");
+        },
+      },
+      {
+        label: "🙅 'Mañana lo vemos'",
+        run: (s, lines) => {
+          fx(s, { network: -3, mental: 3 });
+          lines.push("Dormiste bien. El diseñador ya no te saluda en el Slack.");
+        },
+      },
+    ],
+  },
+  web_celu_ceo: {
+    title: "📱 'Se ve todo roto en mi celular'",
+    text: "El CEO abrió la web desde su celular en un asado y mandó una captura al grupo de la empresa. El botón de comprar está debajo de una foto.",
+    options: [
+      {
+        label: "🎨 Arreglar el CSS en vivo",
+        minigame: "css",
+        onWin: (s, lines) => {
+          fx(s, { xp: 4, network: 4 });
+          lines.push("Lo arreglaste antes de que sirvieran el vacío. El CEO puso '👏' en el grupo.");
+        },
+        onLose: (s, lines) => {
+          fx(s, { mental: -8, xp: -1 });
+          lines.push("Ahora se ve roto también en la compu. Reunión de urgencia el lunes.");
+        },
+      },
+      {
+        label: "🤷 'Actualizá el navegador'",
+        run: (s, lines) => {
+          fx(s, { network: -4, mental: 2 });
+          lines.push("Tenía el último iPhone. No coló.");
+        },
+      },
+    ],
+  },
+
+  // Backend
+  api_todo_200: {
+    title: "📡 La API responde 200 a todo",
+    text: "El frontend se queja: cuando falla el login, la API devuelve 200 OK con un mensaje 'error'. Hay que ordenar los códigos de estado.",
+    options: [
+      {
+        label: "📡 Corregir los status codes",
+        minigame: "statuscodes",
+        onWin: (s, lines) => {
+          fx(s, { xp: 4, logic: 2 });
+          lines.push("API prolija: cada error con su código. El frontend te debe una birra.");
+        },
+        onLose: (s, lines) => {
+          fx(s, { mental: -6 });
+          lines.push("Ahora devuelve 500 cuando el usuario se equivoca la contraseña. Peor que antes.");
+        },
+      },
+    ],
+  },
+  query_lenta: {
+    title: "🐢 El reporte tarda 40 segundos",
+    text: "La consulta de reportes recorre millones de filas y el gerente se queja de que 'la página no carga'.",
+    options: [
+      {
+        label: "🔌 Optimizar la consulta",
+        minigame: "pipes",
+        onWin: (s, lines) => {
+          fx(s, { xp: 4, logic: 2 });
+          lines.push("Agregaste un índice y bajó a 300 ms. Te sentiste un mago.");
+        },
+        onLose: (s, lines) => {
+          fx(s, { mental: -6 });
+          lines.push("Ahora tarda 45 segundos. Le pusiste un spinner más lindo, al menos.");
+        },
+      },
+      {
+        label: "⏳ 'Es normal, son muchos datos'",
+        run: (s, lines) => {
+          fx(s, { network: -3 });
+          lines.push("El gerente lo exportó a Excel y lo hace a mano. Te mira feo.");
+        },
+      },
+    ],
+  },
+
+  // DevOps
+  disco_lleno: {
+    title: "💽 Alerta: disco del servidor al 98%",
+    text: "Suena el monitoreo un domingo a la tarde. Si el disco se llena, se frena todo.",
+    options: [
+      {
+        label: "🐧 Diagnosticar por la terminal",
+        minigame: "comandos",
+        onWin: (s, lines) => {
+          fx(s, { xp: 4, mental: 2 });
+          lines.push("Eran logs de 3 años sin rotar. Liberaste 200 GB y configuraste la rotación.");
+        },
+        onLose: (s, lines) => {
+          fx(s, { mental: -8, xp: -1 });
+          lines.push("Se llenó a las 3 AM y se cayó todo. El post-mortem lleva tu nombre.");
+        },
+      },
+    ],
+  },
+  black_friday: {
+    title: "🛍️ Mañana es Black Friday",
+    text: "Marketing mandó un mail a 2 millones de personas con un 70% OFF. Nadie te avisó.",
+    options: [
+      {
+        label: "🖥️ Aguantar el pico de tráfico",
+        minigame: "servers",
+        onWin: (s, lines) => {
+          fx(s, { xp: 5, network: 3 });
+          lines.push("Récord de ventas y cero caídas. Marketing se llevó el crédito, pero vos sabés.");
+        },
+        onLose: (s, lines) => {
+          fx(s, { mental: -10, xp: -1 });
+          lines.push("La web se cayó a las 00:01. Fue trending en Twitter.");
+        },
+      },
+    ],
+  },
+
+  // Ciberseguridad
+  mail_finanzas: {
+    title: "🎣 'El CEO' pide una transferencia urgente",
+    text: "Finanzas recibió mails raros esta mañana y te reenvió todos: '¿son reales?'. Uno pide transferir $8 millones ya.",
+    options: [
+      {
+        label: "🎣 Revisar los mails uno por uno",
+        minigame: "phishing",
+        onWin: (s, lines) => {
+          fx(s, { xp: 3, network: 5 });
+          lines.push("Frenaste una estafa de $8 millones. Te ganaste un lugar fijo en la reunión de directorio.");
+        },
+        onLose: (s, lines) => {
+          fx(s, { mental: -10, network: -3 });
+          lines.push("La transferencia salió. Ahora estás en una reunión con el banco y la policía.");
+        },
+      },
+    ],
+  },
+  ataque_login: {
+    title: "🛡️ Alguien prueba inyecciones en el login",
+    text: "Los logs muestran miles de intentos raros por minuto: `' OR 1=1 --`, `<script>`… Es un ataque en vivo.",
+    options: [
+      {
+        label: "🛡️ Bloquear el ataque",
+        minigame: "hack",
+        onWin: (s, lines) => {
+          fx(s, { xp: 4, logic: 2 });
+          lines.push("Ataque bloqueado y rate limit activado. Ningún dato expuesto.");
+        },
+        onLose: (s, lines) => {
+          fx(s, { mental: -8, xp: -1 });
+          lines.push("Se filtró la tabla de usuarios. Toca avisar a todos que cambien la contraseña.");
+        },
+      },
+    ],
+  },
+
+  // Data / IA
+  dashboard_manana: {
+    title: "📊 'Necesito un dashboard para mañana'",
+    text: "El gerente quiere ver 'todos los números' en la reunión de directorio de mañana a las 9.",
+    options: [
+      {
+        label: "📊 Elegir bien cada gráfico",
+        minigame: "graficos",
+        onWin: (s, lines) => {
+          fx(s, { xp: 4, network: 3 });
+          lines.push("El directorio entendió todo en 5 minutos. Te pidieron que lo actualices cada semana.");
+        },
+        onLose: (s, lines) => {
+          fx(s, { mental: -6 });
+          lines.push("Hiciste 15 gráficos de torta. Nadie entendió nada y te preguntaron qué significaba el violeta.");
+        },
+      },
+    ],
+  },
+  modelo_loco: {
+    title: "🔮 El modelo predice cualquier cosa",
+    text: "El modelo dice que todos los clientes van a comprar 999 veces este mes. Algo huele mal en los datos.",
+    options: [
+      {
+        label: "🧹 Limpiar los datos",
+        minigame: "data",
+        onWin: (s, lines) => {
+          fx(s, { xp: 4, logic: 2 });
+          lines.push("Había un -999 usado como 'sin dato'. Lo limpiaste y el modelo volvió a la realidad.");
+        },
+        onLose: (s, lines) => {
+          fx(s, { mental: -6, xp: -1 });
+          lines.push("Compraron stock para 999 ventas por cliente. El depósito está lleno de mates.");
+        },
+      },
+    ],
+  },
+
+  // Product Manager
+  planning_40: {
+    title: "🗂️ Planning: 40 pedidos para 2 semanas",
+    text: "Todas las áreas mandaron 'prioridades urgentes'. El equipo puede hacer, con suerte, 8.",
+    options: [
+      {
+        label: "🗂️ Priorizar con MoSCoW",
+        minigame: "moscow",
+        onWin: (s, lines) => {
+          fx(s, { xp: 4, network: 3 });
+          lines.push("Sprint claro y entregado a tiempo. El equipo te invitó al after.");
+        },
+        onLose: (s, lines) => {
+          fx(s, { mental: -6, network: -2 });
+          lines.push("Metiste todo en el sprint. Spoiler: no salió nada.");
+        },
+      },
+    ],
+  },
+  cliente_cambia: {
+    title: "🔄 El cliente cambió el alcance (otra vez)",
+    text: "Es la quinta vez esta semana. Ahora quiere que la app 'tenga algo de inteligencia artificial'.",
+    options: [
+      {
+        label: "📋 Filtrar los pedidos",
+        minigame: "prioritizer",
+        onWin: (s, lines) => {
+          fx(s, { xp: 4, mental: 2 });
+          lines.push("Negociaste: la IA queda para la versión 2. El equipo te ama.");
+        },
+        onLose: (s, lines) => {
+          fx(s, { mental: -8 });
+          lines.push("Aceptaste todo. El equipo trabaja el fin de semana y te odia un poquito.");
+        },
+      },
+      {
+        label: "📞 Llamarlo y poner límites",
+        run: (s, lines) => {
+          if (chance(0.5 + s.stats.network / 200)) {
+            fx(s, { network: 4, mental: 3 });
+            lines.push("Aceptó congelar el alcance. Chamuyo de PM nivel experto.");
+          } else {
+            fx(s, { network: -4, mental: -4 });
+            lines.push("Se enojó y escaló a tu jefe. Reunión incómoda el lunes.");
+          }
+        },
+      },
+    ],
+  },
+
+  // Soporte IT
+  lunes_9am: {
+    title: "🚨 Lunes 9 AM: 30 tickets en la cola",
+    text: "Se juntaron los problemas del fin de semana. Todos dicen que lo suyo es urgente.",
+    options: [
+      {
+        label: "🚨 Hacer el triage",
+        minigame: "triage",
+        onWin: (s, lines) => {
+          fx(s, { xp: 4, network: 3 });
+          lines.push("Lo crítico salió primero y antes del almuerzo la cola estaba en cero.");
+        },
+        onLose: (s, lines) => {
+          fx(s, { mental: -8 });
+          lines.push("Atendiste el mouse del pasante mientras se caía la facturación de todas las sucursales.");
+        },
+      },
+    ],
+  },
+  gerente_pdf: {
+    title: "🖨️ 'No puedo imprimir el PDF del directorio'",
+    text: "El gerente tiene reunión en 10 minutos y 'la impresora no anda'. Te mira como si fuera tu culpa.",
+    options: [
+      {
+        label: "🎧 Diagnosticar rápido",
+        minigame: "capa8",
+        onWin: (s, lines) => {
+          fx(s, { network: 5, xp: 3 });
+          lines.push("Mandaba a la impresora del tercer piso. Llegó a la reunión con el PDF en la mano.");
+        },
+        onLose: (s, lines) => {
+          fx(s, { mental: -6, network: -2 });
+          lines.push("Reinstalaste el driver tres veces. Fue a la reunión sin el PDF.");
+        },
+      },
+    ],
+  },
+
+  // QA
+  release_candidate: {
+    title: "🔎 Release candidate para aprobar antes de las 17",
+    text: "El equipo necesita tu OK para publicar la versión 3.0. Hay una lista de comportamientos para revisar.",
+    options: [
+      {
+        label: "🔎 Revisar el release",
+        minigame: "bugofeature",
+        onWin: (s, lines) => {
+          fx(s, { xp: 4, logic: 2 });
+          lines.push("Encontraste los bugs reales y dejaste las mejoras para el backlog. Release limpio.");
+        },
+        onLose: (s, lines) => {
+          fx(s, { mental: -6, network: -2 });
+          lines.push("Reportaste el modo oscuro como bug crítico y dejaste pasar el del carrito.");
+        },
+      },
+    ],
+  },
+  regresion: {
+    title: "🐞 Regresión: lo que andaba dejó de andar",
+    text: "Un cambio 'chiquito' en el login rompió el checkout, el perfil y, de alguna forma, el footer.",
+    options: [
+      {
+        label: "🐛 Cazar todos los bugs",
+        minigame: "bugbash",
+        onWin: (s, lines) => {
+          fx(s, { xp: 4, logic: 2 });
+          lines.push("Los encontraste todos y sumaste tests de regresión para que no vuelva a pasar.");
+        },
+        onLose: (s, lines) => {
+          fx(s, { mental: -6 });
+          lines.push("Se escapó uno a producción. Los usuarios lo encontraron antes que vos.");
+        },
+      },
+    ],
+  },
+
+  // ---------- ESCENARIOS DE FALLA ----------
+  robo_celular: {
+    title: "📵 Te robaron el celular en el bondi",
+    text: "Bajaste del 152 y ya no estaba. Ahí tenías el 2FA del laburo, el home banking y 3.000 fotos del gato.",
+    options: [
+      {
+        label: "📱 Comprar uno nuevo en cuotas",
+        run: (s, lines) => {
+          fx(s, { ars: -price(s, 450000), mental: -4 });
+          lines.push("12 cuotas 'sin interés' (con interés). Pasaste la tarde recuperando cuentas.");
+        },
+      },
+      {
+        label: "🩹 Revivir el viejo con la pantalla rota",
+        run: (s, lines) => {
+          fx(s, { mental: -8, network: -2, energy: -5 });
+          lines.push("Anda… a veces. No te llegaron los códigos del 2FA y faltaste a una reunión.");
+        },
+      },
+    ],
+  },
+  notebook_quemada: {
+    title: "🔥 Olor a quemado: se murió la notebook",
+    text: "En plena entrega, la pantalla se puso negra y salió un olorcito a cable. No hiciste push desde ayer.",
+    options: [
+      {
+        label: "🔧 Llevarla al técnico de la galería",
+        run: (s, lines) => {
+          fx(s, { ars: -price(s, 120000), xp: -2, mental: -5 });
+          lines.push("Te cambió la fuente y te instaló 3 antivirus que no pediste. Perdiste un día de trabajo.");
+        },
+      },
+      {
+        label: "💻 Comprar una nueva",
+        run: (s, lines) => {
+          fx(s, { ars: -price(s, 900000), mental: 2 });
+          lines.push("Duele en el bolsillo, pero ahora compila el doble de rápido. Y aprendiste a hacer push seguido.");
+        },
+      },
+    ],
+  },
+  hackeo_instagram: {
+    title: "🔓 Te hackearon el Instagram",
+    text: "Alguien entró a tu cuenta y les está pidiendo plata a tus contactos para 'una urgencia'.",
+    options: [
+      {
+        label: "🛡️ Recuperar la cuenta y activar el 2FA",
+        run: (s, lines) => {
+          fx(s, { energy: -10, network: -2, logic: 1 });
+          lines.push(
+            s.role === "security"
+              ? "Recuperaste la cuenta en 20 minutos. Igual tus compañeros te van a cargar durante un año."
+              : "Tardaste una tarde entera, pero la recuperaste. Ahora tenés 2FA en todo."
+          );
+        },
+      },
+      {
+        label: "📢 Avisar a todos por WhatsApp",
+        run: (s, lines) => {
+          fx(s, { network: -6, mental: -4 });
+          lines.push("Tu tía ya había transferido. Le tuviste que devolver la plata vos.");
+          fx(s, { ars: -price(s, 50000) });
+        },
+      },
+    ],
+  },
+  despidos: {
+    title: "📉 Recorte de personal",
+    text: "La empresa anunció despidos y te citaron a Recursos Humanos 'para charlar'. Traen una carpeta.",
+    options: [
+      {
+        label: "🤝 Aceptar el retiro con indemnización",
+        run: (s, lines) => {
+          const sueldo = (s.job.salaryArs || 0) + (s.job.salaryUsd || 0) * s.dolar;
+          fx(s, { ars: Math.round(sueldo * 2), mental: -6, network: 3 });
+          s.job = null;
+          s.secondJob = false;
+          s.searchBonus = 15;
+          lines.push("Te fuiste con dos sueldos de indemnización y un buen contacto en RR.HH. A buscar laburo.");
+        },
+      },
+      {
+        label: "💪 Pelearla para quedarte",
+        run: (s, lines) => {
+          if (chance(0.5)) {
+            fx(s, { mental: -10, energy: -10, xp: 2 });
+            lines.push("Te quedaste… haciendo el trabajo de tres personas que se fueron.");
+          } else {
+            const sueldo = (s.job.salaryArs || 0) + (s.job.salaryUsd || 0) * s.dolar;
+            fx(s, { ars: Math.round(sueldo), mental: -15 });
+            s.job = null;
+            s.secondJob = false;
+            lines.push("No hubo caso: te despidieron igual y con menos indemnización. A buscar laburo.");
+          }
+        },
+      },
+    ],
+  },
+  gripe: {
+    title: "🤒 Te agarró una gripe tremenda",
+    text: "38,5 de fiebre, dolor de todo y la nariz como canilla. Justo en la semana más cargada.",
+    options: [
+      {
+        label: "🛌 Hacer reposo",
+        run: (s, lines) => {
+          fx(s, { energy: -5, mental: 2, xp: -1 });
+          lines.push("Tres días de té con miel y series. Volviste con 200 mensajes sin leer.");
+        },
+      },
+      {
+        label: "💻 Laburar igual con fiebre",
+        run: (s, lines) => {
+          fx(s, { energy: -25, mental: -8, xp: 1 });
+          lines.push("Mandaste un commit que decía 'asdfghjk'. Y contagiaste a medio equipo en la Daily.");
+        },
+      },
+    ],
+  },
+  estafa_online: {
+    title: "🧱 Compraste una placa de video… y llegó un ladrillo",
+    text: "Estaba barata en un grupo de compraventa. El vendedor tenía 5 estrellas. Ahora tiene la cuenta borrada.",
+    options: [
+      {
+        label: "📝 Reclamar y hacer la denuncia",
+        run: (s, lines) => {
+          fx(s, { ars: -price(s, 150000), mental: -6, energy: -5 });
+          lines.push("Después de mil mails recuperaste la mitad. La otra mitad, experiencia.");
+        },
+      },
+      {
+        label: "😮‍💨 Asumir la pérdida",
+        run: (s, lines) => {
+          fx(s, { ars: -price(s, 300000), mental: -4 });
+          lines.push("El ladrillo ahora sostiene el monitor. Por lo menos quedó a la altura de los ojos.");
+        },
+      },
+    ],
+  },
+  cliente_no_paga: {
+    title: "🧾 Un cliente freelance no te paga",
+    text: "Le hiciste una web hace dos meses. Contesta 'la semana que viene te transfiero' desde marzo.",
+    options: [
+      {
+        label: "📧 Reclamar con mails cada vez más formales",
+        run: (s, lines) => {
+          if (chance(0.45 + s.stats.network / 300)) {
+            fx(s, { ars: price(s, 400000), mental: 4 });
+            lines.push("Al tercer mail con copia a su socio, pagó. Hasta los intereses.");
+          } else {
+            fx(s, { mental: -6 });
+            lines.push("Te clavó el visto. Aprendiste a pedir el 50% por adelantado.");
+          }
+        },
+      },
+      {
+        label: "🙃 Dejarlo pasar",
+        run: (s, lines) => {
+          fx(s, { mental: -5, network: -1 });
+          lines.push("Lo viste subir fotos de sus vacaciones en Brasil. Con tu plata.");
+        },
+      },
+    ],
+  },
+  borraste_prod: {
+    title: "💥 DELETE sin WHERE en producción",
+    text: "Querías borrar un usuario de prueba. Borraste la tabla entera de clientes. Son las 18:58 de un viernes.",
+    options: [
+      {
+        label: "⌨️ Restaurar el backup por la terminal",
+        minigame: "terminal",
+        onWin: (s, lines) => {
+          fx(s, { xp: 2, logic: 2, mental: -3 });
+          lines.push("Restauraste el backup de anoche en 10 minutos. Nadie se enteró (casi).");
+        },
+        onLose: (s, lines) => {
+          fx(s, { mental: -15, network: -5 });
+          lines.push("El backup tenía 3 semanas. El lunes hay reunión con todos los gerentes.");
+        },
+      },
+      {
+        label: "🙋 Confesarle al Tech Lead",
+        run: (s, lines) => {
+          fx(s, { mental: -5, network: 2, logic: 1 });
+          lines.push("Lo arreglaron juntos y te enseñó a usar transacciones. Te va a cargar por años.");
+        },
+      },
+    ],
+  },
 };
 
 export const RANDOM_EVENTS = [
@@ -1177,20 +1716,47 @@ export const RANDOM_EVENTS = [
   { id: "lumbalgia", weight: 2, when: (s) => !s.inv.chair },
   { id: "cano_roto", weight: 2, when: (s) => s.housing === "solo" },
   { id: "bebe_llorando", weight: 3, when: (s) => s.kid },
-  // IT
+  // Escenarios de falla
+  { id: "robo_celular", weight: 2, when: () => true },
+  { id: "notebook_quemada", weight: 2, when: () => true },
+  { id: "hackeo_instagram", weight: 2, when: () => true },
+  { id: "despidos", weight: 1, when: (s) => !!s.job && s.level >= 2 },
+  { id: "gripe", weight: 2, when: () => true },
+  { id: "estafa_online", weight: 2, when: () => true },
+  { id: "cliente_no_paga", weight: 2, when: (s) => s.studyDone },
+  { id: "borraste_prod", weight: 2, roles: ["backend", "devops", "data"], when: (s) => !!s.job },
+  // IT para todos
   { id: "meetup_trivia", weight: 2, when: () => true },
-  { id: "stackoverflow_caido", weight: 1, when: () => true },
   { id: "hackathon", weight: 2, when: (s) => s.stats.logic >= 25 },
-  { id: "caida_aws", weight: 2, when: (s) => !!s.job },
-  { id: "ticket_capa8", weight: 2, when: (s) => !!s.job },
-  { id: "bug_bash", weight: 2, when: (s) => !!s.job },
-  { id: "merge_conflict", weight: 2, when: (s) => !!s.job },
-  { id: "code_review", weight: 2, when: (s) => !!s.job && s.level >= 2 },
-  { id: "en_mi_maquina_anda", weight: 2, when: (s) => !!s.job },
-  { id: "dns_caido", weight: 2, when: (s) => !!s.job },
-  { id: "deploy_viernes", weight: 2, when: (s) => !!s.job },
-  { id: "estimacion", weight: 2, when: (s) => !!s.job },
   { id: "reunion_mail", weight: 2, when: (s) => !!s.job },
   { id: "asado_equipo", weight: 2, when: (s) => !!s.job },
   { id: "recruiter_linkedin", weight: 2, when: (s) => !!s.job && s.level >= 2 },
+  // IT según el rol
+  { id: "stackoverflow_caido", weight: 1, roles: DEV, when: () => true },
+  { id: "caida_aws", weight: 2, roles: ["devops", "backend", "security", "data"], when: (s) => !!s.job },
+  { id: "ticket_capa8", weight: 2, roles: ["soporte", "devops", "security", "pm", "qa"], when: (s) => !!s.job },
+  { id: "bug_bash", weight: 2, roles: ["qa", "frontend", "backend", "data"], when: (s) => !!s.job },
+  { id: "merge_conflict", weight: 2, roles: DEV, when: (s) => !!s.job },
+  { id: "code_review", weight: 2, roles: DEV, when: (s) => !!s.job && s.level >= 2 },
+  { id: "en_mi_maquina_anda", weight: 2, roles: ["frontend", "backend", "data", "qa", "devops"], when: (s) => !!s.job },
+  { id: "dns_caido", weight: 2, roles: ["devops", "backend", "soporte", "security"], when: (s) => !!s.job },
+  { id: "deploy_viernes", weight: 2, roles: ["frontend", "backend", "devops", "data", "qa"], when: (s) => !!s.job },
+  { id: "estimacion", weight: 2, roles: DEV, when: (s) => !!s.job },
+  // Situaciones propias de cada rol (pesan más: son el corazón del laburo)
+  { id: "figma_18hs", weight: 3, roles: ["frontend"], when: (s) => !!s.job },
+  { id: "web_celu_ceo", weight: 3, roles: ["frontend"], when: (s) => !!s.job },
+  { id: "api_todo_200", weight: 3, roles: ["backend"], when: (s) => !!s.job },
+  { id: "query_lenta", weight: 3, roles: ["backend"], when: (s) => !!s.job },
+  { id: "disco_lleno", weight: 3, roles: ["devops"], when: (s) => !!s.job },
+  { id: "black_friday", weight: 3, roles: ["devops"], when: (s) => !!s.job },
+  { id: "mail_finanzas", weight: 3, roles: ["security"], when: (s) => !!s.job },
+  { id: "ataque_login", weight: 3, roles: ["security"], when: (s) => !!s.job },
+  { id: "dashboard_manana", weight: 3, roles: ["data"], when: (s) => !!s.job },
+  { id: "modelo_loco", weight: 3, roles: ["data"], when: (s) => !!s.job },
+  { id: "planning_40", weight: 3, roles: ["pm"], when: (s) => !!s.job },
+  { id: "cliente_cambia", weight: 3, roles: ["pm"], when: (s) => !!s.job },
+  { id: "lunes_9am", weight: 3, roles: ["soporte"], when: (s) => !!s.job },
+  { id: "gerente_pdf", weight: 3, roles: ["soporte"], when: (s) => !!s.job },
+  { id: "release_candidate", weight: 3, roles: ["qa"], when: (s) => !!s.job },
+  { id: "regresion", weight: 3, roles: ["qa"], when: (s) => !!s.job },
 ];

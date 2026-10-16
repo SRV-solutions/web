@@ -5,16 +5,17 @@ import { shuffle } from "../helpers";
 import { useCountdown, useFinishOnce, TimerBar } from "./common";
 
 // Memotest de tecnologías
-export default function Memotest({ timeMult, onFinish }) {
+export default function Memotest({ timeMult, diff = 1, onFinish }) {
+  const pares = useMemo(() => MEMO_PAIRS.slice(0, diff >= 3 ? 8 : 6), [diff]);
   const finishOnce = useFinishOnce(onFinish);
-  const total = 60 * timeMult;
+  const total = [60, 50, 65, 55][diff - 1] * timeMult;
   const cards = useMemo(
-    () => shuffle(MEMO_PAIRS.flatMap((p) => [{ ...p, id: `${p.name}-a` }, { ...p, id: `${p.name}-b` }])),
-    []
+    () => shuffle(pares.flatMap((p) => [{ ...p, id: `${p.name}-a` }, { ...p, id: `${p.name}-b` }])),
+    [pares]
   );
   const [open, setOpen] = useState([]);
   const [found, setFound] = useState(new Set());
-  const won = found.size === MEMO_PAIRS.length;
+  const won = found.size === pares.length;
   const left = useCountdown(total, !won, () => finishOnce(false));
 
   const flip = (i) => {
@@ -29,7 +30,7 @@ export default function Memotest({ timeMult, onFinish }) {
         setTimeout(() => {
           setFound(f);
           setOpen([]);
-          if (f.size === MEMO_PAIRS.length) setTimeout(() => finishOnce(true), 500);
+          if (f.size === pares.length) setTimeout(() => finishOnce(true), 500);
         }, 350);
       } else {
         setTimeout(() => setOpen([]), 800);
@@ -39,7 +40,7 @@ export default function Memotest({ timeMult, onFinish }) {
 
   return (
     <div>
-      <TimerBar left={left} total={total} label={`Pares: ${found.size}/${MEMO_PAIRS.length}`} />
+      <TimerBar left={left} total={total} label={`Pares: ${found.size}/${pares.length}`} />
       <div className={styles.memoGrid}>
         {cards.map((c, i) => {
           const visible = open.includes(i) || found.has(c.name);

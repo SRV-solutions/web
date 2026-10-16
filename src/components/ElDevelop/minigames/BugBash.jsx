@@ -4,11 +4,12 @@ import { BUG_FILES } from "../data";
 import { rand, randInt } from "../helpers";
 import { useFinishOnce, TimerBar } from "./common";
 
-const DURATION = 25;
-const GOAL = 8;
 
 // Aplastar bugs que asoman en los archivos (tipo "pegale al topo")
-export default function BugBash({ timeMult, onFinish }) {
+export default function BugBash({ timeMult, diff = 1, onFinish }) {
+  const DURATION = [25, 25, 26, 27][diff - 1];
+  const GOAL = [8, 10, 12, 14][diff - 1];
+  const visible = [1, 0.85, 0.72, 0.62][diff - 1]; // los bugs se esconden más rápido
   const finishOnce = useFinishOnce(onFinish);
   const [, setFrame] = useState(0);
   const g = useRef({ bugs: {}, squashed: {}, score: 0, left: DURATION * timeMult, spawnIn: 0.5, over: false });
@@ -36,7 +37,7 @@ export default function BugBash({ timeMult, onFinish }) {
       s.spawnIn -= dt;
       if (s.spawnIn <= 0) {
         const cell = randInt(0, BUG_FILES.length - 1);
-        if (!s.bugs[cell]) s.bugs[cell] = rand(1.4, 2) * timeMult;
+        if (!s.bugs[cell]) s.bugs[cell] = rand(1.4, 2) * visible * timeMult;
         s.spawnIn = rand(0.5, 0.9);
       }
 
@@ -50,7 +51,7 @@ export default function BugBash({ timeMult, onFinish }) {
       setFrame((f) => f + 1);
     }, 50);
     return () => clearInterval(id);
-  }, [total, timeMult, finishOnce]);
+  }, [total, timeMult, finishOnce, GOAL, visible]);
 
   const s = g.current;
 

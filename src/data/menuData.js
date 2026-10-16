@@ -56,6 +56,13 @@ const menuData = [
     ],
   },
   {
+    title: "JUEGO",
+    disabled: false,
+    links: [
+      { label: "El Develop", to: "/el-develop", isNew: true },
+    ],
+  },
+  {
     title: "COMUNIDAD",
     disabled: false,
     links: [

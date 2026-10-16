@@ -2,10 +2,9 @@ import { sendMetaEvent } from "../lib/metaCapi.js";
 import { SITE_URL, json, isAllowedOrigin, parseBody } from "../lib/http.js";
 
 // Eventos que el navegador puede reportar por CAPI.
-// "Purchase" se permite solo para la reserva del intensivo Full Stack (no tiene pago online).
-// Las compras de los cursos grabados NO pasan por acá: se confirman en confirmar-compra,
-// después de verificar el pago con Mercado Pago.
-const ALLOWED_EVENTS = ["ViewContent", "InitiateCheckout", "Lead", "CompleteRegistration", "Contact", "Purchase"];
+// "Purchase" NO se acepta acá: todas las compras (cursos grabados e intensivos) se confirman
+// en confirmar-compra, después de verificar el pago con Mercado Pago.
+const ALLOWED_EVENTS = ["ViewContent", "InitiateCheckout", "Lead", "CompleteRegistration", "Contact"];
 
 export const handler = async (event) => {
   // Solo permitir solicitudes POST

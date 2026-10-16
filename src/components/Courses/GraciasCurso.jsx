@@ -25,8 +25,17 @@ const MENSAJES = {
   },
 };
 
+// Textos para los Intensivos de Verano (cursoKey="intensivo"): el acceso es a Discord y WhatsApp
+const INTENSIVO = { ruta: "full-stack" };
+const TEXTOS_INTENSIVO = {
+  approved: "Tu lugar en los Intensivos de Verano 2027 está confirmado. En los próximos minutos te llega un mail con los accesos al Discord y a los grupos de WhatsApp.",
+  pending: "Apenas Mercado Pago lo acredite, te enviamos por Email los accesos al Discord y a los grupos de WhatsApp automáticamente.",
+  unknown: "Si ya pagaste, en los próximos minutos recibirás en tu Email los accesos al Discord y a los grupos de WhatsApp.",
+};
+
 export default function GraciasCurso({ cursoKey }) {
-  const curso = CURSOS_GRABADOS[cursoKey];
+  const esIntensivo = cursoKey === "intensivo";
+  const curso = esIntensivo ? INTENSIVO : CURSOS_GRABADOS[cursoKey];
   const [searchParams] = useSearchParams();
   const paymentId = searchParams.get("payment_id");
   const [estado, setEstado] = useState(paymentId ? "loading" : "unknown");
@@ -75,7 +84,7 @@ export default function GraciasCurso({ cursoKey }) {
     };
   }, [paymentId, cursoKey]);
 
-  const mensaje = MENSAJES[estado] || {
+  let mensaje = MENSAJES[estado] || {
     icono: estado === "loading" ? "…" : "ℹ",
     color: "#0b78fb",
     titulo: estado === "loading" ? "Verificando tu pago..." : "Estamos procesando tu compra",
@@ -83,6 +92,9 @@ export default function GraciasCurso({ cursoKey }) {
       ? "Esto tarda unos segundos."
       : "Si ya pagaste, en los próximos minutos recibirás el acceso al material en tu Email.",
   };
+  if (esIntensivo && TEXTOS_INTENSIVO[estado]) {
+    mensaje = { ...mensaje, texto: TEXTOS_INTENSIVO[estado] };
+  }
 
   return (
     <div style={{ padding: "4rem 2rem", textAlign: "center", color: "#fff", backgroundColor: "#000", minHeight: "70vh" }}>

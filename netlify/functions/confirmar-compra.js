@@ -1,4 +1,5 @@
 import { getCurso } from "../lib/cursos.js";
+import { planDesdeReferencia } from "../lib/intensivos.js";
 import { sendMetaEvent } from "../lib/metaCapi.js";
 import { SITE_URL, json, isAllowedOrigin, parseBody } from "../lib/http.js";
 
@@ -16,11 +17,13 @@ export async function handler(event) {
   }
 
   const { payment_id, curso: cursoKey, fbp, fbc } = parseBody(event);
-  const curso = getCurso(cursoKey);
+  // "intensivo" = Intensivos de Verano (Frontend / Backend / Fullstack); el plan sale del pago
+  const esIntensivo = cursoKey === "intensivo";
+  const curso = esIntensivo ? null : getCurso(cursoKey);
   const paymentId = String(payment_id || "");
 
   // El ID debe ser numérico: evita inyectar rutas en la URL de la API
-  if (!curso || !/^\d{1,20}$/.test(paymentId)) {
+  if ((!esIntensivo && !curso) || !/^\d{1,20}$/.test(paymentId)) {
     return json(400, { status: "invalid" });
   }
 
@@ -37,12 +40,23 @@ export async function handler(event) {
 
     // El pago tiene que pertenecer a este curso
     const ref = String(payment.external_reference || "");
-    const items = (payment.additional_info && payment.additional_info.items) || [];
-    const esDeEsteCurso =
-      ref.startsWith(`${cursoKey}:`) || items.some((item) => String(item.id) === curso.itemId);
+    let producto;
 
-    if (!esDeEsteCurso) {
-      return json(404, { status: "not_found" });
+    if (esIntensivo) {
+      const plan = planDesdeReferencia(ref);
+      if (!plan) {
+        return json(404, { status: "not_found" });
+      }
+      producto = { itemId: plan.itemId, contentName: plan.titulo, precio: plan.precio, ruta: "full-stack" };
+    } else {
+      const items = (payment.additional_info && payment.additional_info.items) || [];
+      const esDeEsteCurso =
+        ref.startsWith(`${cursoKey}:`) || items.some((item) => String(item.id) === curso.itemId);
+
+      if (!esDeEsteCurso) {
+        return json(404, { status: "not_found" });
+      }
+      producto = curso;
     }
 
     if (payment.status !== "approved") {
@@ -50,22 +64,22 @@ export async function handler(event) {
       return json(200, { status: payment.status });
     }
 
-    const value = Number(payment.transaction_amount) || curso.precio;
+    const value = Number(payment.transaction_amount) || producto.precio;
     const currency = payment.currency_id || "ARS";
     const eventId = `purchase_${paymentId}`;
 
     await sendMetaEvent(event, {
       eventName: "Purchase",
       eventId,
-      eventSourceUrl: `${SITE_URL}/${curso.ruta}/gracias`,
+      eventSourceUrl: `${SITE_URL}/${producto.ruta}/gracias`,
       email: payment.payer && payment.payer.email,
       fbp,
       fbc,
       customData: {
         currency,
         value,
-        content_name: curso.contentName,
-        content_ids: [curso.itemId],
+        content_name: producto.contentName,
+        content_ids: [producto.itemId],
         content_type: "product",
         order_id: paymentId,
       },
@@ -76,8 +90,8 @@ export async function handler(event) {
       event_id: eventId,
       value,
       currency,
-      content_name: curso.contentName,
-      content_id: curso.itemId,
+      content_name: producto.contentName,
+      content_id: producto.itemId,
     });
   } catch (error) {
     console.error("Error confirmando compra:", error);

@@ -2,14 +2,10 @@ import React, { useState, useMemo, useEffect, useCallback } from "react";
 import styles from "./ContactoCursoWeb.module.css";
 import { trackConversion } from "../../data/metaPixel";
 
-// Google Form "Curso Full Stack" (Intensivos de Verano 2027)
-const GOOGLE_FORM_ACTION_URL =
-  "https://docs.google.com/forms/d/e/1FAIpQLSdjkzNtw8wvf1HmCP9adg_NCUrGzQrw4f25zK72PlrFCIFaJg/formResponse";
-
-const ENTRY_NOMBRE = "entry.1681211851";
-const ENTRY_EMAIL = "entry.1652703216";
-const ENTRY_TELEFONO = "entry.1195006180";
-const ENTRY_PLAN = "entry.122653237";
+// Inscripción + pago: la función crea el link de Mercado Pago del alumno y carga la fila
+// en el Sheet "Curso FullStack" (ver netlify/functions/inscripcion-intensivo.js).
+// Los precios que se cobran se definen en netlify/lib/intensivos.js: mantenerlos iguales a getOferta().
+const INSCRIPCION_URL = "/.netlify/functions/inscripcion-intensivo";
 
 // Fin de la preventa: 20/12/2026 a las 23:59:59 (hora Argentina)
 const EARLY_BIRD_HASTA = new Date("2026-12-20T23:59:59-03:00").getTime();
@@ -100,14 +96,14 @@ function getOferta(planId, preventa) {
       return {
         nombre: "Frontend Web + Lógica",
         precio: 140000,
-        cuotas: "2 cuotas fijas de $70.000",
+        cuotas: "2 cuotas sin interés de $70.000",
         resumen: "18 clases · 67,5 hs cátedra · Lunes y Miércoles",
       };
     case "backend":
       return {
         nombre: "Backend Profundo + DB",
         precio: 160000,
-        cuotas: "2 cuotas fijas de $80.000",
+        cuotas: "2 cuotas sin interés de $80.000",
         resumen: "20 clases · 75 hs cátedra · Martes y Jueves",
       };
     default:
@@ -116,12 +112,12 @@ function getOferta(planId, preventa) {
             nombre: "Pack Fullstack (Early Bird)",
             precio: 200000,
             cuotas: "1 pago contado",
-            resumen: "Desde el 21/12 pasa a $220.000 en 3 cuotas de $73.333.",
+            resumen: "Desde el 21/12 pasa a $220.000 en 3 cuotas sin interés de $73.333.",
           }
         : {
             nombre: "Pack Fullstack",
             precio: 220000,
-            cuotas: "3 cuotas fijas de $73.333",
+            cuotas: "3 cuotas sin interés de $73.333",
             resumen: "Ambos cursos: 38 clases y 142,5 hs cátedra. Ahorrás $80.000.",
           };
   }
@@ -289,6 +285,13 @@ function ContactoCursoWeb() {
   const [tocados, setTocados] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorEnvio, setErrorEnvio] = useState("");
+  // Si vuelve de Mercado Pago sin completar el pago (back_url de "failure")
+  const [pagoNoCompletado] = useState(() => {
+    if (typeof window === "undefined") return false;
+    const params = new URLSearchParams(window.location.search);
+    return ["rejected", "null", "failure"].includes(params.get("collection_status") || params.get("status"));
+  });
 
   const terminarPreventa = useCallback(() => setPreventaActiva(false), []);
 
@@ -367,6 +370,7 @@ function ContactoCursoWeb() {
     }
 
     setLoading(true);
+    setErrorEnvio("");
 
     const datos = {
       nombre: limpiarEspacios(formData.nombre),
@@ -376,32 +380,32 @@ function ContactoCursoWeb() {
 
     const contentName = `Intensivo Verano 2027 - ${oferta.nombre}`;
 
-    const body = new FormData();
-    body.append(ENTRY_NOMBRE, datos.nombre);
-    body.append(ENTRY_EMAIL, datos.email);
-    body.append(ENTRY_TELEFONO, datos.telefono);
-    if (ENTRY_PLAN) body.append(ENTRY_PLAN, `${oferta.nombre} (${fmt(oferta.precio)})`);
-
     try {
-      await fetch(GOOGLE_FORM_ACTION_URL, {
+      const res = await fetch(INSCRIPCION_URL, {
         method: "POST",
-        mode: "no-cors",
-        body,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...datos, plan }),
       });
+      const data = await res.json().catch(() => ({}));
 
-      // Se reporta como Purchase (decisión de negocio para optimizar campañas),
-      // aunque el pago se confirma después por fuera de la web.
+      if (!res.ok || !data.init_point) {
+        throw new Error(data.error || `HTTP ${res.status}`);
+      }
+
+      // Lead: dejó sus datos. InitiateCheckout: va a pagar.
+      // El Purchase se envía recién en /full-stack/gracias, con el pago verificado en Mercado Pago.
       // Pixel + CAPI con el mismo event_id; los datos personales viajan hasheados.
-      trackConversion(
-        "Purchase",
-        { content_name: contentName, currency: "ARS", value: oferta.precio },
-        datos,
-      );
+      const evento = { content_name: contentName, currency: "ARS", value: oferta.precio };
+      trackConversion("Lead", evento, datos);
+      trackConversion("InitiateCheckout", evento, datos);
 
-      setSubmitted(true);
+      // Al checkout de Mercado Pago (el link también le llega por mail)
+      window.location.href = data.init_point;
     } catch (err) {
-      console.error("Error crítico al procesar el formulario:", err);
-    } finally {
+      console.error("Error al generar la inscripción:", err);
+      setErrorEnvio(
+        "No pudimos generar tu link de pago. Probá de nuevo en unos segundos o escribinos por WhatsApp.",
+      );
       setLoading(false);
     }
   };
@@ -541,6 +545,13 @@ function ContactoCursoWeb() {
               <form onSubmit={handleSubmit} className={styles.form} noValidate>
                 <h3 className={styles.formTitle}>Reservar mi Lugar</h3>
 
+                {pagoNoCompletado && !errorEnvio && (
+                  <span className={styles.errorMsg} role="status">
+                    El pago no se completó. Podés intentarlo de nuevo acá o con el link que te
+                    enviamos por mail.
+                  </span>
+                )}
+
                 {/* Honeypot anti-bots: invisible para personas */}
                 <div className={styles.honeypot} aria-hidden="true">
                   <label htmlFor="srv-hp">Dejar vacío</label>
@@ -659,12 +670,23 @@ function ContactoCursoWeb() {
                   className={styles.btnSubmit}
                 >
                   {loading
-                    ? "Enviando..."
-                    : `Reservar ${PLANES.find((p) => p.id === plan).corto} · ${fmt(oferta.precio)}`}
+                    ? "Generando tu link de pago..."
+                    : `Inscribirme y pagar ${PLANES.find((p) => p.id === plan).corto} · ${fmt(oferta.precio)}`}
                 </button>
+                {errorEnvio && (
+                  <span className={styles.errorMsg} role="alert">
+                    {errorEnvio}
+                  </span>
+                )}
                 {!formularioListo && !loading && (
                   <span id="form-ayuda" className={styles.formHint}>
                     Completá tus datos correctamente para reservar tu lugar.
+                  </span>
+                )}
+                {formularioListo && !errorEnvio && (
+                  <span className={styles.formHint}>
+                    🔒 Pagás en Mercado Pago (tarjeta, débito o dinero en cuenta). Si preferís
+                    transferencia, te enviamos los datos por mail.
                   </span>
                 )}
               </form>
@@ -673,9 +695,8 @@ function ContactoCursoWeb() {
                 <div className={styles.successIcon}>✓</div>
                 <h3>¡Inscripción recibida!</h3>
                 <p>
-                  Reservamos tu lugar en <strong>{oferta.nombre}</strong> por{" "}
-                  <strong>{fmt(oferta.precio)}</strong>. Nos pondremos en
-                  contacto para confirmar el pago.
+                  Te enviamos un mail con el link para pagar{" "}
+                  <strong>{oferta.nombre}</strong> por <strong>{fmt(oferta.precio)}</strong>.
                 </p>
               </div>
             )}
@@ -722,7 +743,7 @@ function ContactoCursoWeb() {
                 <span className={styles.moduleMeta}>
                   {preventaActiva
                     ? "$200.000 hasta el 20/12 · 1 pago"
-                    : "$220.000 en 3 cuotas de $73.333"}
+                    : "$220.000 en 3 cuotas sin interés de $73.333"}
                 </span>
               </button>
             </div>
@@ -798,4 +819,4 @@ const ContactoCursoWebMemo = React.memo(ContactoCursoWeb);
 
 // Sirve tanto `import ContactoCursoWeb from ...` como `import { ContactoCursoWeb } from ...`
 export { ContactoCursoWebMemo as ContactoCursoWeb };
-export default ContactoCursoWebMemo;
+export default ContactoCursoWebMemo;

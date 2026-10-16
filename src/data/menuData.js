@@ -1,5 +1,3 @@
-import { label } from "framer-motion/client";
-
 const WHATSAPP_URL =
   "https://wa.me/5491123869799?text=Hola,%20quiero%20cotizar%20un%20software";
 const YOUTUBE_URL = "https://www.youtube.com/@weareSRV/playlists";
@@ -33,28 +31,28 @@ const menuData = [
     disabled: false,
     isExternal: false,
     hasNotification: true,
-    badgeCount: 3,
+    badgeCount: 4,
     links: [
-      {
-        label: "Redes y AWS",
-        to: "/redes/inscripcion",
-        isNew: true
-      },
       {
         label: "Python Engineer",
         to: "/python/inscripcion",
         isNew: true
-      },{
+      },
+      {
+        label: "Backend Fundamentos",
+        to: "/fundamentos-backend/inscripcion",
+        isNew: true
+      },
+      {
+        label: "Backend Avanzado",
+        to: "/backend-avanzado/inscripcion",
+        isNew: true
+      },
+      {
         label: "Full Stack",
         to: "/full-stack/inscripcion",
         isNew: true
       }
-      // {
-      //   label: "BackEnder",
-      //   to: "/backend/inscripcion",
-      //   isExternal: false,
-      //   isNew: true
-      // },
     ],
   },
   {

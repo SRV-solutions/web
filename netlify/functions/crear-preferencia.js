@@ -1,9 +1,38 @@
+import crypto from "node:crypto";
 import { MercadoPagoConfig, Preference } from "mercadopago";
+import { getCurso } from "../lib/cursos.js";
+import { SITE_URL, json, isAllowedOrigin, parseBody } from "../lib/http.js";
 
-export async function handler(event, context) {
+// Arma la URL del webhook (un solo Apps Script para todos los cursos) con la clave secreta compartida.
+// El Apps Script identifica el curso por el external_reference del pago.
+function buildNotificationUrl() {
+  const baseUrl = process.env.MP_WEBHOOK_URL;
+  const secret = process.env.MP_WEBHOOK_SECRET;
+  if (!baseUrl || !secret) return undefined;
+
+  const url = new URL(baseUrl);
+  url.searchParams.set("key", secret);
+  url.searchParams.set("source_news", "webhooks");
+  return url.toString();
+}
+
+export async function handler(event) {
   // Solo permitir solicitudes POST
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, body: "Method Not Allowed" };
+    return json(405, { error: "Method Not Allowed" });
+  }
+
+  if (!isAllowedOrigin(event)) {
+    return json(403, { error: "Origen no permitido" });
+  }
+
+  const bodyData = parseBody(event);
+  // Compatibilidad: si no llega "curso", asumimos Python (comportamiento anterior)
+  const cursoKey = typeof bodyData.curso === "string" ? bodyData.curso : "python";
+  const curso = getCurso(cursoKey);
+
+  if (!curso) {
+    return json(400, { error: "Curso inválido" });
   }
 
   try {
@@ -11,46 +40,39 @@ export async function handler(event, context) {
     const client = new MercadoPagoConfig({
       accessToken: process.env.MP_ACCESS_TOKEN,
     });
-
     const preference = new Preference(client);
-    console.log(preference);
-
-    const bodyData = JSON.parse(event.body || "{}");
-    const titulo = bodyData.titulo || "Master en Python Desde Cero - WEARESRV";
-    const precio = Number(bodyData.precio) || 80000;
 
     const response = await preference.create({
       body: {
         items: [
           {
-            id: "curso-python-infoproducto",
-            title: titulo,
+            id: curso.itemId,
+            title: curso.titulo,
             quantity: 1,
-            unit_price: precio,
+            unit_price: curso.precio,
             currency_id: "ARS",
           },
         ],
+        // El Apps Script y confirmar-compra validan este prefijo para saber de qué curso es el pago
+        external_reference: `${cursoKey}:${crypto.randomUUID()}`,
+        metadata: { curso: cursoKey },
+        statement_descriptor: "WEARESRV",
         back_urls: {
-          success: "https://wearesrv.com/python/gracias",
-          failure: "https://wearesrv.com/python/inscripcion",
-          pending: "https://wearesrv.com/python/inscripcion",
+          success: `${SITE_URL}/${curso.ruta}/gracias`,
+          failure: `${SITE_URL}/${curso.ruta}/inscripcion`,
+          pending: `${SITE_URL}/${curso.ruta}/gracias`,
         },
         auto_return: "approved",
+        notification_url: buildNotificationUrl(),
       },
     });
 
-    return {
-      statusCode: 200,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        init_point: response.init_point, // O response.sandbox_init_point para pruebas
-      }),
-    };
+    return json(200, {
+      init_point: response.init_point, // O response.sandbox_init_point para pruebas
+    });
   } catch (error) {
     console.error("Error creando preferencia en MP:", error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: error.message }),
-    };
+    // No exponemos detalles internos al navegador
+    return json(500, { error: "No se pudo crear el pago" });
   }
 }

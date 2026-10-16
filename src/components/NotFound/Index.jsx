@@ -1,0 +1,43 @@
+import React from "react";
+import { Helmet } from "react-helmet";
+import { Link } from "react-router-dom";
+import styles from "./style.module.css";
+
+const CURSOS_DISPONIBLES = [
+  { label: "Master en Python", to: "/python/inscripcion" },
+  { label: "Backend Fundamentos", to: "/fundamentos-backend/inscripcion" },
+  { label: "Backend Avanzado", to: "/backend-avanzado/inscripcion" },
+  { label: "Intensivo Full Stack", to: "/full-stack/inscripcion" },
+];
+
+export default function NotFound() {
+  return (
+    <section className={styles.section}>
+      <Helmet>
+        <title>Página no encontrada | WEARESRV</title>
+        <meta name="robots" content="noindex" />
+      </Helmet>
+
+      <span className={styles.code}>404</span>
+      <h1 className={styles.title}>
+        Esta página <span className={styles.orange}>no existe</span>
+      </h1>
+      <p className={styles.description}>
+        Puede que el link esté desactualizado o que ese curso ya no tenga
+        inscripciones abiertas. Estas son nuestras formaciones disponibles:
+      </p>
+
+      <div className={styles.grid}>
+        {CURSOS_DISPONIBLES.map((curso) => (
+          <Link key={curso.to} to={curso.to} className={styles.card}>
+            {curso.label} →
+          </Link>
+        ))}
+      </div>
+
+      <Link to="/" className={styles.btnHome}>
+        Volver al inicio
+      </Link>
+    </section>
+  );
+}

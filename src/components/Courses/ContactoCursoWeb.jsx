@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import styles from "./ContactoCursoWeb.module.css";
-import { trackEvent } from "../../data/metaPixel";
+import { trackConversion } from "../../data/metaPixel";
 
 // Google Form "Curso Full Stack" (Intensivos de Verano 2027)
 const GOOGLE_FORM_ACTION_URL =
@@ -292,6 +292,11 @@ function ContactoCursoWeb() {
 
   const terminarPreventa = useCallback(() => setPreventaActiva(false), []);
 
+  // ViewContent: alguien entró a ver el intensivo
+  useEffect(() => {
+    trackConversion("ViewContent", { content_name: "Intensivo Verano 2027", currency: "ARS" });
+  }, []);
+
   // Respaldo: si el contador no está en pantalla, igual cerramos la preventa a tiempo
   useEffect(() => {
     if (!preventaActiva) return undefined;
@@ -369,11 +374,6 @@ function ContactoCursoWeb() {
       telefono: normalizarTelefono(formData.telefono),
     };
 
-    const eventId =
-      typeof crypto !== "undefined" && crypto.randomUUID
-        ? crypto.randomUUID()
-        : `purchase_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-
     const contentName = `Intensivo Verano 2027 - ${oferta.nombre}`;
 
     const body = new FormData();
@@ -389,42 +389,14 @@ function ContactoCursoWeb() {
         body,
       });
 
-      // 1. Meta Pixel (cliente)
-      if (typeof trackEvent === "function") {
-        trackEvent(
-          "Purchase",
-          {
-            content_name: contentName,
-            currency: "ARS",
-            value: oferta.precio,
-            em: datos.email,
-            ph: datos.telefono,
-            fn: datos.nombre,
-          },
-          eventId,
-        );
-      }
-
-      // 2. CAPI (servidor)
-      try {
-        await fetch("/api/lead", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            nombre: datos.nombre,
-            email: datos.email,
-            telefono: datos.telefono,
-            plan,
-            event_id: eventId,
-            event_name: "Purchase",
-            currency: "ARS",
-            value: oferta.precio,
-            content_name: contentName,
-          }),
-        });
-      } catch (apiErr) {
-        console.warn("Error al enviar evento CAPI:", apiErr);
-      }
+      // Se reporta como Purchase (decisión de negocio para optimizar campañas),
+      // aunque el pago se confirma después por fuera de la web.
+      // Pixel + CAPI con el mismo event_id; los datos personales viajan hasheados.
+      trackConversion(
+        "Purchase",
+        { content_name: contentName, currency: "ARS", value: oferta.precio },
+        datos,
+      );
 
       setSubmitted(true);
     } catch (err) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, lazy, Suspense } from "react";
+import React, { useEffect, lazy, Suspense } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -6,35 +6,26 @@ import {
   useLocation,
 } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { initMetaPixel, trackPageView } from "./data/metaPixel.js";
+import { initMetaPixel, trackPageView, generateEventId } from "./data/metaPixel.js";
 
 // Layout estático
 import Header from "./components/Header/Index";
 import Footer from "./components/Footer/Index";
-import ContactoCursoWeb from "./components/Courses/ContactoCursoWeb";
 
 // Code Splitting de páginas
-
-// Agrega esta línea junto a tus otros imports de cursos:
-const ContactoCursoPython = lazy(
-  () => import("./components/Courses/Python.jsx")
-);
-
-const GraciasPython = lazy(
-  () => import("./components/Courses/GraciasPython.jsx")
-);
-
 const Home = lazy(() => import("./components/Home/Index"));
-const ContactoCursoDB = lazy(
-  () => import("./components/Courses/ContactoCursoDB.jsx")
+const ContactoCursoWeb = lazy(
+  () => import("./components/Courses/ContactoCursoWeb.jsx")
 );
-const ContactoCursoRedes = lazy(
-  () => import("./components/Courses/ContactoCursoRedes.jsx")
+// Cursos grabados con pago por Mercado Pago (Python, Backend Fundamentos y Backend Avanzado)
+const CursoGrabado = lazy(
+  () => import("./components/Courses/CursoGrabado.jsx")
 );
-const ContactoCursoProgramacion = lazy(
-  () => import("./components/Courses/ContactoCursoProgramacion.jsx")
+const GraciasCurso = lazy(
+  () => import("./components/Courses/GraciasCurso.jsx")
 );
 const Certificates = lazy(() => import("./components/Certificates/Index.jsx"));
+const NotFound = lazy(() => import("./components/NotFound/Index.jsx"));
 
 // PageLoader con animación
 const PageLoader = () => (
@@ -169,14 +160,7 @@ function AppContent() {
   // Envía el PageView con un event_id único en cada cambio de ruta
   useEffect(() => {
     try {
-      // Genera un UUID único para el evento
-      const eventId =
-        typeof crypto !== "undefined" && crypto.randomUUID
-          ? crypto.randomUUID()
-          : `pageview_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-
-      // Envía el evento pasando el eventId
-      trackPageView(eventId);
+      trackPageView(generateEventId("pageview"));
     } catch (e) {
       console.warn("Tracking de página bloqueado:", e);
     }
@@ -187,16 +171,16 @@ function AppContent() {
       <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route path="/" element={<Home />} />
-          {/* <Route path="/inscripcion" element={<ContactoCursoDB />} /> */}
-          <Route path="/redes/inscripcion" element={<ContactoCursoRedes />} />
-          <Route path="/python/inscripcion" element={<ContactoCursoPython />} />
-          <Route path="/python/gracias" element={<GraciasPython />} />
+          <Route path="/python/inscripcion" element={<CursoGrabado cursoKey="python" />} />
+          <Route path="/python/gracias" element={<GraciasCurso cursoKey="python" />} />
+          <Route path="/fundamentos-backend/inscripcion" element={<CursoGrabado cursoKey="fundamentos-backend" />} />
+          <Route path="/fundamentos-backend/gracias" element={<GraciasCurso cursoKey="fundamentos-backend" />} />
+          <Route path="/backend-avanzado/inscripcion" element={<CursoGrabado cursoKey="backend-avanzado" />} />
+          <Route path="/backend-avanzado/gracias" element={<GraciasCurso cursoKey="backend-avanzado" />} />
           <Route path="/full-stack/inscripcion" element={<ContactoCursoWeb />} />
-          {/* <Route
-            path="/backend/inscripcion"
-            element={<ContactoCursoProgramacion />}
-          /> */}
           <Route path="/certificates/:id" element={<Certificates />} />
+          {/* Cualquier link viejo o inexistente (ej. cursos que ya cerraron) */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
     </Layout>

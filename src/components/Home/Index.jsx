@@ -42,9 +42,9 @@ export default function Home() {
             Cotizar Software a Medida
           </a>
 
-          {/* BOTÓN AL CURSO DE BASES DE DATOS EN LA HERO */}
-          <Link to="/inscripcion" className={styles.btnCourse}>
-            Curso Bases de Datos Intensivo
+          {/* BOTÓN AL INTENSIVO FULL STACK EN LA HERO */}
+          <Link to="/full-stack/inscripcion" className={styles.btnCourse}>
+            Intensivo Full Stack 2027
           </Link>
 
           <a href="#educacion" className={styles.btnSecondary}>Ver Cursos Gratuitos</a>
@@ -111,15 +111,15 @@ export default function Home() {
             </a>
           </div>
 
-          {/* TARJETA DESTACADA: CURSO DE BASES DE DATOS */}
+          {/* TARJETA DESTACADA: CURSOS GRABADOS DE BACKEND */}
           <div className={`${styles.serviceCard} ${styles.highlightCard}`}>
-            <span className={styles.cardBadge}>Inicio: 2 Sept</span>
-            <h3 className={styles.blue}>Curso Bases de Datos</h3>
+            <span className={styles.cardBadge}>Acceso inmediato</span>
+            <h3 className={styles.blue}>Backend con Node.js</h3>
             <p>
-              Formación intensiva de 4 meses en PostgreSQL y MySQL. Teoría relacional, DDL/DML, Joins, Stored Procedures y optimización.
+              Cursos grabados con guía de estudio: Backend Fundamentos (90 clases) y Backend Avanzado (73 clases) con Express, middlewares, sockets y Docker.
             </p>
-            <Link to="/inscripcion" className={styles.cardBtnLink}>
-              Inscribirme Ahora →
+            <Link to="/fundamentos-backend/inscripcion" className={styles.cardBtnLink}>
+              Ver Backend Fundamentos →
             </Link>
           </div>
         </div>

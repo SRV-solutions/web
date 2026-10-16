@@ -171,9 +171,26 @@
   min-width: 0;
 }
 
+.layoutSingle,
+.main,
+.sidebar,
+.card {
+  max-width: 100%;
+}
+
 @media (max-width: 900px) {
   .layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .hudChip {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.6rem;
+  }
+  .brandSub {
+    display: none;
   }
 }
 
@@ -203,6 +220,7 @@
   font-size: clamp(1.3rem, 2.6vw, 1.9rem);
   font-weight: 900;
   line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 
 .subtitle {
@@ -309,6 +327,7 @@
   font-weight: 900;
   line-height: 1.15;
   max-width: 1100px;
+  overflow-wrap: anywhere;
 }
 
 .setupRow {
@@ -1395,4 +1414,210 @@
 
 .gitOptions button:disabled {
   opacity: 0.25;
+}
+
+/* ---------- Compartir ---------- */
+a.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.btnDisabled {
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+.btnWhatsapp {
+  background: #128c4a;
+  border-color: #25d366;
+}
+
+.shareBtn {
+  width: 100%;
+  margin-top: 1rem;
+  border-color: rgba(246, 149, 10, 0.6);
+  background: rgba(246, 149, 10, 0.1);
+}
+
+.share {
+  display: grid;
+  grid-template-columns: minmax(200px, 300px) minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+  text-align: left;
+}
+
+@media (max-width: 640px) {
+  .share {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sharePreview {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 9 / 16;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: #05070a;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+.sharePreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.shareActions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.shareActions .subtitle {
+  margin-bottom: 0;
+}
+
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(6px);
+  overflow-y: auto;
+}
+
+.modal {
+  position: relative;
+  width: min(820px, 100%);
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border-radius: 18px;
+  border: 1px solid rgba(246, 149, 10, 0.5);
+  background: linear-gradient(180deg, var(--panel2), var(--panel));
+  animation: fadeUp 0.25s ease both;
+}
+
+.modalClose {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid #2d3443;
+  background: #000;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.endExtras {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--line);
+  text-align: left;
+}
+
+/* ---------- Cursos ---------- */
+.courseGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+}
+
+.course {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1rem;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  text-decoration: none;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.course > span:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex: 1;
+}
+
+.course:hover {
+  transform: translateY(-2px);
+  border-color: var(--blue);
+}
+
+.courseHighlight {
+  border-color: var(--orange);
+  background: rgba(246, 149, 10, 0.08);
+  box-shadow: 0 8px 24px rgba(246, 149, 10, 0.12);
+}
+
+.courseIcon {
+  font-size: 1.8rem;
+}
+
+.courseArrow {
+  color: var(--orange);
+  font-weight: 900;
+  font-size: 1.2rem;
+}
+
+.courseTip {
+  max-width: 520px;
+  margin: 1.5rem auto 0;
+  text-align: left;
+}
+
+/* ---------- Cafecito ---------- */
+.cafecito {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-top: 1rem;
+  padding: 1rem 1.2rem;
+  border-radius: 14px;
+  border: 1px dashed var(--orange);
+  background: rgba(246, 149, 10, 0.07);
+  color: #fff;
+  text-decoration: none;
+  transition: transform 0.15s ease;
+}
+
+.cafecito > span:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.cafecito:hover {
+  transform: translateY(-2px);
+}
+
+.cafecitoCompact {
+  padding: 0.7rem 1rem;
+}
+
+.cafecitoIcon {
+  font-size: 1.8rem;
 }

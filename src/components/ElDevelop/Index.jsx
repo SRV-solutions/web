@@ -39,6 +39,7 @@ import BugBash from "./minigames/BugBash";
 import Terminal from "./minigames/Terminal";
 import Memotest from "./minigames/Memotest";
 import GitFlow from "./minigames/GitFlow";
+import { SharePanel, ShareModal, MinigameCourseTip, CoursesBlock, CafecitoButton } from "./PromoPanels";
 
 const SAVE_KEY = "el-develop-save";
 
@@ -64,6 +65,7 @@ function saveGame(s) {
 
 export default function ElDevelop() {
   const [game, setGame] = useState(loadGame);
+  const [sharing, setSharing] = useState(false);
 
   useEffect(() => saveGame(game), [game]);
 
@@ -117,9 +119,11 @@ export default function ElDevelop() {
       </header>
 
       <div className={game ? styles.layout : styles.layoutSingle}>
-        {game && <Sidebar game={game} />}
+        {game && <Sidebar game={game} onShare={() => setSharing(true)} />}
         <div className={styles.main}>{screen}</div>
       </div>
+
+      {sharing && game && <ShareModal game={game} onClose={() => setSharing(false)} />}
     </section>
   );
 }
@@ -212,7 +216,7 @@ function StatBar({ statKey, value }) {
   );
 }
 
-function Sidebar({ game }) {
+function Sidebar({ game, onShare }) {
   const r = role(game);
   return (
     <aside className={styles.sidebar}>
@@ -238,7 +242,7 @@ function Sidebar({ game }) {
           <strong className={game.ars < 0 ? styles.danger : ""}>{fmtArs(game.ars)}</strong>
         </div>
         <div>
-          <span className={styles.muted}>Dólares 🛏️</span>
+          <span className={styles.muted}>Dólares (colchón)</span>
           <strong className={styles.green}>{fmtUsd(game.usd)}</strong>
         </div>
         <div>
@@ -271,6 +275,10 @@ function Sidebar({ game }) {
         <span className={styles.kicker}>// TODO: próximo objetivo</span>
         <p>{nextGoal(game)}</p>
       </div>
+
+      <button type="button" className={`${styles.btn} ${styles.shareBtn}`} onClick={onShare}>
+        📸 Compartir mi progreso
+      </button>
     </aside>
   );
 }
@@ -370,6 +378,11 @@ function Hub({ game, act }) {
             <p className={styles.muted}>Todavía no hay commits. Elegí tu primera semana.</p>
           )}
         </div>
+      </div>
+
+      <div className={styles.card}>
+        <CoursesBlock game={game} title="¿Querés que tu carrera real avance más rápido que en el juego?" source="hub" />
+        <CafecitoButton compact />
       </div>
     </div>
   );
@@ -501,6 +514,7 @@ function MinigameView({ game, onDone }) {
           <button type="button" className={`${styles.btn} ${styles.btnPrimary}`} onClick={() => onDone(win)}>
             Continuar
           </button>
+          {!win && <MinigameCourseTip gameId={id} />}
         </div>
       )}
     </div>
@@ -588,6 +602,16 @@ function EndView({ game, onRestart }) {
       <button type="button" className={`${styles.btn} ${styles.btnPrimary} ${styles.btnBig}`} onClick={onRestart}>
         $ git checkout -b nueva-partida
       </button>
+
+      <div className={styles.endExtras}>
+        <SharePanel game={game} />
+        <CoursesBlock
+          game={game}
+          title={won ? "Ganaste en el juego. Ahora ganá en la vida real." : "En la vida real no hay game over: se aprende y se vuelve."}
+          source={won ? "victory" : "gameover"}
+        />
+        <CafecitoButton />
+      </div>
     </div>
   );
 }

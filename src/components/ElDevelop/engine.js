@@ -253,6 +253,7 @@ function coverDebt(s, lines) {
     if (s.ars < -price(s, 2500000)) {
       s.gameOver = {
         title: "Te embargaron hasta el mate",
+        share: "ME EMBARGARON HASTA EL MATE",
         text: "Las deudas se volvieron impagables. Vendiste la compu para pagar la tarjeta. Fin de la carrera… por ahora.",
       };
     }
@@ -338,7 +339,8 @@ function healthCheck(s, lines) {
     s.burnouts += 1;
     if (s.burnouts >= 3) {
       s.gameOver = {
-        title: "Colgaste los botines",
+        title: "Burnout final: rumbo a las sierras",
+        share: "BURNOUT: ME FUI A LAS SIERRAS",
         text: "Tercer burnout. Te fuiste a vivir a las sierras de Córdoba a hacer cerámica. Honestamente, no está tan mal.",
       };
       return;

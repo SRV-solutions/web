@@ -1,8 +1,15 @@
 // Promoción de cursos, donaciones y links para compartir "El Develop"
 import { trackCustomEvent } from "../../data/metaPixel.js";
 
-// Link de Cafecito (ej: "https://cafecito.app/tu-usuario"). Si está vacío, el botón no se muestra.
-export const CAFECITO_URL = "";
+// Donaciones por Mercado Pago (netlify/functions/crear-donacion.js valida los mismos límites)
+export const DONATION_MIN = 500;
+export const DONATION_MAX = 500000;
+export const DONATION_OPTIONS = [
+  { amount: 1000, icon: "☕", label: "Un cafecito" },
+  { amount: 2000, icon: "🧉", label: "Mate con facturas" },
+  { amount: 5000, icon: "🍕", label: "Pizza para el equipo" },
+  { amount: 10000, icon: "🥩", label: "Un asado" },
+];
 
 export const GAME_PATH = "/el-develop";
 export const INSTAGRAM_HANDLE = "@wearesrv";

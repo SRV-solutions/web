@@ -39,7 +39,15 @@ import BugBash from "./minigames/BugBash";
 import Terminal from "./minigames/Terminal";
 import Memotest from "./minigames/Memotest";
 import GitFlow from "./minigames/GitFlow";
-import { SharePanel, ShareModal, MinigameCourseTip, CoursesBlock, CafecitoButton } from "./PromoPanels";
+import {
+  SharePanel,
+  ShareModal,
+  MinigameCourseTip,
+  CoursesBlock,
+  CafecitoButton,
+  DonationPanel,
+  DonationReturnBanner,
+} from "./PromoPanels";
 
 const SAVE_KEY = "el-develop-save";
 
@@ -120,7 +128,10 @@ export default function ElDevelop() {
 
       <div className={game ? styles.layout : styles.layoutSingle}>
         {game && <Sidebar game={game} onShare={() => setSharing(true)} />}
-        <div className={styles.main}>{screen}</div>
+        <div className={styles.main}>
+          <DonationReturnBanner />
+          {screen}
+        </div>
       </div>
 
       {sharing && game && <ShareModal game={game} onClose={() => setSharing(false)} />}
@@ -382,7 +393,7 @@ function Hub({ game, act }) {
 
       <div className={styles.card}>
         <CoursesBlock game={game} title="¿Querés que tu carrera real avance más rápido que en el juego?" source="hub" />
-        <CafecitoButton compact />
+        <CafecitoButton />
       </div>
     </div>
   );
@@ -610,7 +621,7 @@ function EndView({ game, onRestart }) {
           title={won ? "Ganaste en el juego. Ahora ganá en la vida real." : "En la vida real no hay game over: se aprende y se vuelve."}
           source={won ? "victory" : "gameover"}
         />
-        <CafecitoButton />
+        <DonationPanel source={won ? "victory" : "gameover"} />
       </div>
     </div>
   );

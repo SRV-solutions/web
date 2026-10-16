@@ -1621,3 +1621,141 @@ a.btn {
 .cafecitoIcon {
   font-size: 1.8rem;
 }
+
+/* ---------- Donaciones ---------- */
+.cafecito {
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.95rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.modalSmall {
+  width: min(640px, 100%);
+}
+
+.donation {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+  border-radius: 16px;
+  border: 1px dashed var(--orange);
+  background: rgba(246, 149, 10, 0.05);
+  text-align: left;
+}
+
+.donation .subtitle {
+  margin: 0;
+}
+
+.donationGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 0.6rem;
+}
+
+.donationOpt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.85rem 0.5rem;
+  border-radius: 14px;
+  border: 1px solid #2d3443;
+  background: #000;
+  color: #fff;
+  font-family: inherit;
+  font-size: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.donationOpt:hover {
+  transform: translateY(-2px);
+  border-color: var(--orange);
+}
+
+.donationOn {
+  border-color: var(--orange);
+  background: rgba(246, 149, 10, 0.14);
+  box-shadow: 0 0 0 1px var(--orange);
+}
+
+.donationIcon {
+  font-size: 1.6rem;
+}
+
+.donationCustom {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 360px;
+  padding: 0.2rem 0.9rem;
+  border-radius: 12px;
+  border: 1px solid var(--orange);
+  background: #000;
+  font-family: var(--mono);
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.donationCustom input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.7rem 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #fff;
+  font-family: inherit;
+  font-size: 1.1rem;
+}
+
+.btnMp {
+  align-self: flex-start;
+  padding: 0.9rem 1.6rem;
+  background: #009ee3;
+  border-color: #009ee3;
+  font-size: 1rem;
+  box-shadow: 0 6px 18px rgba(0, 158, 227, 0.35);
+}
+
+.btnMp:hover:not(:disabled) {
+  border-color: #fff;
+}
+
+@media (max-width: 600px) {
+  .btnMp {
+    align-self: stretch;
+  }
+}
+
+.donationBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.2rem;
+  border-radius: 14px;
+  font-weight: 700;
+  animation: fadeUp 0.35s ease both;
+}
+
+.donationThanks {
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.5);
+}
+
+.donationPending {
+  background: rgba(246, 149, 10, 0.12);
+  border: 1px solid rgba(246, 149, 10, 0.5);
+}
+
+.donationError {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+}

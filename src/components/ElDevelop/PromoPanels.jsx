@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from "react";
 import styles from "./style.module.css";
-import { COURSES, CAFECITO_URL, INSTAGRAM_HANDLE, MINIGAME_COURSE, recommendCourse, track } from "./promo";
+import {
+  COURSES,
+  INSTAGRAM_HANDLE,
+  MINIGAME_COURSE,
+  DONATION_MIN,
+  DONATION_MAX,
+  DONATION_OPTIONS,
+  recommendCourse,
+  track,
+} from "./promo";
 import { createShareImage, shareText, gameUrl } from "./share";
 
 // ---------- Compartir ----------
@@ -160,22 +169,160 @@ export function CoursesBlock({ game, title, source }) {
   );
 }
 
-// ---------- Cafecito ----------
-export function CafecitoButton({ compact = false }) {
-  if (!CAFECITO_URL) return null;
+// ---------- Donaciones (Mercado Pago) ----------
+const fmtMonto = (n) => `$${n.toLocaleString("es-AR")}`;
+
+export function DonationPanel({ source }) {
+  const [selected, setSelected] = useState(DONATION_OPTIONS[1].amount);
+  const [custom, setCustom] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const isCustom = selected === "otro";
+  const value = isCustom ? Number(custom) : selected;
+  const valid = Number.isInteger(value) && value >= DONATION_MIN && value <= DONATION_MAX;
+
+  const donate = async () => {
+    if (!valid || loading) return;
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch("/.netlify/functions/crear-donacion", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ monto: value }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.init_point) throw new Error(data.error || "No se pudo crear el pago");
+      track("GameDonateClick", { value, currency: "ARS", source });
+      window.location.href = data.init_point;
+    } catch (e) {
+      setError(e.message || "No se pudo conectar con Mercado Pago. Probá de nuevo en un ratito.");
+      setLoading(false);
+    }
+  };
+
   return (
-    <a
-      href={CAFECITO_URL}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={`${styles.cafecito} ${compact ? styles.cafecitoCompact : ""}`}
-      onClick={() => track("GameDonateClick")}
-    >
-      <span className={styles.cafecitoIcon}>☕</span>
-      <span>
-        <strong>¿Te gustó El Develop? Invitame un cafecito</strong>
-        {!compact && <span className={styles.muted}>Así seguimos sumando eventos, minijuegos y chistes de Capa 8.</span>}
-      </span>
-    </a>
+    <div className={styles.donation}>
+      <p className={styles.kicker}>Apoyá el proyecto</p>
+      <h3 className={styles.subtitle}>☕ ¿Te gustó El Develop? Invitanos un cafecito</h3>
+      <p className={styles.muted}>
+        El juego es gratis. Con tu aporte sumamos más eventos, minijuegos y chistes de Capa 8. Pagás seguro con
+        Mercado Pago.
+      </p>
+
+      <div className={styles.donationGrid}>
+        {DONATION_OPTIONS.map((o) => (
+          <button
+            type="button"
+            key={o.amount}
+            className={`${styles.donationOpt} ${selected === o.amount ? styles.donationOn : ""}`}
+            onClick={() => setSelected(o.amount)}
+          >
+            <span className={styles.donationIcon}>{o.icon}</span>
+            <strong>{fmtMonto(o.amount)}</strong>
+            <span className={styles.muted}>{o.label}</span>
+          </button>
+        ))}
+        <button
+          type="button"
+          className={`${styles.donationOpt} ${isCustom ? styles.donationOn : ""}`}
+          onClick={() => setSelected("otro")}
+        >
+          <span className={styles.donationIcon}>✍️</span>
+          <strong>Otro monto</strong>
+          <span className={styles.muted}>Lo que quieras</span>
+        </button>
+      </div>
+
+      {isCustom && (
+        <label className={styles.donationCustom}>
+          <span>$</span>
+          <input
+            inputMode="numeric"
+            placeholder={`Entre ${fmtMonto(DONATION_MIN)} y ${fmtMonto(DONATION_MAX)}`}
+            value={custom}
+            onChange={(e) => setCustom(e.target.value.replace(/\D/g, "").slice(0, 7))}
+            aria-label="Monto a donar"
+            autoFocus
+          />
+        </label>
+      )}
+      {isCustom && custom && !valid && (
+        <p className={styles.danger}>
+          El monto tiene que ser entre {fmtMonto(DONATION_MIN)} y {fmtMonto(DONATION_MAX)}.
+        </p>
+      )}
+
+      <button type="button" className={`${styles.btn} ${styles.btnMp}`} onClick={donate} disabled={!valid || loading}>
+        {loading ? "Abriendo Mercado Pago…" : `Donar ${valid ? fmtMonto(value) : ""} con Mercado Pago`}
+      </button>
+      {error && <p className={styles.danger}>{error}</p>}
+    </div>
+  );
+}
+
+// Botón compacto que abre el panel de donaciones en un modal
+export function CafecitoButton() {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const onKey = (e) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  return (
+    <>
+      <button type="button" className={`${styles.cafecito} ${styles.cafecitoCompact}`} onClick={() => setOpen(true)}>
+        <span className={styles.cafecitoIcon}>☕</span>
+        <span>
+          <strong>¿Te gustó El Develop? Invitanos un cafecito</strong>
+          <span className={styles.muted}>Desde $1.000 con Mercado Pago</span>
+        </span>
+      </button>
+      {open && (
+        <div className={styles.modalBackdrop} onClick={() => setOpen(false)} role="presentation">
+          <div className={`${styles.modal} ${styles.modalSmall}`} onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Donar">
+            <button type="button" className={styles.modalClose} onClick={() => setOpen(false)} aria-label="Cerrar">
+              ✕
+            </button>
+            <DonationPanel source="hub" />
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+// Mensaje al volver de Mercado Pago (?donacion=gracias | pendiente | error)
+const DONATION_MESSAGES = {
+  gracias: { cls: "donationThanks", text: "☕ ¡Gracias por el cafecito! Con esto seguimos programando (y tomando mate). Sos crack." },
+  pendiente: { cls: "donationPending", text: "⏳ Tu donación quedó pendiente. Cuando Mercado Pago la acredite, nos llega. ¡Gracias!" },
+  error: { cls: "donationError", text: "No se pudo completar el pago y no se te cobró nada. Si querés, probá de nuevo." },
+};
+
+export function DonationReturnBanner() {
+  const [status, setStatus] = useState(null);
+
+  useEffect(() => {
+    const s = new URLSearchParams(window.location.search).get("donacion");
+    if (!s || !DONATION_MESSAGES[s]) return;
+    setStatus(s);
+    track("GameDonationReturn", { status: s });
+    // Limpiamos los parámetros que agrega Mercado Pago a la URL
+    window.history.replaceState(null, "", window.location.pathname);
+  }, []);
+
+  if (!status) return null;
+  const m = DONATION_MESSAGES[status];
+  return (
+    <div className={`${styles.donationBanner} ${styles[m.cls]}`} role="status">
+      <span>{m.text}</span>
+      <button type="button" className={styles.btnGhost} onClick={() => setStatus(null)} aria-label="Cerrar">
+        ✕
+      </button>
+    </div>
   );
 }

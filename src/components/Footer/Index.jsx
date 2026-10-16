@@ -16,10 +16,10 @@ export default function Footer() {
         <div className={styles.data_srv}>
           <img
             className={styles.logo_footer}
-            src="/SRV-LOGO.png"
-            alt="SRV Logo"
+            src="/srv-logo-256.webp"
+            alt="Logo de WEARESRV"
             width="130"
-            height="45"
+            height="130"
             loading="lazy"
             decoding="async"
           />

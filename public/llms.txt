@@ -1,14 +1,20 @@
-# SRV - Tu Academia de Desarrollo Web
+# WEARESRV
 
-> Academia de formación online especializada en desarrollo backend, programación en JavaScript y Python, administración de bases de datos, redes TCP/IP y Cloud Computing con AWS.
+> Escuela de programación online y estudio de desarrollo de software de Buenos Aires, Argentina. Cursos grabados con acceso de por vida para aprender a programar desde cero y avanzar hasta backend profesional, más desarrollo de software a medida para empresas.
 
-## Cursos Disponibles
+## Cursos grabados (pago único con Mercado Pago, acceso inmediato por Google Drive)
 
-- [Cursos de Programación](https://wearesrv.com/): Formación avanzada en desarrollo web backend con JavaScript y Python.
-- [Curso de Redes e Infraestructura Cloud](https://wearesrv.com/#curso-redes): Curso intensivo práctico de 4 meses cubriendo Linux SysAdmin, Redes TCP/IP, Subneteo FLSM/VLSM y despliegue en AWS (EC2, VPC, S3, RDS).
-- [Bases de Datos](https://wearesrv.com/): Gestión, diseño y optimización de bases de datos para desarrollo backend.
+- [Curso de Scripting Desde Cero](https://wearesrv.com/scripting/inscripcion): 32 clases (más de 59 horas). JavaScript, Python y Google Apps Script para automatizar planillas, mails, documentos y armar bots. Incluye guía de estudio en PDF.
+- [Master en Python Desde Cero](https://wearesrv.com/python/inscripcion): 98 clases. Lógica, POO, APIs, asincronismo y apps con interfaz gráfica.
+- [Backend Fundamentos](https://wearesrv.com/fundamentos-backend/inscripcion): 90 clases de JavaScript y Node.js, con guía de estudio.
+- [Backend Avanzado](https://wearesrv.com/backend-avanzado/inscripcion): 73 clases. Servidores y APIs REST con Express, middlewares, sockets, testing y Docker, con guía de estudio.
 
-## Información General
+## Cursos en vivo
 
-- **Modalidad**: 100% Virtual con clases en vivo y acceso a laboratorios prácticos.
-- **Sitio Web Oficial**: https://wearesrv.com
+- [Intensivo Full Stack](https://wearesrv.com/full-stack/inscripcion): cursada en vivo de Frontend, Backend o Full Stack.
+
+## Otros
+
+- [El Develop](https://wearesrv.com/el-develop): juego gratuito de simulación de carrera IT.
+- Software a medida: backend, APIs, plataformas web y automatizaciones. Contacto por WhatsApp: +54 9 11 2386-9799.
+- Comunidad: Discord, YouTube, Instagram y TikTok (@wearesrv).

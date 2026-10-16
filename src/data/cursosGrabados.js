@@ -11,18 +11,24 @@ export const CURSOS_GRABADOS = {
     tituloDestacado: "Scripting",
     tituloFin: "Desde Cero",
     descripcion:
-      "32 clases grabadas (más de 59 horas) para aprender a programar desde cero con JavaScript, Python y Google Apps Script. Automatizá planillas, mails, documentos y tareas repetitivas, consumí APIs y armá tus propios bots.",
+      "Aprendé a programar desde cero con JavaScript, Python y Google Apps Script: 32 clases grabadas y más de 59 horas para automatizar planillas, mails, documentos y tareas repetitivas, consumir APIs y armar tus propios bots.",
     precio: 15000,
     precioRegular: 60000,
     clases: 32,
     beneficios: [
       "Acceso vitalicio al material en Google Drive",
+      "Guía de estudio en PDF con 66 preguntas y sus respuestas",
       "Más de 59 horas de clases grabadas",
       "JavaScript, Python y Google Apps Script en un solo curso",
       "Envío automático de accesos al abonar",
     ],
     subTituloDesc:
       "Ideal para arrancar de cero: aprendés la lógica de programación y la aplicás a automatizaciones reales.",
+    gancho: "Dejá de hacer a mano lo que una computadora hace sola.",
+    metaDescripcion: "Aprendé a programar desde cero con JavaScript, Python y Google Apps Script. 32 clases, más de 59 horas y acceso de por vida por $15.000.",
+    nivel: "Desde cero · No necesitás saber nada de programación",
+    paraQuien: ["Nunca programaste y querés arrancar sin pagar una fortuna", "Trabajás con planillas, mails o documentos y querés automatizar tareas repetitivas", "Querés probar si la programación es para vos antes de invertir en una carrera", "Necesitás una base sólida de lógica para después ir a Python o Backend"],
+    resultados: ["Escribir programas en JavaScript y Python con variables, condicionales, bucles y funciones", "Automatizar Google Sheets, Docs, Gmail y Calendar con Apps Script", "Pedir datos a APIs reales, como la cotización del dólar", "Armar tu propio bot de Discord y tus primeros scripts útiles para el día a día"],
     modulos: [
       {
         titulo: "Introducción, Entorno & Terminal",
@@ -107,7 +113,7 @@ export const CURSOS_GRABADOS = {
     tituloDestacado: "Python",
     tituloFin: "Desde Cero",
     descripcion:
-      "Infoproducto completo de 98 clases grabadas. Aprende lógica de programación, POO, consumo de APIs y desarrollo de aplicaciones con interfaz gráfica (GUI).",
+      "98 clases grabadas para aprender Python desde cero: lógica de programación, programación orientada a objetos, archivos, consumo de APIs, asincronismo y aplicaciones con interfaz gráfica (GUI).",
     precio: 80000,
     precioRegular: 450000,
     clases: 98,
@@ -118,6 +124,11 @@ export const CURSOS_GRABADOS = {
     ],
     subTituloDesc:
       "Estructura práctica diseñada para llevarte desde las bases hasta proyectos profesionales.",
+    gancho: "El lenguaje más pedido del mundo, explicado desde la primera línea.",
+    metaDescripcion: "Master en Python desde cero: 98 clases grabadas de lógica, POO, APIs, asincronismo y apps con interfaz gráfica. Acceso de por vida.",
+    nivel: "Desde cero · Ideal como primer lenguaje",
+    paraQuien: ["Querés aprender el lenguaje más usado en automatización, datos e inteligencia artificial", "Empezás desde cero y buscás un curso completo, no videos sueltos", "Querés armar proyectos reales para tu portfolio", "Te interesa automatizar tareas o trabajar con datos"],
+    resultados: ["Programar en Python con buenas prácticas, de la lógica a la POO", "Leer y escribir archivos, manejar errores y usar expresiones regulares", "Consumir APIs con requests y armar tu propio bot", "Crear apps de escritorio con interfaz gráfica: To Do List, generador de contraseñas y más"],
     modulos: [
       {
         titulo: "Introducción & Entorno de Trabajo",
@@ -195,7 +206,7 @@ export const CURSOS_GRABADOS = {
     tituloDestacado: "Fundamentos",
     tituloFin: "",
     descripcion:
-      "Infoproducto completo de 90 clases grabadas. Aprendé los fundamentos del backend con JavaScript y Node.js: lógica, estructuras de datos, POO, promesas, consumo de APIs, bots y testing.",
+      "90 clases grabadas para aprender los fundamentos del backend con JavaScript y Node.js: lógica, estructuras de datos, POO, promesas, consumo de APIs, bots y testing.",
     precio: 84900,
     precioRegular: 350000,
     clases: 90,
@@ -207,6 +218,11 @@ export const CURSOS_GRABADOS = {
     ],
     subTituloDesc:
       "De tu primer 'Hola mundo' a consumir APIs reales: la base sólida para cualquier desarrollador backend.",
+    gancho: "La base que te piden en cualquier entrevista de backend.",
+    metaDescripcion: "Backend Fundamentos: 90 clases grabadas de JavaScript y Node.js. Lógica, POO, promesas, APIs, bots y testing, con guía de estudio.",
+    nivel: "Desde cero · Primer paso de la ruta backend",
+    paraQuien: ["Querés trabajar como desarrollador backend y no sabés por dónde empezar", "Sabés algo de programación pero te faltan bases sólidas", "Querés aprender JavaScript de verdad, más allá de copiar código", "Te estás preparando para tus primeras entrevistas técnicas"],
+    resultados: ["Dominar JavaScript: variables, funciones, arrays, objetos y clases", "Resolver ejercicios de lógica y algoritmos de ordenamiento", "Trabajar con promesas, async/await y APIs reales", "Escribir tests con Jest y armar bots con Node.js"],
     modulos: [
       {
         titulo: "Primeros Pasos",
@@ -339,7 +355,7 @@ export const CURSOS_GRABADOS = {
     tituloDestacado: "Avanzado",
     tituloFin: "",
     descripcion:
-      "Infoproducto completo de 73 clases grabadas. La continuación de Backend Fundamentos: creá tus propios servidores y APIs REST con Node.js y Express, middlewares, sockets en tiempo real, rate limit, testing y Docker.",
+      "73 clases grabadas, la continuación de Backend Fundamentos: creá tus propios servidores y APIs REST con Node.js y Express, middlewares, sockets en tiempo real, rate limit, testing y Docker.",
     precio: 99900,
     precioRegular: 420000,
     clases: 73,
@@ -351,6 +367,11 @@ export const CURSOS_GRABADOS = {
     ],
     subTituloDesc:
       "Todo lo que necesitás para construir servicios web profesionales y llevarlos a producción.",
+    gancho: "Creá tus propios servidores y APIs como en una empresa real.",
+    metaDescripcion: "Backend Avanzado: 73 clases grabadas de Node.js y Express. APIs REST, middlewares, sockets, rate limit, testing y Docker, con guía de estudio.",
+    nivel: "Nivel intermedio · Recomendado después de Backend Fundamentos",
+    paraQuien: ["Ya sabés JavaScript y querés dar el salto a crear servidores", "Terminaste Backend Fundamentos y querés seguir la ruta", "Querés entender cómo funcionan las APIs que consumís todos los días", "Buscás proyectos de backend para tu portfolio"],
+    resultados: ["Crear APIs REST completas con Node.js y Express", "Proteger rutas con middlewares, tokens y rate limit", "Armar un chat en tiempo real con Socket.IO", "Probar tu servidor y empaquetarlo con Docker"],
     modulos: [
       {
         titulo: "Node.js, npm & npx",

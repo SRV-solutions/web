@@ -45,7 +45,7 @@ const MobileNav = () => {
       <div className={styles.navbar}>
         <Link to="/" className={styles.logoContainer} aria-label="Inicio">
           <img
-            src="/SRV-LOGO.png"
+            src="/srv-logo-96.webp"
             alt="SRV Logo"
             className={styles.logo}
             width="90"

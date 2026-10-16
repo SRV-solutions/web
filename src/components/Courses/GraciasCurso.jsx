@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Helmet } from "react-helmet";
+import Seo from "../Seo";
 import { useSearchParams, Link } from "react-router-dom";
 import { trackEvent, getMetaCookies } from "../../data/metaPixel";
 import { CURSOS_GRABADOS } from "../../data/cursosGrabados";
@@ -98,9 +98,7 @@ export default function GraciasCurso({ cursoKey }) {
 
   return (
     <div style={{ padding: "4rem 2rem", textAlign: "center", color: "#fff", backgroundColor: "#000", minHeight: "70vh" }}>
-      <Helmet>
-        <meta name="robots" content="noindex" />
-      </Helmet>
+      <Seo title="¡Gracias por tu compra! | WEARESRV" description="Confirmación de compra en WEARESRV." path={`/${curso.ruta}/gracias`} noindex />
       <div style={{ fontSize: "3rem", color: mensaje.color }}>{mensaje.icono}</div>
       <h1 style={{ fontSize: "2rem", marginTop: "1rem" }}>{mensaje.titulo}</h1>
       <p style={{ fontSize: "1.1rem", color: "#ccc", maxWidth: "600px", margin: "1rem auto" }}>

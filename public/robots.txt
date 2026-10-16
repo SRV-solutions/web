@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /certificates/
+Disallow: /*/gracias
+
+Sitemap: https://wearesrv.com/sitemap.xml

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Helmet } from "react-helmet";
+import Seo from "../Seo";
 import styles from "./style.module.css";
 import {
   ROLES,
@@ -94,13 +94,11 @@ export default function ElDevelop() {
 
   return (
     <section className={styles.page}>
-      <Helmet>
-        <title>El Develop | Simulador de carrera IT | WEARESRV</title>
-        <meta
-          name="description"
-          content="El Develop: simulador de carrera IT bien argentino. Sobreviví a la inflación, los paros, los errores de capa 8 y los deploys de los viernes hasta llegar a una Big Tech."
-        />
-      </Helmet>
+      <Seo
+        title="El Develop: juego gratis de carrera IT | WEARESRV"
+        description="Juego gratis de carrera IT bien argentino: sobreviví a la inflación, los paros y los errores de Capa 8 hasta llegar a una Big Tech."
+        path="/el-develop"
+      />
 
       <header className={styles.hud}>
         <div className={styles.brand}>

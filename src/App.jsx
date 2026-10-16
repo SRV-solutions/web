@@ -6,7 +6,6 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
-import { Helmet } from "react-helmet";
 import { initMetaPixel, trackPageView, generateEventId } from "./data/metaPixel.js";
 
 // Layout estático
@@ -75,13 +74,11 @@ const PageLoader = () => (
 
     <div className="srv-logo-anim" style={{ marginBottom: "1.5rem" }}>
       <img
-        src="/logo.png"
-        alt="WEARESRV.COM"
-        style={{
-          height: "55px",
-          width: "auto",
-          objectFit: "contain",
-        }}
+        src="/srv-logo-96.webp"
+        alt="WEARESRV"
+        width="55"
+        height="55"
+        style={{ objectFit: "contain" }}
         onError={(e) => {
           e.target.style.display = "none";
           if (e.target.nextSibling) {
@@ -197,29 +194,8 @@ function AppContent() {
 function Layout({ children }) {
   return (
     <>
-      <Helmet>
-        <meta
-          name="description"
-          content="Cursos grabados de programación: Scripting, Python y Backend con JavaScript. Aprendé a tu ritmo con acceso vitalicio."
-        />
-        <meta
-          name="keywords"
-          content="desarrollo web, backend, JavaScript, Python, Google Apps Script, scripting, automatización, programación backend"
-        />
-        <meta name="author" content="wearesrv" />
-        <meta
-          property="og:title"
-          content="Cursos de Programación - Scripting, Python y Backend | WEARESRV"
-        />
-        <meta
-          property="og:description"
-          content="Cursos grabados de Scripting, Python y Backend con JavaScript, con acceso vitalicio."
-        />
-        <meta property="og:url" content="https://wearesrv.com" />
-      </Helmet>
-
       <Header />
-      <main >{children}</main>
+      <main>{children}</main>
       <Footer />
     </>
   );

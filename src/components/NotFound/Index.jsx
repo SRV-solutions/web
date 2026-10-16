@@ -1,5 +1,5 @@
 import React from "react";
-import { Helmet } from "react-helmet";
+import Seo from "../Seo";
 import { Link } from "react-router-dom";
 import styles from "./style.module.css";
 
@@ -14,10 +14,7 @@ const CURSOS_DISPONIBLES = [
 export default function NotFound() {
   return (
     <section className={styles.section}>
-      <Helmet>
-        <title>Página no encontrada | WEARESRV</title>
-        <meta name="robots" content="noindex" />
-      </Helmet>
+      <Seo title="Página no encontrada | WEARESRV" description="La página que buscás no existe. Mirá nuestras formaciones disponibles." path="/404" noindex />
 
 
       <span className={styles.code}>404</span>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styles from './style.module.css';
+import Seo from '../Seo';
 import logoSRV from '/SRV-LOGO.png'; // Ajusta la ruta a tu archivo logo.png
 
 const GOOGLE_SHEET_CSV_URL =
@@ -65,6 +66,7 @@ export default function Certificates() {
 
   return (
     <section className={styles.wrapperSection}>
+      <Seo title="Certificado | WEARESRV" description="Verificación de certificados emitidos por WEARESRV." path={`/certificates/${id}`} noindex />
       {loading && (
         <div className={styles.loadingContainer}>
           <div className={styles.spinner}></div>

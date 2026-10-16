@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import styles from "./ContactoCursoWeb.module.css";
 import { trackConversion } from "../../data/metaPixel";
+import Seo from "../Seo";
 
 // Inscripción + pago: la función crea el link de Mercado Pago del alumno y carga la fila
 // en el Sheet "Curso FullStack" (ver netlify/functions/inscripcion-intensivo.js).
@@ -431,15 +432,20 @@ function ContactoCursoWeb() {
 
   return (
     <section id="cursos-verano" className={styles.section}>
+      <Seo
+        title="Intensivo Full Stack 2027 en vivo: Frontend, Backend o Full Stack | WEARESRV"
+        description="Cursada intensiva en vivo de enero a marzo: Frontend con React y Backend con Node.js y bases de datos, con código real y mentoría. Reservá tu lugar."
+        path="/full-stack/inscripcion"
+      />
       <div className={styles.fullLayout}>
         {/* ===== Columna izquierda: oferta + formulario ===== */}
         <div className={styles.stickyColumn}>
           <div className={styles.cardContainer}>
             <div className={styles.header}>
               <div className={styles.badge}>Inicio: 18 de Enero</div>
-              <h2 className={styles.title}>
+              <h1 className={styles.title}>
                 Intensivos de <span className={styles.orange}>Verano 2027</span>
-              </h2>
+              </h1>
               <p className={styles.description}>
                 Aprovechá enero y febrero para aprender a programar de verdad:
                 Frontend con React y Backend con Node.js y bases de datos, con
@@ -819,4 +825,4 @@ const ContactoCursoWebMemo = React.memo(ContactoCursoWeb);
 
 // Sirve tanto `import ContactoCursoWeb from ...` como `import { ContactoCursoWeb } from ...`
 export { ContactoCursoWebMemo as ContactoCursoWeb };
-export default ContactoCursoWebMemo;
+export default ContactoCursoWebMemo;

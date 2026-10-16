@@ -78,7 +78,7 @@ const Nav = () => {
           >
             <img
               className={styles.logo}
-              src="/SRV-LOGO.png"
+              src="/srv-logo-96.webp"
               alt="Logo de SRV"
               width="45"
               height="45"

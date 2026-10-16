@@ -15,6 +15,12 @@ export const GAME_PATH = "/el-develop";
 export const INSTAGRAM_HANDLE = "@wearesrv";
 
 export const COURSES = {
+  scripting: {
+    to: "/scripting/inscripcion",
+    icon: "⚡",
+    name: "Curso de Scripting",
+    pitch: "JavaScript, Python y Apps Script desde cero. ¡Solo $15.000!",
+  },
   python: {
     to: "/python/inscripcion",
     icon: "🐍",
@@ -46,12 +52,12 @@ export const MINIGAME_COURSE = {
   algo: "python",
   findbug: "python",
   data: "python",
-  terminal: "fundamentos-backend",
+  terminal: "scripting",
   gitflow: "fundamentos-backend",
   merge: "fundamentos-backend",
   bugbash: "fundamentos-backend",
-  capa8: "fundamentos-backend",
-  memotest: "fundamentos-backend",
+  capa8: "scripting",
+  memotest: "scripting",
   pipes: "backend-avanzado",
   servers: "backend-avanzado",
   hack: "backend-avanzado",
@@ -63,6 +69,7 @@ export const MINIGAME_COURSE = {
 
 // Curso recomendado al final según tu stat más flojo y tu nivel
 export function recommendCourse(game) {
+  if (game.level < 2 || game.stats.logic < 35) return "scripting";
   if (game.stats.logic < 50) return "python";
   if (game.level < 3) return "fundamentos-backend";
   if (game.role === "frontend" || game.role === "pm") return "full-stack";

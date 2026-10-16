@@ -5,7 +5,7 @@ import { FaInstagram, FaTiktok, FaYoutube, FaDiscord, FaWhatsapp } from "react-i
 const PHONE_NUMBER = "5491123869799";
 const WHATSAPP_MESSAGE = encodeURIComponent("Hola, quiero cotizar un software");
 const WHATSAPP_URL = `https://wa.me/${PHONE_NUMBER}?text=${WHATSAPP_MESSAGE}`;
-const YOUTUBE_PLAYLIST_URL = "https://www.youtube.com/@weareSRV/playlists";
+const YOUTUBE_URL = "https://www.youtube.com/@weareSRV";
 const CURRENT_YEAR = new Date().getFullYear();
 
 export default function Footer() {
@@ -52,7 +52,7 @@ export default function Footer() {
               </a>
               <a
                 className={styles.icons_links}
-                href={YOUTUBE_PLAYLIST_URL}
+                href={YOUTUBE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="YouTube"
@@ -112,26 +112,22 @@ export default function Footer() {
           </a>
         </div>
 
-        {/* Educación Gratuita */}
+        {/* Formaciones */}
         <div className={styles.links_container}>
           <h3 className={styles.section_heading}>
-            Educación <span className={styles.blue}>Gratuita</span>
+            <span className={styles.blue}>Formaciones</span>
           </h3>
-          <a
-            className={styles.footer_link}
-            href={YOUTUBE_PLAYLIST_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Ruta Backend (YouTube)
+          <a className={styles.footer_link} href="/scripting/inscripcion">
+            Curso de Scripting
           </a>
-          <a
-            className={styles.footer_link}
-            href={YOUTUBE_PLAYLIST_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Python & Fundamentos
+          <a className={styles.footer_link} href="/python/inscripcion">
+            Master en Python
+          </a>
+          <a className={styles.footer_link} href="/fundamentos-backend/inscripcion">
+            Backend Fundamentos
+          </a>
+          <a className={styles.footer_link} href="/backend-avanzado/inscripcion">
+            Backend Avanzado
           </a>
           <a
             className={styles.footer_link}

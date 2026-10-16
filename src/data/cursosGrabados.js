@@ -3,6 +3,102 @@
 // (acá solo se muestra en pantalla y se usa para Meta Pixel; mantenerlos iguales).
 
 export const CURSOS_GRABADOS = {
+  scripting: {
+    key: "scripting",
+    ruta: "scripting",
+    contentName: "Infoproducto Scripting",
+    tituloInicio: "Curso de",
+    tituloDestacado: "Scripting",
+    tituloFin: "Desde Cero",
+    descripcion:
+      "32 clases grabadas (más de 59 horas) para aprender a programar desde cero con JavaScript, Python y Google Apps Script. Automatizá planillas, mails, documentos y tareas repetitivas, consumí APIs y armá tus propios bots.",
+    precio: 15000,
+    precioRegular: 60000,
+    clases: 32,
+    beneficios: [
+      "Acceso vitalicio al material en Google Drive",
+      "Más de 59 horas de clases grabadas",
+      "JavaScript, Python y Google Apps Script en un solo curso",
+      "Envío automático de accesos al abonar",
+    ],
+    subTituloDesc:
+      "Ideal para arrancar de cero: aprendés la lógica de programación y la aplicás a automatizaciones reales.",
+    modulos: [
+      {
+        titulo: "Introducción, Entorno & Terminal",
+        temas: [
+          "Qué es programar y cómo piensa un programador",
+          "Instalación de VS Code y Node.js",
+          "Comandos básicos de la terminal y primeros pasos con Git",
+        ],
+      },
+      {
+        titulo: "JavaScript: Variables & Condicionales",
+        temas: [
+          "Variables, constantes y tipos de datos",
+          "Template literals, typeof y conversión de tipos",
+          "If, else if, operadores lógicos, tablas de verdad y ternario",
+        ],
+      },
+      {
+        titulo: "Arrays, Objetos & Bucles",
+        temas: [
+          "Arrays y sus métodos: push, shift, split, sort, forEach y filter",
+          "Objetos, objetos anidados y arrays de objetos",
+          "Bucles for, for...of y while, con break y continue",
+        ],
+      },
+      {
+        titulo: "Funciones & Programación Orientada a Objetos",
+        temas: [
+          "Funciones declaradas, arrow functions, parámetros y retorno",
+          "Objetos nativos Date y Math",
+          "Clases, herencia, JSON y módulos con require",
+        ],
+      },
+      {
+        titulo: "Asincronismo, APIs & Web",
+        temas: [
+          "Promesas, async / await y manejo de errores con try / catch",
+          "Consumo de APIs con fetch y axios (cotización del dólar)",
+          "Introducción a Express, HTML, CSS y eventos en el navegador",
+        ],
+      },
+      {
+        titulo: "Python desde Cero",
+        temas: [
+          "De JavaScript a Python: sintaxis, variables y condicionales",
+          "Listas, tuplas, diccionarios y bucles",
+          "Métodos de strings, f-strings y la librería datetime",
+        ],
+      },
+      {
+        titulo: "Python: Errores, Archivos & Bots",
+        temas: [
+          "Try / except y excepciones propias",
+          "Lectura y escritura de archivos TXT y CSV, módulo os",
+          "Juego 'Adivinar el número' y bot de Discord con Python",
+        ],
+      },
+      {
+        titulo: "Google Apps Script: Docs & Sheets",
+        temas: [
+          "Automatizar Google Docs: párrafos, formatos y menús personalizados",
+          "Google Sheets: rangos, filas, columnas y funciones personalizadas",
+          "Modularizar el código para reutilizarlo",
+        ],
+      },
+      {
+        titulo: "Google Apps Script: Gmail & Calendar",
+        temas: [
+          "Leer y filtrar la bandeja de entrada de Gmail",
+          "Enviar mails automáticos desde un script",
+          "Crear eventos en Google Calendar",
+        ],
+      },
+    ],
+  },
+
   python: {
     key: "python",
     ruta: "python",

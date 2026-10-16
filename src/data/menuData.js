@@ -1,6 +1,6 @@
 const WHATSAPP_URL =
   "https://wa.me/5491123869799?text=Hola,%20quiero%20cotizar%20un%20software";
-const YOUTUBE_URL = "https://www.youtube.com/@weareSRV/playlists";
+const YOUTUBE_URL = "https://www.youtube.com/@weareSRV";
 const DISCORD_URL = "https://discord.com/invite/QuAmDxrNMu";
 
 const menuData = [
@@ -19,20 +19,17 @@ const menuData = [
     ],
   },
   {
-    title: "CURSOS GRATIS",
-    disabled: false,
-    links: [
-      { label: "Ruta Backend", to: YOUTUBE_URL, isExternal: true },
-      { label: "Fundamentos Backend", to: YOUTUBE_URL, isExternal: true },
-    ],
-  },
-  {
     title: "FORMACIONES",
     disabled: false,
     isExternal: false,
     hasNotification: true,
-    badgeCount: 4,
+    badgeCount: 5,
     links: [
+      {
+        label: "Scripting",
+        to: "/scripting/inscripcion",
+        isNew: true
+      },
       {
         label: "Python Engineer",
         to: "/python/inscripcion",

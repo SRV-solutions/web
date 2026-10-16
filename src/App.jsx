@@ -173,6 +173,8 @@ function AppContent() {
       <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/scripting/inscripcion" element={<CursoGrabado cursoKey="scripting" />} />
+          <Route path="/scripting/gracias" element={<GraciasCurso cursoKey="scripting" />} />
           <Route path="/python/inscripcion" element={<CursoGrabado cursoKey="python" />} />
           <Route path="/python/gracias" element={<GraciasCurso cursoKey="python" />} />
           <Route path="/fundamentos-backend/inscripcion" element={<CursoGrabado cursoKey="fundamentos-backend" />} />
@@ -198,20 +200,20 @@ function Layout({ children }) {
       <Helmet>
         <meta
           name="description"
-          content="Aprende desarrollo web Gratis con JavaScript, Python y otras tecnologías backend avanzadas."
+          content="Cursos grabados de programación: Scripting, Python y Backend con JavaScript. Aprendé a tu ritmo con acceso vitalicio."
         />
         <meta
           name="keywords"
-          content="desarrollo web, backend, JavaScript, Python, desarrollo de software, programación backend"
+          content="desarrollo web, backend, JavaScript, Python, Google Apps Script, scripting, automatización, programación backend"
         />
         <meta name="author" content="wearesrv" />
         <meta
           property="og:title"
-          content="Cursos de Desarrollo Web - Aprende Gratis Backend y Más"
+          content="Cursos de Programación - Scripting, Python y Backend | WEARESRV"
         />
         <meta
           property="og:description"
-          content="Cursos completos sobre desarrollo backend con JavaScript y Python."
+          content="Cursos grabados de Scripting, Python y Backend con JavaScript, con acceso vitalicio."
         />
         <meta property="og:url" content="https://wearesrv.com" />
       </Helmet>

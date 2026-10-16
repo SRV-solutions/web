@@ -6,6 +6,13 @@
 //   - src/data/cursosGrabados.js (precio que se muestra en la web)
 // ==========================================
 export const CURSOS = {
+  scripting: {
+    itemId: "curso-scripting",
+    titulo: "Curso de Scripting Desde Cero - WEARESRV",
+    contentName: "Infoproducto Scripting",
+    precio: 15000,
+    ruta: "scripting",
+  },
   python: {
     itemId: "curso-python-infoproducto",
     titulo: "Master en Python Desde Cero - WEARESRV",

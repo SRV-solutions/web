@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import styles from './style.module.css';
 
-const YOUTUBE_PLAYLIST_URL = 'https://www.youtube.com/@weareSRV/playlists';
 const PHONE_NUMBER = '5491123869799';
 const WHATSAPP_MESSAGE = encodeURIComponent('Hola, quiero cotizar un software');
 const WHATSAPP_URL = `https://wa.me/${PHONE_NUMBER}?text=${WHATSAPP_MESSAGE}`;
@@ -47,7 +46,7 @@ export default function Home() {
             Intensivo Full Stack 2027
           </Link>
 
-          <a href="#educacion" className={styles.btnSecondary}>Ver Cursos Gratuitos</a>
+          <Link to="/scripting/inscripcion" className={styles.btnSecondary}>Empezá con Scripting ($15.000)</Link>
         </div>
       </section>
 
@@ -125,23 +124,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Sección Cursos Gratuitos en YouTube */}
-      <section id="educacion" className={styles.section}>
+      {/* Curso de Scripting: la puerta de entrada a la programación */}
+      <section id="scripting" className={styles.section}>
         <div className={styles.educationWrapper}>
           <h2 className={styles.sectionTitle}>
-            Aprende Backend Gratis con <span className={styles.blue}>SRV</span>
+            Empezá a programar con <span className={styles.blue}>Scripting</span>
           </h2>
           <p>
-            Creemos que la educación técnica de calidad debe ser accesible. Hemos liberado nuestros programas de formación en Python, Fundamentos de Backend y Arquitectura web sin costo directamente en nuestra playlist oficial.
+            32 clases grabadas (más de 59 horas) para aprender desde cero con JavaScript, Python y Google Apps Script.
+            Automatizá planillas, mails y documentos, consumí APIs y armá tus propios bots. Acceso vitalicio por solo
+            $15.000.
           </p>
-          <a 
-            href={YOUTUBE_PLAYLIST_URL} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className={styles.btnSecondary}
-          >
-            Acceder a la Playlist en YouTube
-          </a>
+          <Link to="/scripting/inscripcion" className={styles.btnSecondary}>
+            Ver el Curso de Scripting
+          </Link>
         </div>
       </section>
 

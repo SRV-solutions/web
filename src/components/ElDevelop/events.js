@@ -14,6 +14,7 @@ import {
   pick,
   roleMinigame,
 } from "./helpers";
+import { FIN_EVENTS } from "./finanzas";
 
 function finishInterview(s, lines) {
   const { company, score } = s.interview;
@@ -1760,3 +1761,6 @@ export const RANDOM_EVENTS = [
   { id: "release_candidate", weight: 3, roles: ["qa"], when: (s) => !!s.job },
   { id: "regresion", weight: 3, roles: ["qa"], when: (s) => !!s.job },
 ];
+
+// Eventos de La Financiera (el Congreso)
+Object.assign(EVENTS, FIN_EVENTS);

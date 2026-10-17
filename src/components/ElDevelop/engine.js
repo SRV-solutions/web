@@ -28,6 +28,8 @@ import {
   updatePhase,
   fmtArs,
 } from "./helpers";
+import { defaultFin, finWeekly, finMonthly } from "./finanzas";
+import { mensajeMinijuego, mensajeCompra } from "./mensajes";
 
 export const SAVE_VERSION = 2;
 
@@ -79,6 +81,7 @@ export function newGame(name, roleId) {
     delta: {},
   };
   fx(s, ROLES[roleId].bonus);
+  s.fin = defaultFin(s);
   s.delta = {};
   return s;
 }
@@ -194,6 +197,7 @@ function weeklyUpkeep(s, focus, lines) {
   if (s.buffs.coffee > 0) s.buffs.coffee -= 1;
   if (s.interviewCooldown > 0) s.interviewCooldown -= 1;
   if (s.job) s.job.weeksSinceRaise += 1;
+  finWeekly(s, lines);
 }
 
 export function livingCost(s) {
@@ -239,6 +243,7 @@ function monthEnd(s, lines) {
 
   coverDebt(s, lines);
   checkPromotion(s, lines);
+  if (!s.gameOver) finMonthly(s, lines);
 }
 
 function coverDebt(s, lines) {
@@ -382,11 +387,11 @@ export function chooseOption(state, idx) {
   return s;
 }
 
-export function finishMinigame(state, win) {
+export function finishMinigame(state, win, mensaje) {
   const s = begin(state);
   const { eventId, optIdx, game } = s.pending;
   const opt = EVENTS[eventId].options[optIdx];
-  const lines = [];
+  const lines = [mensaje || mensajeMinijuego(game, win)];
   (win ? opt.onWin : opt.onLose)(s, lines);
   if (win && role(s).passive === "bugHunter") {
     fx(s, { logic: 2 });
@@ -394,7 +399,7 @@ export function finishMinigame(state, win) {
   }
   s.pending = null;
   healthCheck(s, lines);
-  finish(s, `${MINIGAMES[game].name}: ${win ? "¡Deploy exitoso! ✅" : "Falló el build ❌"}`, lines);
+  finish(s, `${MINIGAMES[game].name}: ${win ? "pasaste ✅" : "no salió ❌"}`, lines);
   return s;
 }
 
@@ -416,12 +421,12 @@ export function buyItem(state, itemId) {
   if (item.buff) s.buffs[item.buff] = 2;
   if (item.food && chance(0.12)) {
     fx(s, { energy: -10, mental: -5 });
-    s.toast = { text: `🤢 ${item.name}: el chino te lo vendió vencido. De vuelto te dio caramelos.`, delta: s.delta };
+    s.toast = { text: `🤢 ${item.name}: el chino te lo vendió vencido. De vuelto te dio caramelos.`, delta: s.delta, tone: "bad", id: Date.now() };
     s.delta = {};
     return s;
   }
   if (item.effect) fx(s, item.effect);
-  s.toast = { text: `${item.emoji} Compraste ${item.name}`, delta: s.delta };
+  s.toast = { text: mensajeCompra(item), delta: s.delta, id: Date.now() };
   s.delta = {};
   return s;
 }

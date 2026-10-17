@@ -24,7 +24,6 @@ import {
   finishMinigame,
   continueResult,
   buyItem,
-  sellUsd,
   quitSecondJob,
   nextGoal,
   livingCost,
@@ -43,6 +42,9 @@ import Terminal from "./minigames/Terminal";
 import Memotest from "./minigames/Memotest";
 import GitFlow from "./minigames/GitFlow";
 import Sorter from "./minigames/Sorter";
+import Financiera from "./Financiera";
+import { defaultFin, NIVELES, nivelActual } from "./finanzas";
+import { mensajeMinijuego } from "./mensajes";
 import {
   SharePanel,
   ShareModal,
@@ -60,7 +62,10 @@ function loadGame() {
     const raw = localStorage.getItem(SAVE_KEY);
     if (!raw) return null;
     const s = JSON.parse(raw);
-    return s && s.version === SAVE_VERSION ? s : null;
+    if (!s || s.version !== SAVE_VERSION) return null;
+    // Partidas guardadas antes de La Financiera
+    if (!s.fin) s.fin = defaultFin(s);
+    return s;
   } catch {
     return null;
   }
@@ -93,7 +98,7 @@ export default function ElDevelop() {
   else if (game.gameOver || game.victory) screen = <EndView game={game} onRestart={() => setGame(null)} />;
   else if (game.pending?.kind === "event") screen = <EventView game={game} onChoose={(i) => act(chooseOption, i)} />;
   else if (game.pending?.kind === "minigame")
-    screen = <MinigameView key={`${game.week}-${game.pending.eventId}`} game={game} onDone={(win) => act(finishMinigame, win)} />;
+    screen = <MinigameView key={`${game.week}-${game.pending.eventId}`} game={game} onDone={(win, msg) => act(finishMinigame, win, msg)} />;
   else screen = <Hub game={game} act={act} />;
 
   return (
@@ -268,6 +273,11 @@ function Sidebar({ game, onShare }) {
           <strong>{fmtArs(livingCost(game))}</strong>
         </div>
       </div>
+      {game.fin && (
+        <div className={`${styles.finSideBadge} ${nivelActual(game) >= 3 ? styles.finSideVip : ""}`}>
+          {NIVELES[nivelActual(game)].emoji} {NIVELES[nivelActual(game)].name}
+        </div>
+      )}
 
       <div className={styles.jobBox}>
         {game.job ? (
@@ -321,11 +331,7 @@ function focusOptions(game) {
 function Hub({ game, act }) {
   return (
     <div className={styles.hubWrap}>
-      {game.toast && (
-        <div className={styles.toast}>
-          {game.toast.text} <DeltaChips delta={game.toast.delta} />
-        </div>
-      )}
+      <Toast toast={game.toast} />
 
       <div className={styles.card}>
         <p className={styles.kicker}>Inicio de semana {game.week}</p>
@@ -346,6 +352,8 @@ function Hub({ game, act }) {
           </button>
         )}
       </div>
+
+      <Financiera game={game} act={act} />
 
       <div className={styles.twoCols}>
         <div className={styles.card}>
@@ -371,11 +379,6 @@ function Hub({ game, act }) {
               );
             })}
           </div>
-          <div className={styles.row}>
-            <button type="button" className={styles.btn} disabled={game.usd < 100} onClick={() => act(sellUsd, 100)}>
-              🔁 Vender US$100 en la cueva (${(game.dolar * 100).toLocaleString("es-AR")})
-            </button>
-          </div>
         </div>
 
         <div className={styles.card}>
@@ -398,6 +401,27 @@ function Hub({ game, act }) {
         <CoursesBlock game={game} title="¿Querés que tu carrera real avance más rápido que en el juego?" source="hub" />
         <CafecitoButton />
       </div>
+    </div>
+  );
+}
+
+// Notificación de la última acción: el texto cambia según lo que pasó
+function Toast({ toast }) {
+  const [closedId, setClosedId] = useState(null);
+  if (!toast || (toast.id && toast.id === closedId)) return null;
+  const tone = toast.tone === "bad" ? styles.toastBad : toast.tone === "vip" ? styles.toastVip : "";
+  return (
+    <div key={toast.id || toast.text} className={`${styles.toast} ${tone}`} role="status">
+      <div className={styles.toastBody}>
+        <span>{toast.text}</span>
+        {toast.extra && <span className={styles.toastExtra}>{toast.extra}</span>}
+        <DeltaChips delta={toast.delta} />
+      </div>
+      {toast.id && (
+        <button type="button" className={styles.toastClose} aria-label="Cerrar" onClick={() => setClosedId(toast.id)}>
+          ×
+        </button>
+      )}
     </div>
   );
 }
@@ -428,6 +452,7 @@ function EventView({ game, onChoose }) {
 function MinigameView({ game, onDone }) {
   const [phase, setPhase] = useState("brief");
   const [win, setWin] = useState(null);
+  const [msg, setMsg] = useState("");
   const id = game.pending.game;
   const info = MINIGAMES[id];
   const r = role(game);
@@ -444,6 +469,7 @@ function MinigameView({ game, onDone }) {
 
   const finish = (w) => {
     setWin(w);
+    setMsg(mensajeMinijuego(id, w));
     setPhase("done");
   };
 
@@ -554,8 +580,8 @@ function MinigameView({ game, onDone }) {
       {phase === "done" && (
         <div className={styles.mgDone}>
           <p className={styles.bigEmoji}>{win ? "✅" : "💥"}</p>
-          <h3 className={styles.subtitle}>{win ? "Build passing · Deploy exitoso" : "Build failed · exit code 1"}</h3>
-          <button type="button" className={`${styles.btn} ${styles.btnPrimary}`} onClick={() => onDone(win)}>
+          <h3 className={styles.subtitle}>{msg}</h3>
+          <button type="button" className={`${styles.btn} ${styles.btnPrimary}`} onClick={() => onDone(win, msg)}>
             Continuar
           </button>
           {!win && <MinigameCourseTip gameId={id} />}

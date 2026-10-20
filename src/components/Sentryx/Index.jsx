@@ -4,6 +4,25 @@ import styles from "./style.module.css";
 import Seo from "../Seo";
 
 const SENTRYX_URL = "https://sentryx.wearesrv.com";
+const WHATSAPP_URL = `https://wa.me/5491123869799?text=${encodeURIComponent("Hola, quiero una demo de Sentryx para mi colegio")}`;
+
+const JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Sentryx",
+  applicationCategory: "EducationalApplication",
+  operatingSystem: "Web, Android, iOS",
+  url: SENTRYX_URL,
+  description:
+    "Plataforma escolar para colegios de Inicial, Primario y Secundario: comunicados con confirmación de lectura, calificaciones, boletines, asistencia y aulas virtuales.",
+  publisher: { "@id": "https://wearesrv.com/#organization" },
+  offers: {
+    "@type": "Offer",
+    price: "660",
+    priceCurrency: "ARS",
+    description: "Plan Básico, por persona activa por mes",
+  },
+};
 
 export default function Sentryx() {
   return (
@@ -12,6 +31,7 @@ export default function Sentryx() {
         title="Sentryx - Plataforma escolar digital | WEARESRV"
         description="Sentryx es la plataforma escolar que reúne en un solo lugar comunicados, calificaciones, boletines, asistencia y aulas virtuales para colegios de Inicial, Primario y Secundario."
         path="/sentryx"
+        jsonLd={JSON_LD}
       />
 
       {/* Hero Section */}
@@ -91,6 +111,7 @@ export default function Sentryx() {
               </div>
 
               <div className={styles.planCard}>
+                <span className={styles.planTag}>El más elegido</span>
                 <h4>Plan Profesional</h4>
                 <p className={styles.price}>$2.150/mes</p>
                 <p className={styles.storage}>30 GB</p>
@@ -118,9 +139,14 @@ export default function Sentryx() {
 
           <div className={styles.cta}>
             <p>¿Tu colegio quiere usar Sentryx?</p>
-            <a href={SENTRYX_URL} target="_blank" rel="noopener noreferrer" className={styles.btnPrimary}>
-              Ingresar a la plataforma →
-            </a>
+            <div className={styles.ctaActions}>
+              <a href={SENTRYX_URL} target="_blank" rel="noopener noreferrer" className={styles.btnPrimary}>
+                Ingresar a la plataforma →
+              </a>
+              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className={styles.btnSecondary}>
+                Pedir una demo por WhatsApp
+              </a>
+            </div>
           </div>
         </div>
       </section>

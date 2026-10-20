@@ -6,7 +6,7 @@
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* Hero Section */
+/* ---------- Hero ---------- */
 .hero {
   display: flex;
   flex-direction: column;
@@ -23,9 +23,6 @@
   width: 80px;
   height: 80px;
   margin-bottom: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .sentryxLogo img {
@@ -55,17 +52,9 @@
   color: #ffffff;
 }
 
-.highlight {
-  color: #f6950a;
-}
-
-.blue {
-  color: #0b78fb;
-}
-
-.green {
-  color: #30a05a;
-}
+.highlight { color: #f6950a; }
+.blue { color: #0b78fb; }
+.green { color: #30a05a; }
 
 .heroSubtitle {
   font-size: clamp(1rem, 2.2vw, 1.25rem);
@@ -85,10 +74,8 @@
   border-radius: 8px;
   background-color: #f6950a;
   color: #000000;
-  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, background-color 0.2s ease;
   box-shadow: 0 6px 20px rgba(246, 149, 10, 0.3);
-  border: none;
-  cursor: pointer;
 }
 
 .btnPrimary:hover {
@@ -96,7 +83,7 @@
   transform: translateY(-2px);
 }
 
-/* Description Section */
+/* ---------- Descripción ---------- */
 .description {
   max-width: 1200px;
   margin: 0 auto;
@@ -128,12 +115,7 @@
   margin-bottom: 0;
 }
 
-/* Plans Section */
-.plans {
-  margin-bottom: 80px;
-}
-
-/* Animación de brillo */
+/* ---------- Planes ---------- */
 @keyframes shine {
   0%, 100% {
     box-shadow: 0 0 20px rgba(246, 149, 10, 0.3), inset 0 0 20px rgba(246, 149, 10, 0.1);
@@ -141,6 +123,10 @@
   50% {
     box-shadow: 0 0 40px rgba(246, 149, 10, 0.6), inset 0 0 30px rgba(246, 149, 10, 0.2);
   }
+}
+
+.plans {
+  margin-bottom: 80px;
 }
 
 .plans h3 {
@@ -153,7 +139,7 @@
 
 .plansSubtitle {
   font-size: 0.9rem;
-  color: #94a3b8;
+  color: #9a9a9a;
   text-align: center;
   margin-bottom: 32px;
   font-weight: 500;
@@ -167,6 +153,7 @@
 }
 
 .planCard {
+  position: relative;
   background: rgba(15, 15, 15, 0.5);
   border: 2px solid rgba(246, 149, 10, 0.3);
   border-radius: 12px;
@@ -175,42 +162,40 @@
   transition: all 0.3s ease;
 }
 
-.planCard:nth-child(1) {
-  border-color: rgba(11, 120, 251, 0.5);
+.planCard:hover {
+  background: rgba(15, 15, 15, 0.8);
+  transform: translateY(-4px);
 }
 
-.planCard:nth-child(1):hover {
-  border-color: #0b78fb;
-}
+.planCard:nth-child(1) { border-color: rgba(11, 120, 251, 0.5); }
+.planCard:nth-child(1):hover { border-color: #0b78fb; }
 
-.planCard:nth-child(2) {
-  border-color: rgba(48, 160, 90, 0.5);
-}
-
-.planCard:nth-child(2):hover {
-  border-color: #30a05a;
-}
+.planCard:nth-child(2) { border-color: rgba(48, 160, 90, 0.5); }
+.planCard:nth-child(2):hover { border-color: #30a05a; }
 
 .planCard:nth-child(3) {
   border-color: rgba(246, 149, 10, 0.5);
   animation: shine 2s ease-in-out infinite;
 }
+.planCard:nth-child(3):hover { border-color: #f6950a; }
 
-.planCard:nth-child(3):hover {
-  border-color: #f6950a;
-}
+.planCard:nth-child(4) { border-color: rgba(11, 120, 251, 0.5); }
+.planCard:nth-child(4):hover { border-color: #0b78fb; }
 
-.planCard:nth-child(4) {
-  border-color: rgba(11, 120, 251, 0.5);
-}
-
-.planCard:nth-child(4):hover {
-  border-color: #0b78fb;
-}
-
-.planCard:hover {
-  background: rgba(15, 15, 15, 0.8);
-  transform: translateY(-4px);
+.planTag {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #f6950a;
+  color: #000000;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.3rem 0.9rem;
+  border-radius: 50px;
+  white-space: nowrap;
 }
 
 .planCard h4 {
@@ -227,9 +212,13 @@
   margin-bottom: 8px;
 }
 
+.planCard:nth-child(1) .price { color: #0b78fb; }
+.planCard:nth-child(2) .price { color: #30a05a; }
+.planCard:nth-child(4) .price { color: #0b78fb; }
+
 .storage {
   font-size: 0.9rem;
-  color: #94a3b8;
+  color: #9a9a9a;
   margin-bottom: 20px;
 }
 
@@ -237,17 +226,18 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  text-align: left;
 }
 
 .features li {
   font-size: 0.9rem;
-  color: #cbd5e1;
+  color: #cfcfcf;
   margin-bottom: 10px;
-  padding-left: 20px;
+  padding-left: 22px;
   position: relative;
 }
 
-.features li:before {
+.features li::before {
   content: "✓";
   position: absolute;
   left: 0;
@@ -255,7 +245,11 @@
   font-weight: bold;
 }
 
-/* CTA Section */
+.planCard:nth-child(1) .features li::before { color: #0b78fb; }
+.planCard:nth-child(2) .features li::before { color: #30a05a; }
+.planCard:nth-child(4) .features li::before { color: #0b78fb; }
+
+/* ---------- CTA ---------- */
 .cta {
   background: rgba(246, 149, 10, 0.05);
   border: 1px solid rgba(246, 149, 10, 0.2);
@@ -266,12 +260,37 @@
 
 .cta p {
   font-size: 1.2rem;
-  color: #e2e8f0;
+  color: #ffffff;
   margin-bottom: 20px;
   font-weight: 500;
 }
 
-/* Back Section */
+.ctaActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btnSecondary {
+  display: inline-block;
+  padding: 1rem 1.8rem;
+  font-size: 1rem;
+  font-weight: 800;
+  text-decoration: none;
+  text-align: center;
+  border-radius: 8px;
+  color: #ffffff;
+  border: 1px solid #0b78fb;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.btnSecondary:hover {
+  background-color: rgba(11, 120, 251, 0.12);
+  transform: translateY(-2px);
+}
+
+/* ---------- Volver ---------- */
 .backSection {
   max-width: 1200px;
   margin: 0 auto;
@@ -292,14 +311,9 @@
   transform: translateX(-4px);
 }
 
-/* Responsive */
+/* ---------- Responsive ---------- */
 @media (max-width: 768px) {
-  .heroTitle {
-    font-size: 2rem;
-  }
-
   .hero {
-    min-height: auto;
     padding: 40px 20px;
   }
 
@@ -312,8 +326,9 @@
   }
 
   .textContent p {
-    text-align: left;
     font-size: 1rem;
+    text-align: justify;
+    hyphens: auto;
   }
 
   .plans h3 {
@@ -330,5 +345,9 @@
 
   .cta p {
     font-size: 1rem;
+  }
+
+  .ctaActions a {
+    width: 100%;
   }
 }

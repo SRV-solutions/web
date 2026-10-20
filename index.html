@@ -29,12 +29,6 @@
   </script>
   <!-- End Meta Pixel Code Base -->
 
-  <!-- Google Fonts sin bloquear la primera pintura -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap"
-    onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap"></noscript>
   <link rel="preload" as="image" href="/srv-logo-96.webp" type="image/webp">
 
   <!-- SEO por defecto. Los tags con data-react-helmet los reemplaza cada página (src/components/Seo.jsx);
@@ -107,6 +101,13 @@
   <style>
     /* Fondo negro desde el primer pintado: evita el destello blanco mientras carga React */
     html, body { margin: 0; padding: 0; background: #000; color: #fff; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    img, svg { max-width: 100%; }
   </style>
 </head>
 

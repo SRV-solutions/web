@@ -35,6 +35,24 @@ const FAQ = [
   { q: "¿Las clases son en vivo o grabadas?", a: "Los cursos de Scripting, Python, Backend Fundamentos y Backend Avanzado son grabados, con acceso de por vida. El Intensivo Full Stack es una cursada en vivo." },
   { q: "¿Cómo recibo el curso después de pagar?", a: "Automáticamente: apenas Mercado Pago aprueba el pago, te llega un mail con el acceso a la carpeta del curso en Google Drive." },
   { q: "¿Hacen software para empresas?", a: "Sí. Además de la escuela, desarrollamos backend, APIs, plataformas web y automatizaciones a medida. Escribinos por WhatsApp y lo cotizamos." },
+  { q: "¿Tienen productos propios?", a: "Sí, dos plataformas por suscripción mensual: Sentryx, para colegios (comunicados, boletines, asistencia y aulas virtuales), y Event Box, para empresas de eventos (stock, contenedores y órdenes de servicio). Los planes están en la página de cada una." },
+];
+
+const PRODUCTOS = [
+  {
+    nombre: "Sentryx",
+    tag: "Para colegios",
+    ruta: "/sentryx",
+    icono: "/sentryx-icon.svg",
+    texto: "Comunicados con confirmación de lectura, boletines, asistencia y aulas virtuales en una sola app para Inicial, Primario y Secundario. Desde $660 por persona al mes.",
+  },
+  {
+    nombre: "Event Box",
+    tag: "Para empresas de eventos",
+    ruta: "/eventbox",
+    icono: "/eventbox-icon.svg",
+    texto: "Stock, contenedores y órdenes de servicio con recorrido y responsable por etapa, para que cada evento salga sin sorpresas. Planes desde USD 520 por empresa al mes.",
+  },
 ];
 
 export default function Home() {
@@ -237,6 +255,31 @@ export default function Home() {
               Consultar por Automatización →
             </a>
           </div>
+        </div>
+      </section>
+
+      {/* ---------- Productos ---------- */}
+      <section id="productos" className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>
+            Nuestros <span className={styles.blue}>productos</span>
+          </h2>
+          <p className={styles.sectionDescription}>
+            Plataformas propias, listas para usar, construidas con el mismo backend que hacemos para empresas.
+          </p>
+        </div>
+        <div className={styles.productsGrid}>
+          {PRODUCTOS.map((p) => (
+            <Link key={p.ruta} to={p.ruta} className={styles.productCard}>
+              <img src={p.icono} alt="" width="56" height="56" loading="lazy" decoding="async" />
+              <span className={styles.productBody}>
+                <span className={styles.productTag}>{p.tag}</span>
+                <strong className={styles.productName}>{p.nombre}</strong>
+                <span className={styles.productText}>{p.texto}</span>
+                <span className={styles.productCta}>Conocer {p.nombre} →</span>
+              </span>
+            </Link>
+          ))}
         </div>
       </section>
 

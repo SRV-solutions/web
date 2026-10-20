@@ -13,6 +13,11 @@
 
 - [Intensivo Full Stack](https://wearesrv.com/full-stack/inscripcion): cursada en vivo de Frontend, Backend o Full Stack.
 
+## Productos propios (SaaS por suscripción mensual)
+
+- [Sentryx](https://wearesrv.com/sentryx): plataforma escolar para colegios de Inicial, Primario y Secundario. Comunicados con confirmación de lectura, calificaciones, boletines, asistencia, aulas virtuales y administración. Se cobra por persona activa; plan Básico desde $660 por mes.
+- [Event Box](https://wearesrv.com/eventbox): stock, contenedores y órdenes de servicio para empresas de eventos, con recorrido por etapas y responsables. Abono mensual por empresa en dólares, desde USD 520.
+
 ## Otros
 
 - [El Develop](https://wearesrv.com/el-develop): juego gratuito de simulación de carrera IT.

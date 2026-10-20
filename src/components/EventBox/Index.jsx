@@ -4,6 +4,25 @@ import styles from "./style.module.css";
 import Seo from "../Seo";
 
 const EVENTBOX_URL = "https://eventbox.wearesrv.com";
+const WHATSAPP_URL = `https://wa.me/5491123869799?text=${encodeURIComponent("Hola, quiero una demo de Event Box para mi empresa de eventos")}`;
+
+const JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Event Box",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web, Android, iOS",
+  url: EVENTBOX_URL,
+  description:
+    "Stock, contenedores y órdenes de servicio para empresas de eventos, con recorrido por etapas, responsables, PDF y gestión del equipo.",
+  publisher: { "@id": "https://wearesrv.com/#organization" },
+  offers: {
+    "@type": "Offer",
+    price: "520",
+    priceCurrency: "USD",
+    description: "Plan Básico, abono mensual por empresa",
+  },
+};
 
 const PLANES = [
   {
@@ -54,6 +73,7 @@ export default function EventBox() {
         title="Event Box - Stock y órdenes de servicio para empresas de eventos | WEARESRV"
         description="Event Box ordena el stock, los contenedores y las órdenes de servicio de tu empresa de eventos. Cada orden con su recorrido, su responsable por etapa y su PDF. Por SRV."
         path="/eventbox"
+        jsonLd={JSON_LD}
       />
 
       <section className={styles.hero}>
@@ -108,7 +128,7 @@ export default function EventBox() {
           <div className={styles.plans}>
             <h3>Planes disponibles</h3>
             <p className={styles.plansSubtitle}>
-              Abono mensual por empresa en dólares, cobrado en pesos al dólar blue del día de pago
+              Abono mensual por empresa en dólares, cobrado en pesos al dólar blue del día de pago · 14 días de prueba al dar de alta tu empresa
             </p>
             <div className={styles.plansGrid}>
               {PLANES.map((plan) => (
@@ -130,9 +150,14 @@ export default function EventBox() {
 
           <div className={styles.cta}>
             <p>¿Tu empresa de eventos quiere usar Event Box?</p>
-            <a href={EVENTBOX_URL} target="_blank" rel="noopener noreferrer" className={styles.btnPrimary}>
-              Ingresar a la plataforma →
-            </a>
+            <div className={styles.ctaActions}>
+              <a href={EVENTBOX_URL} target="_blank" rel="noopener noreferrer" className={styles.btnPrimary}>
+                Ingresar a la plataforma →
+              </a>
+              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className={styles.btnSecondary}>
+                Pedir una demo por WhatsApp
+              </a>
+            </div>
           </div>
         </div>
       </section>

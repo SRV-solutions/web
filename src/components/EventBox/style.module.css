@@ -268,6 +268,31 @@
   font-weight: 500;
 }
 
+.ctaActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btnSecondary {
+  display: inline-block;
+  padding: 1rem 1.8rem;
+  font-size: 1rem;
+  font-weight: 800;
+  text-decoration: none;
+  text-align: center;
+  border-radius: 8px;
+  color: #ffffff;
+  border: 1px solid #0b78fb;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.btnSecondary:hover {
+  background-color: rgba(11, 120, 251, 0.12);
+  transform: translateY(-2px);
+}
+
 /* ---------- Volver ---------- */
 .backSection {
   max-width: 1200px;
@@ -327,5 +352,9 @@
 
   .cta p {
     font-size: 1rem;
+  }
+
+  .ctaActions a {
+    width: 100%;
   }
 }

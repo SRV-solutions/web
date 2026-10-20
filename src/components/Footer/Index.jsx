@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styles from "./style.module.css";
 import { FaInstagram, FaTiktok, FaYoutube, FaDiscord, FaWhatsapp } from "react-icons/fa";
 
@@ -112,23 +113,42 @@ export default function Footer() {
           </a>
         </div>
 
+        {/* Productos */}
+        <div className={styles.links_container}>
+          <h3 className={styles.section_heading}>
+            <span className={styles.green}>Productos</span>
+          </h3>
+          <Link className={styles.footer_link} to="/sentryx">
+            Sentryx · Colegios
+          </Link>
+          <Link className={styles.footer_link} to="/eventbox">
+            Event Box · Empresas de eventos
+          </Link>
+          <Link className={styles.footer_link} to="/el-develop">
+            El Develop · Juego gratis
+          </Link>
+        </div>
+
         {/* Formaciones */}
         <div className={styles.links_container}>
           <h3 className={styles.section_heading}>
             <span className={styles.blue}>Formaciones</span>
           </h3>
-          <a className={styles.footer_link} href="/scripting/inscripcion">
+          <Link className={styles.footer_link} to="/scripting/inscripcion">
             Curso de Scripting
-          </a>
-          <a className={styles.footer_link} href="/python/inscripcion">
+          </Link>
+          <Link className={styles.footer_link} to="/python/inscripcion">
             Master en Python
-          </a>
-          <a className={styles.footer_link} href="/fundamentos-backend/inscripcion">
+          </Link>
+          <Link className={styles.footer_link} to="/fundamentos-backend/inscripcion">
             Backend Fundamentos
-          </a>
-          <a className={styles.footer_link} href="/backend-avanzado/inscripcion">
+          </Link>
+          <Link className={styles.footer_link} to="/backend-avanzado/inscripcion">
             Backend Avanzado
-          </a>
+          </Link>
+          <Link className={styles.footer_link} to="/full-stack/inscripcion">
+            Intensivo Full Stack
+          </Link>
           <a
             className={styles.footer_link}
             href="https://discord.com/invite/QuAmDxrNMu"
@@ -146,7 +166,7 @@ export default function Footer() {
               COTIZACIONES & <span className={styles.green}>CONTACTO</span>
             </h3>
             <p>
-              Diseñamos soluciones personalizadas para startups y empresas. Escríbenos directamente para cotizar tu desarrollo.
+              Diseñamos soluciones a medida para startups y empresas. Escribinos por WhatsApp y cotizamos tu desarrollo.
             </p>
           </div>
           <div className={styles.section_info}>

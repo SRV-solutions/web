@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import styles from "./style.module.css";
 import Seo, { SITE_URL } from "../Seo";
-import { CURSOS_GRABADOS, formatearPrecio } from "../../data/cursosGrabados";
+import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa } from "../../data/cursosGrabados";
 
 const WHATSAPP_URL = `https://wa.me/5491123869799?text=${encodeURIComponent("Hola, quiero cotizar un software")}`;
 
@@ -32,7 +32,8 @@ const PASOS = [
 
 const FAQ = [
   { q: "Nunca programé, ¿por dónde empiezo?", a: "Por el Curso de Scripting: arranca desde cero, cuesta $15.000 y te da la base de lógica para después seguir con Python o Backend." },
-  { q: "¿Las clases son en vivo o grabadas?", a: "Los cursos de Scripting, Python, Backend Fundamentos y Backend Avanzado son grabados, con acceso de por vida. El Intensivo Full Stack es una cursada en vivo." },
+  { q: "¿Las clases son en vivo o grabadas?", a: "Los cursos de Scripting, Python, Backend Fundamentos, Backend Avanzado y Scratch para Chicos son grabados, con acceso de por vida. El Intensivo Full Stack es una cursada en vivo." },
+  { q: "¿Tienen algo para chicos?", a: "Sí: Scratch para Chicos, un curso grabado de 14 clases para que chicos de 8 a 13 años creen una historia animada y su primer videojuego. Está en preventa a $10.000 hasta el 18 de noviembre; ese día se envía el acceso." },
   { q: "¿Cómo recibo el curso después de pagar?", a: "Automáticamente: apenas Mercado Pago aprueba el pago, te llega un mail con el acceso a la carpeta del curso en Google Drive." },
   { q: "¿Hacen software para empresas?", a: "Sí. Además de la escuela, desarrollamos backend, APIs, plataformas web y automatizaciones a medida. Escribinos por WhatsApp y lo cotizamos." },
   { q: "¿Tienen productos propios?", a: "Sí, dos plataformas por suscripción mensual: Sentryx, para colegios (comunicados, boletines, asistencia y aulas virtuales), y Event Box, para empresas de eventos (stock, contenedores y órdenes de servicio). Los planes están en la página de cada una." },
@@ -185,6 +186,16 @@ export default function Home() {
             );
           })}
         </div>
+
+        <Link to="/scratch/inscripcion" className={styles.kidsBanner}>
+          <span className={styles.kidsIcon}>🧩</span>
+          <span>
+            <strong>Nuevo: Scratch para Chicos (8 a 13 años).</strong>{" "}
+            {estaEnPreventa(CURSOS_GRABADOS.scratch)
+              ? `En preventa a ${formatearPrecio(CURSOS_GRABADOS.scratch.precio)} hasta el ${CURSOS_GRABADOS.scratch.preventa.fechaTexto} →`
+              : "Que cree su primer videojuego desde cero →"}
+          </span>
+        </Link>
 
         <Link to="/full-stack/inscripcion" className={styles.liveBanner}>
           <span className={styles.liveDot} />

@@ -25,8 +25,13 @@ const menuData = [
     disabled: false,
     isExternal: false,
     hasNotification: true,
-    badgeCount: 5,
+    badgeCount: 6,
     links: [
+      {
+        label: "Scratch para Chicos",
+        to: "/scratch/inscripcion",
+        isNew: true
+      },
       {
         label: "Scripting",
         to: "/scripting/inscripcion",

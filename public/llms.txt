@@ -4,6 +4,7 @@
 
 ## Cursos grabados (pago único con Mercado Pago, acceso inmediato por Google Drive)
 
+- [Scratch para Chicos Desde Cero](https://wearesrv.com/scratch/inscripcion): 14 clases en 2 módulos para chicos de 8 a 13 años: una historia animada y su primer videojuego. Preventa a $10.000 hasta el 18 de noviembre de 2026 (después $18.000); el acceso se envía ese día.
 - [Curso de Scripting Desde Cero](https://wearesrv.com/scripting/inscripcion): 32 clases (más de 59 horas). JavaScript, Python y Google Apps Script para automatizar planillas, mails, documentos y armar bots. Incluye guía de estudio en PDF.
 - [Master en Python Desde Cero](https://wearesrv.com/python/inscripcion): 98 clases. Lógica, POO, APIs, asincronismo y apps con interfaz gráfica.
 - [Backend Fundamentos](https://wearesrv.com/fundamentos-backend/inscripcion): 90 clases de JavaScript y Node.js, con guía de estudio.

@@ -5,7 +5,20 @@
 //   - CURSOS en appscript-cursos.gs (misma clave, itemId y precioMinimo)
 //   - src/data/cursosGrabados.js (precio que se muestra en la web)
 // ==========================================
+// Preventa de Scratch: antes de esta fecha se cobra precioPreventa; desde ese día, precio.
+// Misma fecha que en src/data/cursosGrabados.js. El acceso se envía recién ese día.
+const SCRATCH_PREVENTA_HASTA = Date.parse("2026-11-18T00:00:00-03:00");
+
 export const CURSOS = {
+  scratch: {
+    itemId: "curso-scratch-chicos",
+    titulo: "Scratch para Chicos Desde Cero - WEARESRV",
+    contentName: "Infoproducto Scratch",
+    precio: 18000,
+    precioPreventa: 10000,
+    preventaHasta: SCRATCH_PREVENTA_HASTA,
+    ruta: "scratch",
+  },
   scripting: {
     itemId: "curso-scripting",
     titulo: "Curso de Scripting Desde Cero - WEARESRV",
@@ -37,7 +50,10 @@ export const CURSOS = {
 };
 
 export function getCurso(key) {
-  return typeof key === "string" && Object.prototype.hasOwnProperty.call(CURSOS, key)
-    ? CURSOS[key]
-    : null;
+  if (typeof key !== "string" || !Object.prototype.hasOwnProperty.call(CURSOS, key)) return null;
+  const curso = CURSOS[key];
+  if (curso.preventaHasta && Date.now() < curso.preventaHasta) {
+    return { ...curso, precio: curso.precioPreventa };
+  }
+  return curso;
 }

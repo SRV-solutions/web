@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Seo from "../Seo";
 import { useSearchParams, Link } from "react-router-dom";
 import { trackEvent, getMetaCookies } from "../../data/metaPixel";
-import { CURSOS_GRABADOS } from "../../data/cursosGrabados";
+import { CURSOS_GRABADOS, estaEnPreventa } from "../../data/cursosGrabados";
 
 const MENSAJES = {
   approved: {
@@ -33,9 +33,17 @@ const TEXTOS_INTENSIVO = {
   unknown: "Si ya pagaste, en los próximos minutos recibirás en tu Email los accesos al Discord y a los grupos de WhatsApp.",
 };
 
+// Cursos en preventa: el pago reserva el lugar y el acceso se envía en la fecha de lanzamiento
+const textosPreventa = (fecha) => ({
+  approved: `Tu lugar quedó reservado al precio de preventa. El ${fecha} te llega al Email el acceso al material. Guardá este mail: es tu comprobante.`,
+  pending: `Apenas Mercado Pago lo acredite, tu lugar queda reservado y el ${fecha} te enviamos el acceso al material por Email.`,
+  unknown: `Si ya pagaste, tu lugar queda reservado y el ${fecha} recibirás el acceso al material en tu Email.`,
+});
+
 export default function GraciasCurso({ cursoKey }) {
   const esIntensivo = cursoKey === "intensivo";
   const curso = esIntensivo ? INTENSIVO : CURSOS_GRABADOS[cursoKey];
+  const preventa = !esIntensivo && estaEnPreventa(curso);
   const [searchParams] = useSearchParams();
   const paymentId = searchParams.get("payment_id");
   const [estado, setEstado] = useState(paymentId ? "loading" : "unknown");
@@ -94,6 +102,12 @@ export default function GraciasCurso({ cursoKey }) {
   };
   if (esIntensivo && TEXTOS_INTENSIVO[estado]) {
     mensaje = { ...mensaje, texto: TEXTOS_INTENSIVO[estado] };
+  }
+  if (preventa) {
+    const textos = textosPreventa(curso.preventa.fechaTexto);
+    if (textos[estado]) {
+      mensaje = { ...mensaje, titulo: estado === "approved" ? "¡Lugar reservado!" : mensaje.titulo, texto: textos[estado] };
+    }
   }
 
   return (

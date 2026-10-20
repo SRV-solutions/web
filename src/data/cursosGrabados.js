@@ -2,7 +2,78 @@
 // El precio que se cobra realmente se define en netlify/lib/cursos.js
 // (acá solo se muestra en pantalla y se usa para Meta Pixel; mantenerlos iguales).
 
+// Preventa de Scratch: hasta esta fecha se vende a precio de preventa y ese día se envía el acceso.
+// La misma fecha vive en netlify/lib/cursos.js.
+const SCRATCH_ACCESO = new Date("2026-11-18T00:00:00-03:00");
+
+export const estaEnPreventa = (curso) => Boolean(curso?.preventa) && Date.now() < curso.preventa.hasta.getTime();
+
 export const CURSOS_GRABADOS = {
+  scratch: {
+    key: "scratch",
+    ruta: "scratch",
+    contentName: "Infoproducto Scratch",
+    tituloInicio: "Scratch para",
+    tituloDestacado: "Chicos",
+    tituloFin: "Desde Cero",
+    descripcion:
+      "14 clases grabadas para que chicos de 8 a 13 años aprendan a programar jugando con Scratch: en el primer módulo arman una historia animada y en el segundo, su primer videojuego con puntaje, vidas y niveles. Sin instalar nada.",
+    precio: Date.now() < SCRATCH_ACCESO.getTime() ? 10000 : 18000,
+    precioRegular: 18000,
+    preventa: { hasta: SCRATCH_ACCESO, fechaTexto: "18 de noviembre" },
+    clases: 14,
+    beneficios: [
+      "Acceso vitalicio al material en Google Drive",
+      "Pensado para chicos de 8 a 13 años, sin experiencia previa",
+      "Dos proyectos para mostrar: una historia animada y un videojuego",
+      "Sin instalar nada: Scratch funciona gratis en el navegador",
+      "Ideal para hacer en familia, a su ritmo",
+    ],
+    subTituloDesc:
+      "Dos módulos cortos y prácticos: cada clase termina con algo que se ve y se puede jugar.",
+    gancho: "Que deje de ser solo jugador: que cree sus propios juegos.",
+    metaDescripcion: "Curso de Scratch para chicos de 8 a 13 años: 14 clases grabadas para crear una historia animada y su primer videojuego. Preventa a $10.000 hasta el 18 de noviembre.",
+    nivel: "Desde cero · Para chicos de 8 a 13 años, sin experiencia previa",
+    paraQuien: [
+      "Tu hijo o hija pasa horas con videojuegos y querés que también aprenda a crearlos",
+      "Tiene entre 8 y 13 años y nunca programó",
+      "Buscás una actividad creativa para hacer en casa, sin pantallas pasivas",
+      "Querés darle una base de lógica antes de pasar a un lenguaje de texto como Python",
+    ],
+    resultados: [
+      "Crear historias animadas con personajes, diálogos, disfraces y sonidos",
+      "Programar su primer videojuego con puntaje, vidas, enemigos y niveles",
+      "Entender eventos, bucles, condicionales y variables jugando",
+      "Compartir sus proyectos con la familia y la comunidad de Scratch",
+    ],
+    modulos: [
+      {
+        titulo: "Mis Primeros Proyectos: Historias Animadas",
+        temas: [
+          "Qué es Scratch, cómo crear la cuenta y recorrer el editor",
+          "Escenario, personajes (sprites), disfraces y fondos",
+          "Los primeros bloques: mover, girar, decir y pensar",
+          "Eventos: bandera verde, teclas y clics sobre un personaje",
+          "Repetir y por siempre: animaciones que no paran",
+          "Sonidos, música y efectos visuales",
+          "Proyecto: una historia animada con dos personajes que conversan",
+        ],
+      },
+      {
+        titulo: "Mi Primer Videojuego",
+        temas: [
+          "Condicionales y sensores: ¿está tocando el borde, un color, otro personaje?",
+          "Variables: puntaje, vidas y temporizador",
+          "Clones: enemigos y monedas que aparecen solos",
+          "Mensajes entre personajes: enviar y recibir",
+          "Pantallas de inicio, niveles y game over",
+          "Proyecto final: tu propio juego de esquivar y atrapar",
+          "Compartir el juego y jugar los de otros chicos",
+        ],
+      },
+    ],
+  },
+
   scripting: {
     key: "scripting",
     ruta: "scripting",

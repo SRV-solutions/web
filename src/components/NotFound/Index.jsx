@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import styles from "./style.module.css";
 
 const CURSOS_DISPONIBLES = [
+  { label: "Scratch para Chicos", to: "/scratch/inscripcion" },
   { label: "Curso de Scripting", to: "/scripting/inscripcion" },
   { label: "Master en Python", to: "/python/inscripcion" },
   { label: "Backend Fundamentos", to: "/fundamentos-backend/inscripcion" },

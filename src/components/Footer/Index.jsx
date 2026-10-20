@@ -134,6 +134,9 @@ export default function Footer() {
           <h3 className={styles.section_heading}>
             <span className={styles.blue}>Formaciones</span>
           </h3>
+          <Link className={styles.footer_link} to="/scratch/inscripcion">
+            Scratch para Chicos
+          </Link>
           <Link className={styles.footer_link} to="/scripting/inscripcion">
             Curso de Scripting
           </Link>

@@ -26,6 +26,8 @@ const GraciasCurso = lazy(
 );
 const Certificates = lazy(() => import("./components/Certificates/Index.jsx"));
 const ElDevelop = lazy(() => import("./components/ElDevelop/Index.jsx"));
+const Sentryx = lazy(() => import("./components/Sentryx/Index.jsx"));
+const EventBox = lazy(() => import("./components/EventBox/Index.jsx"));
 const NotFound = lazy(() => import("./components/NotFound/Index.jsx"));
 
 // PageLoader con animación
@@ -182,6 +184,8 @@ function AppContent() {
           <Route path="/full-stack/gracias" element={<GraciasCurso cursoKey="intensivo" />} />
           <Route path="/certificates/:id" element={<Certificates />} />
           <Route path="/el-develop" element={<ElDevelop />} />
+          <Route path="/sentryx" element={<Sentryx />} />
+          <Route path="/eventbox" element={<EventBox />} />
           <Route path="/potrero-it" element={<Navigate to="/el-develop" replace />} />
           {/* Cualquier link viejo o inexistente (ej. cursos que ya cerraron) */}
           <Route path="*" element={<NotFound />} />

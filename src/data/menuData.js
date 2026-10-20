@@ -16,6 +16,8 @@ const menuData = [
         to: "/#automatizacion",
         isExternal: false,
       },
+      { label: "Sentryx", to: "/sentryx", isExternal: false, isNew: true },
+      { label: "Event Box", to: "/eventbox", isExternal: false, isNew: true },
     ],
   },
   {

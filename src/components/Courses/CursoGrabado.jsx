@@ -83,17 +83,23 @@ export default function CursoGrabado({ cursoKey }) {
   const curso = CURSOS_GRABADOS[cursoKey];
   const [loading, setLoading] = useState(false);
   const [showBar, setShowBar] = useState(false);
+  // Qué se compra: el curso de la página, salvo que el selector elija el otro curso de la ruta o el combo
+  const [seleccion, setSeleccion] = useState(curso.key);
+  const producto = CURSOS_GRABADOS[seleccion] || curso;
+  const tituloProducto = [producto.tituloInicio, producto.tituloDestacado, producto.tituloFin].filter(Boolean).join(" ");
   const buyRef = useRef(null);
-  const descuento = Math.round((1 - curso.precio / curso.precioRegular) * 100);
+  const descuento = Math.round((1 - producto.precio / producto.precioRegular) * 100);
   const tituloCompleto = [curso.tituloInicio, curso.tituloDestacado, curso.tituloFin].filter(Boolean).join(" ");
   const preventa = estaEnPreventa(curso);
   const fechaAcceso = preventa ? curso.preventa.fechaTexto : null;
   const faq = preguntasFrecuentes(curso, preventa);
   const pasos = pasosCompra(curso, preventa);
   const path = `/${curso.ruta}/inscripcion`;
-  // Combo: cursos que incluye. Curso individual: el combo que lo incluye (para el banner "llevalos juntos")
+  // Combo: cursos que incluye. Curso individual: el combo que lo incluye, que habilita el selector
+  // "uno, el otro o los dos" en la tarjeta de compra (las opciones son los cursos del combo y el combo).
   const incluye = curso.combo ? curso.combo.map((k) => CURSOS_GRABADOS[k]) : null;
   const combo = curso.combo ? null : comboQueIncluye(curso.key);
+  const opciones = combo ? [...combo.combo.map((k) => CURSOS_GRABADOS[k]), combo] : [];
   const nombreCorto = (c) => `${c.tituloInicio} ${c.tituloDestacado}`;
 
   const pixelData = {
@@ -102,8 +108,9 @@ export default function CursoGrabado({ cursoKey }) {
     value: curso.precio,
   };
 
-  // ViewContent: alguien entró a ver el curso
+  // ViewContent: alguien entró a ver el curso. Al cambiar de curso, el selector vuelve al curso de la página.
   useEffect(() => {
+    setSeleccion(curso.key);
     trackConversion("ViewContent", pixelData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cursoKey]);
@@ -120,14 +127,14 @@ export default function CursoGrabado({ cursoKey }) {
     if (loading) return;
     setLoading(true);
 
-    trackConversion("InitiateCheckout", pixelData);
+    trackConversion("InitiateCheckout", { content_name: producto.contentName, currency: "ARS", value: producto.precio });
 
     try {
-      // Solo enviamos la clave del curso: el precio lo define el servidor
+      // Solo enviamos la clave del producto elegido: el precio lo define el servidor
       const response = await fetch("/.netlify/functions/crear-preferencia", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ curso: curso.key }),
+        body: JSON.stringify({ curso: producto.key }),
       });
 
       const data = await response.json();
@@ -199,7 +206,7 @@ export default function CursoGrabado({ cursoKey }) {
       </svg>
       {loading
         ? "Conectando con Mercado Pago..."
-        : `${preventa ? "Reservar mi acceso" : "Quiero mi acceso"} · ${formatearPrecio(curso.precio)}`}
+        : `${preventa ? "Reservar mi acceso" : producto.combo ? "Quiero los dos cursos" : "Quiero mi acceso"} · ${formatearPrecio(producto.precio)}`}
     </button>
   );
 
@@ -249,33 +256,59 @@ export default function CursoGrabado({ cursoKey }) {
                     <span className={styles.promoBadge}>
                       {preventa
                         ? `🔥 Precio de preventa · ${descuento}% OFF`
-                        : curso.combo
-                          ? `🎁 Combo · ahorrás ${formatearPrecio(curso.precioRegular - curso.precio)}`
+                        : producto.combo
+                          ? `🎁 Combo · ahorrás ${formatearPrecio(producto.precioRegular - producto.precio)}`
                           : `🔥 ${descuento}% OFF · Precio promocional`}
                     </span>
                   )}
                   <span className={styles.timerTag}>{preventa ? `Solo hasta el ${fechaAcceso}` : "Pago único, sin suscripción"}</span>
                 </div>
 
+                {opciones.length > 0 && (
+                  <fieldset className={styles.selector}>
+                    <legend className={styles.selectorTitle}>¿Qué querés llevar?</legend>
+                    {opciones.map((op) => {
+                      const activa = op.key === producto.key;
+                      return (
+                        <label
+                          key={op.key}
+                          className={`${styles.opcion} ${activa ? styles.opcionActiva : ""} ${op.combo ? styles.opcionCombo : ""}`}
+                        >
+                          <input type="radio" name="producto" value={op.key} checked={activa} onChange={() => setSeleccion(op.key)} />
+                          <span className={styles.opcionNombre}>
+                            {op.combo ? "Los dos · Ruta Backend Completa" : nombreCorto(op)}
+                            <small>
+                              {op.combo
+                                ? `${op.clases} clases · ahorrás ${formatearPrecio(op.precioRegular - op.precio)}`
+                                : `${op.clases} clases${op.key === curso.key ? " · este curso" : ""}`}
+                            </small>
+                          </span>
+                          <span className={styles.opcionPrecio}>{formatearPrecio(op.precio)}</span>
+                        </label>
+                      );
+                    })}
+                  </fieldset>
+                )}
+
                 <div className={styles.priceContainer}>
                   {descuento > 0 && (
                     <div className={styles.oldPriceBox}>
                       <span className={styles.oldPriceLabel}>
-                        {preventa ? `Desde el ${fechaAcceso}` : curso.combo ? "Por separado" : "Precio regular"}
+                        {preventa ? `Desde el ${fechaAcceso}` : producto.combo ? "Por separado" : "Precio regular"}
                       </span>
-                      <span className={styles.oldPrice}>{formatearPrecio(curso.precioRegular)}</span>
+                      <span className={styles.oldPrice}>{formatearPrecio(producto.precioRegular)}</span>
                     </div>
                   )}
                   <div className={styles.currentPriceBox}>
                     <span className={styles.priceTag}>{preventa ? "Reservás hoy por" : "Pagás hoy"}</span>
                     <div className={styles.mainPrice}>
-                      {formatearPrecio(curso.precio)} <span className={styles.currency}>ARS</span>
+                      {formatearPrecio(producto.precio)} <span className={styles.currency}>ARS</span>
                     </div>
                   </div>
                 </div>
 
                 <ul className={styles.benefitsList}>
-                  {curso.beneficios.map((beneficio) => (
+                  {producto.beneficios.map((beneficio) => (
                     <li key={beneficio} className={styles.benefitItem}>
                       ✓ {beneficio}
                     </li>
@@ -297,7 +330,14 @@ export default function CursoGrabado({ cursoKey }) {
         {/* Columna Derecha: Plan de Estudios y argumentos de venta */}
         <div className={styles.contentColumn}>
           {combo && (
-            <Link to={`/${combo.ruta}/inscripcion`} className={styles.comboBanner}>
+            <button
+              type="button"
+              className={styles.comboBanner}
+              onClick={() => {
+                setSeleccion(combo.key);
+                buyRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+              }}
+            >
               <span className={styles.comboIcon}>🎁</span>
               <span className={styles.comboText}>
                 <strong>¿Vas por backend? Llevá los dos cursos juntos.</strong>
@@ -306,8 +346,8 @@ export default function CursoGrabado({ cursoKey }) {
                   ahorrás {formatearPrecio(combo.precioRegular - combo.precio)} frente a comprarlos por separado.
                 </span>
               </span>
-              <span className={styles.comboCta}>Ver el combo →</span>
-            </Link>
+              <span className={styles.comboCta}>Elegir los dos →</span>
+            </button>
           )}
           <div className={styles.twoCols}>
             <div className={styles.infoCard}>
@@ -388,7 +428,7 @@ export default function CursoGrabado({ cursoKey }) {
             <p>
               {preventa
                 ? `${curso.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(curso.precio)}. Desde el ${fechaAcceso} pasa a ${formatearPrecio(curso.precioRegular)}, y ese mismo día se habilitan las clases en tu carpeta.`
-                : `${curso.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(curso.precio)}. Empezá esta misma noche.`}
+                : `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(producto.precio)}. Empezá esta misma noche.`}
             </p>
             {botonPago(styles.btnFinal)}
           </div>
@@ -398,8 +438,8 @@ export default function CursoGrabado({ cursoKey }) {
       {/* Barra fija de compra en celular */}
       <div className={`${styles.mobileBar} ${showBar ? styles.mobileBarVisible : ""}`} aria-hidden={!showBar}>
         <div className={styles.mobileBarPrice}>
-          <span>{tituloCompleto}</span>
-          <strong>{formatearPrecio(curso.precio)}</strong>
+          <span>{tituloProducto}</span>
+          <strong>{formatearPrecio(producto.precio)}</strong>
         </div>
         <button type="button" onClick={handleMercadoPagoCheckout} disabled={loading} tabIndex={showBar ? 0 : -1}>
           {loading ? "Conectando..." : preventa ? "Reservar" : "Comprar"}

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import styles from "./style.module.css";
 import Seo, { SITE_URL } from "../Seo";
-import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa } from "../../data/cursosGrabados";
+import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, linkInscripcion } from "../../data/cursosGrabados";
 
 const WHATSAPP_URL = `https://wa.me/5491123869799?text=${encodeURIComponent("Hola, quiero cotizar un software")}`;
 
@@ -181,7 +181,7 @@ export default function Home() {
                   <span className={styles.oldPrice}>{formatearPrecio(c.precioRegular)}</span>
                   <strong>{formatearPrecio(c.precio)}</strong>
                 </div>
-                <Link to={`/${c.ruta}/inscripcion`} className={destacado ? styles.btnPrimary : styles.btnSecondary}>
+                <Link to={linkInscripcion(c)} className={destacado ? styles.btnPrimary : styles.btnSecondary}>
                   Ver el curso
                 </Link>
               </article>

@@ -371,6 +371,21 @@
   text-decoration: underline;
 }
 
+/* Botón con aspecto de link (elige una opción del selector) */
+.linkBtn {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 700;
+  color: #9fc7ff;
+  cursor: pointer;
+}
+
+.linkBtn:hover {
+  text-decoration: underline;
+}
+
 /* Selector "uno, el otro o los dos" dentro de la tarjeta de compra */
 .selector {
   margin: 0 0 1rem;

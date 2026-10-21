@@ -185,15 +185,17 @@ function AppContent() {
           <Route path="/scratch/gracias" element={<GraciasCurso cursoKey="scratch" />} />
           <Route path="/python/inscripcion" element={<CursoGrabado cursoKey="python" />} />
           <Route path="/python/gracias" element={<GraciasCurso cursoKey="python" />} />
-          {/* Master en JavaScript (ex Backend Fundamentos): la clave interna sigue siendo "fundamentos-backend" */}
-          <Route path="/javascript/inscripcion" element={<CursoGrabado cursoKey="fundamentos-backend" />} />
-          <Route path="/javascript/gracias" element={<GraciasCurso cursoKey="fundamentos-backend" />} />
-          <Route path="/fundamentos-backend/inscripcion" element={<Navigate to="/javascript/inscripcion" replace />} />
-          <Route path="/fundamentos-backend/gracias" element={<RedirectConQuery to="/javascript/gracias" />} />
-          <Route path="/backend-avanzado/inscripcion" element={<CursoGrabado cursoKey="backend-avanzado" />} />
-          <Route path="/backend-avanzado/gracias" element={<GraciasCurso cursoKey="backend-avanzado" />} />
+          {/* Ruta backend: UNA sola página vende Master en JavaScript (clave interna "fundamentos-backend"),
+              Backend Avanzado o los dos juntos. Las URLs viejas de cada curso redirigen con la opción preseleccionada.
+              Las páginas de gracias siguen siendo una por producto porque Mercado Pago vuelve a cada una. */}
           <Route path="/ruta-backend/inscripcion" element={<CursoGrabado cursoKey="ruta-backend" />} />
           <Route path="/ruta-backend/gracias" element={<GraciasCurso cursoKey="ruta-backend" />} />
+          <Route path="/javascript/inscripcion" element={<Navigate to="/ruta-backend/inscripcion?elegir=fundamentos-backend" replace />} />
+          <Route path="/javascript/gracias" element={<GraciasCurso cursoKey="fundamentos-backend" />} />
+          <Route path="/fundamentos-backend/inscripcion" element={<Navigate to="/ruta-backend/inscripcion?elegir=fundamentos-backend" replace />} />
+          <Route path="/fundamentos-backend/gracias" element={<RedirectConQuery to="/javascript/gracias" />} />
+          <Route path="/backend-avanzado/inscripcion" element={<Navigate to="/ruta-backend/inscripcion?elegir=backend-avanzado" replace />} />
+          <Route path="/backend-avanzado/gracias" element={<GraciasCurso cursoKey="backend-avanzado" />} />
           <Route path="/full-stack/inscripcion" element={<ContactoCursoWeb />} />
           <Route path="/full-stack/gracias" element={<GraciasCurso cursoKey="intensivo" />} />
           <Route path="/certificates/:id" element={<Certificates />} />

@@ -28,13 +28,13 @@ export const COURSES = {
     pitch: "Lógica, POO, APIs y automatización desde cero.",
   },
   "fundamentos-backend": {
-    to: "/javascript/inscripcion",
+    to: "/ruta-backend/inscripcion?elegir=fundamentos-backend",
     icon: "🟨",
     name: "Master en JavaScript",
     pitch: "JavaScript de verdad: lógica, POO, promesas y APIs. La base que te piden en cualquier entrevista.",
   },
   "backend-avanzado": {
-    to: "/backend-avanzado/inscripcion",
+    to: "/ruta-backend/inscripcion?elegir=backend-avanzado",
     icon: "🚀",
     name: "Backend Avanzado",
     pitch: "Bases de datos, APIs, servidores y arquitectura como un Senior.",

@@ -25,7 +25,7 @@ const menuData = [
     disabled: false,
     isExternal: false,
     hasNotification: true,
-    badgeCount: 7,
+    badgeCount: 5,
     links: [
       {
         label: "Scratch para Chicos",
@@ -43,17 +43,7 @@ const menuData = [
         isNew: true
       },
       {
-        label: "JavaScript Developer",
-        to: "/javascript/inscripcion",
-        isNew: true
-      },
-      {
-        label: "Backend Avanzado",
-        to: "/backend-avanzado/inscripcion",
-        isNew: true
-      },
-      {
-        label: "Ruta Backend (Combo)",
+        label: "Ruta Backend: JavaScript + Node",
         to: "/ruta-backend/inscripcion",
         isNew: true
       },

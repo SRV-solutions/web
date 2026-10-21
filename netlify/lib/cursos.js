@@ -41,14 +41,17 @@ export const CURSOS = {
     titulo: "Master en JavaScript Desde Cero - WEARESRV",
     contentName: "Infoproducto Master en JavaScript",
     precio: 84900,
-    ruta: "javascript",
+    ruta: "javascript", // página de gracias: /javascript/gracias
+    // La compra vive en la página única de la ruta backend, con este curso preseleccionado
+    urlInscripcion: "/ruta-backend/inscripcion?elegir=fundamentos-backend",
   },
   "backend-avanzado": {
     itemId: "curso-backend-avanzado",
     titulo: "Backend Avanzado - WEARESRV",
     contentName: "Infoproducto Backend Avanzado",
     precio: 99900,
-    ruta: "backend-avanzado",
+    ruta: "backend-avanzado", // página de gracias: /backend-avanzado/gracias
+    urlInscripcion: "/ruta-backend/inscripcion?elegir=backend-avanzado",
   },
   // Combo: Master en JavaScript + Backend Avanzado en un solo pago.
   // El Apps Script comparte las dos carpetas de Drive (clave "incluye" en appscript-cursos.gs).

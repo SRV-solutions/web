@@ -7,9 +7,7 @@
 - [Scratch para Chicos Desde Cero](https://wearesrv.com/scratch/inscripcion): 14 clases en 2 módulos para chicos de 8 a 13 años: una historia animada y su primer videojuego. Preventa a $10.000 hasta el 18 de noviembre de 2026 (después $18.000); el acceso a la carpeta llega al instante y las clases se habilitan ese día.
 - [Curso de Scripting Desde Cero](https://wearesrv.com/scripting/inscripcion): 32 clases (más de 59 horas). JavaScript, Python y Google Apps Script para automatizar planillas, mails, documentos y armar bots. Incluye guía de estudio en PDF.
 - [Master en Python Desde Cero](https://wearesrv.com/python/inscripcion): 98 clases. Lógica, POO, APIs, asincronismo y apps con interfaz gráfica.
-- [Master en JavaScript Desde Cero](https://wearesrv.com/javascript/inscripcion): 90 clases de JavaScript con Node.js desde cero. Lógica, POO, promesas, APIs reales, bots y testing, con guía de estudio.
-- [Backend Avanzado](https://wearesrv.com/backend-avanzado/inscripcion): 73 clases, continuación del Master en JavaScript. Servidores y APIs REST con Express, middlewares, sockets, testing y Docker, con guía de estudio.
-- [Ruta Backend Completa (combo)](https://wearesrv.com/ruta-backend/inscripcion): Master en JavaScript + Backend Avanzado en un solo pago de $149.900 (por separado suman $184.800). 163 clases y las dos guías de estudio.
+- [Ruta Backend](https://wearesrv.com/ruta-backend/inscripcion): una sola página para elegir Master en JavaScript Desde Cero (90 clases de JavaScript con Node.js: lógica, POO, promesas, APIs, bots y testing, $84.900), Backend Avanzado (73 clases de servidores y APIs REST con Express, middlewares, sockets, testing y Docker, $99.900) o los dos juntos (Ruta Backend Completa, 163 clases, $149.900 en lugar de $184.800). Cada curso incluye guía de estudio.
 
 ## Cursos en vivo
 

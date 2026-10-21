@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import styles from "./CursoGrabado.module.css";
 import Seo, { SITE_URL } from "../Seo";
 import { trackConversion } from "../../data/metaPixel";
@@ -80,26 +80,31 @@ function preguntasFrecuentes(curso, preventa) {
 }
 
 export default function CursoGrabado({ cursoKey }) {
+  // "curso" es la página (URL, SEO). Si es un combo, la misma página vende cada curso por separado
+  // o los dos juntos con un selector; "producto" es lo que está elegido y lo que se muestra y se cobra.
   const curso = CURSOS_GRABADOS[cursoKey];
+  const combo = curso.combo ? curso : comboQueIncluye(curso.key);
+  const opciones = combo ? [...combo.combo.map((k) => CURSOS_GRABADOS[k]), combo] : [];
+  const [searchParams] = useSearchParams();
+  // ?elegir=clave preselecciona una opción (links de la home, menú y redirecciones de las URLs viejas)
+  const elegirInicial = (() => {
+    const pedido = searchParams.get("elegir");
+    return opciones.some((op) => op.key === pedido) ? pedido : curso.key;
+  })();
   const [loading, setLoading] = useState(false);
   const [showBar, setShowBar] = useState(false);
-  // Qué se compra: el curso de la página, salvo que el selector elija el otro curso de la ruta o el combo
-  const [seleccion, setSeleccion] = useState(curso.key);
+  const [seleccion, setSeleccion] = useState(elegirInicial);
   const producto = CURSOS_GRABADOS[seleccion] || curso;
   const tituloProducto = [producto.tituloInicio, producto.tituloDestacado, producto.tituloFin].filter(Boolean).join(" ");
   const buyRef = useRef(null);
   const descuento = Math.round((1 - producto.precio / producto.precioRegular) * 100);
   const tituloCompleto = [curso.tituloInicio, curso.tituloDestacado, curso.tituloFin].filter(Boolean).join(" ");
-  const preventa = estaEnPreventa(curso);
-  const fechaAcceso = preventa ? curso.preventa.fechaTexto : null;
-  const faq = preguntasFrecuentes(curso, preventa);
-  const pasos = pasosCompra(curso, preventa);
+  const preventa = estaEnPreventa(producto);
+  const fechaAcceso = preventa ? producto.preventa.fechaTexto : null;
+  const faq = preguntasFrecuentes(producto, preventa);
+  const pasos = pasosCompra(producto, preventa);
   const path = `/${curso.ruta}/inscripcion`;
-  // Combo: cursos que incluye. Curso individual: el combo que lo incluye, que habilita el selector
-  // "uno, el otro o los dos" en la tarjeta de compra (las opciones son los cursos del combo y el combo).
-  const incluye = curso.combo ? curso.combo.map((k) => CURSOS_GRABADOS[k]) : null;
-  const combo = curso.combo ? null : comboQueIncluye(curso.key);
-  const opciones = combo ? [...combo.combo.map((k) => CURSOS_GRABADOS[k]), combo] : [];
+  const incluye = producto.combo ? producto.combo.map((k) => CURSOS_GRABADOS[k]) : null;
   const nombreCorto = (c) => `${c.tituloInicio} ${c.tituloDestacado}`;
 
   const pixelData = {
@@ -108,9 +113,9 @@ export default function CursoGrabado({ cursoKey }) {
     value: curso.precio,
   };
 
-  // ViewContent: alguien entró a ver el curso. Al cambiar de curso, el selector vuelve al curso de la página.
+  // ViewContent: alguien entró a ver el curso. Al cambiar de página, el selector vuelve a su valor inicial.
   useEffect(() => {
-    setSeleccion(curso.key);
+    setSeleccion(elegirInicial);
     trackConversion("ViewContent", pixelData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cursoKey]);
@@ -233,22 +238,25 @@ export default function CursoGrabado({ cursoKey }) {
                 {preventa ? `🚀 Preventa · las clases se habilitan el ${fechaAcceso}` : "⚡ Acceso inmediato y de por vida"}
               </div>
               <h1 className={styles.title}>
-                {curso.tituloInicio} <span className={styles.orange}>{curso.tituloDestacado}</span>
-                {curso.tituloFin && ` ${curso.tituloFin}`}
+                {producto.tituloInicio} <span className={styles.orange}>{producto.tituloDestacado}</span>
+                {producto.tituloFin && ` ${producto.tituloFin}`}
               </h1>
-              <p className={styles.hook}>{curso.gancho}</p>
-              <p className={styles.description}>{curso.descripcion}</p>
+              <p className={styles.hook}>{producto.gancho}</p>
+              <p className={styles.description}>{producto.descripcion}</p>
               {incluye && (
                 <ul className={styles.incluyeList}>
                   {incluye.map((c) => (
                     <li key={c.key}>
-                      ✓ <Link to={`/${c.ruta}/inscripcion`}>{nombreCorto(c)}</Link> · {c.clases} clases · por separado{" "}
-                      {formatearPrecio(c.precio)}
+                      ✓{" "}
+                      <button type="button" className={styles.linkBtn} onClick={() => setSeleccion(c.key)}>
+                        {nombreCorto(c)}
+                      </button>{" "}
+                      · {c.clases} clases · por separado {formatearPrecio(c.precio)}
                     </li>
                   ))}
                 </ul>
               )}
-              <p className={styles.level}>🎯 {curso.nivel}</p>
+              <p className={styles.level}>🎯 {producto.nivel}</p>
 
               <div className={styles.promoCard}>
                 <div className={styles.promoHeader}>
@@ -280,7 +288,7 @@ export default function CursoGrabado({ cursoKey }) {
                             <small>
                               {op.combo
                                 ? `${op.clases} clases · ahorrás ${formatearPrecio(op.precioRegular - op.precio)}`
-                                : `${op.clases} clases${op.key === curso.key ? " · este curso" : ""}`}
+                                : `${op.clases} clases`}
                             </small>
                           </span>
                           <span className={styles.opcionPrecio}>{formatearPrecio(op.precio)}</span>
@@ -329,7 +337,7 @@ export default function CursoGrabado({ cursoKey }) {
 
         {/* Columna Derecha: Plan de Estudios y argumentos de venta */}
         <div className={styles.contentColumn}>
-          {combo && (
+          {combo && producto.key !== combo.key && (
             <button
               type="button"
               className={styles.comboBanner}
@@ -353,7 +361,7 @@ export default function CursoGrabado({ cursoKey }) {
             <div className={styles.infoCard}>
               <h2 className={styles.infoTitle}>Ideal para vos si…</h2>
               <ul className={styles.checkList}>
-                {curso.paraQuien.map((item) => (
+                {producto.paraQuien.map((item) => (
                   <li key={item}>{item}</li>
                 ))}
               </ul>
@@ -361,7 +369,7 @@ export default function CursoGrabado({ cursoKey }) {
             <div className={styles.infoCard}>
               <h2 className={styles.infoTitle}>Al terminar vas a poder…</h2>
               <ul className={styles.checkList}>
-                {curso.resultados.map((item) => (
+                {producto.resultados.map((item) => (
                   <li key={item}>{item}</li>
                 ))}
               </ul>
@@ -370,16 +378,16 @@ export default function CursoGrabado({ cursoKey }) {
 
           <div className={styles.modulesSummary}>
             <h2 className={styles.subTitle}>
-              Plan de estudios ({curso.clases} clases · {curso.modulos.length} {curso.combo ? "cursos" : "módulos"})
+              Plan de estudios ({producto.clases} clases · {producto.modulos.length} {producto.combo ? "cursos" : "módulos"})
             </h2>
-            <p className={styles.subTitleDesc}>{curso.subTituloDesc}</p>
+            <p className={styles.subTitleDesc}>{producto.subTituloDesc}</p>
 
             <div className={styles.modulesGrid}>
-              {curso.modulos.map((mod, index) => (
+              {producto.modulos.map((mod, index) => (
                 <div key={mod.titulo} className={styles.moduleCard}>
                   <div className={styles.moduleCardHeader}>
                     <span className={styles.moduleNum}>{String(index + 1).padStart(2, "0")}</span>
-                    <span className={styles.moduleTag}>{curso.combo ? "Parte" : "Módulo"} {index + 1}</span>
+                    <span className={styles.moduleTag}>{producto.combo ? "Parte" : "Módulo"} {index + 1}</span>
                   </div>
                   <h3>{mod.titulo}</h3>
                   <ul className={styles.taskList}>
@@ -427,7 +435,7 @@ export default function CursoGrabado({ cursoKey }) {
             <h2>{preventa ? "Reservá tu lugar al precio de preventa." : "Hoy puede ser tu primera clase."}</h2>
             <p>
               {preventa
-                ? `${curso.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(curso.precio)}. Desde el ${fechaAcceso} pasa a ${formatearPrecio(curso.precioRegular)}, y ese mismo día se habilitan las clases en tu carpeta.`
+                ? `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(producto.precio)}. Desde el ${fechaAcceso} pasa a ${formatearPrecio(producto.precioRegular)}, y ese mismo día se habilitan las clases en tu carpeta.`
                 : `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(producto.precio)}. Empezá esta misma noche.`}
             </p>
             {botonPago(styles.btnFinal)}

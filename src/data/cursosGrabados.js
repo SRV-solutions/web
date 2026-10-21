@@ -274,7 +274,7 @@ export const CURSOS_GRABADOS = {
   // identifica el curso por el external_reference "fundamentos-backend:..." de cada pago.
   "fundamentos-backend": {
     key: "fundamentos-backend",
-    ruta: "javascript",
+    ruta: "ruta-backend", // se vende en la página única de la ruta backend (selector)
     contentName: "Infoproducto Master en JavaScript",
     tituloInicio: "Master en",
     tituloDestacado: "JavaScript",
@@ -423,7 +423,7 @@ export const CURSOS_GRABADOS = {
 
   "backend-avanzado": {
     key: "backend-avanzado",
-    ruta: "backend-avanzado",
+    ruta: "ruta-backend", // se vende en la página única de la ruta backend (selector)
     contentName: "Infoproducto Backend Avanzado",
     tituloInicio: "Backend",
     tituloDestacado: "Avanzado",
@@ -526,7 +526,9 @@ export const CURSOS_GRABADOS = {
 export const formatearPrecio = (valor) => `$${valor.toLocaleString("es-AR")}`;
 
 // ---------- COMBO: Ruta Backend Completa (Master en JavaScript + Backend Avanzado) ----------
-// Se vende en un solo pago y el Apps Script (appscript-cursos.gs) comparte las dos carpetas de Drive.
+// Es LA página de la ruta backend (/ruta-backend/inscripcion): con un selector se compra el Master en
+// JavaScript solo, Backend Avanzado solo, o los dos juntos (este combo). El Apps Script comparte las
+// dos carpetas de Drive cuando el pago es del combo.
 // El precio real vive en netlify/lib/cursos.js y el precioMinimo en el Apps Script: mantenerlos iguales.
 const JS = CURSOS_GRABADOS["fundamentos-backend"];
 const BACK = CURSOS_GRABADOS["backend-avanzado"];
@@ -556,7 +558,7 @@ CURSOS_GRABADOS["ruta-backend"] = {
   subTituloDesc:
     "Dos cursos, una sola ruta: primero dominás el lenguaje y después construís servidores como en una empresa real.",
   gancho: "De cero a backend profesional, en un solo pago.",
-  metaDescripcion: `Ruta Backend Completa: Master en JavaScript + Backend Avanzado, ${JS.clases + BACK.clases} clases grabadas de JavaScript, Node.js y Express con acceso de por vida. Ahorrá comprando los dos juntos.`,
+  metaDescripcion: `Ruta Backend: Master en JavaScript (${JS.clases} clases) y Backend Avanzado con Node.js y Express (${BACK.clases} clases). Llevá uno, el otro o los dos juntos con descuento. Acceso de por vida.`,
   nivel: "Desde cero · Hasta nivel profesional",
   paraQuien: [
     "Querés trabajar como desarrollador backend y buscás un camino completo, sin saltos",
@@ -571,6 +573,12 @@ CURSOS_GRABADOS["ruta-backend"] = {
   ],
 };
 
-// Combo que incluye a un curso (para el banner "llevalos juntos" en la página de cada curso individual)
+// Combo que incluye a un curso (habilita el selector "uno, el otro o los dos" en la página de la ruta)
 export const comboQueIncluye = (key) =>
   Object.values(CURSOS_GRABADOS).find((c) => Array.isArray(c.combo) && c.combo.includes(key)) || null;
+
+// Link de compra de un curso: si se vende dentro de un combo, va a la página del combo con la opción preseleccionada
+export const linkInscripcion = (curso) => {
+  const combo = curso.combo ? null : comboQueIncluye(curso.key);
+  return combo ? `/${combo.ruta}/inscripcion?elegir=${curso.key}` : `/${curso.ruta}/inscripcion`;
+};

@@ -59,7 +59,7 @@ export async function handler(event) {
         statement_descriptor: "WEARESRV",
         back_urls: {
           success: `${SITE_URL}/${curso.ruta}/gracias`,
-          failure: `${SITE_URL}/${curso.ruta}/inscripcion`,
+          failure: curso.urlInscripcion ? `${SITE_URL}${curso.urlInscripcion}` : `${SITE_URL}/${curso.ruta}/inscripcion`,
           pending: `${SITE_URL}/${curso.ruta}/gracias`,
         },
         auto_return: "approved",

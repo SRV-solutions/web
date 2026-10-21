@@ -70,7 +70,7 @@ export const trackConversion = (eventName, data = {}, user = {}) => {
   trackEvent(eventName, data, eventId);
 
   try {
-    fetch('/api/lead', {
+    fetch('/.netlify/functions/lead', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       keepalive: true, // permite que el envío termine aunque el usuario cambie de página

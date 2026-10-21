@@ -6,5 +6,9 @@
 # Gracias vieja de Backend Fundamentos -> la de JavaScript (Netlify conserva el ?payment_id=... de Mercado Pago)
 /fundamentos-backend/gracias       /javascript/gracias       301
 
+# Funciones de Netlify (API de conversiones de Meta). Tiene que ir antes del SPA:
+# las reglas de este archivo se aplican antes que las de netlify.toml.
+/api/*    /.netlify/functions/:splat   200
+
 # SPA: todo lo demas lo resuelve React Router
 /*    /index.html   200

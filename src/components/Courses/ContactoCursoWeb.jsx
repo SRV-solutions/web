@@ -95,6 +95,7 @@ function getOferta(planId, preventa) {
   switch (planId) {
     case "frontend":
       return {
+        itemId: "intensivo-verano-2027-frontend", // mismo itemId que netlify/lib/intensivos.js
         nombre: "Frontend Web + Lógica",
         precio: 140000,
         cuotas: "2 cuotas sin interés de $70.000",
@@ -102,6 +103,7 @@ function getOferta(planId, preventa) {
       };
     case "backend":
       return {
+        itemId: "intensivo-verano-2027-backend",
         nombre: "Backend Profundo + DB",
         precio: 160000,
         cuotas: "2 cuotas sin interés de $80.000",
@@ -110,12 +112,14 @@ function getOferta(planId, preventa) {
     default:
       return preventa
         ? {
+            itemId: "intensivo-verano-2027-fullstack-earlybird",
             nombre: "Pack Fullstack (Early Bird)",
             precio: 200000,
             cuotas: "1 pago contado",
             resumen: "Desde el 21/12 pasa a $220.000 en 3 cuotas sin interés de $73.333.",
           }
         : {
+            itemId: "intensivo-verano-2027-fullstack",
             nombre: "Pack Fullstack",
             precio: 220000,
             cuotas: "3 cuotas sin interés de $73.333",
@@ -298,7 +302,14 @@ function ContactoCursoWeb() {
 
   // ViewContent: alguien entró a ver el intensivo
   useEffect(() => {
-    trackConversion("ViewContent", { content_name: "Intensivo Verano 2027", currency: "ARS" });
+    trackConversion("ViewContent", {
+      content_name: `Intensivo Verano 2027 - ${oferta.nombre}`,
+      content_ids: [oferta.itemId],
+      content_type: "product",
+      currency: "ARS",
+      value: oferta.precio,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Respaldo: si el contador no está en pantalla, igual cerramos la preventa a tiempo
@@ -396,7 +407,13 @@ function ContactoCursoWeb() {
       // Lead: dejó sus datos. InitiateCheckout: va a pagar.
       // El Purchase se envía recién en /full-stack/gracias, con el pago verificado en Mercado Pago.
       // Pixel + CAPI con el mismo event_id; los datos personales viajan hasheados.
-      const evento = { content_name: contentName, currency: "ARS", value: oferta.precio };
+      const evento = {
+        content_name: contentName,
+        content_ids: [oferta.itemId],
+        content_type: "product",
+        currency: "ARS",
+        value: oferta.precio,
+      };
       trackConversion("Lead", evento, datos);
       trackConversion("InitiateCheckout", evento, datos);
 

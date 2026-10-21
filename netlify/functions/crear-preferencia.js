@@ -35,6 +35,15 @@ export async function handler(event) {
     return json(400, { error: "Curso inválido" });
   }
 
+  // Datos del navegador para el Purchase por CAPI (confirmar-compra y el webhook los leen del pago)
+  const meta = (value, max) => (typeof value === "string" && value ? value.slice(0, max) : undefined);
+  const metaData = {
+    fbp: meta(bodyData.fbp, 200),
+    fbc: meta(bodyData.fbc, 200),
+    client_ip: meta(event.headers["x-nf-client-connection-ip"] || event.headers["client-ip"], 100),
+    user_agent: meta(event.headers["user-agent"], 500),
+  };
+
   try {
     // Inicializar Mercado Pago con la variable de entorno segura de Netlify
     const client = new MercadoPagoConfig({
@@ -55,7 +64,7 @@ export async function handler(event) {
         ],
         // El Apps Script y confirmar-compra validan este prefijo para saber de qué curso es el pago
         external_reference: `${cursoKey}:${crypto.randomUUID()}`,
-        metadata: { curso: cursoKey },
+        metadata: { curso: cursoKey, ...metaData },
         statement_descriptor: "WEARESRV",
         back_urls: {
           success: `${SITE_URL}/${curso.ruta}/gracias`,

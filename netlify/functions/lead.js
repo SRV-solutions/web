@@ -17,7 +17,7 @@ export const handler = async (event) => {
   }
 
   const body = parseBody(event);
-  const { nombre, email, telefono, event_id, event_name, currency, value, content_name, event_source_url, fbp, fbc } = body;
+  const { nombre, email, telefono, event_id, event_name, currency, value, content_name, content_ids, content_type, event_source_url, fbp, fbc } = body;
 
   if (!ALLOWED_EVENTS.includes(event_name)) {
     return json(400, { error: "Evento no permitido" });
@@ -37,6 +37,10 @@ export const handler = async (event) => {
       currency: typeof currency === "string" ? currency.slice(0, 3) : "ARS",
       value: Number.isFinite(numericValue) && numericValue >= 0 ? numericValue : undefined,
       content_name: typeof content_name === "string" ? content_name.slice(0, 200) : undefined,
+      content_ids: Array.isArray(content_ids)
+        ? content_ids.filter((id) => typeof id === "string").slice(0, 10).map((id) => id.slice(0, 100))
+        : undefined,
+      content_type: content_type === "product" ? "product" : undefined,
     },
   });
 

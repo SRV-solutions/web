@@ -25,7 +25,9 @@
  *       MP_ACCESS_TOKEN   = tu Access Token de producción de Mercado Pago (APP_USR-...)
  *       WEBHOOK_SECRET    = el mismo valor que pongas en Netlify como MP_WEBHOOK_SECRET
  *                           (una clave inventada por vos, larga y aleatoria, 40+ caracteres)
- *     ⚠️ NUNCA pegues el token directamente en el código.
+ *       META_PIXEL_ID     = 1616499123394079                        (opcional, para el Purchase por CAPI)
+       META_ACCESS_TOKEN = el mismo token de la API de Conversiones que está en Netlify (opcional)
+     ⚠️ NUNCA pegues el token directamente en el código.
  *  3. Completar el FOLDER_ID de cada curso en CURSOS (ID de la carpeta de Drive).
  *  4. Ejecutar una vez la función "probarConfiguracion" para autorizar permisos
  *     (Drive, Gmail, Sheets, UrlFetch) y verificar que todo esté OK.
@@ -298,6 +300,10 @@ function procesarPago_(paymentId, accessToken, forzar) {
   if (preventa) fila.detalle = "Preventa: clases el " + curso.preventa.fechaTexto;
   var numFila = registrar_(fila);
 
+  // Purchase por CAPI aunque el comprador no vuelva a la página de gracias.
+  // Usa el mismo event_id que confirmar-compra, así Meta lo cuenta una sola vez.
+  enviarPurchaseMeta_(payment, curso, monto, moneda);
+
   // SEGURIDAD DE DRIVE: acceso solo de lectura y solo para el email del comprador.
   // Se comparte cada carpeta por separado: si una falla, las demás igual se entregan.
   var accesos = [];
@@ -505,6 +511,71 @@ function compararSeguro_(a, b) {
     diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
   }
   return diff === 0;
+}
+
+// ============================================================
+//  META: PURCHASE POR LA API DE CONVERSIONES
+// ============================================================
+function sha256_(valor) {
+  var bytes = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, valor, Utilities.Charset.UTF_8);
+  return bytes.map(function (b) { return ("0" + (b & 0xff).toString(16)).slice(-2); }).join("");
+}
+
+function enviarPurchaseMeta_(payment, curso, monto, moneda) {
+  try {
+    var props = PropertiesService.getScriptProperties();
+    var pixelId = props.getProperty("META_PIXEL_ID");
+    var token = props.getProperty("META_ACCESS_TOKEN");
+    if (!pixelId || !token) return;
+
+    var payer = payment.payer || {};
+    // fbp, fbc, IP y navegador los guarda crear-preferencia en el metadata del pago
+    var meta = payment.metadata || {};
+    var userData = {};
+    var email = String(payer.email || "").trim().toLowerCase();
+    if (email) userData.em = [sha256_(email)];
+    if (payer.phone && payer.phone.number) {
+      userData.ph = [sha256_(String(payer.phone.area_code || "") + String(payer.phone.number).replace(/\D/g, ""))];
+    }
+    if (payer.first_name) userData.fn = [sha256_(String(payer.first_name).trim().split(/\s+/)[0].toLowerCase())];
+    if (meta.fbp) userData.fbp = String(meta.fbp);
+    if (meta.fbc) userData.fbc = String(meta.fbc);
+    if (meta.client_ip) userData.client_ip_address = String(meta.client_ip);
+    if (meta.user_agent) userData.client_user_agent = String(meta.user_agent);
+
+    var fecha = new Date(payment.date_approved || payment.date_created || Date.now());
+    var payload = {
+      data: [{
+        event_name: "Purchase",
+        event_time: Math.floor(fecha.getTime() / 1000),
+        event_id: "purchase_" + payment.id,
+        event_source_url: "https://wearesrv.com/",
+        action_source: "website",
+        user_data: userData,
+        custom_data: {
+          currency: moneda,
+          value: monto,
+          content_name: curso.nombre,
+          content_ids: [curso.itemId],
+          content_type: "product",
+          order_id: String(payment.id)
+        }
+      }]
+    };
+
+    var res = UrlFetchApp.fetch("https://graph.facebook.com/v23.0/" + pixelId + "/events?access_token=" + token, {
+      method: "post",
+      contentType: "application/json",
+      payload: JSON.stringify(payload),
+      muteHttpExceptions: true
+    });
+    if (res.getResponseCode() !== 200) {
+      Logger.log("CAPI error: " + res.getResponseCode() + " " + res.getContentText());
+    }
+  } catch (err) {
+    // Meta nunca debe frenar la entrega del curso
+    Logger.log("CAPI error: " + err);
+  }
 }
 
 function responder_(status) {

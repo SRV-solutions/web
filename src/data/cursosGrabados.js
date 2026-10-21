@@ -12,6 +12,7 @@ export const estaEnPreventa = (curso) => Boolean(curso?.preventa) && Date.now() 
 export const CURSOS_GRABADOS = {
   scratch: {
     key: "scratch",
+    itemId: "curso-scratch-chicos", // mismo itemId que netlify/lib/cursos.js (content_ids de Meta)
     ruta: "scratch",
     contentName: "Infoproducto Scratch",
     tituloInicio: "Scratch para",
@@ -77,6 +78,7 @@ export const CURSOS_GRABADOS = {
 
   scripting: {
     key: "scripting",
+    itemId: "curso-scripting",
     ruta: "scripting",
     contentName: "Infoproducto Scripting",
     tituloInicio: "Curso de",
@@ -179,6 +181,7 @@ export const CURSOS_GRABADOS = {
 
   python: {
     key: "python",
+    itemId: "curso-python-infoproducto",
     ruta: "python",
     contentName: "Infoproducto Python Completo",
     tituloInicio: "Master en",
@@ -274,6 +277,7 @@ export const CURSOS_GRABADOS = {
   // identifica el curso por el external_reference "fundamentos-backend:..." de cada pago.
   "fundamentos-backend": {
     key: "fundamentos-backend",
+    itemId: "curso-fundamentos-backend",
     ruta: "ruta-backend", // se vende en la página única de la ruta backend (selector)
     contentName: "Infoproducto Master en JavaScript",
     tituloInicio: "Master en",
@@ -423,6 +427,7 @@ export const CURSOS_GRABADOS = {
 
   "backend-avanzado": {
     key: "backend-avanzado",
+    itemId: "curso-backend-avanzado",
     ruta: "ruta-backend", // se vende en la página única de la ruta backend (selector)
     contentName: "Infoproducto Backend Avanzado",
     tituloInicio: "Backend",
@@ -537,6 +542,7 @@ const PRECIO_SEPARADOS = JS.precio + BACK.precio;
 
 CURSOS_GRABADOS["ruta-backend"] = {
   key: "ruta-backend",
+  itemId: "curso-ruta-backend",
   ruta: "ruta-backend",
   contentName: "Infoproducto Ruta Backend Completa",
   tituloInicio: "Ruta",

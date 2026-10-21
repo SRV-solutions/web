@@ -66,15 +66,26 @@ export async function handler(event) {
 
     const value = Number(payment.transaction_amount) || producto.precio;
     const currency = payment.currency_id || "ARS";
+    // Mismo event_id que usa el webhook (appscript-cursos.gs): Meta cuenta una sola compra
     const eventId = `purchase_${paymentId}`;
+    const payer = payment.payer || {};
+    const metadata = payment.metadata || {};
+    const telefono = payer.phone && payer.phone.number
+      ? `${payer.phone.area_code || ""}${payer.phone.number}`
+      : undefined;
 
     await sendMetaEvent(event, {
       eventName: "Purchase",
       eventId,
       eventSourceUrl: `${SITE_URL}/${producto.ruta}/gracias`,
-      email: payment.payer && payment.payer.email,
-      fbp,
-      fbc,
+      email: payer.email,
+      telefono,
+      nombre: payer.first_name,
+      // Cookies del navegador; si no llegan, las que se guardaron al crear la preferencia
+      fbp: fbp || metadata.fbp,
+      fbc: fbc || metadata.fbc,
+      clientIp: metadata.client_ip,
+      userAgent: metadata.user_agent,
       customData: {
         currency,
         value,

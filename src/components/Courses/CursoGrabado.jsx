@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import styles from "./CursoGrabado.module.css";
 import Seo, { SITE_URL } from "../Seo";
-import { trackConversion } from "../../data/metaPixel";
+import { trackConversion, getMetaCookies } from "../../data/metaPixel";
 import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, comboQueIncluye } from "../../data/cursosGrabados";
 
 const DISCORD_URL = "https://discord.com/invite/QuAmDxrNMu";
@@ -109,6 +109,8 @@ export default function CursoGrabado({ cursoKey }) {
 
   const pixelData = {
     content_name: curso.contentName,
+    content_ids: [curso.itemId],
+    content_type: "product",
     currency: "ARS",
     value: curso.precio,
   };
@@ -132,14 +134,21 @@ export default function CursoGrabado({ cursoKey }) {
     if (loading) return;
     setLoading(true);
 
-    trackConversion("InitiateCheckout", { content_name: producto.contentName, currency: "ARS", value: producto.precio });
+    trackConversion("InitiateCheckout", {
+      content_name: producto.contentName,
+      content_ids: [producto.itemId],
+      content_type: "product",
+      currency: "ARS",
+      value: producto.precio,
+    });
 
     try {
-      // Solo enviamos la clave del producto elegido: el precio lo define el servidor
+      // Solo enviamos la clave del producto elegido: el precio lo define el servidor.
+      // Las cookies del Pixel quedan guardadas en el pago para el Purchase por CAPI.
       const response = await fetch("/.netlify/functions/crear-preferencia", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ curso: producto.key }),
+        body: JSON.stringify({ curso: producto.key, ...getMetaCookies() }),
       });
 
       const data = await response.json();

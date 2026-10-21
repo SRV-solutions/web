@@ -1,18 +1,18 @@
-import ReactPixel from 'react-facebook-pixel';
-
+// Se llama a fbq directamente (el snippet base está en index.html).
+// No usamos react-facebook-pixel: su track() descarta el tercer argumento ({ eventID }),
+// y sin ese ID Meta no puede deduplicar el evento del navegador con el del servidor (CAPI).
 const PIXEL_ID = '1616499123394079';
 
 let initialized = false;
 
+const fbq = (...args) => {
+  if (typeof window === 'undefined' || typeof window.fbq !== 'function') return;
+  window.fbq(...args);
+};
+
 export const initMetaPixel = () => {
   if (initialized) return;
-
-  const options = {
-    autoConfig: true,
-    debug: false,
-  };
-
-  ReactPixel.init(PIXEL_ID, {}, options);
+  fbq('init', PIXEL_ID);
   initialized = true;
 };
 
@@ -30,36 +30,21 @@ const readCookie = (name) => {
 
 export const getMetaCookies = () => ({ fbp: readCookie('_fbp'), fbc: readCookie('_fbc') });
 
-export const trackPageView = (eventId = null) => {
-  if (!initialized) {
-    initMetaPixel();
-  }
+const eventOptions = (eventId) => (eventId ? { eventID: eventId } : undefined);
 
-  const options = eventId ? { eventID: eventId } : {};
-  ReactPixel.pageView({}, options);
+export const trackPageView = (eventId = null) => {
+  if (!initialized) initMetaPixel();
+  fbq('track', 'PageView', {}, eventOptions(eventId));
 };
 
 export const trackEvent = (eventName, data = {}, eventId = null) => {
-  if (!initialized) {
-    initMetaPixel();
-  }
-
-  // Asegurar que eventID vaya en las opciones del tercer parámetro
-  const options = eventId ? { eventID: eventId } : undefined;
-
-  // Garantizar que data contenga las propiedades necesarias
-  const eventData = { ...data };
-
-  ReactPixel.track(eventName, eventData, options);
+  if (!initialized) initMetaPixel();
+  fbq('track', eventName, { ...data }, eventOptions(eventId));
 };
 
 export const trackCustomEvent = (eventName, data = {}, eventId = null) => {
-  if (!initialized) {
-    initMetaPixel();
-  }
-
-  const options = eventId ? { eventID: eventId } : undefined;
-  ReactPixel.trackCustom(eventName, data, options);
+  if (!initialized) initMetaPixel();
+  fbq('trackCustom', eventName, { ...data }, eventOptions(eventId));
 };
 
 // Advanced matching: los datos personales NUNCA van dentro de los parámetros del evento.
@@ -96,6 +81,8 @@ export const trackConversion = (eventName, data = {}, user = {}) => {
         currency: data.currency,
         value: data.value,
         content_name: data.content_name,
+        content_ids: data.content_ids,
+        content_type: data.content_type,
         ...getMetaCookies(),
         email: user.email,
         telefono: user.telefono,

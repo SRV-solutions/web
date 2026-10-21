@@ -28,6 +28,9 @@ export async function sendMetaEvent(event, {
   nombre,
   fbp,
   fbc,
+  // Si el evento no lo dispara el navegador del comprador, se pasan los que se guardaron antes
+  clientIp,
+  userAgent,
   customData = {},
 }) {
   const pixelId = process.env.META_PIXEL_ID;
@@ -58,8 +61,8 @@ export async function sendMetaEvent(event, {
           fbp: cleanString(fbp),
           fbc: cleanString(fbc),
           client_ip_address:
-            event.headers["x-nf-client-connection-ip"] || event.headers["client-ip"],
-          client_user_agent: event.headers["user-agent"],
+            event.headers["x-nf-client-connection-ip"] || event.headers["client-ip"] || cleanString(clientIp, 100),
+          client_user_agent: event.headers["user-agent"] || cleanString(userAgent, 500),
         },
         custom_data: customData,
       },

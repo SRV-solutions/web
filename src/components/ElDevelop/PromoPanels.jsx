@@ -12,6 +12,7 @@ import {
 } from "./promo";
 import { createShareImage, shareText, gameUrl } from "./share";
 
+
 // ---------- Compartir ----------
 export function SharePanel({ game }) {
   const [img, setImg] = useState(null);

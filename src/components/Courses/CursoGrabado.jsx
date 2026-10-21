@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import styles from "./CursoGrabado.module.css";
 import Seo, { SITE_URL } from "../Seo";
 import { trackConversion } from "../../data/metaPixel";
-import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa } from "../../data/cursosGrabados";
+import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, comboQueIncluye } from "../../data/cursosGrabados";
 
 const DISCORD_URL = "https://discord.com/invite/QuAmDxrNMu";
 const WHATSAPP_URL = "https://wa.me/5491123869799?text=" + encodeURIComponent("Hola, tengo una consulta sobre los cursos");
@@ -12,21 +13,38 @@ function pasosCompra(curso, preventa) {
     { titulo: "Pagás con Mercado Pago", texto: "Tarjeta, débito o dinero en cuenta. El pago es seguro y lo procesa Mercado Pago." },
     preventa
       ? {
-          titulo: `El ${curso.preventa.fechaTexto} te llega el acceso al mail`,
-          texto: "Tu pago reserva el lugar al precio de preventa. Ese día recibís un correo con el link a la carpeta del curso en Google Drive.",
+          titulo: "Te llega hoy el link a tu carpeta",
+          texto: `Apenas se aprueba el pago recibís el correo con el acceso a la carpeta del curso en Google Drive. Las clases se habilitan ahí el ${curso.preventa.fechaTexto}: no tenés que hacer nada más.`,
         }
-      : { titulo: "Te llega el acceso al mail", texto: "Apenas se aprueba el pago, recibís un correo con el link a la carpeta del curso en Google Drive." },
+      : {
+          titulo: curso.combo ? "Te llegan los dos accesos al mail" : "Te llega el acceso al mail",
+          texto: curso.combo
+            ? "Apenas se aprueba el pago, recibís un solo correo con los links a las carpetas de los dos cursos en Google Drive."
+            : "Apenas se aprueba el pago, recibís un correo con el link a la carpeta del curso en Google Drive.",
+        },
     { titulo: "Estudiás a tu ritmo", texto: "Las clases están grabadas: las ves cuando quieras, las veces que quieras, desde la compu o el celular." },
   ];
 }
 
 function preguntasFrecuentes(curso, preventa) {
   return [
+    ...(curso.combo
+      ? [
+          {
+            q: "¿Cómo recibo los dos cursos?",
+            a: "En un solo mail, apenas se aprueba el pago, con los links a las dos carpetas de Google Drive. Podés arrancar por el que quieras, aunque recomendamos seguir el orden: primero el Master en JavaScript y después Backend Avanzado.",
+          },
+          {
+            q: "¿Conviene el combo o comprarlos por separado?",
+            a: `Si ya sabés que vas por backend, el combo: pagás ${formatearPrecio(curso.precio)} en lugar de ${formatearPrecio(curso.precioRegular)} y te ahorrás ${formatearPrecio(curso.precioRegular - curso.precio)}. Si solo querés aprender JavaScript, comprá ese curso solo y, si después seguís, sumás el Avanzado.`,
+          },
+        ]
+      : []),
     ...(preventa
       ? [
           {
             q: "¿Qué es la preventa y cuándo empieza el curso?",
-            a: `El curso se habilita el ${curso.preventa.fechaTexto}. Si lo comprás antes, lo pagás ${formatearPrecio(curso.precio)} en lugar de ${formatearPrecio(curso.precioRegular)} y ese día te llega el acceso al mail, junto con el resto de los que reservaron.`,
+            a: `Las clases se habilitan el ${curso.preventa.fechaTexto}. Si lo comprás antes, lo pagás ${formatearPrecio(curso.precio)} en lugar de ${formatearPrecio(curso.precioRegular)}. El acceso a tu carpeta de Google Drive te llega al mail apenas pagás, y ese día aparecen ahí las clases.`,
           },
         ]
       : []),
@@ -34,12 +52,12 @@ function preguntasFrecuentes(curso, preventa) {
       q: "¿Necesito saber programar antes de empezar?",
       a: curso.nivel.startsWith("Desde cero")
         ? "No. El curso arranca desde cero: instalás las herramientas y escribís tu primera línea de código en la primera clase."
-        : "Conviene tener las bases de JavaScript. Si todavía no las tenés, te recomendamos empezar por Backend Fundamentos.",
+        : "Conviene tener las bases de JavaScript. Si todavía no las tenés, te recomendamos empezar por el Master en JavaScript.",
     },
     {
       q: "¿Cómo y cuándo recibo el curso?",
       a: preventa
-        ? `El ${curso.preventa.fechaTexto} te llega un correo con el acceso a la carpeta del curso en Google Drive, al mail con el que pagaste. Hasta esa fecha tu lugar queda reservado.`
+        ? `Apenas Mercado Pago aprueba el pago, te llega un correo con el acceso a tu carpeta del curso en Google Drive, al mail con el que pagaste. La carpeta se completa con las clases el ${curso.preventa.fechaTexto}.`
         : "Apenas Mercado Pago aprueba el pago, te llega un correo con el acceso a la carpeta del curso en Google Drive. Es automático, las 24 horas.",
     },
     {
@@ -73,6 +91,10 @@ export default function CursoGrabado({ cursoKey }) {
   const faq = preguntasFrecuentes(curso, preventa);
   const pasos = pasosCompra(curso, preventa);
   const path = `/${curso.ruta}/inscripcion`;
+  // Combo: cursos que incluye. Curso individual: el combo que lo incluye (para el banner "llevalos juntos")
+  const incluye = curso.combo ? curso.combo.map((k) => CURSOS_GRABADOS[k]) : null;
+  const combo = curso.combo ? null : comboQueIncluye(curso.key);
+  const nombreCorto = (c) => `${c.tituloInicio} ${c.tituloDestacado}`;
 
   const pixelData = {
     content_name: curso.contentName,
@@ -201,7 +223,7 @@ export default function CursoGrabado({ cursoKey }) {
           <div className={styles.cardContainer}>
             <div className={styles.header}>
               <div className={styles.badge}>
-                {preventa ? `🚀 Preventa · el acceso llega el ${fechaAcceso}` : "⚡ Acceso inmediato y de por vida"}
+                {preventa ? `🚀 Preventa · las clases se habilitan el ${fechaAcceso}` : "⚡ Acceso inmediato y de por vida"}
               </div>
               <h1 className={styles.title}>
                 {curso.tituloInicio} <span className={styles.orange}>{curso.tituloDestacado}</span>
@@ -209,13 +231,27 @@ export default function CursoGrabado({ cursoKey }) {
               </h1>
               <p className={styles.hook}>{curso.gancho}</p>
               <p className={styles.description}>{curso.descripcion}</p>
+              {incluye && (
+                <ul className={styles.incluyeList}>
+                  {incluye.map((c) => (
+                    <li key={c.key}>
+                      ✓ <Link to={`/${c.ruta}/inscripcion`}>{nombreCorto(c)}</Link> · {c.clases} clases · por separado{" "}
+                      {formatearPrecio(c.precio)}
+                    </li>
+                  ))}
+                </ul>
+              )}
               <p className={styles.level}>🎯 {curso.nivel}</p>
 
               <div className={styles.promoCard}>
                 <div className={styles.promoHeader}>
                   {descuento > 0 && (
                     <span className={styles.promoBadge}>
-                      {preventa ? `🔥 Precio de preventa · ${descuento}% OFF` : `🔥 ${descuento}% OFF · Precio promocional`}
+                      {preventa
+                        ? `🔥 Precio de preventa · ${descuento}% OFF`
+                        : curso.combo
+                          ? `🎁 Combo · ahorrás ${formatearPrecio(curso.precioRegular - curso.precio)}`
+                          : `🔥 ${descuento}% OFF · Precio promocional`}
                     </span>
                   )}
                   <span className={styles.timerTag}>{preventa ? `Solo hasta el ${fechaAcceso}` : "Pago único, sin suscripción"}</span>
@@ -224,7 +260,9 @@ export default function CursoGrabado({ cursoKey }) {
                 <div className={styles.priceContainer}>
                   {descuento > 0 && (
                     <div className={styles.oldPriceBox}>
-                      <span className={styles.oldPriceLabel}>{preventa ? `Desde el ${fechaAcceso}` : "Precio regular"}</span>
+                      <span className={styles.oldPriceLabel}>
+                        {preventa ? `Desde el ${fechaAcceso}` : curso.combo ? "Por separado" : "Precio regular"}
+                      </span>
                       <span className={styles.oldPrice}>{formatearPrecio(curso.precioRegular)}</span>
                     </div>
                   )}
@@ -250,7 +288,7 @@ export default function CursoGrabado({ cursoKey }) {
               {botonPago()}
               <p className={styles.secureText}>
                 🔒 Pago 100% seguro procesado por Mercado Pago.{" "}
-                {preventa ? `El acceso te llega al mail el ${fechaAcceso}.` : "El acceso te llega al mail al instante."}
+                {preventa ? `Tu carpeta te llega al mail al instante. Las clases se habilitan el ${fechaAcceso}.` : "El acceso te llega al mail al instante."}
               </p>
             </div>
           </div>
@@ -258,6 +296,19 @@ export default function CursoGrabado({ cursoKey }) {
 
         {/* Columna Derecha: Plan de Estudios y argumentos de venta */}
         <div className={styles.contentColumn}>
+          {combo && (
+            <Link to={`/${combo.ruta}/inscripcion`} className={styles.comboBanner}>
+              <span className={styles.comboIcon}>🎁</span>
+              <span className={styles.comboText}>
+                <strong>¿Vas por backend? Llevá los dos cursos juntos.</strong>
+                <span>
+                  {combo.combo.map((k) => nombreCorto(CURSOS_GRABADOS[k])).join(" + ")} por {formatearPrecio(combo.precio)}:
+                  ahorrás {formatearPrecio(combo.precioRegular - combo.precio)} frente a comprarlos por separado.
+                </span>
+              </span>
+              <span className={styles.comboCta}>Ver el combo →</span>
+            </Link>
+          )}
           <div className={styles.twoCols}>
             <div className={styles.infoCard}>
               <h2 className={styles.infoTitle}>Ideal para vos si…</h2>
@@ -279,7 +330,7 @@ export default function CursoGrabado({ cursoKey }) {
 
           <div className={styles.modulesSummary}>
             <h2 className={styles.subTitle}>
-              Plan de estudios ({curso.clases} clases · {curso.modulos.length} módulos)
+              Plan de estudios ({curso.clases} clases · {curso.modulos.length} {curso.combo ? "cursos" : "módulos"})
             </h2>
             <p className={styles.subTitleDesc}>{curso.subTituloDesc}</p>
 
@@ -288,7 +339,7 @@ export default function CursoGrabado({ cursoKey }) {
                 <div key={mod.titulo} className={styles.moduleCard}>
                   <div className={styles.moduleCardHeader}>
                     <span className={styles.moduleNum}>{String(index + 1).padStart(2, "0")}</span>
-                    <span className={styles.moduleTag}>Módulo {index + 1}</span>
+                    <span className={styles.moduleTag}>{curso.combo ? "Parte" : "Módulo"} {index + 1}</span>
                   </div>
                   <h3>{mod.titulo}</h3>
                   <ul className={styles.taskList}>
@@ -336,7 +387,7 @@ export default function CursoGrabado({ cursoKey }) {
             <h2>{preventa ? "Reservá tu lugar al precio de preventa." : "Hoy puede ser tu primera clase."}</h2>
             <p>
               {preventa
-                ? `${curso.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(curso.precio)}. Desde el ${fechaAcceso} pasa a ${formatearPrecio(curso.precioRegular)}, y ese mismo día te llega el acceso.`
+                ? `${curso.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(curso.precio)}. Desde el ${fechaAcceso} pasa a ${formatearPrecio(curso.precioRegular)}, y ese mismo día se habilitan las clases en tu carpeta.`
                 : `${curso.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(curso.precio)}. Empezá esta misma noche.`}
             </p>
             {botonPago(styles.btnFinal)}

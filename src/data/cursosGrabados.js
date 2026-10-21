@@ -2,7 +2,8 @@
 // El precio que se cobra realmente se define en netlify/lib/cursos.js
 // (acá solo se muestra en pantalla y se usa para Meta Pixel; mantenerlos iguales).
 
-// Preventa de Scratch: hasta esta fecha se vende a precio de preventa y ese día se envía el acceso.
+// Preventa de Scratch: hasta esta fecha se vende a precio de preventa. El acceso a la carpeta de Drive
+// llega al instante (vacía) y ese día se suben las clases.
 // La misma fecha vive en netlify/lib/cursos.js.
 const SCRATCH_ACCESO = new Date("2026-11-18T00:00:00-03:00");
 
@@ -98,7 +99,7 @@ export const CURSOS_GRABADOS = {
     gancho: "Dejá de hacer a mano lo que una computadora hace sola.",
     metaDescripcion: "Aprendé a programar desde cero con JavaScript, Python y Google Apps Script. 32 clases, más de 59 horas y acceso de por vida por $15.000.",
     nivel: "Desde cero · No necesitás saber nada de programación",
-    paraQuien: ["Nunca programaste y querés arrancar sin pagar una fortuna", "Trabajás con planillas, mails o documentos y querés automatizar tareas repetitivas", "Querés probar si la programación es para vos antes de invertir en una carrera", "Necesitás una base sólida de lógica para después ir a Python o Backend"],
+    paraQuien: ["Nunca programaste y querés arrancar sin pagar una fortuna", "Trabajás con planillas, mails o documentos y querés automatizar tareas repetitivas", "Querés probar si la programación es para vos antes de invertir en una carrera", "Necesitás una base sólida de lógica para después ir a Python o JavaScript"],
     resultados: ["Escribir programas en JavaScript y Python con variables, condicionales, bucles y funciones", "Automatizar Google Sheets, Docs, Gmail y Calendar con Apps Script", "Pedir datos a APIs reales, como la cotización del dólar", "Armar tu propio bot de Discord y tus primeros scripts útiles para el día a día"],
     modulos: [
       {
@@ -269,15 +270,17 @@ export const CURSOS_GRABADOS = {
     ],
   },
 
+  // Ex "Backend Fundamentos". La clave y el itemId NO se cambian: el Apps Script que entrega los accesos
+  // identifica el curso por el external_reference "fundamentos-backend:..." de cada pago.
   "fundamentos-backend": {
     key: "fundamentos-backend",
-    ruta: "fundamentos-backend",
-    contentName: "Infoproducto Backend Fundamentos",
-    tituloInicio: "Backend",
-    tituloDestacado: "Fundamentos",
-    tituloFin: "",
+    ruta: "javascript",
+    contentName: "Infoproducto Master en JavaScript",
+    tituloInicio: "Master en",
+    tituloDestacado: "JavaScript",
+    tituloFin: "Desde Cero",
     descripcion:
-      "90 clases grabadas para aprender los fundamentos del backend con JavaScript y Node.js: lógica, estructuras de datos, POO, promesas, consumo de APIs, bots y testing.",
+      "90 clases grabadas para dominar JavaScript desde cero con Node.js: lógica, estructuras de datos, POO, promesas, consumo de APIs reales, bots y testing. El lenguaje de la web, aprendido de verdad.",
     precio: 84900,
     precioRegular: 350000,
     clases: 90,
@@ -288,11 +291,11 @@ export const CURSOS_GRABADOS = {
       "Envío automático de accesos al abonar",
     ],
     subTituloDesc:
-      "De tu primer 'Hola mundo' a consumir APIs reales: la base sólida para cualquier desarrollador backend.",
-    gancho: "La base que te piden en cualquier entrevista de backend.",
-    metaDescripcion: "Backend Fundamentos: 90 clases grabadas de JavaScript y Node.js. Lógica, POO, promesas, APIs, bots y testing, con guía de estudio.",
-    nivel: "Desde cero · Primer paso de la ruta backend",
-    paraQuien: ["Querés trabajar como desarrollador backend y no sabés por dónde empezar", "Sabés algo de programación pero te faltan bases sólidas", "Querés aprender JavaScript de verdad, más allá de copiar código", "Te estás preparando para tus primeras entrevistas técnicas"],
+      "De tu primer 'Hola mundo' a tu primer bot y APIs reales: el JavaScript que te piden en cualquier entrevista.",
+    gancho: "JavaScript de verdad: de 'Hola mundo' a bots y APIs reales.",
+    metaDescripcion: "Master en JavaScript Desde Cero: 90 clases grabadas de JavaScript y Node.js. Lógica, POO, promesas, APIs, bots y testing, con guía de estudio de 109 preguntas.",
+    nivel: "Desde cero · La base para backend, frontend o automatización",
+    paraQuien: ["Querés aprender JavaScript de verdad, más allá de copiar código", "Nunca programaste y querés arrancar con el lenguaje que mueve la web", "Sabés algo de programación pero te faltan bases sólidas", "Te estás preparando para tus primeras entrevistas técnicas"],
     resultados: ["Dominar JavaScript: variables, funciones, arrays, objetos y clases", "Resolver ejercicios de lógica y algoritmos de ordenamiento", "Trabajar con promesas, async/await y APIs reales", "Escribir tests con Jest y armar bots con Node.js"],
     modulos: [
       {
@@ -426,7 +429,7 @@ export const CURSOS_GRABADOS = {
     tituloDestacado: "Avanzado",
     tituloFin: "",
     descripcion:
-      "73 clases grabadas, la continuación de Backend Fundamentos: creá tus propios servidores y APIs REST con Node.js y Express, middlewares, sockets en tiempo real, rate limit, testing y Docker.",
+      "73 clases grabadas, la continuación del Master en JavaScript: creá tus propios servidores y APIs REST con Node.js y Express, middlewares, sockets en tiempo real, rate limit, testing y Docker.",
     precio: 99900,
     precioRegular: 420000,
     clases: 73,
@@ -440,8 +443,8 @@ export const CURSOS_GRABADOS = {
       "Todo lo que necesitás para construir servicios web profesionales y llevarlos a producción.",
     gancho: "Creá tus propios servidores y APIs como en una empresa real.",
     metaDescripcion: "Backend Avanzado: 73 clases grabadas de Node.js y Express. APIs REST, middlewares, sockets, rate limit, testing y Docker, con guía de estudio.",
-    nivel: "Nivel intermedio · Recomendado después de Backend Fundamentos",
-    paraQuien: ["Ya sabés JavaScript y querés dar el salto a crear servidores", "Terminaste Backend Fundamentos y querés seguir la ruta", "Querés entender cómo funcionan las APIs que consumís todos los días", "Buscás proyectos de backend para tu portfolio"],
+    nivel: "Nivel intermedio · Recomendado después del Master en JavaScript",
+    paraQuien: ["Ya sabés JavaScript y querés dar el salto a crear servidores", "Terminaste el Master en JavaScript y querés seguir la ruta", "Querés entender cómo funcionan las APIs que consumís todos los días", "Buscás proyectos de backend para tu portfolio"],
     resultados: ["Crear APIs REST completas con Node.js y Express", "Proteger rutas con middlewares, tokens y rate limit", "Armar un chat en tiempo real con Socket.IO", "Probar tu servidor y empaquetarlo con Docker"],
     modulos: [
       {
@@ -521,3 +524,53 @@ export const CURSOS_GRABADOS = {
 };
 
 export const formatearPrecio = (valor) => `$${valor.toLocaleString("es-AR")}`;
+
+// ---------- COMBO: Ruta Backend Completa (Master en JavaScript + Backend Avanzado) ----------
+// Se vende en un solo pago y el Apps Script (appscript-cursos.gs) comparte las dos carpetas de Drive.
+// El precio real vive en netlify/lib/cursos.js y el precioMinimo en el Apps Script: mantenerlos iguales.
+const JS = CURSOS_GRABADOS["fundamentos-backend"];
+const BACK = CURSOS_GRABADOS["backend-avanzado"];
+const PRECIO_COMBO = 149900;
+const PRECIO_SEPARADOS = JS.precio + BACK.precio;
+
+CURSOS_GRABADOS["ruta-backend"] = {
+  key: "ruta-backend",
+  ruta: "ruta-backend",
+  contentName: "Infoproducto Ruta Backend Completa",
+  tituloInicio: "Ruta",
+  tituloDestacado: "Backend",
+  tituloFin: "Completa",
+  // Cursos que incluye: alimenta el bloque "Incluye" y el banner "llevalos juntos" de cada curso
+  combo: ["fundamentos-backend", "backend-avanzado"],
+  descripcion: `Los dos cursos de la ruta backend en un solo pago: Master en JavaScript (${JS.clases} clases) + Backend Avanzado (${BACK.clases} clases). De tu primer 'Hola mundo' a crear tus propios servidores y APIs REST con Node.js, Express, sockets, testing y Docker.`,
+  precio: PRECIO_COMBO,
+  precioRegular: PRECIO_SEPARADOS,
+  clases: JS.clases + BACK.clases,
+  beneficios: [
+    `Ahorrás ${formatearPrecio(PRECIO_SEPARADOS - PRECIO_COMBO)} frente a comprarlos por separado`,
+    "Acceso vitalicio a las dos carpetas en Google Drive",
+    "Dos guías de estudio en PDF: 109 + 62 preguntas con respuestas",
+    "5 proyectos prácticos de servidores para tu portfolio",
+    "Envío automático de los dos accesos al abonar",
+  ],
+  subTituloDesc:
+    "Dos cursos, una sola ruta: primero dominás el lenguaje y después construís servidores como en una empresa real.",
+  gancho: "De cero a backend profesional, en un solo pago.",
+  metaDescripcion: `Ruta Backend Completa: Master en JavaScript + Backend Avanzado, ${JS.clases + BACK.clases} clases grabadas de JavaScript, Node.js y Express con acceso de por vida. Ahorrá comprando los dos juntos.`,
+  nivel: "Desde cero · Hasta nivel profesional",
+  paraQuien: [
+    "Querés trabajar como desarrollador backend y buscás un camino completo, sin saltos",
+    "Nunca programaste (o sabés poco) y querés llegar a crear servidores y APIs reales",
+    "Preferís pagar una vez y tener toda la ruta resuelta",
+    "Te estás preparando para entrevistas técnicas de backend",
+  ],
+  resultados: [...JS.resultados.slice(0, 2), ...BACK.resultados],
+  modulos: [
+    { titulo: `Master en JavaScript · ${JS.clases} clases`, temas: JS.modulos.map((m) => m.titulo) },
+    { titulo: `Backend Avanzado · ${BACK.clases} clases`, temas: BACK.modulos.map((m) => m.titulo) },
+  ],
+};
+
+// Combo que incluye a un curso (para el banner "llevalos juntos" en la página de cada curso individual)
+export const comboQueIncluye = (key) =>
+  Object.values(CURSOS_GRABADOS).find((c) => Array.isArray(c.combo) && c.combo.includes(key)) || null;

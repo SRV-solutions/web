@@ -33,11 +33,11 @@ const TEXTOS_INTENSIVO = {
   unknown: "Si ya pagaste, en los próximos minutos recibirás en tu Email los accesos al Discord y a los grupos de WhatsApp.",
 };
 
-// Cursos en preventa: el pago reserva el lugar y el acceso se envía en la fecha de lanzamiento
+// Cursos en preventa: el acceso a la carpeta de Drive llega al instante y las clases se suben en la fecha de lanzamiento
 const textosPreventa = (fecha) => ({
-  approved: `Tu lugar quedó reservado al precio de preventa. El ${fecha} te llega al Email el acceso al material. Guardá este mail: es tu comprobante.`,
-  pending: `Apenas Mercado Pago lo acredite, tu lugar queda reservado y el ${fecha} te enviamos el acceso al material por Email.`,
-  unknown: `Si ya pagaste, tu lugar queda reservado y el ${fecha} recibirás el acceso al material en tu Email.`,
+  approved: `Tu lugar quedó reservado al precio de preventa. En los próximos minutos te llega al Email el acceso a tu carpeta de Google Drive, y el ${fecha} vas a encontrar ahí las clases. Guardá ese mail.`,
+  pending: `Apenas Mercado Pago lo acredite, te enviamos por Email el acceso a tu carpeta de Google Drive. Las clases se habilitan ahí el ${fecha}.`,
+  unknown: `Si ya pagaste, en los próximos minutos recibirás en tu Email el acceso a tu carpeta de Google Drive. Las clases se habilitan ahí el ${fecha}.`,
 });
 
 export default function GraciasCurso({ cursoKey }) {

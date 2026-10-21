@@ -17,7 +17,7 @@ const Home = lazy(() => import("./components/Home/Index"));
 const ContactoCursoWeb = lazy(
   () => import("./components/Courses/ContactoCursoWeb.jsx")
 );
-// Cursos grabados con pago por Mercado Pago (Python, Backend Fundamentos y Backend Avanzado)
+// Cursos grabados con pago por Mercado Pago (Scripting, Scratch, Python, Master en JavaScript y Backend Avanzado)
 const CursoGrabado = lazy(
   () => import("./components/Courses/CursoGrabado.jsx")
 );
@@ -29,6 +29,13 @@ const ElDevelop = lazy(() => import("./components/ElDevelop/Index.jsx"));
 const Sentryx = lazy(() => import("./components/Sentryx/Index.jsx"));
 const EventBox = lazy(() => import("./components/EventBox/Index.jsx"));
 const NotFound = lazy(() => import("./components/NotFound/Index.jsx"));
+
+// Redirige una URL vieja conservando el query string (Mercado Pago vuelve con ?payment_id=... a la URL
+// de "gracias" que tenía la preferencia cuando se creó, así que los pagos previos al cambio de ruta llegan acá).
+function RedirectConQuery({ to }) {
+  const { search, hash } = useLocation();
+  return <Navigate to={`${to}${search}${hash}`} replace />;
+}
 
 // PageLoader con animación
 const PageLoader = () => (
@@ -178,10 +185,15 @@ function AppContent() {
           <Route path="/scratch/gracias" element={<GraciasCurso cursoKey="scratch" />} />
           <Route path="/python/inscripcion" element={<CursoGrabado cursoKey="python" />} />
           <Route path="/python/gracias" element={<GraciasCurso cursoKey="python" />} />
-          <Route path="/fundamentos-backend/inscripcion" element={<CursoGrabado cursoKey="fundamentos-backend" />} />
-          <Route path="/fundamentos-backend/gracias" element={<GraciasCurso cursoKey="fundamentos-backend" />} />
+          {/* Master en JavaScript (ex Backend Fundamentos): la clave interna sigue siendo "fundamentos-backend" */}
+          <Route path="/javascript/inscripcion" element={<CursoGrabado cursoKey="fundamentos-backend" />} />
+          <Route path="/javascript/gracias" element={<GraciasCurso cursoKey="fundamentos-backend" />} />
+          <Route path="/fundamentos-backend/inscripcion" element={<Navigate to="/javascript/inscripcion" replace />} />
+          <Route path="/fundamentos-backend/gracias" element={<RedirectConQuery to="/javascript/gracias" />} />
           <Route path="/backend-avanzado/inscripcion" element={<CursoGrabado cursoKey="backend-avanzado" />} />
           <Route path="/backend-avanzado/gracias" element={<GraciasCurso cursoKey="backend-avanzado" />} />
+          <Route path="/ruta-backend/inscripcion" element={<CursoGrabado cursoKey="ruta-backend" />} />
+          <Route path="/ruta-backend/gracias" element={<GraciasCurso cursoKey="ruta-backend" />} />
           <Route path="/full-stack/inscripcion" element={<ContactoCursoWeb />} />
           <Route path="/full-stack/gracias" element={<GraciasCurso cursoKey="intensivo" />} />
           <Route path="/certificates/:id" element={<Certificates />} />

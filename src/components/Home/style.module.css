@@ -333,6 +333,30 @@
   background: rgba(11, 120, 251, 0.08);
 }
 
+.comboBanner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-top: 1.5rem;
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  border: 1px solid #f6950a;
+  background: linear-gradient(90deg, rgba(246, 149, 10, 0.14), rgba(11, 120, 251, 0.08));
+  color: #d4d4d4;
+  text-decoration: none;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.comboBanner:hover {
+  transform: translateY(-2px);
+}
+
+.comboBanner strong {
+  color: #ffffff;
+}
+
 .kidsBanner {
   display: flex;
   align-items: center;

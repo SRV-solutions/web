@@ -1,1 +1,7 @@
+# Master en JavaScript (ex "Backend Fundamentos"): URL vieja -> nueva. Netlify conserva el query string
+# (ej. ?payment_id=... cuando Mercado Pago vuelve a la pagina de gracias) por defecto.
+/fundamentos-backend/inscripcion   /javascript/inscripcion   301
+/fundamentos-backend/gracias       /javascript/gracias       301
+
+# SPA: todo lo demas lo resuelve React Router
 /*    /index.html   200

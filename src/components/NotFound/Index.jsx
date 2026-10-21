@@ -7,8 +7,9 @@ const CURSOS_DISPONIBLES = [
   { label: "Scratch para Chicos", to: "/scratch/inscripcion" },
   { label: "Curso de Scripting", to: "/scripting/inscripcion" },
   { label: "Master en Python", to: "/python/inscripcion" },
-  { label: "Backend Fundamentos", to: "/fundamentos-backend/inscripcion" },
+  { label: "Master en JavaScript", to: "/javascript/inscripcion" },
   { label: "Backend Avanzado", to: "/backend-avanzado/inscripcion" },
+  { label: "Ruta Backend Completa (combo)", to: "/ruta-backend/inscripcion" },
   { label: "Intensivo Full Stack", to: "/full-stack/inscripcion" },
 ];
 

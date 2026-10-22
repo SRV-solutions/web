@@ -3,13 +3,13 @@
 export const TESTIMONIOS = [
   {
     texto: "Excelente la metodología y dinámica de las clases. Considero que así los conocimientos quedan más sólidos. ¡Éxitos!",
-    autor: "Miguel D.",
+    autor: "Miguel Díaz",
     origen: "Alumno de las clases en vivo",
   },
   {
     texto:
       "El curso es bueno y cubre bastantes contenidos. El profesor es paciente, activo y muchas veces incentiva a los alumnos a alguna actividad con respecto a la clase, lo último visto, etc.",
-    autor: "Santino",
+    autor: "Santino Rioja",
     origen: "Base de Datos · Avanzado",
   },
   {

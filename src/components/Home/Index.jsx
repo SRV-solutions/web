@@ -3,6 +3,8 @@ import { useLocation, Link } from "react-router-dom";
 import styles from "./style.module.css";
 import Seo, { SITE_URL } from "../Seo";
 import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, linkInscripcion } from "../../data/cursosGrabados";
+import { TESTIMONIOS, ENCUESTA, promedioEncuesta } from "../../data/testimonios";
+import { LuQuote, LuStar } from "react-icons/lu";
 
 const WHATSAPP_URL = `https://wa.me/5491123869799?text=${encodeURIComponent("Hola, quiero cotizar un software")}`;
 
@@ -229,6 +231,42 @@ export default function Home() {
             </li>
           ))}
         </ol>
+      </section>
+
+      {/* ---------- Testimonios ---------- */}
+      <section id="testimonios" className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>
+            Lo que dicen <span className={styles.orange}>nuestros alumnos</span>
+          </h2>
+          <p className={styles.sectionDescription}>
+            Feedback real de alumnos de nuestras clases. Puntaje promedio en la encuesta post-clase:{" "}
+            <strong className={styles.green}>{promedioEncuesta().toLocaleString("es-AR", { maximumFractionDigits: 1 })}/10</strong> ({ENCUESTA.notas.length}{" "}
+            respuestas).
+          </p>
+        </div>
+        <ul className={styles.testimonios}>
+          {TESTIMONIOS.map((t) => (
+            <li key={t.texto} className={styles.testimonio}>
+              <LuQuote className={styles.testimonioComillas} aria-hidden="true" />
+              <blockquote>{t.texto}</blockquote>
+              <footer>
+                <span className={styles.testimonioAvatar} aria-hidden="true">
+                  {t.autor === "Alumno/a" ? "?" : t.autor[0]}
+                </span>
+                <span>
+                  <strong>{t.autor}</strong>
+                  <small>{t.origen}</small>
+                </span>
+                {t.nota != null && (
+                  <span className={styles.testimonioNota} aria-label={`Puntaje ${t.nota} de 10`}>
+                    <LuStar aria-hidden="true" /> {t.nota}/10
+                  </span>
+                )}
+              </footer>
+            </li>
+          ))}
+        </ul>
       </section>
 
       {/* ---------- El Develop ---------- */}

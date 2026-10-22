@@ -439,6 +439,91 @@
   font-weight: 900;
 }
 
+/* ---------- Testimonios ---------- */
+.testimonios {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  columns: 3 300px;
+  column-gap: 1.2rem;
+}
+
+.testimonio {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  break-inside: avoid;
+  margin-bottom: 1.2rem;
+  padding: 1.5rem 1.4rem 1.2rem;
+  border-radius: 14px;
+  background: #0d0d0d;
+  border: 1px solid #1f1f1f;
+  transition: border-color 0.2s ease;
+}
+
+.testimonio:hover {
+  border-color: #f6950a66;
+}
+
+.testimonioComillas {
+  font-size: 1.8rem;
+  color: #f6950a;
+  opacity: 0.85;
+}
+
+.testimonio blockquote {
+  margin: 0;
+  color: #e5e5e5;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.testimonio footer {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid #1f1f1f;
+}
+
+.testimonio footer > span:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.testimonio footer small {
+  color: #9a9a9a;
+  font-size: 0.8rem;
+}
+
+.testimonioAvatar {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2.3rem;
+  height: 2.3rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0b78fb, #0650a8);
+  font-weight: 900;
+}
+
+.testimonioNota {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: auto;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background: #30a05a1f;
+  border: 1px solid #30a05a66;
+  color: #4ade80;
+  font-size: 0.8rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
 /* ---------- El Develop ---------- */
 .gameBanner {
   display: flex;

@@ -1,20 +1,7 @@
 import crypto from "node:crypto";
 import { MercadoPagoConfig, Preference } from "mercadopago";
-import { getCurso } from "../lib/cursos.js";
+import { getCurso, webhookCursosUrl } from "../lib/cursos.js";
 import { SITE_URL, json, isAllowedOrigin, parseBody } from "../lib/http.js";
-
-// Arma la URL del webhook (un solo Apps Script para todos los cursos) con la clave secreta compartida.
-// El Apps Script identifica el curso por el external_reference del pago.
-function buildNotificationUrl() {
-  const baseUrl = process.env.MP_WEBHOOK_URL;
-  const secret = process.env.MP_WEBHOOK_SECRET;
-  if (!baseUrl || !secret) return undefined;
-
-  const url = new URL(baseUrl);
-  url.searchParams.set("key", secret);
-  url.searchParams.set("source_news", "webhooks");
-  return url.toString();
-}
 
 export async function handler(event) {
   // Solo permitir solicitudes POST
@@ -72,7 +59,8 @@ export async function handler(event) {
           pending: `${SITE_URL}/${curso.ruta}/gracias`,
         },
         auto_return: "approved",
-        notification_url: buildNotificationUrl(),
+        // Un solo Apps Script para todos los cursos: identifica el curso por el external_reference
+        notification_url: webhookCursosUrl(),
       },
     });
 

@@ -64,6 +64,23 @@ export const CURSOS = {
   },
 };
 
+// URL del webhook de cursos (un solo Apps Script para todos) con la clave secreta compartida.
+// La usan crear-preferencia (notification_url de MP) y confirmar-compra (respaldo desde la página de gracias).
+export function webhookCursosUrl() {
+  const baseUrl = process.env.MP_WEBHOOK_URL;
+  const secret = process.env.MP_WEBHOOK_SECRET;
+  if (!baseUrl || !secret) {
+    // Sin esto nadie recibe el acceso al curso: que quede bien visible en los logs de Netlify
+    console.error("Cursos: faltan MP_WEBHOOK_URL o MP_WEBHOOK_SECRET en Netlify; el Apps Script no se entera de los pagos");
+    return undefined;
+  }
+
+  const url = new URL(baseUrl);
+  url.searchParams.set("key", secret);
+  url.searchParams.set("source_news", "webhooks");
+  return url.toString();
+}
+
 export function getCurso(key) {
   if (typeof key !== "string" || !Object.prototype.hasOwnProperty.call(CURSOS, key)) return null;
   const curso = CURSOS[key];

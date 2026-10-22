@@ -1,7 +1,32 @@
-import { getCurso } from "../lib/cursos.js";
+import { getCurso, webhookCursosUrl } from "../lib/cursos.js";
 import { planDesdeReferencia } from "../lib/intensivos.js";
 import { sendMetaEvent } from "../lib/metaCapi.js";
 import { SITE_URL, json, isAllowedOrigin, parseBody } from "../lib/http.js";
+
+// Respaldo de la notificación de Mercado Pago: le avisa al Apps Script de cursos que este pago
+// está aprobado, por si el webhook de MP no llegó o falló. El Apps Script vuelve a consultar el pago
+// a MP y no da acceso dos veces (lock + antiduplicados en la hoja), así que avisar de más no hace daño.
+async function avisarAppsScript(paymentId) {
+  const url = webhookCursosUrl();
+  if (!url) return;
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 8000);
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: "payment", data: { id: paymentId } }),
+      signal: controller.signal,
+    });
+    console.log(`Apps Script cursos (pago ${paymentId}): HTTP ${res.status} ${(await res.text()).slice(0, 100)}`);
+  } catch (error) {
+    // Timeout o error de red: el Apps Script igual puede terminar de procesar, y MP reintenta su webhook
+    console.error(`Apps Script cursos (pago ${paymentId}):`, error.name === "AbortError" ? "timeout" : error);
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 // La página de "gracias" llama a esta función con el payment_id que devuelve Mercado Pago.
 // Acá se verifica el pago real contra la API de MP y, si está aprobado, se envía el Purchase
@@ -74,6 +99,9 @@ export async function handler(event) {
       ? `${payer.phone.area_code || ""}${payer.phone.number}`
       : undefined;
 
+    // Los intensivos tienen su propio Apps Script (lo avisa la notification_url de inscripcion-intensivo)
+    const respaldoAcceso = esIntensivo ? Promise.resolve() : avisarAppsScript(paymentId);
+
     await sendMetaEvent(event, {
       eventName: "Purchase",
       eventId,
@@ -95,6 +123,7 @@ export async function handler(event) {
         order_id: paymentId,
       },
     });
+    await respaldoAcceso;
 
     return json(200, {
       status: "approved",

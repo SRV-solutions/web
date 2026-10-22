@@ -271,7 +271,7 @@ function procesarPago_(paymentId, accessToken, forzar) {
   var problemas = [];
   if (moneda !== CONFIG.MONEDA) problemas.push("Moneda inválida: " + moneda);
   if (monto < minimo) problemas.push("Monto bajo: $" + monto + " (mínimo $" + minimo + (preventa ? " en preventa" : "") + ")");
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) problemas.push("Email inválido: " + email);
+  if (!emailValido_(email)) problemas.push("Email inválido: " + email);
   for (var v = 0; v < carpetas.length; v++) {
     if (!carpetaConfigurada_(carpetas[v].folderId)) {
       problemas.push("Falta configurar el folderId de " + carpetas[v].nombre + " en CURSOS (después usá reprocesarPagoManual)");
@@ -290,8 +290,21 @@ function procesarPago_(paymentId, accessToken, forzar) {
         "Comprador: " + nombre + " <" + email + ">\n" +
         "Monto: $" + monto + " " + moneda + "\n\n" +
         "Motivo: " + problemas.join(" | ") + "\n\n" +
-        "No se otorgó acceso automático. Revisalo en Mercado Pago."
+        "No se otorgó acceso automático. Revisalo en Mercado Pago.\n" +
+        (emailValido_(email) ? "Al comprador se le avisó por mail que el acceso se habilita a mano." : "El comprador NO recibió ningún mail (email inválido).")
     });
+    // Que el comprador no quede sin noticias mientras se resuelve a mano
+    if (emailValido_(email)) {
+      try {
+        GmailApp.sendEmail(email, "Recibimos tu pago - " + curso.nombre, "", {
+          name: CONFIG.NOMBRE_REMITENTE,
+          replyTo: CONFIG.EMAIL_ADMIN,
+          htmlBody: construirEmailPendienteHtml_(curso, nombre, monto)
+        });
+      } catch (mailErr) {
+        Logger.log("No se pudo avisar al comprador " + email + ": " + mailErr);
+      }
+    }
     return responder_("validation_failed");
   }
 
@@ -311,11 +324,13 @@ function procesarPago_(paymentId, accessToken, forzar) {
   for (var c = 0; c < carpetas.length; c++) {
     var carpeta = carpetas[c];
     var linkDrive = "https://drive.google.com/drive/folders/" + carpeta.folderId;
+    var compartida = true;
     try {
       var folder = DriveApp.getFolderById(carpeta.folderId);
       folder.addViewer(email);
       linkDrive = folder.getUrl();
     } catch (driveErr) {
+      compartida = false;
       notas.push("Drive (" + carpeta.nombre + "): " + driveErr);
       MailApp.sendEmail({
         to: CONFIG.EMAIL_ADMIN,
@@ -325,7 +340,7 @@ function procesarPago_(paymentId, accessToken, forzar) {
           "\n\nCompartí la carpeta manualmente (puede ser un email que no es cuenta de Google)."
       });
     }
-    accesos.push({ nombre: carpeta.nombre, link: linkDrive });
+    accesos.push({ nombre: carpeta.nombre, link: linkDrive, compartida: compartida });
   }
 
   var asunto = preventa
@@ -420,6 +435,10 @@ function carpetasDeCurso_(curso) {
     });
   }
   return [{ nombre: curso.nombre, folderId: curso.folderId }];
+}
+
+function emailValido_(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
 function carpetaConfigurada_(folderId) {
@@ -626,6 +645,13 @@ function construirEmailHtml_(curso, nombre, email, monto, accesos, preventa) {
     textoAcceso = "Ya se encuentra habilitado tu acceso exclusivo y privado al material de estudio en Google Drive (asociado a este correo).";
   }
 
+  // Drive no pudo compartir alguna carpeta (casi siempre: el mail no es una cuenta de Google)
+  if (accesos.some(function (a) { return a.compartida === false; })) {
+    textoAcceso +=
+      "<br><br><strong style=\"color:#f6950a;\">⚠️ No pudimos habilitar automáticamente el acceso a este correo.</strong> " +
+      "Respondé este mail indicando una cuenta de Gmail (o de Google) y te habilitamos el acceso a mano a la brevedad.";
+  }
+
   return `
   <!DOCTYPE html>
   <html>
@@ -687,6 +713,52 @@ function construirEmailHtml_(curso, nombre, email, monto, accesos, preventa) {
               <td style="padding: 10px 30px 25px 30px; font-size:14px; line-height:1.6; color:#ffffff; border-top:1px dashed #333333;">
                 Ante cualquier duda, contactanos respondiendo a este mail o escribinos a soporte.<br><br>
                 ¡Bienvenido a la comunidad!<br>
+                <strong>Marcos Costa Schmite</strong><br>
+                <span style="color:#0b78fb; font-size:12px;">SRV | Somos Revolución</span>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+  </html>
+  `;
+}
+
+// Mail al comprador cuando el pago está aprobado pero el acceso no se pudo dar automáticamente
+// (falta la carpeta, monto distinto, etc.): sabe que el pago llegó y que el acceso se habilita a mano.
+function construirEmailPendienteHtml_(curso, nombre, monto) {
+  return `
+  <!DOCTYPE html>
+  <html>
+  <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+  <body style="margin:0; padding:0; background-color:#000000; font-family:'Roboto', Arial, sans-serif; color:#ffffff;">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#000000; padding: 20px 0;">
+      <tr>
+        <td align="center">
+          <table border="0" cellpadding="0" cellspacing="0" width="600" style="background-color:#0d0d0d; border:1px solid #0b78fb; border-radius:12px; width:100%; max-width:600px;">
+            <tr>
+              <td style="padding: 25px 30px 10px 30px;" align="center">
+                <img src="${CONFIG.LOGO_URL}" alt="SRV Logo" style="max-width:140px; height:auto; display:block;" />
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 30px 0px 30px; font-size:24px; font-weight:900; text-transform:uppercase; color:#ffffff; line-height:1.2;">
+                ${curso.tituloHtml}
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 20px 30px; font-size:15px; line-height:1.6; color:#ffffff;">
+                ¡Hola <strong style="color:#f6950a;">${escaparHtml_(nombre)}</strong>!<br><br>
+                Recibimos tu pago de <strong>$${formatearMonto_(monto)} ARS</strong>. Estamos habilitando tu acceso a
+                <strong>${curso.nombre}</strong> y te llega en otro mail en las próximas horas.<br><br>
+                Si querés que usemos otra cuenta de Gmail para el acceso, respondé este mail y decinos cuál.
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 30px 25px 30px; font-size:14px; line-height:1.6; color:#ffffff; border-top:1px dashed #333333;">
+                ¡Gracias por tu compra!<br>
                 <strong>Marcos Costa Schmite</strong><br>
                 <span style="color:#0b78fb; font-size:12px;">SRV | Somos Revolución</span>
               </td>

@@ -15,7 +15,7 @@ export const TESTIMONIOS = [
   {
     texto: "Estuvo muy bueno. El profe explicó los conceptos básicos de Base de Datos y explicaba ejemplos para consolidar conocimientos teóricos.",
     autor: "Alumno/a",
-    origen: "Encuesta anónima · Python y Scripting",
+    origen: "Encuesta anónima · Bases de Datos Intensivo",
     nota: 10,
   },
   {
@@ -28,7 +28,7 @@ export const TESTIMONIOS = [
     texto:
       "Me gustó lo que vimos y es una gran introducción a la gestión de base de datos. Es genial para gente que, a pesar de haber visto los contenidos, no los entendieron de base. El profe es piola.",
     autor: "Alumno/a",
-    origen: "Encuesta anónima · Python y Scripting",
+    origen: "Encuesta anónima · Bases de Datos Intensivo",
     nota: 8,
   },
   {

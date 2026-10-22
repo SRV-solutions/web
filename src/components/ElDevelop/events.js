@@ -4,8 +4,6 @@ import {
   price,
   chance,
   logicGain,
-  makeOffer,
-  acceptOffer,
   role,
   updatePhase,
   incidentWin,
@@ -15,20 +13,39 @@ import {
   roleMinigame,
 } from "./helpers";
 import { FIN_EVENTS } from "./finanzas";
+import {
+  makeOffer,
+  acceptOffer,
+  describirOferta,
+  sumarReputacion,
+  cerrarHistorial,
+  mercadoMult,
+  tipoJob,
+  EMPRESA_EVENTS,
+  EMPRESA_RANDOM,
+} from "./carrera";
+
+// Apagar un incendio también suma reputación
+const ganarIncidente = (s, lines) => {
+  incidentWin(s, lines);
+  sumarReputacion(s, 2);
+};
 
 function finishInterview(s, lines) {
   const { company, score } = s.interview;
-  if (score >= 2) {
+  if (score >= 3) {
     s.level = 5;
     s.victory = { company, week: s.week, score };
-    lines.push(`🏆 ¡${company} te hizo una oferta! Ganaste ${score} de 3 rondas.`);
+    lines.push(`🏆 ¡${company} te hizo una oferta! Ganaste ${score} de 4 rondas.`);
   } else {
+    // Cada intento fallido enfría más al recruiter
+    s.flags.intentosBigTech = (s.flags.intentosBigTech || 0) + 1;
     s.phase = 3;
-    s.interviewCooldown = 10;
+    s.interviewCooldown = 20 + 10 * (s.flags.intentosBigTech - 1);
     s.interview = null;
     fx(s, { logic: 4, network: 3, mental: -10 });
     lines.push(
-      `Ganaste ${score} de 3 rondas. "Vamos a mantener tu CV en nuestra base" (traducción: no). Podés volver a intentarlo en 10 semanas.`
+      `Ganaste ${score} de 4 rondas. "Vamos a mantener tu CV en nuestra base" (traducción: no). Podés volver a intentarlo en ${s.interviewCooldown} semanas.`
     );
   }
 }
@@ -187,7 +204,7 @@ export const EVENTS = {
         label: "✅ Aceptar la Software Factory",
         desc: "Sueldo bajo en pesos, pero mucha experiencia para el CV.",
         run: (s, lines) => {
-          makeOffer(s, 1, 0.85);
+          makeOffer(s, 1, 0.85, { tipo: "factory" });
           acceptOffer(s, lines);
           fx(s, { xp: 5 });
         },
@@ -209,7 +226,9 @@ export const EVENTS = {
     title: "📩 Oferta de laburo",
     text: (s) => {
       const o = s.offer;
-      let t = `${o.company} te ofrece un puesto de ${LEVELS[o.level]} por ${fmtArs(o.salaryArs)} por mes. Beneficios: frutita los lunes y "buen clima laboral".`;
+      if (!o) return "La oferta se esfumó: el recruiter dejó de contestar los mails.";
+      const perks = o.perks?.length ? o.perks.join(" · ") : "frutita los lunes y \"buen clima laboral\"";
+      let t = `${describirOferta(o)}. ${o.pitch ? `${o.pitch} ` : ""}Beneficios: ${perks}.`;
       if (s.job) {
         t += ` Hoy cobrás ${s.job.salaryUsd ? `US$${s.job.salaryUsd}` : fmtArs(s.job.salaryArs)} en ${s.job.company}.`;
       }
@@ -322,6 +341,7 @@ export const EVENTS = {
         label: "🚪 'Open to Work' y renuncia un viernes",
         desc: "Te quedás sin laburo, pero la próxima oferta va a pagar mucho más.",
         run: (s, lines) => {
+          cerrarHistorial(s, "renuncia");
           s.job = null;
           s.secondJob = false;
           s.searchBonus = 30;
@@ -379,7 +399,7 @@ export const EVENTS = {
   recruiter_bigtech: {
     title: "🌍 ¡Te escribió un recruiter de una Big Tech!",
     text: (s) =>
-      `"Hi! We loved your profile 🚀". ${s.interview.company} quiere entrevistarte. Son 3 rondas: Entrevista técnica, System Design y Behavioral. Necesitás ganar 2 de 3.`,
+      `"Hi! We loved your profile 🚀". ${s.interview.company} quiere entrevistarte. Son 4 rondas: Entrevista técnica, Live Coding de tu rol, System Design y Behavioral. Necesitás ganar 3 de 4, y en modo difícil.`,
     options: [
       {
         label: "🚀 Aceptar: ¡vamos con todo!",
@@ -405,12 +425,17 @@ export const EVENTS = {
     options: [interviewRound("techq", "entrevista_r2")],
   },
   entrevista_r2: {
-    title: "🏗️ Ronda 2: System Design",
-    text: (s) => `${ROLE_DESIGN[s.role].prompt} Elegí bien las piezas: acá se nota quién tiene experiencia.`,
-    options: [interviewRound("design", "entrevista_r3")],
+    title: "⌨️ Ronda 2: Live Coding",
+    text: (s) => `Pantalla compartida, cuatro personas mirando y un problema real de ${role(s).name}. Nada de Google: acá se ve si sabés o si copiabas.`,
+    options: [interviewRound(roleMinigame, "entrevista_r3")],
   },
   entrevista_r3: {
-    title: "🗣️ Ronda 3: Behavioral",
+    title: "🏗️ Ronda 3: System Design",
+    text: (s) => `${ROLE_DESIGN[s.role].prompt} Elegí bien las piezas: acá se nota quién tiene experiencia.`,
+    options: [interviewRound("design", "entrevista_r4")],
+  },
+  entrevista_r4: {
+    title: "🗣️ Ronda 4: Behavioral",
     text: "Llegó el momento del Chamuyo Senior. Situaciones de conflicto laboral.",
     options: [interviewRound("behavioral", null)],
   },
@@ -420,7 +445,7 @@ export const EVENTS = {
     title: "🔥 Bug crítico en producción",
     text: (s) => `Son las 3 AM y suena el PagerDuty. Como ${role(s).name}, te toca apagar el incendio. Nadie sabe quién deployó. Todos sospechan del pasante.`,
     options: [
-      { label: "🧑‍💻 ¡A apagar el incendio!", minigame: roleMinigame, onWin: incidentWin, onLose: incidentLose },
+      { label: "🧑‍💻 ¡A apagar el incendio!", minigame: roleMinigame, onWin: ganarIncidente, onLose: incidentLose },
     ],
   },
 
@@ -428,7 +453,7 @@ export const EVENTS = {
     title: "☁️ Se cayó AWS (us-east-1, obvio)",
     text: "Medio internet está caído y tu servicio también. Los picos de tráfico están derritiendo los servers.",
     options: [
-      { label: "🖥️ Balancear los servers", minigame: "servers", onWin: incidentWin, onLose: incidentLose },
+      { label: "🖥️ Balancear los servers", minigame: "servers", onWin: ganarIncidente, onLose: incidentLose },
       {
         label: "🙈 Tuitear 'no es nuestra culpa' y esperar",
         run: (s, lines) => {
@@ -1084,7 +1109,7 @@ export const EVENTS = {
         run: (s, lines) => {
           fx(s, { energy: -5 });
           if (chance(0.45 + s.stats.network / 300)) {
-            makeOffer(s, Math.min(s.level, 4), 1.25);
+            makeOffer(s, Math.min(s.level, 4), 1.25, { externa: true });
             s.queue.push("oferta");
             lines.push("Les encantaste. Te mandan una oferta.");
           } else {
@@ -1581,6 +1606,7 @@ export const EVENTS = {
         run: (s, lines) => {
           const sueldo = (s.job.salaryArs || 0) + (s.job.salaryUsd || 0) * s.dolar;
           fx(s, { ars: Math.round(sueldo * 2), mental: -6, network: 3 });
+          cerrarHistorial(s, "retiro voluntario");
           s.job = null;
           s.secondJob = false;
           s.searchBonus = 15;
@@ -1596,6 +1622,7 @@ export const EVENTS = {
           } else {
             const sueldo = (s.job.salaryArs || 0) + (s.job.salaryUsd || 0) * s.dolar;
             fx(s, { ars: Math.round(sueldo), mental: -15 });
+            cerrarHistorial(s, "despido");
             s.job = null;
             s.secondJob = false;
             lines.push("No hubo caso: te despidieron igual y con menos indemnización. A buscar laburo.");
@@ -1721,7 +1748,12 @@ export const RANDOM_EVENTS = [
   { id: "robo_celular", weight: 2, when: () => true },
   { id: "notebook_quemada", weight: 2, when: () => true },
   { id: "hackeo_instagram", weight: 2, when: () => true },
-  { id: "despidos", weight: 1, when: (s) => !!s.job && s.level >= 2 },
+  // Los despidos dependen del mercado y de qué tan estable es tu empresa (al Estado no llegan)
+  {
+    id: "despidos",
+    weight: (s) => mercadoMult(s, "despidos") * (1.5 - (tipoJob(s)?.estabilidad ?? 0.5)),
+    when: (s) => !!s.job && s.level >= 2 && s.job.tipo !== "estado",
+  },
   { id: "gripe", weight: 2, when: () => true },
   { id: "estafa_online", weight: 2, when: () => true },
   { id: "cliente_no_paga", weight: 2, when: (s) => s.studyDone },
@@ -1764,3 +1796,7 @@ export const RANDOM_EVENTS = [
 
 // Eventos de La Financiera (el Congreso)
 Object.assign(EVENTS, FIN_EVENTS);
+
+// Eventos de la Carrera (ofertas, startup, tipos de empresa)
+Object.assign(EVENTS, EMPRESA_EVENTS);
+RANDOM_EVENTS.push(...EMPRESA_RANDOM);

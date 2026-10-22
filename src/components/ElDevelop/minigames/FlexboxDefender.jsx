@@ -2,6 +2,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import styles from "../style.module.css";
 import { pick, shuffle } from "../helpers";
 import { useCountdown, useFinishOnce, TimerBar } from "./common";
+import { Icon, IconLabel } from "../icons";
 
 const CHALLENGES = [
   {
@@ -89,12 +90,25 @@ export default function FlexboxDefender({ timeMult, diff = 1, onFinish }) {
   };
 
   const style = Object.fromEntries(Object.entries(applied).map(([k, v]) => [camel(k), v]));
-  const mood = left / total > 0.6 ? "🙂" : left / total > 0.3 ? "😠" : "🤬";
+  // Cara del usuario según cuánta paciencia le queda
+  const mood = left / total > 0.6 ? ["smile", "var(--green)"] : left / total > 0.3 ? ["annoyed", "var(--orange)"] : ["angry", "var(--red)"];
 
   return (
     <div>
-      <TimerBar left={left} total={total} label={`Paciencia del usuario ${mood}`} />
-      <p className={styles.mgGoal}>🎯 {challenge.goal}</p>
+      <TimerBar
+        left={left}
+        total={total}
+        label={
+          <>
+            Paciencia del usuario <Icon name={mood[0]} size={16} color={mood[1]} />
+          </>
+        }
+      />
+      <p className={styles.mgGoal}>
+        <IconLabel icon="target" color="var(--orange)">
+          {challenge.goal}
+        </IconLabel>
+      </p>
       <div className={styles.flexLayout}>
         <div>
           <div className={styles.flexPreview} style={style}>

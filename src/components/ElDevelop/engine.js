@@ -11,6 +11,7 @@ import {
   SALARY_USD,
   WORK_LINES,
   SEARCH_FAIL,
+  MODIFICADORES,
 } from "./data";
 import { EVENTS, RANDOM_EVENTS } from "./events";
 import {
@@ -23,12 +24,27 @@ import {
   logicGain,
   workMentalCost,
   workEnergyCost,
-  makeOffer,
   entryLevel,
   updatePhase,
   fmtArs,
+  fmtUsd,
 } from "./helpers";
 import { defaultFin, finWeekly, finMonthly } from "./finanzas";
+import {
+  defaultCarrera,
+  carreraWeekly,
+  carreraMonthly,
+  applyFocusEmpresa,
+  jobMult,
+  mercadoMult,
+  sumarReputacion,
+  nivelBigTechListo,
+  makeOffer,
+  UMBRAL_COMPRA,
+  ETAPA_COMPRA,
+  ETAPAS,
+  kpisEmpresa,
+} from "./carrera";
 import { mensajeMinijuego, mensajeCompra } from "./mensajes";
 
 export const SAVE_VERSION = 2;
@@ -38,6 +54,9 @@ export const FOCUS = {
   estudio: "Estudio",
   salud: "Salud",
   networking: "Networking",
+  vender: "Ventas",
+  producto: "Producto",
+  inversores: "Inversores",
 };
 
 export function newGame(name, roleId) {
@@ -70,6 +89,7 @@ export function newGame(name, roleId) {
     burnouts: 0,
     interview: null,
     interviewCooldown: 0,
+    clima: null,
     flags: {},
     queue: [],
     pending: { kind: "event", id: "eleccion_estudio" },
@@ -82,6 +102,8 @@ export function newGame(name, roleId) {
   };
   fx(s, ROLES[roleId].bonus);
   s.fin = defaultFin(s);
+  s.carrera = defaultCarrera(s);
+  s.empresa = null;
   s.delta = {};
   return s;
 }
@@ -107,6 +129,7 @@ export function playWeek(state, focus) {
   const playedWeek = s.week;
 
   applyFocus(s, focus, lines);
+  aplicarClima(s, focus, lines);
   weeklyUpkeep(s, focus, lines);
 
   if (s.study && !s.studyDone) s.studyWeeks += 1;
@@ -116,12 +139,28 @@ export function playWeek(state, focus) {
   if (!s.gameOver) scheduleEvent(s, focus);
   healthCheck(s, lines);
 
+  // El clima de la semana que viene se anuncia ahora, así jugás con esa info
+  s.clima = chance(0.4) ? pick(MODIFICADORES).id : null;
+  if (s.clima && !s.gameOver) lines.push(`🌤️ Semana que viene: ${MODIFICADORES.find((m) => m.id === s.clima).name}.`);
+
   s.result = null;
   finish(s, `Semana ${playedWeek} · ${FOCUS[focus]}`, lines);
   return s;
 }
 
+// Aplica el modificador anunciado la semana anterior
+function aplicarClima(s, focus, lines) {
+  const m = MODIFICADORES.find((x) => x.id === s.clima);
+  if (!m) return;
+  const efectos = { ...(m.fx || {}), ...(m.foco?.[focus] || {}) };
+  if (m.arsBase) efectos.ars = (efectos.ars || 0) + price(s, m.arsBase);
+  fx(s, efectos);
+  lines.push(`🌤️ ${m.name}: ${m.desc}.`);
+}
+
 function applyFocus(s, focus, lines) {
+  // Si tenés tu propia empresa, la semana se juega distinto
+  if (applyFocusEmpresa(s, focus, lines)) return;
   const r = role(s);
   switch (focus) {
     case "laburo":
@@ -131,12 +170,18 @@ function applyFocus(s, focus, lines) {
           lines.push("Estás de licencia: el laburo puede esperar, el bebé no.");
           break;
         }
-        const xp = r.passive === "xpBoost" ? 5 : 4;
-        fx(s, { xp, energy: -workEnergyCost(s, 12), mental: -workMentalCost(s, 6), network: 1 });
+        // Cada tipo de empresa te enseña y te desgasta distinto
+        const xp = Math.round((r.passive === "xpBoost" ? 5 : 4) * jobMult(s, "xp"));
+        fx(s, {
+          xp,
+          energy: -workEnergyCost(s, 12) * jobMult(s, "energy"),
+          mental: -workMentalCost(s, 6) * jobMult(s, "mental"),
+          network: 1,
+        });
         lines.push(pick(WORK_LINES));
       } else if (s.studyDone) {
         fx(s, { energy: -8, mental: -4 });
-        const p = 0.12 + s.stats.network / 220 + s.stats.logic / 400 + s.searchBonus / 100;
+        const p = (0.12 + s.stats.network / 220 + s.stats.logic / 400 + s.searchBonus / 100) * mercadoMult(s, "ofertas");
         if (chance(p)) {
           makeOffer(s, entryLevel(s), 1 + s.searchBonus / 100);
           s.searchBonus = 0;
@@ -167,7 +212,7 @@ function applyFocus(s, focus, lines) {
       const net = r.passive === "networkBoost" ? 7.5 : 5;
       fx(s, { network: net, ars: -price(s, 25000), energy: -6, mental: 3 });
       lines.push("Meetup tech + birras. Repartiste 12 'conectemos en LinkedIn'.");
-      if (!s.job && s.studyDone && !s.queue.includes("oferta") && chance(s.stats.network / 250)) {
+      if (!s.job && s.studyDone && !s.queue.includes("oferta") && chance((s.stats.network / 250) * mercadoMult(s, "ofertas"))) {
         makeOffer(s, entryLevel(s), 1 + s.searchBonus / 100);
         s.searchBonus = 0;
         s.queue.push("oferta");
@@ -198,6 +243,7 @@ function weeklyUpkeep(s, focus, lines) {
   if (s.interviewCooldown > 0) s.interviewCooldown -= 1;
   if (s.job) s.job.weeksSinceRaise += 1;
   finWeekly(s, lines);
+  carreraWeekly(s, focus, lines);
 }
 
 export function livingCost(s) {
@@ -243,7 +289,10 @@ function monthEnd(s, lines) {
 
   coverDebt(s, lines);
   checkPromotion(s, lines);
-  if (!s.gameOver) finMonthly(s, lines);
+  if (!s.gameOver) {
+    finMonthly(s, lines);
+    carreraMonthly(s, lines);
+  }
 }
 
 function coverDebt(s, lines) {
@@ -282,6 +331,7 @@ function checkPromotion(s, lines) {
     s.job.weeksSinceRaise = 0;
     updatePhase(s);
     lines.push(`🏆 ¡ASCENSO! Ahora sos ${LEVELS[s.level]}.`);
+    sumarReputacion(s, 3, lines, "ascenso");
   }
 }
 
@@ -301,16 +351,22 @@ function scriptedEvent(s) {
     f.kidAsked = true;
     return "bebe";
   }
-  if (
-    s.level >= 4 &&
-    s.stats.logic >= BIG_TECH_REQ.logic &&
-    s.stats.network >= BIG_TECH_REQ.network &&
-    s.interviewCooldown === 0
-  ) {
+  // Big Tech: cumplir los requisitos no alcanza, el recruiter tiene que encontrarte
+  if (bigTechListo(s) && s.interviewCooldown === 0 && chance(0.3)) {
     s.interview = { company: pick(BIG_TECH), score: 0 };
     return "recruiter_bigtech";
   }
   return null;
+}
+
+export function bigTechListo(s) {
+  return (
+    s.level >= 4 &&
+    s.stats.logic >= BIG_TECH_REQ.logic &&
+    s.stats.network >= BIG_TECH_REQ.network &&
+    s.xp >= BIG_TECH_REQ.xp &&
+    nivelBigTechListo(s).ok
+  );
 }
 
 function scheduleEvent(s, focus) {
@@ -320,16 +376,18 @@ function scheduleEvent(s, focus) {
     s.queue.push(scripted);
     return;
   }
-  if (s.job && focus === "laburo" && s.kidLeave === 0 && chance(0.28)) {
+  if (s.job && focus === "laburo" && s.kidLeave === 0 && chance(rand(0.22, 0.32))) {
     s.queue.push("incidente");
     return;
   }
-  if (chance(0.45)) {
+  // La probabilidad de que pase algo varía semana a semana: hay rachas tranquilas y semanas de locos
+  if (chance(rand(0.35, 0.6))) {
     const pool = RANDOM_EVENTS.filter((e) => (!e.roles || e.roles.includes(s.role)) && e.when(s));
-    const total = pool.reduce((acc, e) => acc + e.weight, 0);
+    const peso = (e) => (typeof e.weight === "function" ? e.weight(s) : e.weight);
+    const total = pool.reduce((acc, e) => acc + peso(e), 0);
     let roll = Math.random() * total;
     for (const e of pool) {
-      roll -= e.weight;
+      roll -= peso(e);
       if (roll <= 0) {
         s.queue.push(e.id);
         return;
@@ -376,7 +434,8 @@ export function chooseOption(state, idx) {
   const opt = EVENTS[eventId].options[idx];
   if (opt.minigame) {
     const game = typeof opt.minigame === "function" ? opt.minigame(s) : opt.minigame;
-    s.pending = { kind: "minigame", game, eventId, optIdx: idx };
+    // A veces el cliente está mirando por encima del hombro: un nivel más de dificultad
+    s.pending = { kind: "minigame", game, eventId, optIdx: idx, diffBonus: chance(0.25) ? 1 : 0 };
     return s;
   }
   const lines = [];
@@ -399,7 +458,7 @@ export function finishMinigame(state, win, mensaje) {
   }
   s.pending = null;
   healthCheck(s, lines);
-  finish(s, `${MINIGAMES[game].name}: ${win ? "pasaste ✅" : "no salió ❌"}`, lines);
+  finish(s, `${win ? "✅" : "❌"} ${MINIGAMES[game].name}: ${win ? "pasaste" : "no salió"}`, lines);
   return s;
 }
 
@@ -451,7 +510,14 @@ export function quitSecondJob(state) {
 
 // ---------- Info para la UI ----------
 export function nextGoal(s) {
-  if (s.victory) return "¡Llegaste a la Big Tech!";
+  if (s.victory) return s.victory.tipo === "exit" ? "¡Vendiste tu startup!" : "¡Llegaste a la Big Tech!";
+  if (s.empresa) {
+    const e = s.empresa;
+    const k = kpisEmpresa(s);
+    if ((e.capital || 0) < 0) return `Sacar la caja de ${e.nombre} del rojo antes del cierre de mes (o quebrás)`;
+    if (k && k.etapaIdx < ETAPA_COMPRA) return `Llevar ${e.nombre} a la etapa ${ETAPAS[ETAPA_COMPRA]} (hoy: ${k.etapa}) para que aparezcan compradores`;
+    return `Hacer crecer ${e.nombre}: valuación ${fmtUsd(e.valuacionUsd || 0)} de ${fmtUsd(UMBRAL_COMPRA)} para recibir ofertas de compra`;
+  }
   if (!s.study) return "Elegir dónde estudiar";
   if (!s.studyDone) {
     const total = s.study === "uni" ? 12 : 5;
@@ -465,5 +531,8 @@ export function nextGoal(s) {
     return `Ascenso a ${LEVELS[s.level + 1]}: ${parts.join(" · ")}`;
   }
   if (s.interviewCooldown > 0) return `Volver a entrevistar en ${s.interviewCooldown} semanas`;
-  return `Llamado de Big Tech: Lógica ${s.stats.logic}/${BIG_TECH_REQ.logic} · Contactos ${s.stats.network}/${BIG_TECH_REQ.network}`;
+  if (bigTechListo(s)) return "Estás listo para la Big Tech: seguí sumando hasta que te escriba un recruiter";
+  const bt = nivelBigTechListo(s);
+  const extra = bt.ok ? "" : ` · ${bt.faltan.join(" · ")}`;
+  return `Llamado de Big Tech: Lógica ${s.stats.logic}/${BIG_TECH_REQ.logic} · Contactos ${s.stats.network}/${BIG_TECH_REQ.network} · XP ${s.xp}/${BIG_TECH_REQ.xp}${extra}`;
 }

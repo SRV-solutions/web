@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import styles from "../style.module.css";
 import { shuffle } from "../helpers";
 import { useCountdown, useFinishOnce, TimerBar } from "./common";
+import { IconLabel, IconText } from "../icons";
 
 // Minijuego de clasificación: cada ítem va a una de varias categorías (bins).
 // Lo usan los minijuegos propios de cada rol (status codes, phishing, MoSCoW, triage…).
@@ -20,7 +21,7 @@ export default function Sorter({ set, timeMult, diff = 1, onFinish }) {
     const ok = bin === items[idx].answer;
     const next = correct + (ok ? 1 : 0);
     setCorrect(next);
-    setFeedback(ok ? "✅ ¡Bien!" : `❌ Era: ${items[idx].answer}`);
+    setFeedback(ok ? { ok: true } : { ok: false, answer: items[idx].answer });
     setTimeout(() => {
       if (idx + 1 >= items.length) finishOnce(next >= required);
       else {
@@ -53,7 +54,9 @@ function SorterItem({ item, bins, number, count, required, correct, perItem, fee
       <TimerBar left={left} total={perItem} label={`${number}/${count} · Bien: ${correct} (necesitás ${required})`} />
       <div className={styles.ticket}>
         <span className={styles.ticketId}>#{String(number).padStart(2, "0")}</span>
-        <p>{item.text}</p>
+        <p>
+          <IconText text={item.text} />
+        </p>
       </div>
       <div className={styles.sorterBins} style={{ gridTemplateColumns: `repeat(${bins.length > 3 ? 2 : bins.length}, 1fr)` }}>
         {bins.map((bin) => {
@@ -61,12 +64,26 @@ function SorterItem({ item, bins, number, count, required, correct, perItem, fee
           if (feedback && bin === item.answer) cls += ` ${styles.quizRight}`;
           return (
             <button type="button" key={bin} className={cls} onClick={() => onAnswer(bin)} disabled={!!feedback}>
-              {bin}
+              <IconText text={bin} />
             </button>
           );
         })}
       </div>
-      <p className={styles.mgMsg}>{feedback || (left <= 0 ? "⏰ ¡Se te acabó el tiempo!" : " ")}</p>
+      <p className={styles.mgMsg}>
+        {feedback ? (
+          feedback.ok ? (
+            <IconLabel icon="circleCheck">¡Bien!</IconLabel>
+          ) : (
+            <IconLabel icon="circleX">
+              Era: <IconText text={feedback.answer} />
+            </IconLabel>
+          )
+        ) : left <= 0 ? (
+          <IconLabel icon="alarmClock">¡Se te acabó el tiempo!</IconLabel>
+        ) : (
+          " "
+        )}
+      </p>
     </div>
   );
 }

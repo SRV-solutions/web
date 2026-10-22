@@ -27,6 +27,14 @@ const MG_WIN = {
   techq: ["Respondiste todo. El entrevistador anotó 'strong hire' y un emoji de fuego.", "Entrevista técnica superada. Tu síndrome del impostor está confundido."],
   design: ["System design sólido. Escala más que el precio del dólar.", "Arquitectura aprobada: aguanta un Black Friday y un Hot Sale juntos."],
   behavioral: ["Respuestas behavioral impecables. Ni mencionaste que odiás las dailies.", "Contaste tus fracasos como si fueran épicos. Te compraron."],
+  pixelperfect: ["Pixel perfect de verdad: el diseñador midió con regla y no encontró nada.", "Igualita al Figma. Hasta el border-radius, que nadie respeta nunca."],
+  endpoints: ["API REST de manual: 201 para crear, 204 para borrar y cero 200 con un 'error' adentro.", "El front no tuvo que adivinar nada. Primera vez en la historia de la empresa."],
+  deploywindow: ["Deploys en la ventana justa. Ni un rollback, ni un viernes a las 18:59.", "Timing de arquero en los penales: atajaste todos los deploys."],
+  parches: ["Todo parcheado. El hacker volvió a probar suerte con el WiFi del bar de enfrente.", "Rotaste secretos, pusiste rate limit y cifraste todo. El auditor lloró de emoción."],
+  outliers: ["Cazaste todos los outliers. El modelo dejó de creer que un alfajor sale un millón.", "Ojo de analista: viste el dato raro antes que el gerente."],
+  sprintplanner: ["Sprint perfecto: máximo valor, cero sobrecarga y el CEO contento (por ahora).", "Planificaste como un PM de verdad: dijiste que no a tres cosas y nadie lloró."],
+  simonhelpdesk: ["Procedimiento perfecto. El usuario jura que fue magia.", "Memoria de help desk: te acordás de cada paso, menos de almorzar."],
+  spotdiff: ["Encontraste cada diferencia. El bug no llegó ni a staging.", "Ojo de QA: un === por == a 40 metros de distancia."],
 };
 
 const MG_WIN_GENERIC = [

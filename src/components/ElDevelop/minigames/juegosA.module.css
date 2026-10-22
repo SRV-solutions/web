@@ -1,0 +1,619 @@
+/* Minijuegos: Pixel Perfect (pp), Endpoint Rush (ep), Ventana de Deploy (dw) y Parche Express (pa).
+   Las variables (--blue, --green, etc.) vienen de .page en style.module.css */
+
+@keyframes shakeA {
+  0%,
+  100% {
+    transform: none;
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
+  }
+}
+
+@keyframes fadeInA {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes blinkA {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* Icono alineado con el texto */
+.ico {
+  vertical-align: -0.15em;
+  margin-right: 0.3rem;
+}
+
+.msg {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 1.5rem;
+  margin: 0.6rem 0 0;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.msgOk {
+  color: #4ade80;
+}
+
+.msgBad {
+  color: #f87171;
+}
+
+/* ---------- Pixel Perfect ---------- */
+.ppStages {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.ppStage {
+  position: relative;
+  height: 164px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 2px dashed #3a4252;
+  border-radius: 12px;
+  background-color: #05070a;
+  background-image:
+    linear-gradient(#141821 1px, transparent 1px),
+    linear-gradient(90deg, #141821 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.ppStageMine {
+  border-color: var(--blue);
+}
+
+.ppStageWon {
+  border-color: var(--green);
+}
+
+.ppStageTitle {
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.ppBox {
+  box-sizing: border-box;
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: left;
+  line-height: 1;
+  background: var(--orange);
+  color: #000;
+  font-weight: 800;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  transition:
+    width 0.15s ease,
+    height 0.15s ease,
+    border-radius 0.15s ease,
+    padding 0.15s ease,
+    transform 0.15s ease,
+    opacity 0.15s ease,
+    letter-spacing 0.15s ease,
+    font-size 0.15s ease;
+}
+
+.ppBoxWon {
+  background: var(--green);
+}
+
+.ppMeter {
+  margin: 0.2rem 0 0.8rem;
+}
+
+.ppMeterLabel {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: #d1d5db;
+}
+
+.ppMeterTrack {
+  height: 10px;
+  border-radius: 6px;
+  background: #1a1f2a;
+  overflow: hidden;
+}
+
+.ppMeterFill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.2s ease, background 0.2s ease;
+}
+
+.ppRows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ppRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ppStep {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  border: 1px solid #2d3443;
+  background: #12151c;
+  color: #fff;
+  font-size: 1.35rem;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 0.1s ease, background 0.1s ease;
+}
+
+.ppStep:active:not(:disabled) {
+  transform: scale(0.92);
+  background: rgba(11, 120, 251, 0.3);
+}
+
+.ppStep:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.ppVal {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.45rem;
+  min-height: 48px;
+  padding: 0.3rem 0.6rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #000;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.ppValOk {
+  border-color: var(--green);
+  background: rgba(34, 197, 94, 0.12);
+}
+
+.ppProp {
+  color: #93c5fd;
+}
+
+.ppNum {
+  font-weight: 800;
+  color: #fff;
+}
+
+.ppTarget {
+  color: var(--orange);
+  font-size: 0.78rem;
+}
+
+.ppOkIcon {
+  margin-left: auto;
+  color: var(--green);
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+/* ---------- Endpoint Rush ---------- */
+.epReq {
+  margin-bottom: 0.8rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border-left: 4px solid var(--blue);
+  background: rgba(11, 120, 251, 0.08);
+  animation: fadeInA 0.25s ease both;
+}
+
+.epReq p {
+  margin: 0.25rem 0 0;
+  font-size: 1.02rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.epKicker {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.epRows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.epRowLabel {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.epChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.epChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 44px;
+  padding: 0.4rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid #2d3443;
+  background: #000;
+  color: #e5e7eb;
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: border-color 0.12s ease, background 0.12s ease;
+}
+
+.epChip:disabled {
+  cursor: default;
+}
+
+.epChip small {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.epChipOn {
+  border-color: var(--blue);
+  background: rgba(11, 120, 251, 0.22);
+  color: #fff;
+}
+
+.epChipGood {
+  border-color: var(--green) !important;
+  background: rgba(34, 197, 94, 0.18) !important;
+  color: #fff !important;
+}
+
+.epChipBad {
+  border-color: var(--red) !important;
+  background: rgba(239, 68, 68, 0.18) !important;
+  animation: shakeA 0.25s ease 2;
+}
+
+.epPreview {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  min-height: 2.6rem;
+  margin: 0.8rem 0 0.6rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #05070a;
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  color: #4ade80;
+  overflow-wrap: anywhere;
+}
+
+.epHole {
+  color: #4b5563;
+}
+
+.epSend {
+  width: 100%;
+  min-height: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+}
+
+/* ---------- Ventana de Deploy ---------- */
+.dwTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.8rem;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: #d1d5db;
+}
+
+.dwLives {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.dwLive {
+  color: var(--red);
+  font-size: 1.1rem;
+}
+
+.dwLost {
+  color: #4b5563;
+  font-size: 1.1rem;
+}
+
+.dwTrack {
+  position: relative;
+  height: 66px;
+  margin: 0.6rem 0 0.9rem;
+  border-radius: 12px;
+  border: 2px solid #2d3443;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px) 0 0 / 10% 100%,
+    #05070a;
+  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.dwZone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 35%;
+  width: 30%;
+  background: rgba(34, 197, 94, 0.28);
+  border-left: 2px solid var(--green);
+  border-right: 2px solid var(--green);
+  pointer-events: none;
+}
+
+.dwMarker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.dwMarker::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 4px;
+  border-radius: 2px;
+  background: #fff;
+  box-shadow: 0 0 10px #fff, 0 0 18px var(--blue);
+}
+
+.dwOk {
+  border-color: var(--green);
+  box-shadow: 0 0 26px rgba(34, 197, 94, 0.45);
+}
+
+.dwBad {
+  border-color: var(--red);
+  box-shadow: 0 0 26px rgba(239, 68, 68, 0.5);
+  animation: shakeA 0.25s ease 2;
+}
+
+.dwBtn {
+  width: 100%;
+  min-height: 68px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  font-family: var(--mono);
+  font-size: 1.35rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.dwBtn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.dwConsole {
+  min-height: 4.6rem;
+  margin-top: 0.8rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #05070a;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: #9ca3af;
+}
+
+.dwLine {
+  display: flex;
+  gap: 0.45rem;
+  overflow-wrap: anywhere;
+}
+
+.dwLine span:first-child {
+  flex-shrink: 0;
+  color: #4b5563;
+}
+
+.dwLineOk {
+  color: #4ade80;
+}
+
+.dwLineBad {
+  color: #f87171;
+}
+
+.dwCursor {
+  animation: blinkA 1s steps(1) infinite;
+}
+
+/* ---------- Parche Express ---------- */
+.paBoard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.paCol {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.paColHead {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0 0.2rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.paItem {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 48px;
+  padding: 0.5rem 0.6rem;
+  border-radius: 10px;
+  border: 1px solid #2d3443;
+  background: #000;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: left;
+  cursor: pointer;
+  touch-action: manipulation;
+  overflow-wrap: anywhere;
+  transition: border-color 0.12s ease, background 0.12s ease;
+}
+
+.paItem svg {
+  flex-shrink: 0;
+}
+
+.paItem:disabled {
+  cursor: default;
+}
+
+.paOn {
+  border-color: var(--blue);
+  background: rgba(11, 120, 251, 0.22);
+}
+
+.paDone {
+  border-color: var(--green);
+  background: rgba(34, 197, 94, 0.12);
+  color: #86efac;
+  opacity: 0.8;
+}
+
+.paWrong {
+  border-color: var(--red) !important;
+  background: rgba(239, 68, 68, 0.18) !important;
+  animation: shakeA 0.25s ease 2;
+}
+
+.paZero {
+  border-color: var(--red);
+  background: rgba(239, 68, 68, 0.1);
+  animation: fadeInA 0.3s ease both;
+}
+
+.paZeroIcon {
+  color: var(--red);
+}
+
+.paBanner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.7rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: 10px;
+  border: 1px solid rgba(239, 68, 68, 0.6);
+  background: rgba(239, 68, 68, 0.14);
+  color: #fecaca;
+  font-size: 0.88rem;
+  font-weight: 700;
+  animation: fadeInA 0.3s ease both;
+}
+
+.paBanner svg {
+  flex-shrink: 0;
+  animation: blinkA 0.8s steps(1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .epChipBad,
+  .dwBad,
+  .paWrong,
+  .dwCursor,
+  .paBanner svg {
+    animation: none;
+  }
+  .ppBox,
+  .ppMeterFill {
+    transition: none;
+  }
+}

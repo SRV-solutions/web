@@ -1,0 +1,42 @@
+/* Íconos SVG de El Develop: contenedores y animación */
+.ico {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  vertical-align: middle;
+}
+
+/* Cuadradito con fondo tintado; el color y el fondo van por style inline desde IconBox */
+.icoBox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.icoBoxLg {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+}
+
+.icoSpin {
+  animation: icoSpin 2.4s linear infinite;
+}
+
+@keyframes icoSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .icoSpin {
+    animation: none;
+  }
+}

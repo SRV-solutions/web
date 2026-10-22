@@ -1,0 +1,566 @@
+/* Minijuegos B: Caza de Outliers, Sprint Planner, Simon del Help Desk y Encontrá la diferencia.
+   Usa las variables de color definidas en .page (style.module.css). */
+
+/* ---------- Compartido ---------- */
+.goal {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.msg {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 1.5rem;
+  margin: 0.5rem 0;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.msgGood {
+  color: var(--green);
+}
+
+.msgBad {
+  color: var(--red);
+}
+
+.ico {
+  flex: none;
+  font-size: 1.15em;
+}
+
+.shake {
+  animation: exShake 0.3s ease 2;
+}
+
+@keyframes exShake {
+  0%,
+  100% {
+    transform: none;
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes exFade {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes exPop {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ---------- Caza de Outliers ---------- */
+.chartCap {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #d1d5db;
+}
+
+.chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: #05070a;
+  touch-action: manipulation;
+  cursor: crosshair;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.axis {
+  stroke: #2d3443;
+  stroke-width: 1;
+}
+
+.grid {
+  stroke: #1a1f2a;
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.axisText {
+  fill: var(--muted);
+  font-size: 9px;
+  font-family: var(--mono);
+}
+
+.pt {
+  fill: #4ea1ff;
+  stroke: #0b2a55;
+  stroke-width: 1;
+}
+
+.ptFound {
+  fill: var(--green);
+  stroke: #052e16;
+}
+
+.ring {
+  fill: none;
+  stroke: var(--green);
+  stroke-width: 1.5;
+  animation: exPop 0.25s ease both;
+}
+
+.check {
+  fill: none;
+  stroke: var(--green);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ringBad {
+  fill: none;
+  stroke: var(--red);
+  stroke-width: 2;
+  animation: exFade 0.7s ease forwards;
+}
+
+.cross {
+  fill: none;
+  stroke: var(--red);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  animation: exFade 0.7s ease forwards;
+}
+
+/* ---------- Sprint Planner ---------- */
+.spMeter {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.7rem 0.9rem;
+  margin-bottom: 0.75rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: #05070a;
+}
+
+.spRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-family: var(--mono);
+  color: #d1d5db;
+}
+
+.spTrack {
+  height: 8px;
+  border-radius: 6px;
+  background: #1a1f2a;
+  overflow: hidden;
+}
+
+.spFill {
+  height: 100%;
+  background: var(--blue);
+  transition: width 0.2s ease, background 0.2s ease;
+}
+
+.spFillOk {
+  background: var(--green);
+}
+
+.spFillOver {
+  background: var(--red);
+}
+
+.spList {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+}
+
+.spStory {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 56px;
+  padding: 0.6rem 0.75rem;
+  border-radius: 12px;
+  border: 2px solid #2d3443;
+  background: #0e1118;
+  color: #fff;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.12s ease, background 0.12s ease;
+}
+
+.spOn {
+  border-color: var(--green);
+  background: rgba(34, 197, 94, 0.12);
+}
+
+.spBox {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  border: 2px solid #2d3443;
+  color: var(--green);
+  font-size: 1rem;
+}
+
+.spOn .spBox {
+  border-color: var(--green);
+  background: rgba(34, 197, 94, 0.2);
+}
+
+.spBody {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.spTitle {
+  font-weight: 700;
+  font-size: 0.92rem;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.spTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.spTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid;
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: var(--mono);
+}
+
+.spVal {
+  color: var(--orange);
+  border-color: rgba(246, 149, 10, 0.5);
+}
+
+.spPts {
+  color: #4ea1ff;
+  border-color: rgba(11, 120, 251, 0.5);
+}
+
+.spDep {
+  color: var(--purple);
+  border-color: rgba(168, 85, 247, 0.5);
+}
+
+.spCeo {
+  color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.5);
+}
+
+.spActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+
+.spClose {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+}
+
+/* ---------- Simon del Help Desk ---------- */
+.siTicket {
+  margin: 0 0 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.siGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.siBtn {
+  --c: #0b78fb;
+  --cbg: rgba(11, 120, 251, 0.35);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 78px;
+  padding: 0.6rem 0.4rem;
+  border-radius: 14px;
+  border: 2px solid #2d3443;
+  background: #0e1118;
+  color: #e5e7eb;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.siBtn:disabled {
+  opacity: 1;
+  cursor: default;
+}
+
+.siIcon {
+  font-size: 1.7rem;
+  color: var(--c);
+}
+
+.siLit {
+  border-color: var(--c);
+  background: var(--cbg);
+  box-shadow: 0 0 22px var(--cbg);
+  transform: scale(1.04);
+}
+
+.siOk {
+  border-color: var(--green);
+  background: rgba(34, 197, 94, 0.25);
+}
+
+.siBad {
+  border-color: var(--red);
+  background: rgba(239, 68, 68, 0.3);
+  animation: exShake 0.3s ease 2;
+}
+
+.siDots {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0.6rem 0;
+  min-height: 14px;
+}
+
+.siDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #1f2430;
+  border: 1px solid #2d3443;
+}
+
+.siDotOn {
+  background: var(--green);
+  border-color: var(--green);
+}
+
+.siDotNow {
+  border-color: var(--orange);
+}
+
+@media (min-width: 560px) {
+  .siGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .siGrid4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* ---------- Encontrá la diferencia ---------- */
+.sdTabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+  margin-bottom: 0.6rem;
+}
+
+.sdTab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  border-radius: 10px;
+  border: 1px solid #2d3443;
+  background: #12151c;
+  color: var(--muted);
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sdTabOn {
+  color: #fff;
+  border-color: var(--blue);
+  background: rgba(11, 120, 251, 0.15);
+}
+
+.sdWrap {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.sdPane {
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: #05070a;
+  overflow: hidden;
+}
+
+.sdPaneOff {
+  display: none;
+}
+
+.sdHead {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--line);
+  background: #0c0d10;
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.sdHeadAct {
+  color: var(--orange);
+}
+
+.sdLine {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  min-height: 40px;
+  padding: 0.45rem 0.6rem;
+  border: none;
+  border-bottom: 1px solid #10141c;
+  background: transparent;
+  color: #e5e7eb;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  line-height: 1.35;
+  text-align: left;
+}
+
+.sdBtn {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sdBtn:active {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.sdNum {
+  flex: none;
+  width: 1.6rem;
+  color: #4b5563;
+  text-align: right;
+  font-size: 0.72rem;
+}
+
+.sdCode {
+  flex: 1;
+  min-width: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-family: inherit;
+  tab-size: 2;
+}
+
+.sdMark {
+  flex: none;
+  font-size: 1rem;
+}
+
+.sdFound {
+  background: rgba(34, 197, 94, 0.14);
+  color: #bbf7d0;
+}
+
+.sdWrong {
+  background: rgba(239, 68, 68, 0.18);
+  animation: exShake 0.3s ease 2;
+}
+
+@media (min-width: 640px) {
+  .sdTabs {
+    display: none;
+  }
+
+  .sdWrap {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .sdPaneOff {
+    display: block;
+  }
+}
+
+/* ---------- Movimiento reducido ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .shake,
+  .siBad,
+  .sdWrong,
+  .ring,
+  .ringBad,
+  .cross {
+    animation: none;
+  }
+
+  .siBtn,
+  .spFill,
+  .spStory {
+    transition: none;
+  }
+
+  .siLit {
+    transform: none;
+  }
+}

@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import styles from "../style.module.css";
 import { shuffle } from "../helpers";
 import { useCountdown, useFinishOnce, TimerBar } from "./common";
+import { Icon, IconLabel } from "../icons";
 
 
 export default function DesignPicker({ timeMult, diff = 1, design, onFinish }) {
@@ -42,7 +43,9 @@ export default function DesignPicker({ timeMult, diff = 1, design, onFinish }) {
     <div>
       <TimerBar left={left} total={total} label="Tiempo para la pizarra" />
       <p className={styles.mgGoal}>
-        🏗️ {design.prompt}
+        <IconLabel icon="blocks" color="var(--blue)">
+          {design.prompt}
+        </IconLabel>
         <br />
         Elegí al menos {MIN_GOOD} piezas correctas. {MAX_BAD === 0 ? "Sin ninguna pifiada." : `Más de ${MAX_BAD} pifiada y te bochan.`}
       </p>
@@ -53,13 +56,14 @@ export default function DesignPicker({ timeMult, diff = 1, design, onFinish }) {
           if (sent) cls += p.good ? ` ${styles.quizRight}` : on ? ` ${styles.quizWrong}` : "";
           return (
             <button type="button" key={p.label} className={cls} onClick={() => toggle(p.label)}>
-              {on ? "☑" : "☐"} {p.label}
+              <Icon name={on ? "squareCheck" : "square"} color={on ? "var(--green)" : "var(--muted)"} style={{ marginRight: "0.35em" }} />
+              {p.label}
             </button>
           );
         })}
       </div>
       <button type="button" className={`${styles.btn} ${styles.btnPrimary}`} onClick={submit} disabled={sent}>
-        📤 Presentar diseño
+        <IconLabel icon="send">Presentar diseño</IconLabel>
       </button>
     </div>
   );

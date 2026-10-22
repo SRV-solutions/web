@@ -1,7 +1,11 @@
 // Genera la imagen para compartir (formato historia 1080x1920) con el branding de la web
+import React from "react";
+import { createRoot } from "react-dom/client";
+import { flushSync } from "react-dom";
 import { LEVELS, STAT_INFO } from "./data";
 import { ROLES } from "./data";
 import { GAME_PATH, INSTAGRAM_HANDLE } from "./promo";
+import { Icon, ROLE_ICON, STAT_ICON } from "./icons";
 
 const W = 1080;
 const H = 1920;
@@ -14,12 +18,15 @@ export const gameUrl = () => `${window.location.origin}${GAME_PATH}`;
 const prettyUrl = () => `${window.location.host.replace(/^www\./, "")}${GAME_PATH}`;
 
 export function shareHeadline(game) {
+  if (game.victory?.tipo === "exit")
+    return { title: "¡VENDÍ MI STARTUP!", sub: `${game.victory.company} → ${game.victory.comprador} por US$${Math.round(game.victory.montoUsd).toLocaleString("es-AR")}` };
   if (game.victory) return { title: "¡LLEGUÉ A LA BIG TECH!", sub: `Staff Engineer en ${game.victory.company}` };
   if (game.gameOver) return { title: game.gameOver.share || game.gameOver.title.toUpperCase(), sub: "Game over… pero vuelvo más fuerte" };
   return { title: "MI CARRERA IT VA ASÍ", sub: `${LEVELS[game.level]} en la semana ${game.week}` };
 }
 
 function funnyLine(game) {
+  if (game.victory?.tipo === "exit") return "Empecé con una idea en un bar y terminé firmando un exit. Ahora sí: a Miami.";
   if (game.victory && game.burnouts === 0) return "Sin burnouts, sin deudas y con los dólares abajo del colchón.";
   if (game.victory) {
     const b = game.burnouts === 1 ? "Un burnout" : `${game.burnouts} burnouts`;
@@ -42,6 +49,23 @@ function loadImage(src) {
     img.onload = () => resolve(img);
     img.onerror = () => resolve(null);
     img.src = src;
+  });
+}
+
+// Renderiza un ícono SVG del juego fuera de pantalla y lo devuelve como imagen para el canvas
+function iconImage(name, size, color) {
+  return new Promise((resolve) => {
+    try {
+      const div = document.createElement("div");
+      const root = createRoot(div);
+      flushSync(() => root.render(React.createElement(Icon, { name, size, color })));
+      let svg = div.innerHTML;
+      root.unmount();
+      if (!svg.includes("xmlns=")) svg = svg.replace("<svg", "<svg xmlns=\"http://www.w3.org/2000/svg\"");
+      loadImage(`data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`).then(resolve);
+    } catch {
+      resolve(null);
+    }
   });
 }
 
@@ -103,6 +127,13 @@ export async function createShareImage(game) {
   const role = ROLES[game.role];
   const won = !!game.victory;
   const accent = game.gameOver ? "#ef4444" : won ? ORANGE : BLUE;
+  const heroName = game.victory?.tipo === "exit" ? "rocket" : won ? "trophy" : game.gameOver ? "skull" : "laptop";
+  const [hero, roleImg, ...statImgs] = await Promise.all([
+    iconImage(heroName, 150, accent),
+    iconImage(ROLE_ICON[game.role], 110, accent),
+    ...Object.entries(STAT_INFO).map(([k, info]) => iconImage(STAT_ICON[k], 34, info.color)),
+  ]);
+  const metricImgs = await Promise.all(["calendar", "sparkles", "banknote", "batteryLow"].map((n) => iconImage(n, 28, "#9ca3af")));
 
   // Fondo: negro + grilla + brillos azul/naranja
   ctx.fillStyle = "#000";
@@ -158,8 +189,7 @@ export async function createShareImage(game) {
   const { title, sub } = shareHeadline(game);
   ctx.textBaseline = "alphabetic";
   ctx.textAlign = "center";
-  ctx.font = `150px ${FONT}`;
-  ctx.fillText(won ? "🏆" : game.gameOver ? "🥀" : "💻", W / 2, 400);
+  if (hero) ctx.drawImage(hero, W / 2 - 75, 250, 150, 150);
   fitFont(ctx, title, W - 140, 92);
   ctx.fillStyle = "#fff";
   ctx.shadowColor = accent;
@@ -173,8 +203,7 @@ export async function createShareImage(game) {
   // Tarjeta del jugador
   panel(ctx, 70, 650, W - 140, 220, accent);
   ctx.textAlign = "left";
-  ctx.font = `110px ${FONT}`;
-  ctx.fillText(role.emoji, 110, 800);
+  if (roleImg) ctx.drawImage(roleImg, 115, 705, 110, 110);
   ctx.fillStyle = "#fff";
   fitFont(ctx, game.name, 640, 60);
   ctx.fillText(game.name, 270, 735);
@@ -196,12 +225,13 @@ export async function createShareImage(game) {
   // Barras de stats
   panel(ctx, 70, 910, W - 140, 400);
   let y = 985;
-  for (const [key, info] of Object.entries(STAT_INFO)) {
+  for (const [i, [key, info]] of Object.entries(STAT_INFO).entries()) {
     const v = game.stats[key];
     ctx.textAlign = "left";
     ctx.fillStyle = "#e5e7eb";
     ctx.font = `600 34px ${FONT}`;
-    ctx.fillText(`${info.icon} ${info.label}`, 115, y);
+    if (statImgs[i]) ctx.drawImage(statImgs[i], 115, y - 28, 34, 34);
+    ctx.fillText(info.label, 163, y);
     ctx.textAlign = "right";
     ctx.font = `900 36px ${FONT}`;
     ctx.fillText(String(v), W - 115, y);
@@ -221,10 +251,10 @@ export async function createShareImage(game) {
 
   // Métricas
   const metrics = [
-    ["📅 Semanas", String(game.week)],
-    ["⭐ XP", String(game.xp)],
-    ["💵 Dólar llegó a", `$${game.dolar.toLocaleString("es-AR")}`],
-    ["🟥 Burnouts", String(game.burnouts)],
+    ["Semanas", String(game.week)],
+    ["XP", String(game.xp)],
+    ["Dólar llegó a", `${game.dolar.toLocaleString("es-AR")}`],
+    ["Burnouts", String(game.burnouts)],
   ];
   const mw = (W - 140 - 30) / 2;
   metrics.forEach(([label, value], i) => {
@@ -234,7 +264,8 @@ export async function createShareImage(game) {
     ctx.textAlign = "left";
     ctx.fillStyle = "#9ca3af";
     ctx.font = `500 28px ${FONT}`;
-    ctx.fillText(label, mx + 30, my + 48);
+    if (metricImgs[i]) ctx.drawImage(metricImgs[i], mx + 30, my + 24, 28, 28);
+    ctx.fillText(label, mx + 68, my + 48);
     ctx.fillStyle = "#fff";
     fitFont(ctx, value, mw - 60, 46);
     ctx.fillText(value, mx + 30, my + 100);

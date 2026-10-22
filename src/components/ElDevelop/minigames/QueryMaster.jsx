@@ -2,6 +2,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import styles from "../style.module.css";
 import { randInt, pick } from "../helpers";
 import { useCountdown, useFinishOnce, TimerBar } from "./common";
+import { Icon } from "../icons";
 
 // Tamaño del tablero según la dificultad
 const SIZES = [[3, 4], [4, 5], [4, 6], [5, 6]];
@@ -129,7 +130,13 @@ export default function QueryMaster({ timeMult, diff = 1, onFinish }) {
         <div className={styles.pipeSide}>
           {Array.from({ length: ROWS }, (_, r) => (
             <span key={r} className={styles.pipeLabel}>
-              {r === initial.entryRow ? "API ▶" : ""}
+              {r === initial.entryRow ? (
+                <>
+                  API <Icon name="arrowRight" size={14} color="var(--orange)" />
+                </>
+              ) : (
+                ""
+              )}
             </span>
           ))}
         </div>
@@ -151,7 +158,13 @@ export default function QueryMaster({ timeMult, diff = 1, onFinish }) {
         <div className={styles.pipeSide}>
           {Array.from({ length: ROWS }, (_, r) => (
             <span key={r} className={styles.pipeLabel}>
-              {r === initial.exitRow ? "▶ DB" : ""}
+              {r === initial.exitRow ? (
+                <>
+                  <Icon name="arrowRight" size={14} color="var(--orange)" /> DB
+                </>
+              ) : (
+                ""
+              )}
             </span>
           ))}
         </div>

@@ -3,6 +3,7 @@ import styles from "../style.module.css";
 import { MEMO_PAIRS } from "../data";
 import { shuffle } from "../helpers";
 import { useCountdown, useFinishOnce, TimerBar } from "./common";
+import { TechIcon } from "../icons";
 
 // Memotest de tecnologías
 export default function Memotest({ timeMult, diff = 1, onFinish }) {
@@ -53,7 +54,9 @@ export default function Memotest({ timeMult, diff = 1, onFinish }) {
             >
               {visible ? (
                 <>
-                  <span className={styles.memoIcon}>{c.icon}</span>
+                  <span className={styles.memoIcon} style={{ display: "inline-flex", lineHeight: 1 }}>
+                    <TechIcon name={c.name} size="1em" />
+                  </span>
                   <span className={styles.memoName}>{c.name}</span>
                 </>
               ) : (

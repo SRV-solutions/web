@@ -23,12 +23,13 @@ import {
   devolverAbuela,
   escapadaMiami,
 } from "./finanzas";
+import { Icon, TAB_ICON, JUEGO_ICON, NIVEL_ICON, LEY_ICON } from "./icons";
 
 const TABS = [
-  { id: "cueva", label: "💵 La Cueva" },
-  { id: "casino", label: "🎰 Casino" },
-  { id: "abuela", label: "👵 La Abuela" },
-  { id: "congreso", label: "🏛️ Congreso" },
+  { id: "cueva", label: "La Cueva" },
+  { id: "casino", label: "Casino" },
+  { id: "abuela", label: "La Abuela" },
+  { id: "congreso", label: "Congreso" },
 ];
 
 const FORT = [
@@ -37,6 +38,14 @@ const FORT = [
   "¡MAIAMEEE!",
   "Comandante, el champán está frío.",
 ];
+
+// Ícono + texto en una línea (para botones y chips)
+const IL = ({ icon, size = 16, children, color }) => (
+  <span className={styles.inlineIcon}>
+    <Icon name={icon} size={size} color={color} />
+    {children}
+  </span>
+);
 
 // Pequeño "suspenso" antes de resolver una apuesta, para que se sienta la timba
 function useSpin() {
@@ -66,7 +75,11 @@ export default function Financiera({ game, act }) {
       <div className={styles.finHead}>
         <div>
           <p className={styles.kicker}>Calle Florida · Atendemos de 10 a 15 (o cuando haya tiro)</p>
-          <h3 className={styles.subtitle}>🏦 La Financiera</h3>
+          <h3 className={styles.subtitle}>
+            <IL icon="vault" size={20}>
+              La Financiera
+            </IL>
+          </h3>
         </div>
         <div className={styles.finQuote}>
           <span>
@@ -82,12 +95,13 @@ export default function Financiera({ game, act }) {
         <VipCard game={game} fin={fin} act={act} />
       ) : (
         <div className={styles.finLevel}>
-          <span className={styles.finLevelEmoji}>{nivel.emoji}</span>
+          <span className={styles.finLevelEmoji}>
+            <Icon name={NIVEL_ICON[nv]} size={28} className={styles.green} />
+          </span>
           <div>
             <strong>{nivel.name}</strong>
             <span className={styles.muted}>
-              Patrimonio: {fmtUsd(patrimonioUsd(game))} · Próximo nivel: {NIVELES[nv + 1].emoji}{" "}
-              {NIVELES[nv + 1].name} ({fmtUsd(NIVELES[nv + 1].min)})
+              Patrimonio: {fmtUsd(patrimonioUsd(game))} · Próximo nivel: {NIVELES[nv + 1].name} ({fmtUsd(NIVELES[nv + 1].min)})
             </span>
           </div>
         </div>
@@ -103,7 +117,7 @@ export default function Financiera({ game, act }) {
             className={`${styles.finTab} ${tab === t.id ? styles.finTabOn : ""}`}
             onClick={() => setTab(t.id)}
           >
-            {t.label}
+            <IL icon={TAB_ICON[t.id]}>{t.label}</IL>
             {t.id === "abuela" && fin.deudaAbuela > 0 && <span className={styles.finDot} />}
           </button>
         ))}
@@ -129,7 +143,9 @@ function VipCard({ game, fin, act }) {
         <span className={styles.vipBrand}>{nv >= 4 ? "BLACK · E-COMMERCE" : "COMANDANTE · MIAMI"}</span>
       </div>
       <strong className={styles.vipLevel}>
-        {nivel.emoji} {nivel.name}
+        <IL icon={NIVEL_ICON[nv]} size={20}>
+          {nivel.name}
+        </IL>
       </strong>
       <span className={styles.vipQuote}>"{quote}"</span>
       <div className={styles.vipBottom}>
@@ -143,7 +159,9 @@ function VipCard({ game, fin, act }) {
           onClick={() => act(escapadaMiami)}
           title="+20 Salud mental · +10 Energía · +4 Contactos. Una por mes."
         >
-          {fin.miamiMes ? "🌴 Ya fuiste este mes" : `🌴 Escapada a Miami (${fmtArs(costo)})`}
+          <IL icon="treePalm" size={15}>
+            {fin.miamiMes ? "Ya fuiste este mes" : `Escapada a Miami (${fmtArs(costo)})`}
+          </IL>
         </button>
       </div>
     </div>
@@ -156,20 +174,34 @@ function Cueva({ game, fin, cot, act }) {
   return (
     <div className={styles.finPanel}>
       <div className={styles.finRules}>
-        <span>🧾 Recargo al dólar: {Math.round(fin.ley.impuesto * 100)}%</span>
-        <span>{fin.ley.cupo == null ? "🔓 Sin cepo" : `🔒 Cepo: te quedan ${fmtUsd(cupo)} este mes`}</span>
+        <span>
+          <IL icon="receipt" size={14}>
+            Recargo al dólar: {Math.round(fin.ley.impuesto * 100)}%
+          </IL>
+        </span>
+        <span>
+          <IL icon={fin.ley.cupo == null ? "lockOpen" : "lock"} size={14}>
+            {fin.ley.cupo == null ? "Sin cepo" : `Cepo: te quedan ${fmtUsd(cupo)} este mes`}
+          </IL>
+        </span>
       </div>
 
       {fin.convertibilidad > 0 && fin.cupoMenem > 0 && (
         <div className={styles.menem}>
           <div>
-            <strong>📼 CONVERTIBILIDAD 2.0 · UNO A UNO</strong>
+            <strong>
+              <IL icon="cassette" size={16}>
+                CONVERTIBILIDAD 2.0 · UNO A UNO
+              </IL>
+            </strong>
             <span>
               Quedan {fin.convertibilidad} semana(s) y {fmtUsd(fin.cupoMenem)} a $1. Pizza con champán incluida.
             </span>
           </div>
           <button type="button" className={styles.menemBtn} disabled={game.ars < 1} onClick={() => act(comprarUnoAUno)}>
-            🍕🥂 Comprar a $1
+            <IL icon="pizza" size={16}>
+              Comprar a $1
+            </IL>
           </button>
         </div>
       )}
@@ -178,7 +210,7 @@ function Cueva({ game, fin, cot, act }) {
       <div className={styles.finBtns}>
         {[100, 500, 1000].map((usd) => (
           <button type="button" key={usd} className={styles.btn} disabled={!puede(usd)} onClick={() => act(comprarUsd, usd)}>
-            💵 US${usd}
+            <IL icon="banknote">US${usd}</IL>
             <small>{fmtArs(usd * cot.venta)}</small>
           </button>
         ))}
@@ -188,12 +220,14 @@ function Cueva({ game, fin, cot, act }) {
       <div className={styles.finBtns}>
         {[100, 500].map((usd) => (
           <button type="button" key={usd} className={styles.btn} disabled={game.usd < usd} onClick={() => act(venderUsd, usd)}>
-            🔁 US${usd}
+            <IL icon="swap">US${usd}</IL>
             <small>{fmtArs(usd * cot.compra)}</small>
           </button>
         ))}
         <button type="button" className={`${styles.btn} ${styles.sawBtn}`} disabled={game.usd < 1} onClick={() => act(venderUsd, "all")}>
-          🪚 Liquidar todo
+          <IL icon="axe" color="var(--red)">
+            Liquidar todo
+          </IL>
           <small>{fmtArs(game.usd * cot.compra)}</small>
         </button>
       </div>
@@ -204,7 +238,9 @@ function Cueva({ game, fin, cot, act }) {
         disabled={!fin.ley.dolarizacion || game.ars < cot.venta}
         onClick={() => act(dolarizar)}
       >
-        {fin.ley.dolarizacion ? "🦁 DOLARIZAR TODO · ¡VIVA LA LIBERTAD, CARAJO!" : "🦁 Dolarizar todo · necesita que el Congreso apruebe la Ley de Dolarización"}
+        <IL icon="crown" size={18}>
+          {fin.ley.dolarizacion ? "DOLARIZAR TODO · ¡VIVA LA LIBERTAD, CARAJO!" : "Dolarizar todo · necesita que el Congreso apruebe la Ley de Dolarización"}
+        </IL>
       </button>
     </div>
   );
@@ -216,7 +252,8 @@ const FRACCIONES = [
   { f: 0.5, label: "50%" },
   { f: 1, label: "ALL-IN" },
 ];
-const REELS = ["🍒", "💵", "🦁", "🌴", "📼", "⚽", "🧉"];
+const REELS = ["cherry", "banknote", "crown", "treePalm", "cassette", "ball", "cupSoda"];
+const REEL_COLORS = ["#ef4444", "#22c55e", "#fcd34d", "#18c5c5", "#f0abfc", "#ffffff", "#f6950a"];
 
 function Casino({ game, fin, act }) {
   const [fraccion, setFraccion] = useState(0.1);
@@ -226,8 +263,16 @@ function Casino({ game, fin, act }) {
   return (
     <div className={styles.finPanel}>
       <div className={styles.finRules}>
-        <span>🎟️ Fichas esta semana: {quedan}/3</span>
-        <span>🏛️ Impuesto a la timba: {Math.round(fin.ley.comision * 100)}% de los premios</span>
+        <span>
+          <IL icon="ticket" size={14}>
+            Fichas esta semana: {quedan}/3
+          </IL>
+        </span>
+        <span>
+          <IL icon="landmark" size={14}>
+            Impuesto a la timba: {Math.round(fin.ley.comision * 100)}% de los premios
+          </IL>
+        </span>
       </div>
 
       <p className={styles.finLabel}>¿Cuánto de tus pesos ponés?</p>
@@ -248,7 +293,7 @@ function Casino({ game, fin, act }) {
       <div className={styles.casinoGrid}>
         {Object.entries(JUEGOS).map(([id, j]) => (
           <div key={id} className={`${styles.casinoCard} ${spinning === id ? styles.casinoSpin : ""}`}>
-            <span className={styles.casinoEmoji}>{spinning === id ? <Reels /> : j.emoji}</span>
+            <span className={styles.casinoEmoji}>{spinning === id ? <Reels /> : <Icon name={JUEGO_ICON[id]} size={34} className={styles.orange} />}</span>
             <strong>{j.name}</strong>
             <span className={styles.muted}>{j.desc}</span>
             <span className={styles.casinoOdds}>
@@ -266,20 +311,31 @@ function Casino({ game, fin, act }) {
         ))}
       </div>
       <p className={styles.muted}>
-        🙌 Si perdés, hay un 5% de chance de que aparezca la Mano de Dios y te devuelva todo. Récord: {fin.ganadas} ganadas ·{" "}
-        {fin.perdidas} perdidas. La casa siempre gana: es plata del juego, en la vida real la timba no es un plan de retiro.
+        <IL icon="party" size={14}>
+          Si perdés, hay un 5% de chance de que aparezca la Mano de Dios y te devuelva todo.
+        </IL>{" "}
+        Récord: {fin.ganadas} ganadas · {fin.perdidas} perdidas. La casa siempre gana: es plata del juego, en la vida real la timba
+        no es un plan de retiro.
       </p>
     </div>
   );
 }
 
+// Rodillos de tragamonedas con íconos SVG
 function Reels() {
   const [i, setI] = useState(0);
   useEffect(() => {
     const t = setInterval(() => setI((x) => x + 1), 90);
     return () => clearInterval(t);
   }, []);
-  return <span className={styles.reels}>{[0, 3, 5].map((o) => REELS[(i + o) % REELS.length]).join("")}</span>;
+  return (
+    <span className={styles.reels}>
+      {[0, 3, 5].map((o) => {
+        const k = (i + o) % REELS.length;
+        return <Icon key={o} name={REELS[k]} size={30} color={REEL_COLORS[k]} />;
+      })}
+    </span>
+  );
 }
 
 function Abuela({ game, fin, act }) {
@@ -290,7 +346,9 @@ function Abuela({ game, fin, act }) {
   return (
     <div className={styles.finPanel}>
       <div className={styles.abuela}>
-        <span className={styles.abuelaEmoji}>{fin.deudaAbuela > 0 ? "👵💢" : "👵☕"}</span>
+        <span className={styles.abuelaEmoji}>
+          <Icon name={fin.deudaAbuela > 0 ? "angry" : "coffee"} size={40} color={fin.deudaAbuela > 0 ? "var(--red)" : "#fcd34d"} />
+        </span>
         <div>
           <strong>Los ahorros de la jubilación de la abuela</strong>
           <span className={styles.abuelaPot}>{fmtArs(fin.abuela)}</span>
@@ -307,7 +365,7 @@ function Abuela({ game, fin, act }) {
             de la familia (-2 Salud mental por semana).
           </p>
           <button type="button" className={`${styles.btn} ${styles.btnPrimary}`} disabled={game.ars <= 0} onClick={() => act(devolverAbuela)}>
-            💐 Devolverle {fmtArs(Math.min(fin.deudaAbuela, Math.max(0, game.ars)))}
+            <IL icon="flower">Devolverle {fmtArs(Math.min(fin.deudaAbuela, Math.max(0, game.ars)))}</IL>
           </button>
         </div>
       ) : (
@@ -326,11 +384,13 @@ function Abuela({ game, fin, act }) {
               spin("abuela", () => act(apostarAbuela));
             }}
           >
-            {spinning
-              ? "🎰 Girando con la plata de la abuela…"
-              : seguro
-              ? `⚠️ ¿SEGURO? Es la jubilación de la abuela. Tocá de nuevo para apostar ${fmtArs(fin.abuela)}`
-              : `🎰 Apostar la jubilación de la abuela (${fmtArs(fin.abuela)})`}
+            <IL icon={seguro && !spinning ? "alert" : "dices"} size={18}>
+              {spinning
+                ? "Girando con la plata de la abuela…"
+                : seguro
+                ? `¿SEGURO? Es la jubilación de la abuela. Tocá de nuevo para apostar ${fmtArs(fin.abuela)}`
+                : `Apostar la jubilación de la abuela (${fmtArs(fin.abuela)})`}
+            </IL>
           </button>
           {quedan <= 0 && <p className={styles.muted}>Sin fichas esta semana. La abuela respira aliviada.</p>}
         </>
@@ -341,7 +401,7 @@ function Abuela({ game, fin, act }) {
 
 function Congreso({ game, fin }) {
   const proxima = 1 + 8 * (Math.floor((game.week - 1) / 8) + 1);
-  const pendientes = Object.values(LEYES).filter((l) => l.posible(fin));
+  const pendientes = Object.entries(LEYES).filter(([, l]) => l.posible(fin));
   return (
     <div className={styles.finPanel}>
       <div className={styles.boletin}>
@@ -350,18 +410,23 @@ function Congreso({ game, fin }) {
           <li>Recargo a la compra de dólares: {Math.round(fin.ley.impuesto * 100)}%</li>
           <li>Cepo: {fin.ley.cupo == null ? "levantado" : `US$${fin.ley.cupo} por mes`}</li>
           <li>Impuesto a la timba: {Math.round(fin.ley.comision * 100)}%</li>
-          <li>Dolarización: {fin.ley.dolarizacion ? "aprobada 🦁" : "no aprobada"}</li>
+          <li>Dolarización: {fin.ley.dolarizacion ? "aprobada" : "no aprobada"}</li>
           <li>Convertibilidad: {fin.convertibilidad > 0 ? `vigente (${fin.convertibilidad} semanas)` : "no vigente"}</li>
         </ul>
       </div>
       <p className={styles.text}>
-        🏛️ Próxima sesión de la Ley Ómnibus: <b>semana {proxima}</b> (en {proxima - game.week}). Te van a invitar a votar uno de
-        estos proyectos; tus Contactos sirven para hacer lobby.
+        <IL icon="landmark" size={16}>
+          Próxima sesión de la Ley Ómnibus:
+        </IL>{" "}
+        <b>semana {proxima}</b> (en {proxima - game.week}). Te van a invitar a votar uno de estos proyectos; tus Contactos sirven
+        para hacer lobby.
       </p>
       <div className={styles.proyectos}>
-        {pendientes.map((l) => (
-          <span key={l.name} className={`${styles.proyecto} ${l.buena ? styles.proyBueno : styles.proyMalo}`}>
-            {l.buena ? "👍" : "👎"} {l.name}
+        {pendientes.map(([id, l]) => (
+          <span key={id} className={`${styles.proyecto} ${l.buena ? styles.proyBueno : styles.proyMalo}`}>
+            <IL icon={LEY_ICON[id] || (l.buena ? "thumbsUp" : "thumbsDown")} size={13}>
+              {l.name}
+            </IL>
           </span>
         ))}
       </div>

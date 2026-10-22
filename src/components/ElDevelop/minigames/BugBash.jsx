@@ -3,6 +3,7 @@ import styles from "../style.module.css";
 import { BUG_FILES } from "../data";
 import { rand, randInt } from "../helpers";
 import { useFinishOnce, TimerBar } from "./common";
+import { Icon } from "../icons";
 
 
 // Aplastar bugs que asoman en los archivos (tipo "pegale al topo")
@@ -69,7 +70,15 @@ export default function BugBash({ timeMult, diff = 1, onFinish }) {
       <div className={styles.bugGrid}>
         {BUG_FILES.map((file, i) => (
           <button type="button" key={file} className={`${styles.bugCell} ${s.bugs[i] ? styles.bugOn : ""}`} onPointerDown={() => hit(i)}>
-            <span className={styles.bugIcon}>{s.squashed[i] ? "💥" : s.bugs[i] ? "🐛" : "📄"}</span>
+            <span className={styles.bugIcon} style={{ display: "inline-flex", lineHeight: 1 }}>
+              {s.squashed[i] ? (
+                <Icon name="bugOff" size="1em" color="var(--green)" />
+              ) : s.bugs[i] ? (
+                <Icon name="bug" size="1em" color="var(--orange)" />
+              ) : (
+                <Icon name="fileCode" size="1em" color="var(--muted)" />
+              )}
+            </span>
             <span className={styles.bugFile}>{file}</span>
           </button>
         ))}

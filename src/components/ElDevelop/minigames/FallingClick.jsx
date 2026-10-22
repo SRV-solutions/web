@@ -3,6 +3,7 @@ import styles from "../style.module.css";
 import { FALLING_SETS } from "../data";
 import { rand, pick, chance } from "../helpers";
 import { useFinishOnce, TimerBar } from "./common";
+import { Icon, IconLabel, IconText } from "../icons";
 
 
 // Minijuego genérico de "lluvia": Hack the Hacker, Data Cleaning y Prioritizer
@@ -13,7 +14,8 @@ export default function FallingClick({ variant, timeMult, diff = 1, onFinish }) 
   const set = FALLING_SETS[variant];
   const finishOnce = useFinishOnce(onFinish);
   const [, setFrame] = useState(0);
-  const g = useRef({ items: [], lives: LIVES, score: 0, nextId: 1, spawnIn: 0.3, left: DURATION, over: false, msg: "" });
+  // msg: { icon, text } (ícono de icons.jsx)
+  const g = useRef({ items: [], lives: LIVES, score: 0, nextId: 1, spawnIn: 0.3, left: DURATION, over: false, msg: null });
 
   useEffect(() => {
     let last = performance.now();
@@ -47,7 +49,7 @@ export default function FallingClick({ variant, timeMult, diff = 1, onFinish }) 
         if (it.y >= 92) {
           if (it.bad) {
             s.lives -= 1;
-            s.msg = `💥 ${set.badHit}`;
+            s.msg = { icon: "bomb", text: set.badHit };
           }
         } else {
           alive.push(it);
@@ -60,7 +62,7 @@ export default function FallingClick({ variant, timeMult, diff = 1, onFinish }) 
         setTimeout(() => finishOnce(false), 700);
       } else if (s.left <= 0) {
         s.over = true;
-        s.msg = "✅ ¡Aguantaste!";
+        s.msg = { icon: "circleCheck", text: "¡Aguantaste!" };
         setTimeout(() => finishOnce(true), 700);
       }
       setFrame((f) => f + 1);
@@ -75,18 +77,30 @@ export default function FallingClick({ variant, timeMult, diff = 1, onFinish }) 
     s.items = s.items.filter((i) => i.id !== item.id);
     if (item.bad) {
       s.score += 1;
-      s.msg = "🛡️ ¡Bloqueado!";
+      s.msg = { icon: "shieldCheck", text: "¡Bloqueado!" };
     } else {
       s.lives -= 1;
-      s.msg = `⚠️ ${set.goodHit}`;
+      s.msg = { icon: "alert", text: set.goodHit };
     }
     setFrame((f) => f + 1);
   };
 
   return (
     <div>
-      <TimerBar left={s.left} total={DURATION} label={`Vidas: ${"❤️".repeat(Math.max(0, s.lives))} · Bloqueados: ${s.score}`} />
-      <p className={styles.mgMsg}>{s.msg || "Atento…"}</p>
+      <TimerBar
+        left={s.left}
+        total={DURATION}
+        label={
+          <>
+            Vidas:{" "}
+            {Array.from({ length: Math.max(0, s.lives) }, (_, i) => (
+              <Icon key={i} name="heart" size={14} color="var(--red)" fill="currentColor" />
+            ))}{" "}
+            · Bloqueados: {s.score}
+          </>
+        }
+      />
+      <p className={styles.mgMsg}>{s.msg ? <IconLabel icon={s.msg.icon}>{s.msg.text}</IconLabel> : "Atento…"}</p>
       <div className={styles.fallArea}>
         {s.items.map((it) => (
           <button
@@ -99,7 +113,9 @@ export default function FallingClick({ variant, timeMult, diff = 1, onFinish }) 
             {it.text}
           </button>
         ))}
-        <div className={styles.fallFloor}>{set.floor}</div>
+        <div className={styles.fallFloor}>
+          <IconText text={set.floor} />
+        </div>
       </div>
     </div>
   );

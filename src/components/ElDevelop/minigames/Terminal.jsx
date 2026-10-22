@@ -3,6 +3,7 @@ import styles from "../style.module.css";
 import { TERMINAL_COMMANDS, TERMINAL_COMMANDS_PRO } from "../data";
 import { shuffle } from "../helpers";
 import { useCountdown, useFinishOnce, TimerBar } from "./common";
+import { IconLabel } from "../icons";
 
 
 // Tipear comandos cortos en una terminal
@@ -32,7 +33,7 @@ export default function Terminal({ timeMult, diff = 1, onFinish }) {
     if (done) return;
     const target = commands[idx];
     if (value.trim().toLowerCase() === target.toLowerCase()) {
-      setHistory((h) => [...h, `$ ${target}`, "✔ OK"]);
+      setHistory((h) => [...h, `$ ${target}`, "OK"]);
       setValue("");
       setError(false);
       if (idx + 1 >= commands.length) setTimeout(() => finishOnce(true), 600);
@@ -62,7 +63,13 @@ export default function Terminal({ timeMult, diff = 1, onFinish }) {
         <div className={styles.termBody}>
           {history.slice(-8).map((l, i) => (
             <div key={i} className={l.startsWith("bash") ? styles.termErr : ""}>
-              {l}
+              {l === "OK" ? (
+                <IconLabel icon="check" size={14}>
+                  OK
+                </IconLabel>
+              ) : (
+                l
+              )}
             </div>
           ))}
           {!done && (

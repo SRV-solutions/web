@@ -1,4 +1,4 @@
-import { ROLES, LEVELS, SALARY_ARS, COMPANIES } from "./data";
+import { ROLES } from "./data";
 
 export const rand = (a, b) => a + Math.random() * (b - a);
 export const randInt = (a, b) => Math.floor(rand(a, b + 1));
@@ -74,29 +74,7 @@ export function updatePhase(s) {
 export const entryLevel = (s) =>
   s.level >= 1 ? Math.min(s.level, 4) : s.study === "uni" ? 2 : 1;
 
-export function makeOffer(s, level, mult = 1) {
-  const salary = Math.round((SALARY_ARS[level] * s.priceIndex * mult) / 1000) * 1000;
-  s.offer = { company: pick(COMPANIES[level]), level, salaryArs: salary };
-}
-
-export function acceptOffer(s, lines) {
-  const o = s.offer;
-  s.job = {
-    company: o.company,
-    salaryArs: o.salaryArs,
-    salaryUsd: 0,
-    weeksSinceRaise: 0,
-    remote: false,
-  };
-  s.level = Math.max(s.level, o.level);
-  s.studyDone = true;
-  s.searchBonus = 0;
-  s.offer = null;
-  updatePhase(s);
-  lines.push(`Firmaste con ${o.company} como ${LEVELS[s.level]}. Ya tenés mail corporativo y 47 accesos pendientes.`);
-  if (!s.housing) s.queue.push("mudanza");
-  s.queue.push("onboarding");
-}
+// makeOffer / acceptOffer viven en carrera.js (tipos de empresa, saltos y reputación)
 
 export function incidentWin(s, lines) {
   const xp = role(s).passive === "incidentXp" ? 8 : 4;
@@ -113,9 +91,10 @@ export function incidentLose(s, lines) {
 // Dificultad de los minijuegos (1 a 4): sube con tu carrera. La entrevista de Big Tech es la más difícil.
 export function difficulty(s) {
   if (s.phase === 4) return 4;
-  return [1, 1, 2, 2, 3, 3][Math.min(s.level, 5)];
+  const base = [1, 1, 2, 3, 3, 4][Math.min(s.level, 5)];
+  return Math.min(4, base + (s.pending?.diffBonus || 0));
 }
 
-// Los dos minijuegos de tu rol: los incidentes y hackathons eligen uno al azar
-export const roleMinigames = (s) => [role(s).minigame, role(s).minigame2];
+// Los minijuegos de tu rol: los incidentes y hackathons eligen uno al azar
+export const roleMinigames = (s) => [role(s).minigame, role(s).minigame2, role(s).minigame3].filter(Boolean);
 export const roleMinigame = (s) => pick(roleMinigames(s));

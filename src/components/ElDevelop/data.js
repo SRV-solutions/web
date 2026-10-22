@@ -11,6 +11,7 @@ export const ROLES = {
     passive: "incidentShield",
     minigame: "css",
     minigame2: "htmlcssjs",
+    minigame3: "pixelperfect",
     bonus: { network: 5, mental: 5 },
   },
   backend: {
@@ -23,6 +24,7 @@ export const ROLES = {
     passive: "logicBoost",
     minigame: "pipes",
     minigame2: "statuscodes",
+    minigame3: "endpoints",
     bonus: { logic: 5 },
   },
   devops: {
@@ -35,6 +37,7 @@ export const ROLES = {
     passive: "incidentXp",
     minigame: "servers",
     minigame2: "comandos",
+    minigame3: "deploywindow",
     bonus: { energy: 10 },
   },
   security: {
@@ -47,6 +50,7 @@ export const ROLES = {
     passive: "mentalShield",
     minigame: "hack",
     minigame2: "phishing",
+    minigame3: "parches",
     bonus: { logic: 3, mental: 5 },
   },
   data: {
@@ -59,6 +63,7 @@ export const ROLES = {
     passive: "xpBoost",
     minigame: "data",
     minigame2: "graficos",
+    minigame3: "outliers",
     bonus: { logic: 5 },
   },
   pm: {
@@ -71,6 +76,7 @@ export const ROLES = {
     passive: "networkBoost",
     minigame: "prioritizer",
     minigame2: "moscow",
+    minigame3: "sprintplanner",
     bonus: { network: 10 },
   },
   soporte: {
@@ -83,6 +89,7 @@ export const ROLES = {
     passive: "energyShield",
     minigame: "capa8",
     minigame2: "triage",
+    minigame3: "simonhelpdesk",
     bonus: { energy: 5, network: 5 },
   },
   qa: {
@@ -95,6 +102,7 @@ export const ROLES = {
     passive: "bugHunter",
     minigame: "bugbash",
     minigame2: "bugofeature",
+    minigame3: "spotdiff",
     bonus: { logic: 3, mental: 3 },
   },
 };
@@ -125,6 +133,15 @@ export const MINIGAMES = {
   algo: { name: "Live Coding", icon: "💻", howTo: "Respondé las preguntas de algoritmos. Con 2 de 4 bien, pasás." },
   design: { name: "System Design", icon: "🏗️", howTo: "Elegí los componentes para escalar una app de mensajería a 100 millones de usuarios." },
   behavioral: { name: "Behavioral", icon: "🗣️", howTo: "Respondé con Chamuyo Senior. Que se note la madurez." },
+  // Tercer minijuego de cada rol
+  pixelperfect: { name: "Pixel Perfect", icon: "📐", howTo: "El diseñador te pasó una caja. Ajustá tu copia con los botones − y + (tamaño, bordes, rotación...) hasta que quede igual. En difícil hay menos tolerancia y no ves los números." },
+  endpoints: { name: "Endpoint Rush", icon: "📡", howTo: "El front te pide cosas. Armá cada respuesta tocando un método, una ruta y un status HTTP, y mandala. Ojo con el 401 vs 403 y el 201 vs 200." },
+  deploywindow: { name: "Ventana de Deploy", icon: "🚀", howTo: "El marcador va y viene: tocá DEPLOY cuando esté adentro de la zona verde. Al tercer rollback te sacan el acceso a prod." },
+  parches: { name: "Parche Express", icon: "🩹", howTo: "Tocá una amenaza y después el parche que la arregla. Hay parches que suenan bien pero no arreglan nada, y en difícil aparece un 0-day a mitad de partida." },
+  outliers: { name: "Caza de Outliers", icon: "📈", howTo: "En el gráfico hay puntos que se escapan de la tendencia. Tocalos a todos; si tocás un dato normal, perdés tiempo." },
+  sprintplanner: { name: "Sprint Planner", icon: "🗂️", howTo: "Elegí las historias del sprint sin pasarte de la capacidad del equipo y juntando casi todo el valor posible. Cuidado con las dependencias y con el pedido del CEO." },
+  simonhelpdesk: { name: "Simon del Help Desk", icon: "🎧", howTo: "Mirá el procedimiento que se ilumina y repetilo en el mismo orden. Cada ticket suma un paso; un error y el cliente te corta." },
+  spotdiff: { name: "Encontrá la diferencia", icon: "🔎", howTo: "Compará el código Esperado con el Actual y tocá las líneas que cambiaron. Tocar una línea sana te resta tiempo." },
 };
 
 export const LEVELS = ["Estudiante", "Trainee", "Junior", "Semi-Senior", "Senior", "Staff Engineer"];
@@ -140,7 +157,26 @@ export const PROMOTIONS = {
   3: { xp: 55, logic: 58, network: 25 },
 };
 
-export const BIG_TECH_REQ = { logic: 75, network: 50 };
+export const BIG_TECH_REQ = { logic: 85, network: 60, xp: 90 };
+
+// Clima de la semana: modificadores al azar que se anuncian antes de elegir el foco.
+// fx se aplica siempre; foco[id] solo si elegiste ese foco; arsBase se ajusta por inflación.
+export const MODIFICADORES = [
+  { id: "ola_calor", name: "Ola de calor y cortes de luz", desc: "El ventilador no da abasto: −6 Energía", fx: { energy: -6 } },
+  { id: "seleccion", name: "Juega la Selección en horario laboral", desc: "+6 Salud mental · −1 XP si laburás", fx: { mental: 6 }, foco: { laburo: { xp: -1 } } },
+  { id: "diluvio", name: "Diluvio en el AMBA", desc: "Llegás empapado a todos lados: −Energía si salís", foco: { networking: { energy: -5 }, laburo: { energy: -2 } } },
+  { id: "hot_sale", name: "Hot Sale", desc: "Compraste cosas que no necesitabas: −Pesos · +3 Salud mental", fx: { mental: 3 }, arsBase: -25000 },
+  { id: "gripe_oficina", name: "Media oficina con gripe", desc: "Menos reuniones: +1 XP si laburás · −3 Energía", fx: { energy: -3 }, foco: { laburo: { xp: 1 } } },
+  { id: "aumento_bondi", name: "Aumentó el bondi (otra vez)", desc: "−Pesos. La SUBE llora.", arsBase: -9000 },
+  { id: "finde_xl", name: "Finde XL", desc: "+8 Energía · −1 XP si laburás", fx: { energy: 8 }, foco: { laburo: { xp: -1 } } },
+  { id: "fin_sprint", name: "Fin de sprint", desc: "Si laburás: +2 XP · −4 Salud mental", foco: { laburo: { xp: 2, mental: -4 } } },
+  { id: "tuit_viral", name: "Se viralizó un tuit tuyo sobre JavaScript", desc: "+4 Contactos", fx: { network: 4 } },
+  { id: "mate_lavado", name: "Se te lavó el mate a las 10 AM", desc: "−2 Salud mental. Tragedia nacional.", fx: { mental: -2 } },
+  { id: "parciales", name: "Semana de parciales", desc: "Si estudiás: +3 Lógica · −3 Salud mental", foco: { estudio: { logic: 3, mental: -3 } } },
+  { id: "wifi_vecino", name: "El vecino cambió la clave del WiFi", desc: "−3 Energía si estudiás · −3 Salud mental si laburás", foco: { estudio: { energy: -3 }, laburo: { mental: -3 } } },
+  { id: "dolar_planchado", name: "El dólar está planchado (raro)", desc: "+3 Salud mental: una semana sin mirar la cotización", fx: { mental: 3 } },
+  { id: "lunes_feriado", name: "Feriado el lunes", desc: "+4 Energía", fx: { energy: 4 } },
+];
 
 export const PHASES = {
   1: "El Hola Mundo",

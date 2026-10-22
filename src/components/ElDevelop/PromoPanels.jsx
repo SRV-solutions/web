@@ -11,6 +11,7 @@ import {
   track,
 } from "./promo";
 import { createShareImage, shareText, gameUrl } from "./share";
+import { Icon, IconText } from "./icons";
 
 
 // ---------- Compartir ----------
@@ -61,14 +62,16 @@ export function SharePanel({ game }) {
         {img ? <img src={img.url} alt="Tarjeta para compartir tu partida de El Develop" /> : <span className={styles.muted}>Generando imagen…</span>}
       </div>
       <div className={styles.shareActions}>
-        <h3 className={styles.subtitle}>📸 Compartí tu partida</h3>
+        <h3 className={styles.subtitle}>
+          <Icon name="camera" size={20} /> Compartí tu partida
+        </h3>
         <p className={styles.muted}>
           La imagen está en formato historia: ideal para estados de WhatsApp, historias de Instagram y TikTok. ¡Etiquetanos{" "}
           {INSTAGRAM_HANDLE}!
         </p>
         {canShareFile && (
           <button type="button" className={`${styles.btn} ${styles.btnPrimary}`} onClick={shareNative}>
-            📲 Compartir (WhatsApp, Instagram, TikTok…)
+            <Icon name="share" size={16} /> Compartir (WhatsApp, Instagram, TikTok…)
           </button>
         )}
         <a
@@ -77,7 +80,7 @@ export function SharePanel({ game }) {
           download="el-develop.png"
           onClick={() => track("GameShare", { method: "download" })}
         >
-          ⬇️ Descargar imagen
+          <Icon name="download" size={16} /> Descargar imagen
         </a>
         <a
           className={`${styles.btn} ${styles.btnWhatsapp}`}
@@ -86,12 +89,16 @@ export function SharePanel({ game }) {
           rel="noopener noreferrer"
           onClick={() => track("GameShare", { method: "whatsapp" })}
         >
-          💬 Mandar por WhatsApp
+          <Icon name="messageCircle" size={16} /> Mandar por WhatsApp
         </a>
         <button type="button" className={styles.btn} onClick={copyLink}>
-          🔗 Copiar link
+          <Icon name="link" size={16} /> Copiar link
         </button>
-        {status && <p className={styles.muted}>{status}</p>}
+        {status && (
+          <p className={styles.muted}>
+            <IconText text={status} />
+          </p>
+        )}
         <p className={styles.muted}>
           Para Instagram o TikTok desde la compu: descargá la imagen, pasala al celu y subila a tu historia.
         </p>
@@ -111,7 +118,7 @@ export function ShareModal({ game, onClose }) {
     <div className={styles.modalBackdrop} onClick={onClose} role="presentation">
       <div className={styles.modal} onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Compartir partida">
         <button type="button" className={styles.modalClose} onClick={onClose} aria-label="Cerrar">
-          ✕
+          <Icon name="x" size={18} />
         </button>
         <SharePanel game={game} />
       </div>
@@ -130,12 +137,16 @@ function CourseLink({ courseKey, highlight, source }) {
       className={`${styles.course} ${highlight ? styles.courseHighlight : ""}`}
       onClick={() => track("GameCourseClick", { course: courseKey, source })}
     >
-      <span className={styles.courseIcon}>{c.icon}</span>
+      <span className={styles.courseIcon}>
+        <IconText text={c.icon} size={22} />
+      </span>
       <span>
         <strong>{c.name}</strong>
         <span className={styles.muted}>{c.pitch}</span>
       </span>
-      <span className={styles.courseArrow}>→</span>
+      <span className={styles.courseArrow}>
+        <Icon name="arrowRight" size={18} />
+      </span>
     </a>
   );
 }
@@ -146,7 +157,9 @@ export function MinigameCourseTip({ gameId }) {
   if (!key) return null;
   return (
     <div className={styles.courseTip}>
-      <p className={styles.kicker}>💡 Tip de la vida real</p>
+      <p className={styles.kicker}>
+        <Icon name="lightbulb" size={13} /> Tip de la vida real
+      </p>
       <p className={styles.muted}>Esto en el laburo de verdad se aprende practicando. Lo vemos paso a paso en:</p>
       <CourseLink courseKey={key} highlight source={`minigame-${gameId}`} />
     </div>
@@ -206,7 +219,9 @@ export function DonationPanel({ source }) {
   return (
     <div className={styles.donation}>
       <p className={styles.kicker}>Apoyá el proyecto</p>
-      <h3 className={styles.subtitle}>☕ ¿Te gustó El Develop? Invitanos un cafecito</h3>
+      <h3 className={styles.subtitle}>
+        <Icon name="coffee" size={20} /> ¿Te gustó El Develop? Invitanos un cafecito
+      </h3>
       <p className={styles.muted}>
         El juego es gratis. Con tu aporte sumamos más eventos, minijuegos y chistes de Capa 8. Pagás seguro con
         Mercado Pago.
@@ -220,7 +235,9 @@ export function DonationPanel({ source }) {
             className={`${styles.donationOpt} ${selected === o.amount ? styles.donationOn : ""}`}
             onClick={() => setSelected(o.amount)}
           >
-            <span className={styles.donationIcon}>{o.icon}</span>
+            <span className={styles.donationIcon}>
+              <IconText text={o.icon} size={26} />
+            </span>
             <strong>{fmtMonto(o.amount)}</strong>
             <span className={styles.muted}>{o.label}</span>
           </button>
@@ -230,7 +247,9 @@ export function DonationPanel({ source }) {
           className={`${styles.donationOpt} ${isCustom ? styles.donationOn : ""}`}
           onClick={() => setSelected("otro")}
         >
-          <span className={styles.donationIcon}>✍️</span>
+          <span className={styles.donationIcon}>
+            <Icon name="penLine" size={26} />
+          </span>
           <strong>Otro monto</strong>
           <span className={styles.muted}>Lo que quieras</span>
         </button>
@@ -277,7 +296,9 @@ export function CafecitoButton() {
   return (
     <>
       <button type="button" className={`${styles.cafecito} ${styles.cafecitoCompact}`} onClick={() => setOpen(true)}>
-        <span className={styles.cafecitoIcon}>☕</span>
+        <span className={styles.cafecitoIcon}>
+          <Icon name="coffee" size={26} />
+        </span>
         <span>
           <strong>¿Te gustó El Develop? Invitanos un cafecito</strong>
           <span className={styles.muted}>Desde $1.000 con Mercado Pago</span>
@@ -287,7 +308,7 @@ export function CafecitoButton() {
         <div className={styles.modalBackdrop} onClick={() => setOpen(false)} role="presentation">
           <div className={`${styles.modal} ${styles.modalSmall}`} onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Donar">
             <button type="button" className={styles.modalClose} onClick={() => setOpen(false)} aria-label="Cerrar">
-              ✕
+              <Icon name="x" size={18} />
             </button>
             <DonationPanel source="hub" />
           </div>
@@ -320,9 +341,11 @@ export function DonationReturnBanner() {
   const m = DONATION_MESSAGES[status];
   return (
     <div className={`${styles.donationBanner} ${styles[m.cls]}`} role="status">
-      <span>{m.text}</span>
+      <span>
+        <IconText text={m.text} />
+      </span>
       <button type="button" className={styles.btnGhost} onClick={() => setStatus(null)} aria-label="Cerrar">
-        ✕
+        <Icon name="x" size={18} />
       </button>
     </div>
   );

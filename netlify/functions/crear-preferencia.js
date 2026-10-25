@@ -22,6 +22,14 @@ export async function handler(event) {
     return json(400, { error: "Curso inválido" });
   }
 
+  // Página desde la que se compró. Para una suma ("scripting-python" comprada en /scripting/inscripcion)
+  // el comprador vuelve a la página de gracias de ese curso; si no viene o no corresponde, a la del producto.
+  const desdeKey = typeof bodyData.desde === "string" ? bodyData.desde : cursoKey;
+  const vuelve =
+    desdeKey !== cursoKey && Array.isArray(curso.incluye) && curso.incluye.includes(desdeKey)
+      ? getCurso(desdeKey)
+      : curso;
+
   // Datos del navegador para el Purchase por CAPI (confirmar-compra y el webhook los leen del pago)
   const meta = (value, max) => (typeof value === "string" && value ? value.slice(0, max) : undefined);
   const metaData = {
@@ -51,12 +59,12 @@ export async function handler(event) {
         ],
         // El Apps Script y confirmar-compra validan este prefijo para saber de qué curso es el pago
         external_reference: `${cursoKey}:${crypto.randomUUID()}`,
-        metadata: { curso: cursoKey, ...metaData },
+        metadata: { curso: cursoKey, desde: vuelve === curso ? undefined : desdeKey, ...metaData },
         statement_descriptor: "WEARESRV",
         back_urls: {
-          success: `${SITE_URL}/${curso.ruta}/gracias`,
-          failure: curso.urlInscripcion ? `${SITE_URL}${curso.urlInscripcion}` : `${SITE_URL}/${curso.ruta}/inscripcion`,
-          pending: `${SITE_URL}/${curso.ruta}/gracias`,
+          success: `${SITE_URL}/${vuelve.ruta}/gracias`,
+          failure: vuelve.urlInscripcion ? `${SITE_URL}${vuelve.urlInscripcion}` : `${SITE_URL}/${vuelve.ruta}/inscripcion`,
+          pending: `${SITE_URL}/${vuelve.ruta}/gracias`,
         },
         auto_return: "approved",
         // Un solo Apps Script para todos los cursos: identifica el curso por el external_reference

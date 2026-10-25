@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Seo from "../Seo";
 import { useSearchParams, Link } from "react-router-dom";
 import { trackEvent, setHashedUserData, getMetaCookies } from "../../data/metaPixel";
-import { CURSOS_GRABADOS, estaEnPreventa } from "../../data/cursosGrabados";
+import { CURSOS_GRABADOS, estaEnPreventa, getSuma, cursosDeSuma, nombreCurso } from "../../data/cursosGrabados";
 
 const MENSAJES = {
   approved: {
@@ -47,6 +47,8 @@ export default function GraciasCurso({ cursoKey }) {
   const [searchParams] = useSearchParams();
   const paymentId = searchParams.get("payment_id");
   const [estado, setEstado] = useState(paymentId ? "loading" : "unknown");
+  // Si el pago fue de un combo "Sumá a tu compra", se listan los cursos que incluye
+  const [sumaComprada, setSumaComprada] = useState(null);
 
   useEffect(() => {
     if (!paymentId) return;
@@ -64,6 +66,7 @@ export default function GraciasCurso({ cursoKey }) {
         if (cancelado) return;
 
         if (data.status === "approved") {
+          setSumaComprada(getSuma(data.curso_pagado));
           // Evita repetir el Purchase si el usuario recarga la página
           const storageKey = `srv_purchase_${paymentId}`;
           if (!localStorage.getItem(storageKey)) {
@@ -120,6 +123,17 @@ export default function GraciasCurso({ cursoKey }) {
       <p style={{ fontSize: "1.1rem", color: "#ccc", maxWidth: "600px", margin: "1rem auto" }}>
         {mensaje.texto}
       </p>
+      {sumaComprada && (
+        <p style={{ fontSize: "1rem", color: "#9fc7ff", maxWidth: "600px", margin: "0 auto 1rem" }}>
+          Tu compra incluye <strong style={{ color: "#fff" }}>{cursosDeSuma(sumaComprada).map(nombreCurso).join(" + ")}</strong>.
+          Te llega un solo mail con el acceso a la carpeta de cada curso
+          {cursosDeSuma(sumaComprada)
+            .filter((c) => estaEnPreventa(c))
+            .map((c) => ` (las clases de ${nombreCurso(c)} se habilitan el ${c.preventa.fechaTexto}; las demás ya están)`)
+            .join("")}
+          .
+        </p>
+      )}
       <div style={{ background: "#0d0d0d", border: "1px solid #0b78fb", padding: "1.5rem", borderRadius: "8px", display: "inline-block", marginTop: "1.5rem" }}>
         <p style={{ margin: 0, color: "#f6950a", fontWeight: "bold" }}>N° de Transacción: {paymentId || "Procesando..."}</p>
         <p style={{ margin: "0.5rem 0 0 0", fontSize: "0.9rem", color: "#aaa" }}>

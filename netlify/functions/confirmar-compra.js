@@ -1,4 +1,4 @@
-import { getCurso, webhookCursosUrl } from "../lib/cursos.js";
+import { getCurso, webhookCursosUrl, claveDeReferencia, pagoCorrespondeA } from "../lib/cursos.js";
 import { planDesdeReferencia } from "../lib/intensivos.js";
 import { sendMetaEvent, hashedUserData } from "../lib/metaCapi.js";
 import { SITE_URL, json, isAllowedOrigin, parseBody } from "../lib/http.js";
@@ -63,9 +63,11 @@ export async function handler(event) {
 
     const payment = await response.json();
 
-    // El pago tiene que pertenecer a este curso
+    // El pago tiene que pertenecer a este curso (o a una suma que lo incluye)
     const ref = String(payment.external_reference || "");
     let producto;
+    // Clave de lo que realmente se pagó (el curso, o un combo "Sumá a tu compra" que lo incluye)
+    let cursoPagado = cursoKey;
 
     if (esIntensivo) {
       const plan = planDesdeReferencia(ref);
@@ -74,14 +76,17 @@ export async function handler(event) {
       }
       producto = { itemId: plan.itemId, contentName: plan.titulo, precio: plan.precio, ruta: "full-stack" };
     } else {
+      const pagadoKey = claveDeReferencia(ref);
+      const pagado = pagoCorrespondeA(pagadoKey, cursoKey) ? getCurso(pagadoKey) : null;
+      // Respaldo: pagos viejos sin external_reference, identificados por el ítem
       const items = (payment.additional_info && payment.additional_info.items) || [];
-      const esDeEsteCurso =
-        ref.startsWith(`${cursoKey}:`) || items.some((item) => String(item.id) === curso.itemId);
+      const esDeEsteCurso = Boolean(pagado) || items.some((item) => String(item.id) === curso.itemId);
 
       if (!esDeEsteCurso) {
         return json(404, { status: "not_found" });
       }
-      producto = curso;
+      producto = pagado || curso;
+      if (pagado) cursoPagado = pagadoKey;
     }
 
     if (payment.status !== "approved") {
@@ -105,7 +110,8 @@ export async function handler(event) {
     await sendMetaEvent(event, {
       eventName: "Purchase",
       eventId,
-      eventSourceUrl: `${SITE_URL}/${producto.ruta}/gracias`,
+      // La página de gracias en la que está el comprador (la del curso, aunque haya pagado un combo)
+      eventSourceUrl: `${SITE_URL}/${esIntensivo ? producto.ruta : curso.ruta}/gracias`,
       email: payer.email,
       telefono,
       nombre: payer.first_name,
@@ -132,6 +138,8 @@ export async function handler(event) {
       currency,
       content_name: producto.contentName,
       content_id: producto.itemId,
+      // Clave de lo pagado: si es un combo, la página de gracias lista los cursos que incluye
+      curso_pagado: cursoPagado,
       // Solo hashes SHA-256 (nunca el dato en claro): el Pixel los manda como advanced matching
       // en el Purchase del navegador, igual que el evento de servidor de arriba.
       user_data: hashedUserData({ email: payer.email, telefono, nombre: payer.first_name }),

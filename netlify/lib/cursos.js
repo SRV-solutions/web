@@ -62,7 +62,80 @@ export const CURSOS = {
     precio: 149900,
     ruta: "ruta-backend",
   },
+
+  // SUMÁ A TU COMPRA: combos de dos o tres cursos que se ofrecen dentro de la página de cada curso
+  // que incluyen (src/data/cursosGrabados.js > SUMAS, mismas claves, itemId y precios) y se pagan
+  // como un solo producto. "incluye" usa claves vendibles (puede incluir "ruta-backend", que ya es
+  // un combo). "ruta" es la página de gracias por defecto; crear-preferencia usa la del curso desde
+  // cuya página se compró ("desde"). El Apps Script comparte todas las carpetas (clave "incluye").
+  "scripting-python": {
+    itemId: "combo-scripting-python",
+    titulo: "Combo Curso de Scripting + Master en Python - WEARESRV",
+    contentName: "Combo Scripting + Python",
+    precio: 69900,
+    incluye: ["scripting", "python"],
+    ruta: "scripting",
+  },
+  "scratch-scripting": {
+    itemId: "combo-scratch-scripting",
+    titulo: "Combo Scratch para Chicos + Curso de Scripting - WEARESRV",
+    contentName: "Combo Scratch + Scripting",
+    precio: 24900,
+    precioPreventa: 17900,
+    preventaHasta: SCRATCH_PREVENTA_HASTA,
+    incluye: ["scratch", "scripting"],
+    ruta: "scratch",
+  },
+  "scripting-javascript": {
+    itemId: "combo-scripting-javascript",
+    titulo: "Combo Curso de Scripting + Master en JavaScript - WEARESRV",
+    contentName: "Combo Scripting + Master en JavaScript",
+    precio: 89900,
+    incluye: ["scripting", "fundamentos-backend"],
+    ruta: "scripting",
+  },
+  "scripting-ruta-backend": {
+    itemId: "combo-scripting-ruta-backend",
+    titulo: "Combo Curso de Scripting + Ruta Backend Completa - WEARESRV",
+    contentName: "Combo Scripting + Ruta Backend Completa",
+    precio: 154900,
+    incluye: ["scripting", "ruta-backend"],
+    ruta: "scripting",
+  },
+  "python-javascript": {
+    itemId: "combo-python-javascript",
+    titulo: "Combo Master en Python + Master en JavaScript - WEARESRV",
+    contentName: "Combo Python + Master en JavaScript",
+    precio: 139900,
+    incluye: ["python", "fundamentos-backend"],
+    ruta: "python",
+  },
+  "python-ruta-backend": {
+    itemId: "combo-python-ruta-backend",
+    titulo: "Combo Master en Python + Ruta Backend Completa - WEARESRV",
+    contentName: "Combo Python + Ruta Backend Completa",
+    precio: 199900,
+    incluye: ["python", "ruta-backend"],
+    ruta: "python",
+  },
 };
+
+// Clave del producto que figura en el external_reference ("clave:uuid") de un pago
+export function claveDeReferencia(ref) {
+  const texto = String(ref || "");
+  const separador = texto.indexOf(":");
+  return separador > 0 ? texto.slice(0, separador) : "";
+}
+
+// ¿El producto pagado corresponde a la página de gracias de este curso?
+// Sí si es el mismo curso o una suma que lo incluye (un pago de "scripting-python" se confirma
+// en /scripting/gracias o en /python/gracias).
+export function pagoCorrespondeA(pagadoKey, cursoKey) {
+  if (!pagadoKey || !cursoKey) return false;
+  if (pagadoKey === cursoKey) return true;
+  const pagado = Object.prototype.hasOwnProperty.call(CURSOS, pagadoKey) ? CURSOS[pagadoKey] : null;
+  return Boolean(pagado && Array.isArray(pagado.incluye) && pagado.incluye.includes(cursoKey));
+}
 
 // URL del webhook de cursos (un solo Apps Script para todos) con la clave secreta compartida.
 // La usan crear-preferencia (notification_url de MP) y confirmar-compra (respaldo desde la página de gracias).

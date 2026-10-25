@@ -781,3 +781,136 @@
     cursor: pointer;
   }
 }
+
+/* Sumá a tu compra: combos dentro de la tarjeta de compra */
+.sumas {
+  margin: 1rem 0 0;
+  padding: 0;
+  border: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.sumasTitle {
+  padding: 0;
+  font-size: 0.85rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #f6950a;
+}
+
+.sumasIntro {
+  margin: -0.2rem 0 0.2rem;
+  font-size: 0.78rem;
+  color: #9ca3af;
+  line-height: 1.4;
+}
+
+.sumaCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.8rem 0.85rem;
+  border: 1px dashed #f6950a;
+  border-radius: 10px;
+  background: #0d0d0d;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.sumaCard:hover {
+  background: rgba(246, 149, 10, 0.06);
+}
+
+.sumaCard input {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin: 0.15rem 0 0;
+  accent-color: #f6950a;
+  cursor: pointer;
+}
+
+.sumaCardActiva {
+  border-style: solid;
+  background: rgba(246, 149, 10, 0.12);
+  box-shadow: 0 0 0 1px #f6950a inset;
+}
+
+.sumaBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.sumaTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.sumaEtiqueta {
+  font-size: 0.65rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #000000;
+  background: #f6950a;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+}
+
+.sumaAhorro {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #00bf63;
+}
+
+.sumaNombre {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.25;
+}
+
+.sumaPitch {
+  font-size: 0.78rem;
+  color: #cccccc;
+  line-height: 1.4;
+}
+
+.sumaPrecios {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  margin-top: 0.2rem;
+  font-size: 0.78rem;
+  color: #9ca3af;
+  line-height: 1.4;
+}
+
+.sumaPrecios strong {
+  font-size: 1rem;
+  color: #f6950a;
+}
+
+.sumaPrecios s {
+  color: #6b7280;
+}
+
+.compraResumen {
+  margin: 0 0 0.6rem;
+  font-size: 0.82rem;
+  color: #9fc7ff;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.compraResumen strong {
+  color: #ffffff;
+}

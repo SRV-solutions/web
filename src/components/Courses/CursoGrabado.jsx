@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import styles from "./CursoGrabado.module.css";
 import Seo, { SITE_URL } from "../Seo";
 import { trackConversion, getMetaCookies } from "../../data/metaPixel";
-import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, comboQueIncluye } from "../../data/cursosGrabados";
+import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, comboQueIncluye, sumasPara, nombreCurso } from "../../data/cursosGrabados";
 
 const DISCORD_URL = "https://discord.com/invite/QuAmDxrNMu";
 const WHATSAPP_URL = "https://wa.me/5491123869799?text=" + encodeURIComponent("Hola, tengo una consulta sobre los cursos");
@@ -94,6 +94,8 @@ export default function CursoGrabado({ cursoKey }) {
   const [loading, setLoading] = useState(false);
   const [showBar, setShowBar] = useState(false);
   const [seleccion, setSeleccion] = useState(elegirInicial);
+  // "Sumá a tu compra": clave del combo que el visitante agregó al curso elegido (o null)
+  const [sumaKey, setSumaKey] = useState(null);
   const producto = CURSOS_GRABADOS[seleccion] || curso;
   const tituloProducto = [producto.tituloInicio, producto.tituloDestacado, producto.tituloFin].filter(Boolean).join(" ");
   const buyRef = useRef(null);
@@ -107,6 +109,31 @@ export default function CursoGrabado({ cursoKey }) {
   const incluye = producto.combo ? producto.combo.map((k) => CURSOS_GRABADOS[k]) : null;
   const nombreCorto = (c) => `${c.tituloInicio} ${c.tituloDestacado}`;
 
+  // Combos que se pueden sumar al producto elegido. Si cambia el producto y la suma elegida
+  // ya no aplica, vuelve a "solo este curso" sola.
+  const ofertas = sumasPara(producto.key);
+  const suma = ofertas.find((s) => s.key === sumaKey) || null;
+  // Lo que se cobra y se muestra en el precio, el botón y la barra: el curso o el combo sumado
+  const compra = suma
+    ? {
+        key: suma.key,
+        itemId: suma.itemId,
+        contentName: suma.contentName,
+        precio: suma.precio,
+        nombre: suma.nombre,
+        clases: suma.clases,
+        cantidadCursos: suma.cantidadCursos,
+      }
+    : {
+        key: producto.key,
+        itemId: producto.itemId,
+        contentName: producto.contentName,
+        precio: producto.precio,
+        nombre: tituloProducto,
+        clases: producto.clases,
+        cantidadCursos: producto.combo ? producto.combo.length : 1,
+      };
+
   const pixelData = {
     content_name: curso.contentName,
     content_ids: [curso.itemId],
@@ -118,6 +145,7 @@ export default function CursoGrabado({ cursoKey }) {
   // ViewContent: alguien entró a ver el curso. Al cambiar de página, el selector vuelve a su valor inicial.
   useEffect(() => {
     setSeleccion(elegirInicial);
+    setSumaKey(null);
     trackConversion("ViewContent", pixelData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cursoKey]);
@@ -135,20 +163,21 @@ export default function CursoGrabado({ cursoKey }) {
     setLoading(true);
 
     trackConversion("InitiateCheckout", {
-      content_name: producto.contentName,
-      content_ids: [producto.itemId],
+      content_name: compra.contentName,
+      content_ids: [compra.itemId],
       content_type: "product",
       currency: "ARS",
-      value: producto.precio,
+      value: compra.precio,
     });
 
     try {
-      // Solo enviamos la clave del producto elegido: el precio lo define el servidor.
+      // Solo enviamos la clave de lo que se compra (curso o combo sumado): el precio lo define el servidor.
+      // "desde" es el curso de esta página: define a qué página de gracias vuelve el comprador.
       // Las cookies del Pixel quedan guardadas en el pago para el Purchase por CAPI.
       const response = await fetch("/.netlify/functions/crear-preferencia", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ curso: producto.key, ...getMetaCookies() }),
+        body: JSON.stringify({ curso: compra.key, desde: producto.key, ...getMetaCookies() }),
       });
 
       const data = await response.json();
@@ -220,7 +249,15 @@ export default function CursoGrabado({ cursoKey }) {
       </svg>
       {loading
         ? "Conectando con Mercado Pago..."
-        : `${preventa ? "Reservar mi acceso" : producto.combo ? "Quiero los dos cursos" : "Quiero mi acceso"} · ${formatearPrecio(producto.precio)}`}
+        : `${
+            preventa
+              ? "Reservar mi acceso"
+              : suma
+                ? `Quiero los ${suma.cantidadCursos} cursos`
+                : producto.combo
+                  ? "Quiero los dos cursos"
+                  : "Quiero mi acceso"
+          } · ${formatearPrecio(compra.precio)}`}
     </button>
   );
 
@@ -269,14 +306,18 @@ export default function CursoGrabado({ cursoKey }) {
 
               <div className={styles.promoCard}>
                 <div className={styles.promoHeader}>
-                  {descuento > 0 && (
-                    <span className={styles.promoBadge}>
-                      {preventa
-                        ? `🔥 Precio de preventa · ${descuento}% OFF`
-                        : producto.combo
-                          ? `🎁 Combo · ahorrás ${formatearPrecio(producto.precioRegular - producto.precio)}`
-                          : `🔥 ${descuento}% OFF · Precio promocional`}
-                    </span>
+                  {suma ? (
+                    <span className={styles.promoBadge}>🎁 {suma.cantidadCursos} cursos · ahorrás {formatearPrecio(suma.ahorro)}</span>
+                  ) : (
+                    descuento > 0 && (
+                      <span className={styles.promoBadge}>
+                        {preventa
+                          ? `🔥 Precio de preventa · ${descuento}% OFF`
+                          : producto.combo
+                            ? `🎁 Combo · ahorrás ${formatearPrecio(producto.precioRegular - producto.precio)}`
+                            : `🔥 ${descuento}% OFF · Precio promocional`}
+                      </span>
+                    )
                   )}
                   <span className={styles.timerTag}>{preventa ? `Solo hasta el ${fechaAcceso}` : "Pago único, sin suscripción"}</span>
                 </div>
@@ -308,18 +349,20 @@ export default function CursoGrabado({ cursoKey }) {
                 )}
 
                 <div className={styles.priceContainer}>
-                  {descuento > 0 && (
+                  {(suma || descuento > 0) && (
                     <div className={styles.oldPriceBox}>
                       <span className={styles.oldPriceLabel}>
-                        {preventa ? `Desde el ${fechaAcceso}` : producto.combo ? "Por separado" : "Precio regular"}
+                        {suma ? "Por separado" : preventa ? `Desde el ${fechaAcceso}` : producto.combo ? "Por separado" : "Precio regular"}
                       </span>
-                      <span className={styles.oldPrice}>{formatearPrecio(producto.precioRegular)}</span>
+                      <span className={styles.oldPrice}>{formatearPrecio(suma ? suma.precioSeparado : producto.precioRegular)}</span>
                     </div>
                   )}
                   <div className={styles.currentPriceBox}>
-                    <span className={styles.priceTag}>{preventa ? "Reservás hoy por" : "Pagás hoy"}</span>
+                    <span className={styles.priceTag}>
+                      {suma ? `Pagás hoy por los ${suma.cantidadCursos} cursos` : preventa ? "Reservás hoy por" : "Pagás hoy"}
+                    </span>
                     <div className={styles.mainPrice}>
-                      {formatearPrecio(producto.precio)} <span className={styles.currency}>ARS</span>
+                      {formatearPrecio(compra.precio)} <span className={styles.currency}>ARS</span>
                     </div>
                   </div>
                 </div>
@@ -331,10 +374,58 @@ export default function CursoGrabado({ cursoKey }) {
                     </li>
                   ))}
                 </ul>
+
+                {/* Sumá a tu compra: combos con precio especial, se pagan junto con el curso */}
+                {ofertas.length > 0 && (
+                  <fieldset className={styles.sumas}>
+                    <legend className={styles.sumasTitle}>🎁 Sumá a tu compra y ahorrá</legend>
+                    <p className={styles.sumasIntro}>
+                      Llevá otro curso en el mismo pago, a un precio que solo existe acá. Tildá el que quieras: el total se actualiza.
+                    </p>
+                    {ofertas.map((oferta) => {
+                      const activa = suma?.key === oferta.key;
+                      return (
+                        <label key={oferta.key} className={`${styles.sumaCard} ${activa ? styles.sumaCardActiva : ""}`}>
+                          <input
+                            type="checkbox"
+                            checked={activa}
+                            onChange={() => setSumaKey(activa ? null : oferta.key)}
+                            aria-label={`Sumar ${oferta.agregados.map(nombreCurso).join(" y ")}`}
+                          />
+                          <span className={styles.sumaBody}>
+                            <span className={styles.sumaTop}>
+                              <span className={styles.sumaEtiqueta}>{oferta.etiqueta}</span>
+                              <span className={styles.sumaAhorro}>Ahorrás {formatearPrecio(oferta.ahorro)}</span>
+                            </span>
+                            <span className={styles.sumaNombre}>+ {oferta.agregados.map(nombreCurso).join(" + ")}</span>
+                            <span className={styles.sumaPitch}>{oferta.pitch}</span>
+                            <span className={styles.sumaPrecios}>
+                              <strong>
+                                {oferta.extra > 0
+                                  ? `Por solo ${formatearPrecio(oferta.extra)} más`
+                                  : "Sin costo extra"}{" "}
+                                <s>{formatearPrecio(oferta.valorAgregados)}</s>
+                              </strong>
+                              <span>
+                                Los {oferta.cantidadCursos} cursos por {formatearPrecio(oferta.precio)} · por separado{" "}
+                                {formatearPrecio(oferta.precioSeparado)}
+                              </span>
+                            </span>
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </fieldset>
+                )}
               </div>
             </div>
 
             <div className={styles.actionContainer} ref={buyRef}>
+              {suma && (
+                <p className={styles.compraResumen}>
+                  Tu compra: <strong>{compra.nombre}</strong> · {compra.clases} clases · un solo pago
+                </p>
+              )}
               {botonPago()}
               <p className={styles.secureText}>
                 🔒 Pago 100% seguro procesado por Mercado Pago.{" "}
@@ -443,9 +534,11 @@ export default function CursoGrabado({ cursoKey }) {
           <div className={styles.finalCta}>
             <h2>{preventa ? "Reservá tu lugar al precio de preventa." : "Hoy puede ser tu primera clase."}</h2>
             <p>
-              {preventa
-                ? `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(producto.precio)}. Desde el ${fechaAcceso} pasa a ${formatearPrecio(producto.precioRegular)}, y ese mismo día se habilitan las clases en tu carpeta.`
-                : `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(producto.precio)}. Empezá esta misma noche.`}
+              {suma
+                ? `${compra.clases} clases en ${suma.cantidadCursos} cursos, acceso de por vida y un solo pago de ${formatearPrecio(compra.precio)}. Por separado pagarías ${formatearPrecio(suma.precioSeparado)}.`
+                : preventa
+                  ? `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(producto.precio)}. Desde el ${fechaAcceso} pasa a ${formatearPrecio(producto.precioRegular)}, y ese mismo día se habilitan las clases en tu carpeta.`
+                  : `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(producto.precio)}. Empezá esta misma noche.`}
             </p>
             {botonPago(styles.btnFinal)}
           </div>
@@ -455,8 +548,8 @@ export default function CursoGrabado({ cursoKey }) {
       {/* Barra fija de compra en celular */}
       <div className={`${styles.mobileBar} ${showBar ? styles.mobileBarVisible : ""}`} aria-hidden={!showBar}>
         <div className={styles.mobileBarPrice}>
-          <span>{tituloProducto}</span>
-          <strong>{formatearPrecio(producto.precio)}</strong>
+          <span>{compra.nombre}</span>
+          <strong>{formatearPrecio(compra.precio)}</strong>
         </div>
         <button type="button" onClick={handleMercadoPagoCheckout} disabled={loading} tabIndex={showBar ? 0 : -1}>
           {loading ? "Conectando..." : preventa ? "Reservar" : "Comprar"}

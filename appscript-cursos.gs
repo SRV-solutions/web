@@ -38,6 +38,8 @@
  *  PARA AGREGAR UN CURSO NUEVO: sumarlo acá en CURSOS y en netlify/lib/cursos.js
  *  con la misma clave e itemId. Si cambiás un precio, actualizá precioMinimo acá.
  *  PARA AGREGAR UN COMBO: igual, pero con "incluye: [claves]" en lugar de folderId.
+ *  Los combos "Sumá a tu compra" (scripting-python, scratch-scripting, etc.) funcionan igual:
+ *  la web los ofrece dentro de la página de cada curso y se pagan como un solo producto.
  *
  *  ⚠️ Después de pegar una versión nueva: Implementar -> Gestionar implementaciones ->
  *  editar (lápiz) -> Versión: "Nueva versión" -> Implementar. Así la URL /exec no cambia.
@@ -111,6 +113,59 @@ var CURSOS = {
     tituloHtml: 'RUTA <span style="color:#f6950a;">BACKEND</span> COMPLETA',
     precioMinimo: 149900,
     incluye: ["fundamentos-backend", "backend-avanzado"]
+  },
+
+  // SUMÁ A TU COMPRA: combos de dos o tres cursos que la web ofrece dentro de la página de cada curso
+  // (misma clave, itemId y precio que netlify/lib/cursos.js y src/data/cursosGrabados.js).
+  // "incluye" puede nombrar otro combo (ruta-backend): se abre en sus cursos para compartir las carpetas.
+  "scripting-python": {
+    itemId: "combo-scripting-python",
+    nombre: "Combo Scripting + Python",
+    tituloHtml: 'CURSO DE <span style="color:#f6950a;">SCRIPTING</span> + MASTER EN <span style="color:#f6950a;">PYTHON</span>',
+    precioMinimo: 69900,
+    incluye: ["scripting", "python"]
+  },
+  "scratch-scripting": {
+    itemId: "combo-scratch-scripting",
+    nombre: "Combo Scratch + Scripting",
+    tituloHtml: 'SCRATCH PARA <span style="color:#f6950a;">CHICOS</span> + CURSO DE <span style="color:#f6950a;">SCRIPTING</span>',
+    precioMinimo: 24900,
+    // Mientras dura la preventa de Scratch, el combo también tiene precio de preventa
+    preventa: {
+      hasta: new Date("2026-11-18T00:00:00-03:00"), // misma fecha que netlify/lib/cursos.js
+      precioMinimo: 17900,
+      fechaTexto: "18 de noviembre",
+      queEncontrara: "en la carpeta de Scratch para Chicos las 14 clases del curso (las de Scripting ya están en la suya)"
+    },
+    incluye: ["scratch", "scripting"]
+  },
+  "scripting-javascript": {
+    itemId: "combo-scripting-javascript",
+    nombre: "Combo Scripting + Master en JavaScript",
+    tituloHtml: 'CURSO DE <span style="color:#f6950a;">SCRIPTING</span> + MASTER EN <span style="color:#f6950a;">JAVASCRIPT</span>',
+    precioMinimo: 89900,
+    incluye: ["scripting", "fundamentos-backend"]
+  },
+  "scripting-ruta-backend": {
+    itemId: "combo-scripting-ruta-backend",
+    nombre: "Combo Scripting + Ruta Backend Completa",
+    tituloHtml: 'CURSO DE <span style="color:#f6950a;">SCRIPTING</span> + RUTA <span style="color:#f6950a;">BACKEND</span> COMPLETA',
+    precioMinimo: 154900,
+    incluye: ["scripting", "ruta-backend"]
+  },
+  "python-javascript": {
+    itemId: "combo-python-javascript",
+    nombre: "Combo Python + Master en JavaScript",
+    tituloHtml: 'MASTER EN <span style="color:#f6950a;">PYTHON</span> + MASTER EN <span style="color:#f6950a;">JAVASCRIPT</span>',
+    precioMinimo: 139900,
+    incluye: ["python", "fundamentos-backend"]
+  },
+  "python-ruta-backend": {
+    itemId: "combo-python-ruta-backend",
+    nombre: "Combo Python + Ruta Backend Completa",
+    tituloHtml: 'MASTER EN <span style="color:#f6950a;">PYTHON</span> + RUTA <span style="color:#f6950a;">BACKEND</span> COMPLETA',
+    precioMinimo: 199900,
+    incluye: ["python", "ruta-backend"]
   }
 };
 
@@ -426,15 +481,29 @@ function identificarCurso_(payment) {
   return null;
 }
 
-// Carpetas de Drive que entrega un curso: la propia, o las de los cursos que incluye si es un combo
+// Carpetas de Drive que entrega un curso: la propia, o las de los cursos que incluye si es un combo.
+// Un combo puede incluir otro combo (ej. "scripting-ruta-backend" incluye "ruta-backend"): se abre
+// hasta llegar a los cursos con carpeta.
 function carpetasDeCurso_(curso) {
   if (curso.incluye && curso.incluye.length) {
-    return curso.incluye.map(function (key) {
-      var c = CURSOS[key];
-      return { nombre: c.nombre, folderId: c.folderId };
+    var carpetas = [];
+    curso.incluye.forEach(function (key) {
+      carpetas = carpetas.concat(carpetasDeCurso_(CURSOS[key]));
     });
+    return carpetas;
   }
   return [{ nombre: curso.nombre, folderId: curso.folderId }];
+}
+
+// Nombres (columna "Curso" de la hoja) de todo lo que entrega un curso: él mismo y los combos que lo incluyen
+function nombresQueEntregan_(cursoKey) {
+  var nombres = [CURSOS[cursoKey].nombre];
+  for (var key in CURSOS) {
+    if (!Object.prototype.hasOwnProperty.call(CURSOS, key) || key === cursoKey) continue;
+    var entrega = carpetasDeCurso_(CURSOS[key]).some(function (c) { return c.nombre === CURSOS[cursoKey].nombre; });
+    if (entrega) nombres.push(CURSOS[key].nombre);
+  }
+  return nombres;
 }
 
 function emailValido_(email) {
@@ -632,7 +701,12 @@ function construirEmailHtml_(curso, nombre, email, monto, accesos, preventa) {
   }).join("");
 
   var textoAcceso;
-  if (preventa) {
+  if (preventa && esCombo) {
+    textoAcceso =
+      "Tu lugar quedó reservado al <strong>precio de preventa</strong>. Ya tenés acceso a tus <strong>" + accesos.length + " carpetas</strong> privadas de Google Drive (asociadas a este correo): " +
+      "<strong style=\"color:#f6950a;\">el " + escaparHtml_(curso.preventa.fechaTexto) + " vas a encontrar " + escaparHtml_(curso.preventa.queEncontrara || "las clases") + "</strong>. " +
+      "El resto del material ya está disponible. Guardá este mail con los links: no tenés que hacer nada más.";
+  } else if (preventa) {
     textoAcceso =
       "Tu lugar quedó reservado al <strong>precio de preventa</strong>. Ya tenés acceso a tu carpeta privada de Google Drive (asociada a este correo): " +
       "<strong style=\"color:#f6950a;\">el " + escaparHtml_(curso.preventa.fechaTexto) + " vas a encontrar ahí " + escaparHtml_(curso.preventa.queEncontrara || "las clases") + "</strong>. " +
@@ -808,6 +882,8 @@ function avisarApertura_(cursoKey) {
   if (!carpetaConfigurada_(curso.folderId)) throw new Error("Falta el folderId de " + curso.nombre + " en CURSOS");
 
   var link = DriveApp.getFolderById(curso.folderId).getUrl();
+  // También se avisa a quienes lo compraron dentro de un combo (ej. "Combo Scratch + Scripting")
+  var nombresValidos = nombresQueEntregan_(cursoKey);
   var sheet = getSheet_();
   var lastRow = sheet.getLastRow();
   if (lastRow < 2) {
@@ -827,7 +903,7 @@ function avisarApertura_(cursoKey) {
     var nombre = String(filas[i][5] || "Estudiante");
     var email = String(filas[i][6] || "").trim().toLowerCase();
 
-    if (estado !== ESTADO_APROBADO || nombreCurso !== curso.nombre) continue;
+    if (estado !== ESTADO_APROBADO || nombresValidos.indexOf(nombreCurso) === -1) continue;
     if (detalle.indexOf(MARCA_AVISO_APERTURA) !== -1 || avisados[email] || !email) continue;
 
     try {

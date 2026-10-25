@@ -17,6 +17,20 @@ function cleanString(value, max = 200) {
   return typeof value === "string" ? value.slice(0, max) : undefined;
 }
 
+// Claves de coincidencia (advanced matching) normalizadas y hasheadas como pide Meta:
+// email en minúsculas, teléfono solo dígitos, solo el primer nombre.
+// Las usa el evento de servidor y también se le devuelven al navegador (página de gracias)
+// para que el Pixel mande las mismas claves en el Purchase, sin exponer el dato en claro.
+export function hashedUserData({ email, telefono, nombre } = {}) {
+  const cleanPhone = telefono ? String(telefono).replace(/\D/g, "") : "";
+  const firstName = nombre ? String(nombre).trim().split(/\s+/)[0] : "";
+  const hashed = {};
+  if (email) hashed.em = hashData(email);
+  if (cleanPhone) hashed.ph = hashData(cleanPhone);
+  if (firstName) hashed.fn = hashData(firstName);
+  return hashed;
+}
+
 // Envía un evento a la API de Conversiones de Meta (CAPI).
 // El event_id tiene que ser el mismo que usó el Pixel en el navegador para que Meta deduplique.
 export async function sendMetaEvent(event, {
@@ -41,10 +55,7 @@ export async function sendMetaEvent(event, {
     return { ok: false, error: "missing_env" };
   }
 
-  // Normalizar teléfono (solo dígitos)
-  const cleanPhone = telefono ? String(telefono).replace(/\D/g, "") : "";
-  // Solo el primer nombre, como pide Meta para "fn"
-  const firstName = nombre ? String(nombre).trim().split(/\s+/)[0] : "";
+  const hashed = hashedUserData({ email, telefono, nombre });
 
   const payload = {
     data: [
@@ -55,9 +66,9 @@ export async function sendMetaEvent(event, {
         event_source_url: cleanString(eventSourceUrl, 500),
         action_source: "website",
         user_data: {
-          em: email ? [hashData(email)] : undefined,
-          ph: cleanPhone ? [hashData(cleanPhone)] : undefined,
-          fn: firstName ? [hashData(firstName)] : undefined,
+          em: hashed.em ? [hashed.em] : undefined,
+          ph: hashed.ph ? [hashed.ph] : undefined,
+          fn: hashed.fn ? [hashed.fn] : undefined,
           fbp: cleanString(fbp),
           fbc: cleanString(fbc),
           client_ip_address:

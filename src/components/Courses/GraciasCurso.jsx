@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Seo from "../Seo";
 import { useSearchParams, Link } from "react-router-dom";
-import { trackEvent, getMetaCookies } from "../../data/metaPixel";
+import { trackEvent, setHashedUserData, getMetaCookies } from "../../data/metaPixel";
 import { CURSOS_GRABADOS, estaEnPreventa } from "../../data/cursosGrabados";
 
 const MENSAJES = {
@@ -67,6 +67,8 @@ export default function GraciasCurso({ cursoKey }) {
           // Evita repetir el Purchase si el usuario recarga la página
           const storageKey = `srv_purchase_${paymentId}`;
           if (!localStorage.getItem(storageKey)) {
+            // Mismas claves de coincidencia (ya hasheadas) que el Purchase que mandó el servidor
+            setHashedUserData(data.user_data);
             trackEvent("Purchase", {
               content_name: data.content_name,
               content_ids: [data.content_id],

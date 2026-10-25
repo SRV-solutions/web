@@ -3,7 +3,16 @@
 // y sin ese ID Meta no puede deduplicar el evento del navegador con el del servidor (CAPI).
 const PIXEL_ID = '1616499123394079';
 
+// El Pixel solo se activa en el dominio real. Desde localhost y los deploy previews de Netlify
+// no se manda nada a Meta (ni Pixel ni CAPI): esas visitas de prueba ensuciaban los datos reales.
+// Para probar el tracking hay que hacerlo en wearesrv.com (Events Manager > Probar eventos).
+const TRACKING_HOSTS = ['wearesrv.com', 'www.wearesrv.com'];
+
+export const isTrackingEnabled = () =>
+  typeof window !== 'undefined' && TRACKING_HOSTS.includes(window.location.hostname);
+
 let initialized = false;
+let avisoDesactivado = false;
 
 const fbq = (...args) => {
   if (typeof window === 'undefined' || typeof window.fbq !== 'function') return;
@@ -12,6 +21,13 @@ const fbq = (...args) => {
 
 export const initMetaPixel = () => {
   if (initialized) return;
+  if (!isTrackingEnabled()) {
+    if (!avisoDesactivado) {
+      avisoDesactivado = true;
+      console.info(`Meta Pixel desactivado en ${window.location.hostname}: solo se activa en wearesrv.com`);
+    }
+    return;
+  }
   fbq('init', PIXEL_ID);
   initialized = true;
 };
@@ -32,32 +48,59 @@ export const getMetaCookies = () => ({ fbp: readCookie('_fbp'), fbc: readCookie(
 
 const eventOptions = (eventId) => (eventId ? { eventID: eventId } : undefined);
 
-export const trackPageView = (eventId = null) => {
+// Garantiza el init antes de cada evento; devuelve false si el tracking está apagado en este host.
+const ready = () => {
   if (!initialized) initMetaPixel();
+  return initialized;
+};
+
+export const trackPageView = (eventId = null) => {
+  if (!ready()) return;
   fbq('track', 'PageView', {}, eventOptions(eventId));
 };
 
 export const trackEvent = (eventName, data = {}, eventId = null) => {
-  if (!initialized) initMetaPixel();
+  if (!ready()) return;
   fbq('track', eventName, { ...data }, eventOptions(eventId));
 };
 
 export const trackCustomEvent = (eventName, data = {}, eventId = null) => {
-  if (!initialized) initMetaPixel();
+  if (!ready()) return;
   fbq('trackCustom', eventName, { ...data }, eventOptions(eventId));
 };
 
 // Advanced matching: los datos personales NUNCA van dentro de los parámetros del evento.
 // Se le pasan al Pixel con un nuevo init, y el Pixel los hashea antes de enviarlos.
+// (El Pixel acepta ese segundo init solo si todavía no tenía datos del usuario.)
 export const setUserData = ({ email, telefono, nombre } = {}) => {
   if (typeof window === 'undefined' || typeof window.fbq !== 'function') return;
-  if (!initialized) initMetaPixel();
+  if (!ready()) return;
 
   const userData = {};
   if (email) userData.em = String(email).trim().toLowerCase();
   if (telefono) userData.ph = String(telefono).replace(/\D/g, '');
   if (nombre) userData.fn = String(nombre).trim().split(/\s+/)[0].toLowerCase();
 
+  if (Object.keys(userData).length === 0) return;
+  window.fbq('init', PIXEL_ID, userData);
+};
+
+// Igual que setUserData, pero con valores que ya vienen hasheados en SHA-256 desde el servidor
+// (por ejemplo, el comprador que confirma Mercado Pago en la página de gracias). Así el Purchase
+// del navegador lleva las mismas claves de coincidencia que el del servidor, sin exponer el dato.
+const HASHED_KEYS = ['em', 'ph', 'fn', 'ln', 'external_id'];
+const esHashSha256 = (valor) => typeof valor === 'string' && /^[a-f0-9]{64}$/i.test(valor);
+
+export const setHashedUserData = (hashes = {}) => {
+  if (typeof window === 'undefined' || typeof window.fbq !== 'function') return;
+  if (!ready()) return;
+
+  const userData = {};
+  for (const key of HASHED_KEYS) {
+    if (esHashSha256(hashes[key])) userData[key] = hashes[key].toLowerCase();
+  }
+
+  if (Object.keys(userData).length === 0) return;
   window.fbq('init', PIXEL_ID, userData);
 };
 
@@ -65,6 +108,7 @@ export const setUserData = ({ email, telefono, nombre } = {}) => {
 // con el mismo event_id, para que Meta lo cuente una sola vez.
 export const trackConversion = (eventName, data = {}, user = {}) => {
   const eventId = generateEventId(eventName.toLowerCase());
+  if (!ready()) return eventId;
 
   if (user.email || user.telefono || user.nombre) setUserData(user);
   trackEvent(eventName, data, eventId);

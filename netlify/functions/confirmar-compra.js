@@ -1,6 +1,6 @@
 import { getCurso, webhookCursosUrl } from "../lib/cursos.js";
 import { planDesdeReferencia } from "../lib/intensivos.js";
-import { sendMetaEvent } from "../lib/metaCapi.js";
+import { sendMetaEvent, hashedUserData } from "../lib/metaCapi.js";
 import { SITE_URL, json, isAllowedOrigin, parseBody } from "../lib/http.js";
 
 // Respaldo de la notificación de Mercado Pago: le avisa al Apps Script de cursos que este pago
@@ -132,6 +132,9 @@ export async function handler(event) {
       currency,
       content_name: producto.contentName,
       content_id: producto.itemId,
+      // Solo hashes SHA-256 (nunca el dato en claro): el Pixel los manda como advanced matching
+      // en el Purchase del navegador, igual que el evento de servidor de arriba.
+      user_data: hashedUserData({ email: payer.email, telefono, nombre: payer.first_name }),
     });
   } catch (error) {
     console.error("Error confirmando compra:", error);

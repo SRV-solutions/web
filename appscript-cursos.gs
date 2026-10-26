@@ -177,8 +177,125 @@ var CURSOS = {
     tituloHtml: 'MASTER EN <span style="color:#f6950a;">PYTHON</span> + RUTA <span style="color:#f6950a;">BACKEND</span> COMPLETA',
     precioMinimo: 199900,
     incluye: ["python", "ruta-backend"]
+  },
+  // PACK COMPLETO: Scripting + Python + Ruta Backend (4 carpetas) en un solo pago
+  "pack-completo": {
+    itemId: "combo-pack-completo",
+    nombre: "Pack Completo",
+    tituloHtml: 'PACK <span style="color:#f6950a;">COMPLETO</span>: SCRIPTING + PYTHON + RUTA BACKEND',
+    precioMinimo: 199900,
+    incluye: ["scripting", "python", "ruta-backend"]
+  },
+  // COMBOS CON FULLSTACK C# (mismas claves y precios que netlify/lib/cursos.js)
+  "scripting-csharp": {
+    itemId: "combo-scripting-csharp",
+    nombre: "Combo Scripting + Fullstack C#",
+    tituloHtml: 'CURSO DE <span style="color:#f6950a;">SCRIPTING</span> + CURSO <span style="color:#f6950a;">FULLSTACK</span> CON C#',
+    precioMinimo: 92900,
+    incluye: ["scripting", "fullstack-csharp"]
+  },
+  "python-csharp": {
+    itemId: "combo-python-csharp",
+    nombre: "Combo Python + Fullstack C#",
+    tituloHtml: 'MASTER EN <span style="color:#f6950a;">PYTHON</span> + CURSO <span style="color:#f6950a;">FULLSTACK</span> CON C#',
+    precioMinimo: 139900,
+    incluye: ["python", "fullstack-csharp"]
+  },
+  "javascript-csharp": {
+    itemId: "combo-javascript-csharp",
+    nombre: "Combo Master en JavaScript + Fullstack C#",
+    tituloHtml: 'MASTER EN <span style="color:#f6950a;">JAVASCRIPT</span> + CURSO <span style="color:#f6950a;">FULLSTACK</span> CON C#',
+    precioMinimo: 144900,
+    incluye: ["fundamentos-backend", "fullstack-csharp"]
+  },
+  "backend-avanzado-csharp": {
+    itemId: "combo-backend-avanzado-csharp",
+    nombre: "Combo Backend Avanzado + Fullstack C#",
+    tituloHtml: 'BACKEND <span style="color:#f6950a;">AVANZADO</span> + CURSO <span style="color:#f6950a;">FULLSTACK</span> CON C#',
+    precioMinimo: 159900,
+    incluye: ["backend-avanzado", "fullstack-csharp"]
+  },
+  "ruta-backend-csharp": {
+    itemId: "combo-ruta-backend-csharp",
+    nombre: "Combo Ruta Backend + Fullstack C#",
+    tituloHtml: 'RUTA <span style="color:#f6950a;">BACKEND</span> COMPLETA + CURSO <span style="color:#f6950a;">FULLSTACK</span> CON C#',
+    precioMinimo: 199900,
+    incluye: ["ruta-backend", "fullstack-csharp"]
   }
 };
+
+// ============================================================
+//  PACKS "SUMÁ A TU COMPRA": varios cursos en un solo pago, armados por el visitante en la web.
+//  La MISMA regla que netlify/lib/cursos.js y src/data/packs.js:
+//    precio = suma de precios − AHORRO_POR_CURSO × (cursos − 1), nunca menos que el curso más caro,
+//    redondeado a un número terminado en 900.
+//  Clave del pago: "pack-" + nombres cortos ordenados (ej. "pack-csharp-python"). Acá se generan
+//  todas las combinaciones válidas como entradas de CURSOS, con "incluye" para compartir carpetas.
+//  Unidades: cada curso grabado y la Ruta Backend como una sola; Scratch solo con Scripting y Python.
+// ============================================================
+var AHORRO_POR_CURSO = 30000;
+var UNIDADES_PACK = [
+  { key: "scratch", corto: "scratch" },
+  { key: "scripting", corto: "scripting" },
+  { key: "python", corto: "python" },
+  { key: "fundamentos-backend", corto: "javascript" },
+  { key: "backend-avanzado", corto: "backend" },
+  { key: "ruta-backend", corto: "ruta" },
+  { key: "fullstack-csharp", corto: "csharp" }
+];
+var SOLO_CON_SCRATCH = ["scripting", "python"];
+
+function setPackValido_(keys) {
+  if (keys.length < 2) return false;
+  var tieneRuta = keys.indexOf("ruta-backend") !== -1;
+  if (tieneRuta && (keys.indexOf("fundamentos-backend") !== -1 || keys.indexOf("backend-avanzado") !== -1)) return false;
+  if (keys.indexOf("fundamentos-backend") !== -1 && keys.indexOf("backend-avanzado") !== -1) return false; // juntos son la ruta
+  if (keys.indexOf("scratch") !== -1) {
+    for (var i = 0; i < keys.length; i++) {
+      if (keys[i] !== "scratch" && SOLO_CON_SCRATCH.indexOf(keys[i]) === -1) return false;
+    }
+  }
+  return true;
+}
+
+function redondear900_(n) {
+  return Math.floor((n - 900) / 1000) * 1000 + 900;
+}
+
+// Mínimo aceptado para un pack: aplica la regla sobre el mínimo de cada unidad a la fecha del pago
+// (así la preventa de Scratch también vale dentro de un pack)
+function precioPack_(keys, fechaPago) {
+  var suma = 0, maximo = 0;
+  for (var i = 0; i < keys.length; i++) {
+    var precio = precioMinimoUnidad_(CURSOS[keys[i]], fechaPago);
+    suma += precio;
+    if (precio > maximo) maximo = precio;
+  }
+  var conDescuento = suma - AHORRO_POR_CURSO * (keys.length - 1);
+  if (conDescuento <= maximo) return maximo;
+  return Math.max(maximo, redondear900_(conDescuento));
+}
+
+// Genera una entrada de CURSOS por cada combinación válida (2 a 7 unidades)
+function generarPacks_() {
+  var n = UNIDADES_PACK.length;
+  for (var mascara = 1; mascara < (1 << n); mascara++) {
+    var unidades = [];
+    for (var i = 0; i < n; i++) if (mascara & (1 << i)) unidades.push(UNIDADES_PACK[i]);
+    var keys = unidades.map(function (u) { return u.key; });
+    if (!setPackValido_(keys)) continue;
+    var clave = "pack-" + unidades.map(function (u) { return u.corto; }).sort().join("-");
+    var nombres = keys.map(function (k) { return CURSOS[k].nombre; });
+    CURSOS[clave] = {
+      itemId: clave,
+      nombre: "Pack: " + nombres.join(" + "),
+      tituloHtml: 'PACK <span style="color:#f6950a;">' + escaparHtml_(nombres.join(" + ")).toUpperCase() + '</span>',
+      pack: true,
+      incluye: keys
+    };
+  }
+}
+generarPacks_();
 
 // Prefijo del external_reference de las donaciones (netlify/functions/crear-donacion.js)
 var PREFIJO_DONACION = "donacion:";
@@ -542,11 +659,17 @@ function esCuponAlumnos_(curso, payment) {
   return !!(curso && curso.cuponAlumnos && meta.cupon === "alumnos");
 }
 
-// Precio mínimo aceptado para un pago: el de alumnos si vino con código, el de preventa si
-// corresponde, si no el regular
+// Mínimo de una unidad (curso o combo fijo) a la fecha del pago: preventa si corresponde, si no el regular
+function precioMinimoUnidad_(curso, fechaPago) {
+  return enPreventa_(curso, fechaPago) ? curso.preventa.precioMinimo : curso.precioMinimo;
+}
+
+// Precio mínimo aceptado para un pago: el de alumnos si vino con código, el de la regla de packs si es
+// un pack armado en la web, el de preventa si corresponde, si no el regular
 function precioMinimo_(curso, fechaPago, payment) {
   if (esCuponAlumnos_(curso, payment)) return curso.cuponAlumnos.precioMinimo;
-  return enPreventa_(curso, fechaPago) ? curso.preventa.precioMinimo : curso.precioMinimo;
+  if (curso.pack) return precioPack_(curso.incluye, fechaPago);
+  return precioMinimoUnidad_(curso, fechaPago);
 }
 
 function yaProcesado_(paymentId) {
@@ -1035,6 +1158,8 @@ function probarConfiguracion() {
   for (var key in CURSOS) {
     if (!Object.prototype.hasOwnProperty.call(CURSOS, key)) continue;
     var curso = CURSOS[key];
+
+    if (curso.pack) continue; // los packs se generan solos a partir de los cursos de abajo
 
     // Un combo no tiene carpeta propia: se verifica que sus cursos existan (sus carpetas se revisan abajo)
     if (curso.incluye) {

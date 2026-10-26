@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import Seo from "../Seo";
 import { useSearchParams, Link } from "react-router-dom";
 import { trackEvent, setHashedUserData, getMetaCookies } from "../../data/metaPixel";
-import { CURSOS_GRABADOS, estaEnPreventa, getSuma, cursosDeSuma, nombreCurso } from "../../data/cursosGrabados";
+import { CURSOS_GRABADOS, estaEnPreventa, nombreCurso } from "../../data/cursosGrabados";
+import { cursosDePack } from "../../data/packs";
 
 const MENSAJES = {
   approved: {
@@ -47,8 +48,8 @@ export default function GraciasCurso({ cursoKey }) {
   const [searchParams] = useSearchParams();
   const paymentId = searchParams.get("payment_id");
   const [estado, setEstado] = useState(paymentId ? "loading" : "unknown");
-  // Si el pago fue de un combo "Sumá a tu compra", se listan los cursos que incluye
-  const [sumaComprada, setSumaComprada] = useState(null);
+  // Si el pago fue de un pack "Sumá a tu compra", se listan los cursos que incluye
+  const [cursosPack, setCursosPack] = useState(null);
 
   useEffect(() => {
     if (!paymentId) return;
@@ -66,7 +67,7 @@ export default function GraciasCurso({ cursoKey }) {
         if (cancelado) return;
 
         if (data.status === "approved") {
-          setSumaComprada(getSuma(data.curso_pagado));
+          setCursosPack(cursosDePack(data.curso_pagado));
           // Evita repetir el Purchase si el usuario recarga la página
           const storageKey = `srv_purchase_${paymentId}`;
           if (!localStorage.getItem(storageKey)) {
@@ -123,11 +124,11 @@ export default function GraciasCurso({ cursoKey }) {
       <p style={{ fontSize: "1.1rem", color: "#ccc", maxWidth: "600px", margin: "1rem auto" }}>
         {mensaje.texto}
       </p>
-      {sumaComprada && (
+      {cursosPack && (
         <p style={{ fontSize: "1rem", color: "#9fc7ff", maxWidth: "600px", margin: "0 auto 1rem" }}>
-          Tu compra incluye <strong style={{ color: "#fff" }}>{cursosDeSuma(sumaComprada).map(nombreCurso).join(" + ")}</strong>.
+          Tu compra incluye <strong style={{ color: "#fff" }}>{cursosPack.map(nombreCurso).join(" + ")}</strong>.
           Te llega un solo mail con el acceso a la carpeta de cada curso
-          {cursosDeSuma(sumaComprada)
+          {cursosPack
             .filter((c) => estaEnPreventa(c))
             .map((c) => ` (las clases de ${nombreCurso(c)} se habilitan el ${c.preventa.fechaTexto}; las demás ya están)`)
             .join("")}

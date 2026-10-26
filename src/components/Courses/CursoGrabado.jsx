@@ -3,7 +3,8 @@ import { useSearchParams } from "react-router-dom";
 import styles from "./CursoGrabado.module.css";
 import Seo, { SITE_URL } from "../Seo";
 import { trackConversion, getMetaCookies } from "../../data/metaPixel";
-import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, comboQueIncluye, sumasPara, nombreCurso } from "../../data/cursosGrabados";
+import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, comboQueIncluye, nombreCurso } from "../../data/cursosGrabados";
+import { AHORRO_POR_CURSO, agregablesPara, infoPack, normalizarSet, setValido, pitchUnidad, unidadesDeParametro } from "../../data/packs";
 
 const DISCORD_URL = "https://discord.com/invite/QuAmDxrNMu";
 const WHATSAPP_URL = "https://wa.me/5491123869799?text=" + encodeURIComponent("Hola, tengo una consulta sobre los cursos");
@@ -94,8 +95,10 @@ export default function CursoGrabado({ cursoKey }) {
   const [loading, setLoading] = useState(false);
   const [showBar, setShowBar] = useState(false);
   const [seleccion, setSeleccion] = useState(elegirInicial);
-  // "Sumá a tu compra": clave del combo que el visitante agregó al curso elegido (o null)
-  const [sumaKey, setSumaKey] = useState(null);
+  // "Sumá a tu compra": cursos que el visitante agregó al curso elegido (claves de unidades).
+  // ?sumar=python,csharp los deja preseleccionados (banners de la home); los que no aplican se ignoran.
+  const sumarInicial = unidadesDeParametro(searchParams.get("sumar"));
+  const [extras, setExtras] = useState(sumarInicial);
   // Código de alumnos de SRV: lo valida el servidor comparando su hash, y es el servidor quien fija
   // el precio especial. Acá solo se guarda el código aceptado para mandarlo al crear el pago.
   const [cuponTexto, setCuponTexto] = useState("");
@@ -117,20 +120,58 @@ export default function CursoGrabado({ cursoKey }) {
   // Código de alumnos aplicado a ESTE producto (si cambia el producto, deja de aplicar solo)
   const cuponAplicado = producto.cuponAlumnos && cupon && cupon.curso === producto.key ? cupon : null;
 
-  // Combos que se pueden sumar al producto elegido. Si cambia el producto y la suma elegida
-  // ya no aplica, vuelve a "solo este curso" sola. Con código de alumnos no se ofrecen combos.
-  const ofertas = cuponAplicado ? [] : sumasPara(producto.key);
-  const suma = ofertas.find((s) => s.key === sumaKey) || null;
-  // Lo que se cobra y se muestra en el precio, el botón y la barra: el curso o el combo sumado
-  const compra = suma
+  // Cursos que se pueden sumar al producto elegido (con código de alumnos no se ofrecen packs).
+  // Un conjunto es combinable si forma un pack válido o si se convierte en un combo existente
+  // (Master en JavaScript + Backend Avanzado = Ruta Backend).
+  const agregables = cuponAplicado ? [] : agregablesPara(producto.key);
+  const combinable = (keys) => {
+    const set = normalizarSet(keys);
+    return set.length === 1 ? set[0] !== producto.key : setValido(set);
+  };
+  // Si cambia el producto (selector de la ruta) o se eligió algo incompatible, se descarta solo
+  const extrasValidos = extras.reduce(
+    (lista, k) => (agregables.includes(k) && !lista.includes(k) && combinable([producto.key, ...lista, k]) ? [...lista, k] : lista),
+    [],
+  );
+  const puedeSumar = (k) => extrasValidos.includes(k) || combinable([producto.key, ...extrasValidos, k]);
+  const toggleExtra = (k) => setExtras((prev) => (prev.includes(k) ? prev.filter((x) => x !== k) : [...prev, k]));
+  // Qué se cobra por un conjunto: un pack, o el combo en que se convierte (Ruta Backend)
+  const infoDeSet = (keys) => {
+    const set = normalizarSet(keys);
+    if (set.length > 1) return infoPack(set);
+    const c = CURSOS_GRABADOS[set[0]];
+    const cursos = c.combo ? c.combo.map((k) => CURSOS_GRABADOS[k]) : [c];
+    const precioSeparado = cursos.reduce((t, x) => t + x.precio, 0);
+    return {
+      key: c.key,
+      itemId: c.itemId,
+      contentName: c.contentName,
+      precio: c.precio,
+      nombre: nombreCurso(c),
+      cursos,
+      cantidadCursos: cursos.length,
+      clases: cursos.reduce((t, x) => t + x.clases, 0),
+      precioSeparado,
+      ahorro: precioSeparado - c.precio,
+    };
+  };
+  const pack = extrasValidos.length > 0 ? infoDeSet([producto.key, ...extrasValidos]) : null;
+  // Lo que se paga "de más" por sumar un curso al resto de lo elegido
+  const costoDeSumar = (k) => {
+    const resto = extrasValidos.filter((x) => x !== k);
+    const sin = resto.length > 0 ? infoDeSet([producto.key, ...resto]).precio : producto.precio;
+    return infoDeSet([producto.key, ...resto, k]).precio - sin;
+  };
+  // Lo que se cobra y se muestra en el precio, el botón y la barra: el curso o el pack armado
+  const compra = pack
     ? {
-        key: suma.key,
-        itemId: suma.itemId,
-        contentName: suma.contentName,
-        precio: suma.precio,
-        nombre: suma.nombre,
-        clases: suma.clases,
-        cantidadCursos: suma.cantidadCursos,
+        key: pack.key,
+        itemId: pack.itemId,
+        contentName: pack.contentName,
+        precio: pack.precio,
+        nombre: pack.nombre,
+        clases: pack.clases,
+        cantidadCursos: pack.cantidadCursos,
       }
     : {
         key: producto.key,
@@ -154,7 +195,7 @@ export default function CursoGrabado({ cursoKey }) {
   // ViewContent: alguien entró a ver el curso. Al cambiar de página, el selector vuelve a su valor inicial.
   useEffect(() => {
     setSeleccion(elegirInicial);
-    setSumaKey(null);
+    setExtras(sumarInicial);
     setCupon(null);
     setCuponTexto("");
     setCuponEstado({ cargando: false, error: "" });
@@ -185,7 +226,7 @@ export default function CursoGrabado({ cursoKey }) {
       const data = await res.json().catch(() => ({}));
       if (res.ok && data.valido && Number.isFinite(data.precio)) {
         setCupon({ curso: producto.key, codigo, precio: data.precio });
-        setSumaKey(null);
+        setExtras([]);
         setCuponEstado({ cargando: false, error: "" });
       } else if (res.ok) {
         setCuponEstado({ cargando: false, error: "Ese código no es válido para este curso. Revisalo o escribinos por WhatsApp." });
@@ -297,8 +338,8 @@ export default function CursoGrabado({ cursoKey }) {
         : `${
             preventa
               ? "Reservar mi acceso"
-              : suma
-                ? `Quiero los ${suma.cantidadCursos} cursos`
+              : pack
+                ? `Quiero los ${pack.cantidadCursos} cursos`
                 : producto.combo
                   ? "Quiero los dos cursos"
                   : "Quiero mi acceso"
@@ -353,8 +394,8 @@ export default function CursoGrabado({ cursoKey }) {
                 <div className={styles.promoHeader}>
                   {cuponAplicado ? (
                     <span className={styles.promoBadge}>🎓 Precio para alumnos de SRV</span>
-                  ) : suma ? (
-                    <span className={styles.promoBadge}>🎁 {suma.cantidadCursos} cursos · ahorrás {formatearPrecio(suma.ahorro)}</span>
+                  ) : pack ? (
+                    <span className={styles.promoBadge}>🎁 {pack.cantidadCursos} cursos · ahorrás {formatearPrecio(pack.ahorro)}</span>
                   ) : (
                     descuento > 0 && (
                       <span className={styles.promoBadge}>
@@ -396,12 +437,12 @@ export default function CursoGrabado({ cursoKey }) {
                 )}
 
                 <div className={styles.priceContainer}>
-                  {(cuponAplicado || suma || descuento > 0) && (
+                  {(cuponAplicado || pack || descuento > 0) && (
                     <div className={styles.oldPriceBox}>
                       <span className={styles.oldPriceLabel}>
                         {cuponAplicado
                           ? "Precio promocional"
-                          : suma
+                          : pack
                             ? "Por separado"
                             : preventa
                               ? `Desde el ${fechaAcceso}`
@@ -410,7 +451,7 @@ export default function CursoGrabado({ cursoKey }) {
                                 : "Precio regular"}
                       </span>
                       <span className={styles.oldPrice}>
-                        {formatearPrecio(cuponAplicado ? producto.precio : suma ? suma.precioSeparado : producto.precioRegular)}
+                        {formatearPrecio(cuponAplicado ? producto.precio : pack ? pack.precioSeparado : producto.precioRegular)}
                       </span>
                     </div>
                   )}
@@ -418,8 +459,8 @@ export default function CursoGrabado({ cursoKey }) {
                     <span className={styles.priceTag}>
                       {cuponAplicado
                         ? "Pagás hoy como alumno"
-                        : suma
-                          ? `Pagás hoy por los ${suma.cantidadCursos} cursos`
+                        : pack
+                          ? `Pagás hoy por los ${pack.cantidadCursos} cursos`
                           : preventa
                             ? "Reservás hoy por"
                             : "Pagás hoy"}
@@ -476,53 +517,64 @@ export default function CursoGrabado({ cursoKey }) {
                   </form>
                 )}
 
-                {/* Sumá a tu compra: combos con precio especial, se pagan junto con el curso */}
-                {ofertas.length > 0 && (
+                {/* Sumá a tu compra: el visitante arma su pack; la regla de precio vive en src/data/packs.js */}
+                {agregables.length > 0 && (
                   <fieldset className={styles.sumas}>
-                    <legend className={styles.sumasTitle}>🎁 Sumá a tu compra y ahorrá</legend>
+                    <legend className={styles.sumasTitle}>🎁 Sumá cursos y ahorrá {formatearPrecio(AHORRO_POR_CURSO)} por cada uno</legend>
                     <p className={styles.sumasIntro}>
-                      Llevá otro curso en el mismo pago, a un precio que solo existe acá. Tildá el que quieras: el total se actualiza.
+                      Tildá todos los que quieras: van en el mismo pago y cada curso que sumás descuenta{" "}
+                      {formatearPrecio(AHORRO_POR_CURSO)} del total. Si vale menos, va de regalo.
                     </p>
-                    {ofertas.map((oferta) => {
-                      const activa = suma?.key === oferta.key;
+                    {agregables.map((k) => {
+                      const unidad = CURSOS_GRABADOS[k];
+                      const activa = extrasValidos.includes(k);
+                      const disponible = puedeSumar(k);
+                      const extra = disponible ? costoDeSumar(k) : null;
                       return (
-                        <label key={oferta.key} className={`${styles.sumaCard} ${activa ? styles.sumaCardActiva : ""}`}>
+                        <label
+                          key={k}
+                          className={`${styles.sumaCard} ${activa ? styles.sumaCardActiva : ""} ${disponible ? "" : styles.sumaCardNo}`}
+                        >
                           <input
                             type="checkbox"
                             checked={activa}
-                            onChange={() => setSumaKey(activa ? null : oferta.key)}
-                            aria-label={`Sumar ${oferta.agregados.map(nombreCurso).join(" y ")}`}
+                            disabled={!disponible}
+                            onChange={() => toggleExtra(k)}
+                            aria-label={`Sumar ${nombreCurso(unidad)}`}
                           />
                           <span className={styles.sumaBody}>
                             <span className={styles.sumaTop}>
-                              <span className={styles.sumaEtiqueta}>{oferta.etiqueta}</span>
-                              <span className={styles.sumaAhorro}>Ahorrás {formatearPrecio(oferta.ahorro)}</span>
+                              <span className={styles.sumaEtiqueta}>{extra !== null && extra <= 0 ? "De regalo" : `${unidad.clases} clases`}</span>
+                              {disponible && <span className={styles.sumaAhorro}>Ahorrás {formatearPrecio(unidad.precio - extra)}</span>}
                             </span>
-                            <span className={styles.sumaNombre}>+ {oferta.agregados.map(nombreCurso).join(" + ")}</span>
-                            <span className={styles.sumaPitch}>{oferta.pitch}</span>
+                            <span className={styles.sumaNombre}>+ {nombreCurso(unidad)}</span>
+                            <span className={styles.sumaPitch}>{pitchUnidad(k)}</span>
                             <span className={styles.sumaPrecios}>
-                              <strong>
-                                {oferta.extra > 0
-                                  ? `Por solo ${formatearPrecio(oferta.extra)} más`
-                                  : "Sin costo extra"}{" "}
-                                <s>{formatearPrecio(oferta.valorAgregados)}</s>
-                              </strong>
-                              <span>
-                                Los {oferta.cantidadCursos} cursos por {formatearPrecio(oferta.precio)} · por separado{" "}
-                                {formatearPrecio(oferta.precioSeparado)}
-                              </span>
+                              {disponible ? (
+                                <strong>
+                                  {extra > 0 ? `Por solo ${formatearPrecio(extra)} más` : "¡Sin costo extra!"} <s>{formatearPrecio(unidad.precio)}</s>
+                                </strong>
+                              ) : (
+                                <span>No se combina con los cursos que elegiste.</span>
+                              )}
                             </span>
                           </span>
                         </label>
                       );
                     })}
+                    {pack && (
+                      <p className={styles.sumasTotal}>
+                        Tu pack: <strong>{pack.cantidadCursos} cursos</strong> por <strong>{formatearPrecio(pack.precio)}</strong> · por separado{" "}
+                        {formatearPrecio(pack.precioSeparado)} · ahorrás <strong>{formatearPrecio(pack.ahorro)}</strong>
+                      </p>
+                    )}
                   </fieldset>
                 )}
               </div>
             </div>
 
             <div className={styles.actionContainer} ref={buyRef}>
-              {suma && (
+              {pack && (
                 <p className={styles.compraResumen}>
                   Tu compra: <strong>{compra.nombre}</strong> · {compra.clases} clases · un solo pago
                 </p>
@@ -635,8 +687,8 @@ export default function CursoGrabado({ cursoKey }) {
           <div className={styles.finalCta}>
             <h2>{preventa ? "Reservá tu lugar al precio de preventa." : "Hoy puede ser tu primera clase."}</h2>
             <p>
-              {suma
-                ? `${compra.clases} clases en ${suma.cantidadCursos} cursos, acceso de por vida y un solo pago de ${formatearPrecio(compra.precio)}. Por separado pagarías ${formatearPrecio(suma.precioSeparado)}.`
+              {pack
+                ? `${compra.clases} clases en ${pack.cantidadCursos} cursos, acceso de por vida y un solo pago de ${formatearPrecio(compra.precio)}. Por separado pagarías ${formatearPrecio(pack.precioSeparado)}.`
                 : preventa
                   ? `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(producto.precio)}. Desde el ${fechaAcceso} pasa a ${formatearPrecio(producto.precioRegular)}, y ese mismo día se habilitan las clases en tu carpeta.`
                   : `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(compra.precio)}${cuponAplicado ? " con tu código de alumno" : ""}. Empezá esta misma noche.`}

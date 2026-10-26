@@ -72,6 +72,9 @@ export const CURSOS = {
     titulo: "Ruta Backend Completa: Master en JavaScript + Backend Avanzado - WEARESRV",
     contentName: "Infoproducto Ruta Backend Completa",
     precio: 149900,
+    // Los dos cursos que entrega: así un pago de la ruta (o de un pack que la incluye) se confirma
+    // también en la página de gracias de cada curso suelto
+    incluye: ["fundamentos-backend", "backend-avanzado"],
     ruta: "ruta-backend",
   },
 
@@ -130,6 +133,57 @@ export const CURSOS = {
     incluye: ["python", "ruta-backend"],
     ruta: "python",
   },
+  // Pack Completo: Scripting + Python + Ruta Backend (4 cursos) en un solo pago.
+  // En la web reemplaza a "python-ruta-backend", que se conserva acá por si quedó un pago en curso.
+  "pack-completo": {
+    itemId: "combo-pack-completo",
+    titulo: "Pack Completo: Scripting + Master en Python + Ruta Backend - WEARESRV",
+    contentName: "Pack Completo: Scripting + Python + Ruta Backend",
+    precio: 199900,
+    incluye: ["scripting", "python", "ruta-backend"],
+    ruta: "python",
+  },
+  // Combos con Fullstack C# (mismas claves y precios que src/data/cursosGrabados.js > SUMAS)
+  "scripting-csharp": {
+    itemId: "combo-scripting-csharp",
+    titulo: "Combo Curso de Scripting + Curso Fullstack con C# - WEARESRV",
+    contentName: "Combo Scripting + Fullstack C#",
+    precio: 92900,
+    incluye: ["scripting", "fullstack-csharp"],
+    ruta: "scripting",
+  },
+  "python-csharp": {
+    itemId: "combo-python-csharp",
+    titulo: "Combo Master en Python + Curso Fullstack con C# - WEARESRV",
+    contentName: "Combo Python + Fullstack C#",
+    precio: 139900,
+    incluye: ["python", "fullstack-csharp"],
+    ruta: "python",
+  },
+  "javascript-csharp": {
+    itemId: "combo-javascript-csharp",
+    titulo: "Combo Master en JavaScript + Curso Fullstack con C# - WEARESRV",
+    contentName: "Combo Master en JavaScript + Fullstack C#",
+    precio: 144900,
+    incluye: ["fundamentos-backend", "fullstack-csharp"],
+    ruta: "javascript",
+  },
+  "backend-avanzado-csharp": {
+    itemId: "combo-backend-avanzado-csharp",
+    titulo: "Combo Backend Avanzado + Curso Fullstack con C# - WEARESRV",
+    contentName: "Combo Backend Avanzado + Fullstack C#",
+    precio: 159900,
+    incluye: ["backend-avanzado", "fullstack-csharp"],
+    ruta: "backend-avanzado",
+  },
+  "ruta-backend-csharp": {
+    itemId: "combo-ruta-backend-csharp",
+    titulo: "Combo Ruta Backend Completa + Curso Fullstack con C# - WEARESRV",
+    contentName: "Combo Ruta Backend + Fullstack C#",
+    precio: 199900,
+    incluye: ["ruta-backend", "fullstack-csharp"],
+    ruta: "ruta-backend",
+  },
 };
 
 // Clave del producto que figura en el external_reference ("clave:uuid") de un pago
@@ -144,9 +198,7 @@ export function claveDeReferencia(ref) {
 // en /scripting/gracias o en /python/gracias).
 export function pagoCorrespondeA(pagadoKey, cursoKey) {
   if (!pagadoKey || !cursoKey) return false;
-  if (pagadoKey === cursoKey) return true;
-  const pagado = Object.prototype.hasOwnProperty.call(CURSOS, pagadoKey) ? CURSOS[pagadoKey] : null;
-  return Boolean(pagado && Array.isArray(pagado.incluye) && pagado.incluye.includes(cursoKey));
+  return cursosQueEntrega(pagadoKey).includes(cursoKey);
 }
 
 // URL del webhook de cursos (un solo Apps Script para todos) con la clave secreta compartida.
@@ -167,10 +219,107 @@ export function webhookCursosUrl() {
 }
 
 export function getCurso(key) {
-  if (typeof key !== "string" || !Object.prototype.hasOwnProperty.call(CURSOS, key)) return null;
+  if (typeof key !== "string") return null;
+  if (key.startsWith("pack-")) return productoPack(key);
+  if (!Object.prototype.hasOwnProperty.call(CURSOS, key)) return null;
   const curso = CURSOS[key];
   if (curso.preventaHasta && Date.now() < curso.preventaHasta) {
     return { ...curso, precio: curso.precioPreventa };
   }
   return curso;
+}
+
+// ==========================================
+// PACKS "SUMÁ A TU COMPRA": varios cursos en un pago, armados por el visitante.
+// La MISMA regla que src/data/packs.js (lo que se muestra) y appscript-cursos.gs (mínimo aceptado):
+//   precio = suma de precios − AHORRO_POR_CURSO × (cursos − 1), nunca menos que el curso más caro,
+//   redondeado a un número terminado en 900.
+// Clave: "pack-" + nombres cortos ordenados alfabéticamente (ej. "pack-csharp-python").
+// ==========================================
+export const AHORRO_POR_CURSO = 30000;
+
+// Unidades combinables: cursos grabados y la Ruta Backend como una sola unidad
+const UNIDADES_PACK = [
+  { key: "scratch", corto: "scratch" },
+  { key: "scripting", corto: "scripting" },
+  { key: "python", corto: "python" },
+  { key: "fundamentos-backend", corto: "javascript" },
+  { key: "backend-avanzado", corto: "backend" },
+  { key: "ruta-backend", corto: "ruta" },
+  { key: "fullstack-csharp", corto: "csharp" },
+];
+const SOLO_CON_SCRATCH = ["scripting", "python"];
+const unidadPorKey = Object.fromEntries(UNIDADES_PACK.map((u) => [u.key, u]));
+const keyPorCorto = Object.fromEntries(UNIDADES_PACK.map((u) => [u.corto, u.key]));
+const ordenUnidad = (key) => UNIDADES_PACK.findIndex((u) => u.key === key);
+
+export function normalizarSet(keys) {
+  let set = [...new Set((keys || []).filter((k) => unidadPorKey[k]))];
+  if (set.includes("ruta-backend") || (set.includes("fundamentos-backend") && set.includes("backend-avanzado"))) {
+    set = set.filter((k) => k !== "fundamentos-backend" && k !== "backend-avanzado");
+    if (!set.includes("ruta-backend")) set.push("ruta-backend");
+  }
+  return set.sort((a, b) => ordenUnidad(a) - ordenUnidad(b));
+}
+
+export function setValido(keys) {
+  const set = normalizarSet(keys);
+  if (set.length < 2) return false;
+  if (set.includes("scratch") && set.some((k) => k !== "scratch" && !SOLO_CON_SCRATCH.includes(k))) return false;
+  return true;
+}
+
+export const claveDePack = (keys) =>
+  "pack-" +
+  normalizarSet(keys)
+    .map((k) => unidadPorKey[k].corto)
+    .sort()
+    .join("-");
+
+export function unidadesDeClave(clave) {
+  if (typeof clave !== "string" || !clave.startsWith("pack-")) return null;
+  const keys = clave.slice(5).split("-").map((c) => keyPorCorto[c]);
+  if (keys.some((k) => !k)) return null;
+  const set = normalizarSet(keys);
+  return setValido(set) && claveDePack(set) === clave ? set : null;
+}
+
+const redondear900 = (n) => Math.floor((n - 900) / 1000) * 1000 + 900;
+
+export function precioPack(keys) {
+  const set = normalizarSet(keys);
+  const precios = set.map((k) => getCurso(k).precio);
+  const suma = precios.reduce((t, p) => t + p, 0);
+  const maximo = Math.max(...precios);
+  const conDescuento = suma - AHORRO_POR_CURSO * (set.length - 1);
+  if (conDescuento <= maximo) return maximo;
+  return Math.max(maximo, redondear900(conDescuento));
+}
+
+// Producto que se cobra por un pack: mismo formato que una entrada de CURSOS
+export function productoPack(clave) {
+  const set = unidadesDeClave(clave);
+  if (!set) return null;
+  const nombres = set.map((k) => CURSOS[k].contentName.replace(/^Infoproducto /, ""));
+  return {
+    itemId: clave,
+    titulo: `Pack ${nombres.join(" + ")} - WEARESRV`,
+    contentName: `Pack: ${nombres.join(" + ")}`,
+    precio: precioPack(set),
+    incluye: set,
+    ruta: CURSOS[set[0]].ruta,
+    pack: true,
+  };
+}
+
+// Claves de todo lo que entrega un producto: él mismo, sus unidades y los cursos de cada combo
+// (un pack con "ruta-backend" también entrega "fundamentos-backend" y "backend-avanzado").
+export function cursosQueEntrega(key) {
+  const producto = getCurso(key);
+  if (!producto) return [];
+  const salida = [key];
+  for (const k of producto.incluye || []) {
+    for (const sub of cursosQueEntrega(k)) if (!salida.includes(sub)) salida.push(sub);
+  }
+  return salida;
 }

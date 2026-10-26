@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { MercadoPagoConfig, Preference } from "mercadopago";
-import { getCurso, webhookCursosUrl } from "../lib/cursos.js";
+import { getCurso, webhookCursosUrl, cursosQueEntrega } from "../lib/cursos.js";
 import { aplicarCupon } from "../lib/cupones.js";
 import { SITE_URL, json, isAllowedOrigin, parseBody } from "../lib/http.js";
 
@@ -26,10 +26,7 @@ export async function handler(event) {
   // Página desde la que se compró. Para una suma ("scripting-python" comprada en /scripting/inscripcion)
   // el comprador vuelve a la página de gracias de ese curso; si no viene o no corresponde, a la del producto.
   const desdeKey = typeof bodyData.desde === "string" ? bodyData.desde : cursoKey;
-  const vuelve =
-    desdeKey !== cursoKey && Array.isArray(curso.incluye) && curso.incluye.includes(desdeKey)
-      ? getCurso(desdeKey)
-      : curso;
+  const vuelve = desdeKey !== cursoKey && cursosQueEntrega(cursoKey).includes(desdeKey) ? getCurso(desdeKey) : curso;
 
   // Código de alumnos: si es válido para este curso, el precio especial lo decide el servidor.
   // Queda marcado en el metadata del pago para que el Apps Script acepte ese monto.

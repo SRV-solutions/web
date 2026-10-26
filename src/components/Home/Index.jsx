@@ -3,6 +3,7 @@ import { useLocation, Link } from "react-router-dom";
 import styles from "./style.module.css";
 import Seo, { SITE_URL } from "../Seo";
 import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, linkInscripcion } from "../../data/cursosGrabados";
+import { infoPack, AHORRO_POR_CURSO } from "../../data/packs";
 import { TESTIMONIOS, ENCUESTA, promedioEncuesta } from "../../data/testimonios";
 import { LuQuote, LuStar } from "react-icons/lu";
 
@@ -20,6 +21,8 @@ const ETIQUETAS = {
 
 // Combo de los dos cursos de backend (no va en RUTA para no duplicar clases ni precios)
 const COMBO = CURSOS_GRABADOS["ruta-backend"];
+// Pack Completo (Scripting + Python + Ruta Backend): se compra desde la página de Python con los cursos ya sumados
+const PACK = infoPack(["scripting", "python", "ruta-backend"]);
 const TOTAL_CLASES = RUTA.reduce((total, key) => total + CURSOS_GRABADOS[key].clases, 0);
 const PRECIO_DESDE = Math.min(...RUTA.map((key) => CURSOS_GRABADOS[key].precio));
 
@@ -199,6 +202,17 @@ export default function Home() {
             {formatearPrecio(COMBO.precio)}. Ahorrás {formatearPrecio(COMBO.precioRegular - COMBO.precio)} →
           </span>
         </Link>
+
+        {PACK && (
+          <Link to="/python/inscripcion?sumar=scripting,ruta" className={styles.comboBanner}>
+            <span className={styles.kidsIcon}>🚀</span>
+            <span>
+              <strong>Armá tu pack y ahorrá {formatearPrecio(AHORRO_POR_CURSO)} por cada curso que sumes.</strong>{" "}
+              Por ejemplo, {PACK.nombre} ({PACK.clases} clases) por {formatearPrecio(PACK.precio)}: ahorrás{" "}
+              {formatearPrecio(PACK.ahorro)} →
+            </span>
+          </Link>
+        )}
 
         <Link to="/scratch/inscripcion" className={styles.kidsBanner}>
           <span className={styles.kidsIcon}>🧩</span>

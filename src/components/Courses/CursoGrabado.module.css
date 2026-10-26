@@ -1010,3 +1010,29 @@
   color: #6b7280;
   line-height: 1.4;
 }
+
+/* Packs armados por el visitante */
+.sumaCardNo {
+  opacity: 0.45;
+  cursor: not-allowed;
+  border-style: dotted;
+}
+
+.sumaCardNo input {
+  cursor: not-allowed;
+}
+
+.sumasTotal {
+  margin: 0.2rem 0 0;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  background: rgba(0, 191, 99, 0.1);
+  border: 1px solid rgba(0, 191, 99, 0.4);
+  font-size: 0.82rem;
+  color: #cccccc;
+  line-height: 1.5;
+}
+
+.sumasTotal strong {
+  color: #ffffff;
+}

@@ -271,14 +271,26 @@ export default function Home() {
 
       {/* ---------- El Develop ---------- */}
       <section className={styles.section}>
-        <Link to="/el-develop" className={styles.gameBanner}>
-          <span className={styles.gameIcon}>{"</>"}</span>
-          <span className={styles.gameText}>
-            <strong>Jugá gratis a El Develop</strong>
-            <span>Simulá tu carrera IT: sobreviví a la inflación, los paros y los errores de Capa 8 hasta llegar a una Big Tech.</span>
-          </span>
-          <span className={styles.gameCta}>Jugar →</span>
-        </Link>
+        <div className={styles.sectionGames}>
+          <Link to="/el-develop" className={styles.gameBanner}>
+            <span className={styles.gameIcon}>{"</>"}</span>
+            <span className={styles.gameText}>
+              <strong>Jugá gratis a El Develop</strong>
+              <span>Simulá tu carrera IT: sobreviví a la inflación, los paros y los errores de Capa 8 hasta llegar a una Big Tech.</span>
+            </span>
+            <span className={styles.gameCta}>Jugar →</span>
+          </Link>
+          <Link target="_blank" to="https://dev-clicker-jade.vercel.app/" className={styles.gameBanner}>
+            <span className={styles.gameIcon}>{"🏢"}</span>
+            <span className={styles.gameText}>
+              <strong>Jugá gratis a Dev Clicker</strong>
+              <span>Empezá programando desde tu casa, completá contratos, contratá
+        desarrolladores y desbloqueá tecnologías. ¡Convertí tu pequeño
+        emprendimiento en un imperio del software!</span>
+            </span>
+            <span className={styles.gameCta}>Jugar →</span>
+          </Link>
+        </div>
       </section>
 
       {/* ---------- Software a medida ---------- */}

@@ -163,6 +163,12 @@
   width: 100%;
 }
 
+.sectionGames {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 .sectionHeader {
   text-align: center;
   margin-bottom: 2.5rem;

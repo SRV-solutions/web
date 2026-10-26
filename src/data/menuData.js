@@ -25,7 +25,7 @@ const menuData = [
     disabled: false,
     isExternal: false,
     hasNotification: true,
-    badgeCount: 5,
+    badgeCount: 6,
     links: [
       {
         label: "Scratch para Chicos",
@@ -45,6 +45,11 @@ const menuData = [
       {
         label: "Ruta Backend: JavaScript + Node",
         to: "/ruta-backend/inscripcion",
+        isNew: true
+      },
+      {
+        label: "Fullstack con C# y React",
+        to: "/fullstack-csharp/inscripcion",
         isNew: true
       },
       {

@@ -105,6 +105,17 @@ var CURSOS = {
     precioMinimo: 99900,
     folderId: "14ML2UZ5BAkBB7-Uw1nLyPyO3mbqBCinP"
   },
+  // Curso Fullstack con C# (.NET + PostgreSQL + React). Los alumnos de SRV pagan menos con un código:
+  // el servidor de la web lo valida y marca el pago con metadata.cupon = "alumnos", y acá se acepta
+  // cuponAlumnos.precioMinimo en lugar de precioMinimo. Nadie puede ponerse ese metadata desde el navegador.
+  "fullstack-csharp": {
+    itemId: "curso-fullstack-csharp",
+    nombre: "Curso Fullstack con C#",
+    tituloHtml: 'CURSO <span style="color:#f6950a;">FULLSTACK</span> CON C# Y REACT',
+    precioMinimo: 87900,
+    cuponAlumnos: { precioMinimo: 20000 },
+    folderId: FOLDER_PENDIENTE // ⚠️ Reemplazar por el ID de la carpeta de Drive del curso
+  },
   // COMBO: Master en JavaScript + Backend Avanzado en un solo pago. Sin carpeta propia:
   // comparte las carpetas de los cursos listados en "incluye" (mismo orden en el mail).
   "ruta-backend": {
@@ -320,12 +331,13 @@ function procesarPago_(paymentId, accessToken, forzar) {
   // Carpetas que hay que compartir: una para un curso, varias para un combo
   var carpetas = carpetasDeCurso_(curso);
   var preventa = enPreventa_(curso, fechaPago);
-  var minimo = precioMinimo_(curso, fechaPago);
+  var conCupon = esCuponAlumnos_(curso, payment);
+  var minimo = precioMinimo_(curso, fechaPago, payment);
 
   // VALIDACIONES ANTES DE DAR ACCESO
   var problemas = [];
   if (moneda !== CONFIG.MONEDA) problemas.push("Moneda inválida: " + moneda);
-  if (monto < minimo) problemas.push("Monto bajo: $" + monto + " (mínimo $" + minimo + (preventa ? " en preventa" : "") + ")");
+  if (monto < minimo) problemas.push("Monto bajo: $" + monto + " (mínimo $" + minimo + (preventa ? " en preventa" : "") + (conCupon ? " con código de alumnos" : "") + ")");
   if (!emailValido_(email)) problemas.push("Email inválido: " + email);
   for (var v = 0; v < carpetas.length; v++) {
     if (!carpetaConfigurada_(carpetas[v].folderId)) {
@@ -366,6 +378,7 @@ function procesarPago_(paymentId, accessToken, forzar) {
   // Registrar ANTES de dar acceso: si algo falla después, un reintento de MP no duplica el envío
   fila.estado = ESTADO_APROBADO;
   if (preventa) fila.detalle = "Preventa: clases el " + curso.preventa.fechaTexto;
+  if (conCupon) fila.detalle = (fila.detalle ? fila.detalle + " | " : "") + "Código de alumnos";
   var numFila = registrar_(fila);
 
   // Purchase por CAPI aunque el comprador no vuelva a la página de gracias.
@@ -423,6 +436,7 @@ function procesarPago_(paymentId, accessToken, forzar) {
       "Monto: $" + monto + " " + moneda + "\n" +
       "Carpetas compartidas: " + accesos.map(function (a) { return a.nombre; }).join(", ") +
       (preventa ? "\nPreventa: sí (las clases se habilitan el " + curso.preventa.fechaTexto + ")" : "") +
+      (conCupon ? "\nCódigo de alumnos: sí (precio especial)" : "") +
       (notas.length ? "\n\n⚠️ Avisos: " + notas.join(" | ") : "")
   });
 
@@ -521,8 +535,17 @@ function enPreventa_(curso, fechaPago) {
   return fecha.getTime() < curso.preventa.hasta.getTime();
 }
 
-// Precio mínimo aceptado para un pago: el de preventa si corresponde, si no el regular
-function precioMinimo_(curso, fechaPago) {
+// ¿El pago se hizo con el código de alumnos? Lo marca crear-preferencia (servidor de la web) en el
+// metadata de la preferencia de Mercado Pago después de validar el código; el navegador no puede ponerlo.
+function esCuponAlumnos_(curso, payment) {
+  var meta = (payment && payment.metadata) || {};
+  return !!(curso && curso.cuponAlumnos && meta.cupon === "alumnos");
+}
+
+// Precio mínimo aceptado para un pago: el de alumnos si vino con código, el de preventa si
+// corresponde, si no el regular
+function precioMinimo_(curso, fechaPago, payment) {
+  if (esCuponAlumnos_(curso, payment)) return curso.cuponAlumnos.precioMinimo;
   return enPreventa_(curso, fechaPago) ? curso.preventa.precioMinimo : curso.precioMinimo;
 }
 

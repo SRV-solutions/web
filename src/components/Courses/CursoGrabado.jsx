@@ -96,6 +96,11 @@ export default function CursoGrabado({ cursoKey }) {
   const [seleccion, setSeleccion] = useState(elegirInicial);
   // "Sumá a tu compra": clave del combo que el visitante agregó al curso elegido (o null)
   const [sumaKey, setSumaKey] = useState(null);
+  // Código de alumnos de SRV: lo valida el servidor comparando su hash, y es el servidor quien fija
+  // el precio especial. Acá solo se guarda el código aceptado para mandarlo al crear el pago.
+  const [cuponTexto, setCuponTexto] = useState("");
+  const [cupon, setCupon] = useState(null); // { curso, codigo, precio }
+  const [cuponEstado, setCuponEstado] = useState({ cargando: false, error: "" });
   const producto = CURSOS_GRABADOS[seleccion] || curso;
   const tituloProducto = [producto.tituloInicio, producto.tituloDestacado, producto.tituloFin].filter(Boolean).join(" ");
   const buyRef = useRef(null);
@@ -109,9 +114,12 @@ export default function CursoGrabado({ cursoKey }) {
   const incluye = producto.combo ? producto.combo.map((k) => CURSOS_GRABADOS[k]) : null;
   const nombreCorto = (c) => `${c.tituloInicio} ${c.tituloDestacado}`;
 
+  // Código de alumnos aplicado a ESTE producto (si cambia el producto, deja de aplicar solo)
+  const cuponAplicado = producto.cuponAlumnos && cupon && cupon.curso === producto.key ? cupon : null;
+
   // Combos que se pueden sumar al producto elegido. Si cambia el producto y la suma elegida
-  // ya no aplica, vuelve a "solo este curso" sola.
-  const ofertas = sumasPara(producto.key);
+  // ya no aplica, vuelve a "solo este curso" sola. Con código de alumnos no se ofrecen combos.
+  const ofertas = cuponAplicado ? [] : sumasPara(producto.key);
   const suma = ofertas.find((s) => s.key === sumaKey) || null;
   // Lo que se cobra y se muestra en el precio, el botón y la barra: el curso o el combo sumado
   const compra = suma
@@ -128,7 +136,8 @@ export default function CursoGrabado({ cursoKey }) {
         key: producto.key,
         itemId: producto.itemId,
         contentName: producto.contentName,
-        precio: producto.precio,
+        precio: cuponAplicado ? cuponAplicado.precio : producto.precio,
+        cupon: cuponAplicado ? cuponAplicado.codigo : undefined,
         nombre: tituloProducto,
         clases: producto.clases,
         cantidadCursos: producto.combo ? producto.combo.length : 1,
@@ -146,6 +155,9 @@ export default function CursoGrabado({ cursoKey }) {
   useEffect(() => {
     setSeleccion(elegirInicial);
     setSumaKey(null);
+    setCupon(null);
+    setCuponTexto("");
+    setCuponEstado({ cargando: false, error: "" });
     trackConversion("ViewContent", pixelData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cursoKey]);
@@ -157,6 +169,39 @@ export default function CursoGrabado({ cursoKey }) {
     observer.observe(buyRef.current);
     return () => observer.disconnect();
   }, []);
+
+  // Valida el código de alumnos contra el servidor (nunca se compara en el navegador)
+  const aplicarCupon = async (e) => {
+    e.preventDefault();
+    const codigo = cuponTexto.trim();
+    if (!codigo || cuponEstado.cargando) return;
+    setCuponEstado({ cargando: true, error: "" });
+    try {
+      const res = await fetch("/.netlify/functions/validar-cupon", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ curso: producto.key, cupon: codigo }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.valido && Number.isFinite(data.precio)) {
+        setCupon({ curso: producto.key, codigo, precio: data.precio });
+        setSumaKey(null);
+        setCuponEstado({ cargando: false, error: "" });
+      } else if (res.ok) {
+        setCuponEstado({ cargando: false, error: "Ese código no es válido para este curso. Revisalo o escribinos por WhatsApp." });
+      } else {
+        setCuponEstado({ cargando: false, error: "No pudimos verificar el código. Probá de nuevo en unos segundos." });
+      }
+    } catch {
+      setCuponEstado({ cargando: false, error: "No pudimos verificar el código. Probá de nuevo en unos segundos." });
+    }
+  };
+
+  const quitarCupon = () => {
+    setCupon(null);
+    setCuponTexto("");
+    setCuponEstado({ cargando: false, error: "" });
+  };
 
   const handleMercadoPagoCheckout = async () => {
     if (loading) return;
@@ -177,7 +222,7 @@ export default function CursoGrabado({ cursoKey }) {
       const response = await fetch("/.netlify/functions/crear-preferencia", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ curso: compra.key, desde: producto.key, ...getMetaCookies() }),
+        body: JSON.stringify({ curso: compra.key, desde: producto.key, cupon: compra.cupon, ...getMetaCookies() }),
       });
 
       const data = await response.json();
@@ -306,7 +351,9 @@ export default function CursoGrabado({ cursoKey }) {
 
               <div className={styles.promoCard}>
                 <div className={styles.promoHeader}>
-                  {suma ? (
+                  {cuponAplicado ? (
+                    <span className={styles.promoBadge}>🎓 Precio para alumnos de SRV</span>
+                  ) : suma ? (
                     <span className={styles.promoBadge}>🎁 {suma.cantidadCursos} cursos · ahorrás {formatearPrecio(suma.ahorro)}</span>
                   ) : (
                     descuento > 0 && (
@@ -349,17 +396,33 @@ export default function CursoGrabado({ cursoKey }) {
                 )}
 
                 <div className={styles.priceContainer}>
-                  {(suma || descuento > 0) && (
+                  {(cuponAplicado || suma || descuento > 0) && (
                     <div className={styles.oldPriceBox}>
                       <span className={styles.oldPriceLabel}>
-                        {suma ? "Por separado" : preventa ? `Desde el ${fechaAcceso}` : producto.combo ? "Por separado" : "Precio regular"}
+                        {cuponAplicado
+                          ? "Precio promocional"
+                          : suma
+                            ? "Por separado"
+                            : preventa
+                              ? `Desde el ${fechaAcceso}`
+                              : producto.combo
+                                ? "Por separado"
+                                : "Precio regular"}
                       </span>
-                      <span className={styles.oldPrice}>{formatearPrecio(suma ? suma.precioSeparado : producto.precioRegular)}</span>
+                      <span className={styles.oldPrice}>
+                        {formatearPrecio(cuponAplicado ? producto.precio : suma ? suma.precioSeparado : producto.precioRegular)}
+                      </span>
                     </div>
                   )}
                   <div className={styles.currentPriceBox}>
                     <span className={styles.priceTag}>
-                      {suma ? `Pagás hoy por los ${suma.cantidadCursos} cursos` : preventa ? "Reservás hoy por" : "Pagás hoy"}
+                      {cuponAplicado
+                        ? "Pagás hoy como alumno"
+                        : suma
+                          ? `Pagás hoy por los ${suma.cantidadCursos} cursos`
+                          : preventa
+                            ? "Reservás hoy por"
+                            : "Pagás hoy"}
                     </span>
                     <div className={styles.mainPrice}>
                       {formatearPrecio(compra.precio)} <span className={styles.currency}>ARS</span>
@@ -374,6 +437,44 @@ export default function CursoGrabado({ cursoKey }) {
                     </li>
                   ))}
                 </ul>
+
+                {/* Código de alumnos de SRV: el servidor valida el código y define el precio especial */}
+                {producto.cuponAlumnos && (
+                  <form className={styles.cuponBox} onSubmit={aplicarCupon}>
+                    <label htmlFor="cupon-alumnos" className={styles.cuponTitle}>
+                      🎓 ¿Sos alumno de SRV? Ingresá tu código
+                    </label>
+                    {cuponAplicado ? (
+                      <p className={styles.cuponOk}>
+                        Código aplicado: pagás {formatearPrecio(cuponAplicado.precio)} en lugar de {formatearPrecio(producto.precio)}.
+                        <button type="button" className={styles.cuponQuitar} onClick={quitarCupon}>
+                          Quitar
+                        </button>
+                      </p>
+                    ) : (
+                      <div className={styles.cuponRow}>
+                        <input
+                          id="cupon-alumnos"
+                          value={cuponTexto}
+                          onChange={(e) => setCuponTexto(e.target.value)}
+                          placeholder="Código de alumno"
+                          autoComplete="off"
+                          spellCheck={false}
+                          maxLength={40}
+                        />
+                        <button type="submit" disabled={cuponEstado.cargando || !cuponTexto.trim()}>
+                          {cuponEstado.cargando ? "Verificando..." : "Aplicar"}
+                        </button>
+                      </div>
+                    )}
+                    {cuponEstado.error && <p className={styles.cuponError}>{cuponEstado.error}</p>}
+                    {!cuponAplicado && (
+                      <small className={styles.cuponNota}>
+                        El código es para quienes ya cursaron con nosotros. Al aplicarlo, el precio se actualiza antes de pagar.
+                      </small>
+                    )}
+                  </form>
+                )}
 
                 {/* Sumá a tu compra: combos con precio especial, se pagan junto con el curso */}
                 {ofertas.length > 0 && (
@@ -538,7 +639,7 @@ export default function CursoGrabado({ cursoKey }) {
                 ? `${compra.clases} clases en ${suma.cantidadCursos} cursos, acceso de por vida y un solo pago de ${formatearPrecio(compra.precio)}. Por separado pagarías ${formatearPrecio(suma.precioSeparado)}.`
                 : preventa
                   ? `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(producto.precio)}. Desde el ${fechaAcceso} pasa a ${formatearPrecio(producto.precioRegular)}, y ese mismo día se habilitan las clases en tu carpeta.`
-                  : `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(producto.precio)}. Empezá esta misma noche.`}
+                  : `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(compra.precio)}${cuponAplicado ? " con tu código de alumno" : ""}. Empezá esta misma noche.`}
             </p>
             {botonPago(styles.btnFinal)}
           </div>

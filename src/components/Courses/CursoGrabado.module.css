@@ -914,3 +914,99 @@
 .compraResumen strong {
   color: #ffffff;
 }
+
+/* Código de alumnos de SRV (precio especial validado por el servidor) */
+.cuponBox {
+  margin: 1rem 0 0;
+  padding: 0.85rem 0.9rem;
+  border: 1px solid #1f2937;
+  border-radius: 10px;
+  background: #0d0d0d;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.cuponTitle {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #9fc7ff;
+}
+
+.cuponRow {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.cuponRow input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  background: #090e17;
+  color: #ffffff;
+  font: inherit;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.cuponRow input:focus {
+  outline: none;
+  border-color: #0b78fb;
+}
+
+.cuponRow button {
+  flex-shrink: 0;
+  padding: 0.65rem 1rem;
+  border: 1px solid #0b78fb;
+  border-radius: 8px;
+  background: transparent;
+  color: #9fc7ff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.cuponRow button:hover:not(:disabled) {
+  background: #0b78fb;
+  color: #ffffff;
+}
+
+.cuponRow button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cuponOk {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #00bf63;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.cuponQuitar {
+  margin-left: 0.4rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #9ca3af;
+  font: inherit;
+  font-size: 0.8rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.cuponError {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #ff4d4f;
+}
+
+.cuponNota {
+  font-size: 0.74rem;
+  color: #6b7280;
+  line-height: 1.4;
+}

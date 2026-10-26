@@ -53,6 +53,18 @@ export const CURSOS = {
     ruta: "backend-avanzado", // página de gracias: /backend-avanzado/gracias
     urlInscripcion: "/ruta-backend/inscripcion?elegir=backend-avanzado",
   },
+  // Curso Fullstack con C# (.NET + PostgreSQL + React). Tiene código de alumnos: con el código
+  // correcto se cobra cuponAlumnos.precio. El código no está acá: en Netlify vive solo su hash
+  // SHA-256 en la variable "envHash" (ver netlify/lib/cupones.js y scripts/cupon-hash.mjs).
+  // El Apps Script acepta ese monto porque crear-preferencia marca metadata.cupon = "alumnos".
+  "fullstack-csharp": {
+    itemId: "curso-fullstack-csharp",
+    titulo: "Curso Fullstack con C#, .NET, PostgreSQL y React - WEARESRV",
+    contentName: "Infoproducto Fullstack C#",
+    precio: 87900,
+    cuponAlumnos: { precio: 20000, envHash: "CUPON_ALUMNOS_FULLSTACK_SHA256" },
+    ruta: "fullstack-csharp",
+  },
   // Combo: Master en JavaScript + Backend Avanzado en un solo pago.
   // El Apps Script comparte las dos carpetas de Drive (clave "incluye" en appscript-cursos.gs).
   "ruta-backend": {

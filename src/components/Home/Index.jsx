@@ -9,12 +9,13 @@ import { LuQuote, LuStar } from "react-icons/lu";
 const WHATSAPP_URL = `https://wa.me/5491123869799?text=${encodeURIComponent("Hola, quiero cotizar un software")}`;
 
 // Orden de la ruta de aprendizaje
-const RUTA = ["scripting", "python", "fundamentos-backend", "backend-avanzado"];
+const RUTA = ["scripting", "python", "fundamentos-backend", "backend-avanzado", "fullstack-csharp"];
 const ETIQUETAS = {
   scripting: "Paso 1 · Empezá acá",
   python: "Paso 2 · Python a fondo",
   "fundamentos-backend": "Paso 2 · JavaScript a fondo",
   "backend-avanzado": "Paso 3 · Nivel profesional",
+  "fullstack-csharp": "Paso 3 · App completa con C#",
 };
 
 // Combo de los dos cursos de backend (no va en RUTA para no duplicar clases ni precios)
@@ -93,7 +94,7 @@ export default function Home() {
     <div className={styles.homeContainer}>
       <Seo
         title="Aprendé a programar desde cero | Cursos de Scripting, Python, JavaScript y Backend | WEARESRV"
-        description={`Cursos grabados de programación con acceso de por vida: Scripting, Python, JavaScript y Backend con Node.js. ${TOTAL_CLASES} clases grabadas y guías de estudio. Desde ${formatearPrecio(PRECIO_DESDE)}.`}
+        description={`Cursos grabados de programación con acceso de por vida: Scripting, Python, JavaScript, Backend con Node.js y Fullstack con C#. ${TOTAL_CLASES} clases grabadas y guías de estudio. Desde ${formatearPrecio(PRECIO_DESDE)}.`}
         path="/"
         jsonLd={jsonLd}
       />

@@ -7,6 +7,9 @@
 // La misma fecha vive en netlify/lib/cursos.js.
 const SCRATCH_ACCESO = new Date("2026-11-18T00:00:00-03:00");
 
+// Clases grabadas del Curso Fullstack con C# (12 módulos)
+const CLASES_FULLSTACK = 30;
+
 export const estaEnPreventa = (curso) => Boolean(curso?.preventa) && Date.now() < curso.preventa.hasta.getTime();
 
 export const CURSOS_GRABADOS = {
@@ -524,6 +527,66 @@ export const CURSOS_GRABADOS = {
           "Tests de estrés, coverage y Docker",
         ],
       },
+    ],
+  },
+
+  // Curso Fullstack con C#: API en .NET, base PostgreSQL y front en React con Vite (los 12 módulos de la guía).
+  // Tiene un código para alumnos de SRV con precio especial: el código NO está en el código fuente,
+  // el servidor valida su hash (netlify/lib/cupones.js) y es el servidor quien fija el precio.
+  // Acá solo se marca que el curso acepta código (bloque "¿Sos alumno de SRV?" en la página).
+  "fullstack-csharp": {
+    key: "fullstack-csharp",
+    itemId: "curso-fullstack-csharp",
+    ruta: "fullstack-csharp",
+    contentName: "Infoproducto Fullstack C#",
+    tituloInicio: "Curso",
+    tituloDestacado: "Fullstack",
+    tituloFin: "con C# y React",
+    descripcion:
+      "30 clases grabadas para construir una aplicación completa de punta a punta: una API en .NET con C#, una base de datos PostgreSQL y un front en React con Vite. 12 módulos con teoría paso a paso, 21 ejercicios resueltos y un proyecto final tipo Instagram, más una guía de estudio con 80 preguntas para ponerte a prueba.",
+    precio: 87900,
+    precioRegular: 390000,
+    clases: CLASES_FULLSTACK,
+    cuponAlumnos: true,
+    beneficios: [
+      "Acceso vitalicio al material en Google Drive",
+      "Guía de estudio en PDF: 12 módulos, 21 ejercicios resueltos, 13 curiosidades y 80 preguntas con respuestas",
+      "Proyecto final completo: app tipo Instagram con API .NET, PostgreSQL y React",
+      "Un stack muy pedido por las empresas: C#, .NET, PostgreSQL y React",
+      "Envío automático de accesos al abonar",
+    ],
+    subTituloDesc:
+      "Primero dominás C# y la POO, después construís la API y la base, y al final conectás todo con React.",
+    gancho: "De tu primer 'Hola mundo' en C# a una app completa tipo Instagram.",
+    metaDescripcion:
+      "Curso Fullstack grabado: 30 clases de API en .NET con C#, PostgreSQL y React con Vite. 12 módulos, 21 ejercicios resueltos, proyecto final tipo Instagram y guía de estudio con 80 preguntas. Acceso de por vida.",
+    nivel: "Desde cero en C# · Hasta tu primera app fullstack",
+    paraQuien: [
+      "Querés trabajar como desarrollador fullstack con un stack que piden las empresas: C#, .NET, PostgreSQL y React",
+      "Ya hiciste Scripting, Python o JavaScript y querés dar el salto a una aplicación completa",
+      "Preferís aprender construyendo: el curso termina con una app tipo Instagram funcionando",
+      "Te estás preparando para entrevistas técnicas de .NET o fullstack",
+    ],
+    resultados: [
+      "Programar en C# con programación orientada a objetos: clases, herencia, interfaces y manejo de errores",
+      "Crear una API REST con .NET (Minimal API) con un CRUD completo y los códigos HTTP correctos",
+      "Diseñar una base en PostgreSQL con claves foráneas, JOIN y consultas con parámetros seguras",
+      "Armar el front en React con Vite: componentes, estado, efectos, rutas y Axios",
+      "Conectar todo el stack (CORS incluido) y levantar tu propia app tipo Instagram",
+    ],
+    modulos: [
+      { titulo: "Primeros pasos", temas: ["Qué hace el frontend, el backend y la base de datos", "Cómo viaja un pedido desde el navegador hasta la base", "Instalar .NET, Node.js, PostgreSQL y VS Code", "Terminal, puertos y estructura de un proyecto fullstack"] },
+      { titulo: "C# desde cero", temas: ["Tu primer programa de consola", "Tipos de datos, arrays y listas", "Condicionales, ternario y bucles", "Funciones, LINQ y lambdas"] },
+      { titulo: "Clases, objetos y encapsulamiento", temas: ["Clase, objeto y modificadores de acceso", "Propiedades con get y set que validan", "Constructores, sobrecarga y encadenamiento con this", "Constantes, métodos privados y objetos que se comunican"] },
+      { titulo: "Herencia, abstracción y polimorfismo", temas: ["Heredar de una clase padre con base", "Clases y métodos abstractos con override", "La diferencia entre virtual y abstract", "Polimorfismo y los cuatro pilares de la POO"] },
+      { titulo: "Interfaces", temas: ["Definir e implementar una interfaz", "Varias interfaces a la vez", "Interfaz vs clase abstracta", "Métodos por defecto, miembros estáticos y eventos"] },
+      { titulo: "Manejo de errores", temas: ["Qué es una excepción y por qué corta el programa", "try, catch y finally en orden", "Lanzar errores con throw y excepciones personalizadas", "Filtros con when y errores HTTP en la API"] },
+      { titulo: "Tu primera API con .NET", temas: ["Qué es una API REST y cómo se comunica", "Minimal API con dotnet y cómo cambiar el puerto", "Verbos HTTP y códigos de estado", "CRUD completo en memoria y pruebas con Thunder Client"] },
+      { titulo: "PostgreSQL y SQL", temas: ["Entrar a psql y moverte con sus comandos", "Crear base y tablas con claves primarias y foráneas", "El CRUD en SQL: INSERT, SELECT, UPDATE y DELETE", "Combinar tablas con JOIN, contar y agrupar"] },
+      { titulo: "API + PostgreSQL + CORS", temas: ["Instalar Npgsql e inyección de dependencias", "Los tres métodos para ejecutar SQL", "Consultas con parámetros: cómo evitar la inyección SQL", "El CRUD contra PostgreSQL y CORS en el orden correcto"] },
+      { titulo: "React desde cero", temas: ["Crear y levantar un proyecto con Vite", "Componentes, JSX y props", "useState, formularios controlados y useEffect", "Listas con key, condicionales y React Router"] },
+      { titulo: "Conectar front y back con Axios", temas: ["Instancia de Axios con la URL de la API", "GET dentro de useEffect con carga y errores", "POST, PUT y DELETE desde formularios y botones", "res.data, res.status, camelCase y el recorrido completo de un pedido"] },
+      { titulo: "Proyecto final: app tipo Instagram", temas: ["Planificar pantallas y endpoints antes de programar", "La base con datos de prueba y los modelos de la API", "Las pantallas de React, ruta protegida y cómo se conectan", "Levantar todo en orden y extras: carrusel, likes y comentarios"] },
     ],
   },
 };

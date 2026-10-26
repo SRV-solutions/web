@@ -185,6 +185,8 @@ function AppContent() {
           <Route path="/scratch/gracias" element={<GraciasCurso cursoKey="scratch" />} />
           <Route path="/python/inscripcion" element={<CursoGrabado cursoKey="python" />} />
           <Route path="/python/gracias" element={<GraciasCurso cursoKey="python" />} />
+          <Route path="/fullstack-csharp/inscripcion" element={<CursoGrabado cursoKey="fullstack-csharp" />} />
+          <Route path="/fullstack-csharp/gracias" element={<GraciasCurso cursoKey="fullstack-csharp" />} />
           {/* Ruta backend: UNA sola página vende Master en JavaScript (clave interna "fundamentos-backend"),
               Backend Avanzado o los dos juntos. Las URLs viejas de cada curso redirigen con la opción preseleccionada.
               Las páginas de gracias siguen siendo una por producto porque Mercado Pago vuelve a cada una. */}

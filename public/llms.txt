@@ -8,6 +8,7 @@
 - [Curso de Scripting Desde Cero](https://wearesrv.com/scripting/inscripcion): 32 clases (más de 59 horas). JavaScript, Python y Google Apps Script para automatizar planillas, mails, documentos y armar bots. Incluye guía de estudio en PDF.
 - [Master en Python Desde Cero](https://wearesrv.com/python/inscripcion): 98 clases. Lógica, POO, APIs, asincronismo y apps con interfaz gráfica.
 - [Ruta Backend](https://wearesrv.com/ruta-backend/inscripcion): una sola página para elegir Master en JavaScript Desde Cero (90 clases de JavaScript con Node.js: lógica, POO, promesas, APIs, bots y testing, $84.900), Backend Avanzado (73 clases de servidores y APIs REST con Express, middlewares, sockets, testing y Docker, $99.900) o los dos juntos (Ruta Backend Completa, 163 clases, $149.900 en lugar de $184.800). Cada curso incluye guía de estudio.
+- [Curso Fullstack con C# y React](https://wearesrv.com/fullstack-csharp/inscripcion): 30 clases: API en .NET con C#, base de datos PostgreSQL y front en React con Vite. 12 módulos, 21 ejercicios resueltos, proyecto final tipo Instagram y guía de estudio con 80 preguntas. $87.900 (los alumnos de SRV tienen un código con precio especial).
 
 ## Cursos en vivo
 

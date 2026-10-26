@@ -8,6 +8,7 @@ const CURSOS_DISPONIBLES = [
   { label: "Curso de Scripting", to: "/scripting/inscripcion" },
   { label: "Master en Python", to: "/python/inscripcion" },
   { label: "Ruta Backend: JavaScript + Backend Avanzado", to: "/ruta-backend/inscripcion" },
+  { label: "Curso Fullstack con C# y React", to: "/fullstack-csharp/inscripcion" },
   { label: "Intensivo Full Stack", to: "/full-stack/inscripcion" },
 ];
 

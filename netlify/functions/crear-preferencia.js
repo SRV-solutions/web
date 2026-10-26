@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { MercadoPagoConfig, Preference } from "mercadopago";
 import { getCurso, webhookCursosUrl } from "../lib/cursos.js";
+import { aplicarCupon } from "../lib/cupones.js";
 import { SITE_URL, json, isAllowedOrigin, parseBody } from "../lib/http.js";
 
 export async function handler(event) {
@@ -30,6 +31,12 @@ export async function handler(event) {
       ? getCurso(desdeKey)
       : curso;
 
+  // Código de alumnos: si es válido para este curso, el precio especial lo decide el servidor.
+  // Queda marcado en el metadata del pago para que el Apps Script acepte ese monto.
+  const cupon = typeof bodyData.cupon === "string" ? aplicarCupon(cursoKey, bodyData.cupon) : null;
+  const precio = cupon ? cupon.precio : curso.precio;
+  const titulo = cupon ? `${curso.titulo} (precio alumnos)` : curso.titulo;
+
   // Datos del navegador para el Purchase por CAPI (confirmar-compra y el webhook los leen del pago)
   const meta = (value, max) => (typeof value === "string" && value ? value.slice(0, max) : undefined);
   const metaData = {
@@ -51,15 +58,20 @@ export async function handler(event) {
         items: [
           {
             id: curso.itemId,
-            title: curso.titulo,
+            title: titulo,
             quantity: 1,
-            unit_price: curso.precio,
+            unit_price: precio,
             currency_id: "ARS",
           },
         ],
         // El Apps Script y confirmar-compra validan este prefijo para saber de qué curso es el pago
         external_reference: `${cursoKey}:${crypto.randomUUID()}`,
-        metadata: { curso: cursoKey, desde: vuelve === curso ? undefined : desdeKey, ...metaData },
+        metadata: {
+          curso: cursoKey,
+          desde: vuelve === curso ? undefined : desdeKey,
+          cupon: cupon ? cupon.tipo : undefined,
+          ...metaData,
+        },
         statement_descriptor: "WEARESRV",
         back_urls: {
           success: `${SITE_URL}/${vuelve.ruta}/gracias`,

@@ -932,9 +932,16 @@
   color: #9fc7ff;
 }
 
+/* min-width: 0 en los hijos de la grilla: si no, el ancho mínimo del input (unos 20 caracteres)
+   empuja la fila más allá del borde derecho del recuadro y el botón queda cortado */
+.cuponBox > * {
+  min-width: 0;
+}
+
 .cuponRow {
   display: flex;
   gap: 0.5rem;
+  min-width: 0;
 }
 
 .cuponRow input {

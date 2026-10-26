@@ -55,7 +55,7 @@ var CONFIG = {
 };
 
 // Valor de relleno para cursos cuya carpeta todavía no se cargó
-var FOLDER_PENDIENTE = "1J8obsPj9OZZod4ZbIqNy-OKg8fuTb-cZ";
+var FOLDER_PENDIENTE = "SIN FOLDER";
 
 // La clave (python, fundamentos-backend...) y el itemId deben coincidir con netlify/lib/cursos.js
 var CURSOS = {
@@ -80,7 +80,7 @@ var CURSOS = {
     nombre: "Curso de Scripting",
     tituloHtml: 'CURSO DE <span style="color:#f6950a;">SCRIPTING</span> DESDE CERO',
     precioMinimo: 15000,
-    folderId: FOLDER_PENDIENTE // ⚠️ Reemplazar por el ID de la carpeta de Drive del curso
+    folderId: "1J8obsPj9OZZod4ZbIqNy-OKg8fuTb-cZ"
   },
   "python": {
     itemId: "curso-python-infoproducto",
@@ -114,7 +114,7 @@ var CURSOS = {
     tituloHtml: 'CURSO <span style="color:#f6950a;">FULLSTACK</span> CON C# Y REACT',
     precioMinimo: 87900,
     cuponAlumnos: { precioMinimo: 20000 },
-    folderId: FOLDER_PENDIENTE // ⚠️ Reemplazar por el ID de la carpeta de Drive del curso
+    folderId: "1eQPWcinDKEjpV7pYo6qfveT2Vbe7Q8xf"
   },
   // COMBO: Master en JavaScript + Backend Avanzado en un solo pago. Sin carpeta propia:
   // comparte las carpetas de los cursos listados en "incluye" (mismo orden en el mail).

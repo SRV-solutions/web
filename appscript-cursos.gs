@@ -73,7 +73,7 @@ var CURSOS = {
       fechaTexto: "18 de noviembre",
       queEncontrara: "las 14 clases del curso"
     },
-    folderId: FOLDER_PENDIENTE // ⚠️ Reemplazar por el ID de la carpeta de Drive del curso
+    folderId: "1mkuq7zJoGcrr6-nuHYjJTcGQ-QRNxpSE"
   },
   "scripting": {
     itemId: "curso-scripting",

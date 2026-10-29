@@ -18,6 +18,7 @@ const menuData = [
       },
       { label: "Sentryx", to: "/sentryx", isExternal: false, isNew: true },
       { label: "Event Box", to: "/eventbox", isExternal: false, isNew: true },
+      { label: "Empresas e Instituciones", to: "/empresas", isExternal: false, isNew: true },
     ],
   },
   {
@@ -38,7 +39,7 @@ const menuData = [
         isNew: true
       },
       {
-        label: "Python Engineer",
+        label: "Master en Python",
         to: "/python/inscripcion",
         isNew: true
       },
@@ -55,6 +56,11 @@ const menuData = [
       {
         label: "Full Stack",
         to: "/full-stack/inscripcion",
+        isNew: true
+      },
+      {
+        label: "Próximos cursos · Lista de espera",
+        to: "/proximos-cursos",
         isNew: true
       }
     ],

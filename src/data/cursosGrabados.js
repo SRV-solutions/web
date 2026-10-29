@@ -1,6 +1,9 @@
 // Datos visuales de los cursos grabados con pago por Mercado Pago.
 // El precio que se cobra realmente se define en netlify/lib/cursos.js
 // (acá solo se muestra en pantalla y se usa para Meta Pixel; mantenerlos iguales).
+// precioRegular va SOLO cuando es un precio real: el de después de una preventa con fecha o la suma de las
+// partes de un combo. Un "precio regular" que nunca se cobró puede considerarse publicidad engañosa
+// (DNU 274/2019, arts. 10 y 11; Código Civil y Comercial, art. 1101).
 
 // Preventa de Scratch: hasta esta fecha se vende a precio de preventa. El acceso a la carpeta de Drive
 // llega al instante (vacía) y ese día se suben las clases.
@@ -9,6 +12,17 @@ const SCRATCH_ACCESO = new Date("2026-11-18T00:00:00-03:00");
 
 // Clases grabadas del Curso Fullstack con C# (12 módulos)
 const CLASES_FULLSTACK = 30;
+
+// CYBER SRV: del 2 al 4 de noviembre de 2026, todos los cursos grabados al 50% de su precio de lista
+// (el Intensivo Full Stack en vivo no participa). Mismas fechas en netlify/lib/cursos.js (precio que
+// se cobra), en appscript-cursos.gs (mínimo que acepta el webhook) y en PROMOCIONES de src/data/legal.js.
+const CYBER_DESDE = Date.parse("2026-11-02T00:00:00-03:00");
+const CYBER_HASTA = Date.parse("2026-11-05T00:00:00-03:00"); // termina el 4/11 a las 23:59
+export const CYBER_FECHAS = "del 2 al 4 de noviembre";
+export const enCyber = () => {
+  const ahora = Date.now();
+  return ahora >= CYBER_DESDE && ahora < CYBER_HASTA;
+};
 
 export const estaEnPreventa = (curso) => Boolean(curso?.preventa) && Date.now() < curso.preventa.hasta.getTime();
 
@@ -90,13 +104,13 @@ export const CURSOS_GRABADOS = {
     descripcion:
       "Aprendé a programar desde cero con JavaScript, Python y Google Apps Script: 32 clases grabadas y más de 59 horas para automatizar planillas, mails, documentos y tareas repetitivas, consumir APIs y armar tus propios bots.",
     precio: 15000,
-    precioRegular: 60000,
     clases: 32,
     beneficios: [
       "Acceso vitalicio al material en Google Drive",
       "Guía de estudio en PDF con 66 preguntas y sus respuestas",
       "Más de 59 horas de clases grabadas",
       "JavaScript, Python y Google Apps Script en un solo curso",
+      "Nuevo módulo de automatización con IA en camino: gratis con tu acceso",
       "Envío automático de accesos al abonar",
     ],
     subTituloDesc:
@@ -180,6 +194,19 @@ export const CURSOS_GRABADOS = {
         ],
       },
     ],
+    // Módulos anunciados como "Próximamente" en la página: todavía NO están en la carpeta.
+    // Cuando las clases estén grabadas y subidas, mover el módulo a "modulos" y actualizar "clases".
+    proximosModulos: [
+      {
+        titulo: "Automatizá con IA",
+        temas: [
+          "Qué es un modelo de lenguaje y cómo pedirle código que funcione (prompts para programar)",
+          "Tu primera llamada a una API de IA desde Python: resumir textos y clasificar datos",
+          "IA en Google Apps Script: respuestas automáticas en Gmail y planillas que se completan solas",
+          "Proyecto: un asistente que lee tus mails y te arma el resumen del día",
+        ],
+      },
+    ],
   },
 
   python: {
@@ -193,11 +220,11 @@ export const CURSOS_GRABADOS = {
     descripcion:
       "98 clases grabadas para aprender Python desde cero: lógica de programación, programación orientada a objetos, archivos, consumo de APIs, asincronismo y aplicaciones con interfaz gráfica (GUI).",
     precio: 80000,
-    precioRegular: 450000,
     clases: 98,
     beneficios: [
       "Acceso vitalicio al material en Google Drive",
       "Estudiá a tu propio ritmo (100% grabado)",
+      "Nuevo módulo de automatizaciones con IA en camino: gratis con tu acceso",
       "Envío automático de accesos al abonar",
     ],
     subTituloDesc:
@@ -274,6 +301,19 @@ export const CURSOS_GRABADOS = {
         ],
       },
     ],
+    // Módulos anunciados como "Próximamente" en la página: todavía NO están en la carpeta.
+    // Cuando las clases estén grabadas y subidas, mover el módulo a "modulos" y actualizar "clases".
+    proximosModulos: [
+      {
+        titulo: "Automatizaciones con IA",
+        temas: [
+          "Consumir una API de IA con requests: prompts, tokens y respuestas en JSON",
+          "Procesar archivos con IA: resumir PDFs y clasificar un CSV completo",
+          "Un script que lee tus datos y redacta el informe solo",
+          "Proyecto: un bot que responde preguntas sobre tus propios documentos",
+        ],
+      },
+    ],
   },
 
   // Ex "Backend Fundamentos". La clave y el itemId NO se cambian: el Apps Script que entrega los accesos
@@ -289,7 +329,6 @@ export const CURSOS_GRABADOS = {
     descripcion:
       "90 clases grabadas para dominar JavaScript desde cero con Node.js: lógica, estructuras de datos, POO, promesas, consumo de APIs reales, bots y testing. El lenguaje de la web, aprendido de verdad.",
     precio: 84900,
-    precioRegular: 350000,
     clases: 90,
     beneficios: [
       "Acceso vitalicio al material en Google Drive",
@@ -439,7 +478,6 @@ export const CURSOS_GRABADOS = {
     descripcion:
       "73 clases grabadas, la continuación del Master en JavaScript: creá tus propios servidores y APIs REST con Node.js y Express, middlewares, sockets en tiempo real, rate limit, testing y Docker.",
     precio: 99900,
-    precioRegular: 420000,
     clases: 73,
     beneficios: [
       "Acceso vitalicio al material en Google Drive",
@@ -545,7 +583,6 @@ export const CURSOS_GRABADOS = {
     descripcion:
       "30 clases grabadas para construir una aplicación completa de punta a punta: una API en .NET con C#, una base de datos PostgreSQL y un front en React con Vite. 12 módulos con teoría paso a paso, 21 ejercicios resueltos y un proyecto final tipo Instagram, más una guía de estudio con 80 preguntas para ponerte a prueba.",
     precio: 87900,
-    precioRegular: 390000,
     clases: CLASES_FULLSTACK,
     cuponAlumnos: true,
     beneficios: [
@@ -641,6 +678,25 @@ CURSOS_GRABADOS["ruta-backend"] = {
     { titulo: `Backend Avanzado · ${BACK.clases} clases`, temas: BACK.modulos.map((m) => m.titulo) },
   ],
 };
+
+// CYBER SRV: durante la promo cada curso (y la Ruta Backend) vale la mitad de su precio de lista,
+// y ese precio queda tachado como precioRegular (es un precio real: el de antes y después de la promo,
+// publicada con fechas en src/data/legal.js). La preventa de Scratch no se suma: vale el menor de los dos.
+if (enCyber()) {
+  for (const curso of Object.values(CURSOS_GRABADOS)) {
+    const lista = estaEnPreventa(curso) ? curso.precioRegular : curso.precio;
+    const mitad = Math.round(lista / 2);
+    if (mitad < curso.precio) {
+      curso.precioRegular = lista;
+      curso.precio = mitad;
+    }
+  }
+  const ruta = CURSOS_GRABADOS["ruta-backend"];
+  ruta.beneficios[0] = `Ahorrás ${formatearPrecio(JS.precio + BACK.precio - ruta.precio)} frente a comprarlos por separado`;
+}
+
+// Lo que cuestan por separado los cursos de un combo, a los precios vigentes (durante el Cyber, los del Cyber)
+export const precioSeparado = (combo) => (combo.combo || []).reduce((t, k) => t + CURSOS_GRABADOS[k].precio, 0);
 
 // Combo que incluye a un curso (habilita el selector "uno, el otro o los dos" en la página de la ruta)
 export const comboQueIncluye = (key) =>

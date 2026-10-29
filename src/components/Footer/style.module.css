@@ -160,6 +160,58 @@
   }
 }
 
+/* Links legales y datos del vendedor (barra inferior) */
+.legal_links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.arrepentimiento {
+  padding: 0.45rem 1rem;
+  border: 1px solid #f6950a;
+  border-radius: 999px;
+  color: #f6950a;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.arrepentimiento:hover {
+  background-color: #f6950a;
+  color: #000;
+}
+
+.legal_link {
+  color: #a0a0a0;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.legal_link:hover {
+  color: #f6950a;
+}
+
+.datos_legales {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  color: #777777;
+  font-size: 0.8rem;
+}
+
+.datos_legales p {
+  margin: 0;
+}
+
 @media (max-width: 768px) {
   .footer_container {
     padding: 3rem 1.25rem 1.5rem;
@@ -185,5 +237,10 @@
 
   .bottom_bar {
     text-align: left;
+  }
+
+  .legal_links,
+  .datos_legales {
+    justify-content: flex-start;
   }
 }

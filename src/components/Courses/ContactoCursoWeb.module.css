@@ -484,6 +484,10 @@
   margin-top: -0.4rem;
 }
 
+.formHint a {
+  color: #f6950a;
+}
+
 /* Éxito */
 .successMessage {
   text-align: center;

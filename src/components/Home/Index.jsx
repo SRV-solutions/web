@@ -40,6 +40,7 @@ const PASOS = [
 
 const FAQ = [
   { q: "Nunca programé, ¿por dónde empiezo?", a: "Por el Curso de Scripting: arranca desde cero, cuesta $15.000 y te da la base de lógica para después seguir con Python o Backend." },
+  { q: "¿Enseñan a usar IA?", a: "Sí. Estamos sumando módulos de automatización con IA a los cursos de Scripting y Python (gratis para quienes ya los compraron), y preparando el curso 'IA para el trabajo'. Anotate en la lista de espera desde la página de próximos cursos." },
   { q: "¿Las clases son en vivo o grabadas?", a: "Los cursos de Scripting, Python, Master en JavaScript, Backend Avanzado y Scratch para Chicos son grabados, con acceso de por vida. El Intensivo Full Stack es una cursada en vivo." },
   { q: "¿Tienen algo para chicos?", a: "Sí: Scratch para Chicos, un curso grabado de 14 clases para que chicos de 8 a 13 años creen una historia animada y su primer videojuego. Está en preventa a $10.000 hasta el 18 de noviembre: el acceso a la carpeta llega al instante y ese día se habilitan las clases." },
   { q: "¿Cómo recibo el curso después de pagar?", a: "Automáticamente: apenas Mercado Pago aprueba el pago, te llega un mail con el acceso a la carpeta del curso en Google Drive." },
@@ -96,7 +97,7 @@ export default function Home() {
   return (
     <div className={styles.homeContainer}>
       <Seo
-        title="Aprendé a programar desde cero | Cursos de Scripting, Python, JavaScript y Backend | WEARESRV"
+        title="Aprendé a programar con IA y automatizá tu trabajo | Cursos de Scripting, Python, JavaScript y Backend | WEARESRV"
         description={`Cursos grabados de programación con acceso de por vida: Scripting, Python, JavaScript, Backend con Node.js y Fullstack con C#. ${TOTAL_CLASES} clases grabadas y guías de estudio. Desde ${formatearPrecio(PRECIO_DESDE)}.`}
         path="/"
         jsonLd={jsonLd}
@@ -106,11 +107,11 @@ export default function Home() {
       <section className={styles.hero}>
         <div className={styles.badge}>Escuela de programación online · Buenos Aires</div>
         <h1 className={styles.heroTitle}>
-          Aprendé a programar <span className={styles.blue}>desde cero</span> y entrá al <span className={styles.orange}>mundo IT</span>
+          Aprendé a programar <span className={styles.blue}>con IA</span> y <span className={styles.orange}>automatizá</span> tu trabajo
         </h1>
         <p className={styles.heroSubtitle}>
-          Cursos grabados de Scripting, Python, JavaScript y Backend con acceso de por vida, guías de estudio y comunidad. Pagás una
-          vez y empezás hoy mismo.
+          Cursos grabados de Scripting, Python, JavaScript y Backend con acceso de por vida, un intensivo con profe en vivo y
+          certificados verificables online. Por una fracción de lo que cuesta una academia: pagás una vez y empezás hoy mismo.
         </p>
         <div className={styles.heroActions}>
           <Link to="/scripting/inscripcion" className={styles.btnPrimary}>
@@ -184,7 +185,8 @@ export default function Home() {
                   <li>🎯 {c.nivel.split(" · ")[0]}</li>
                 </ul>
                 <div className={styles.coursePrice}>
-                  <span className={styles.oldPrice}>{formatearPrecio(c.precioRegular)}</span>
+                  {/* Tachado solo si es un precio real (preventa con fecha): nada de "precios regulares" que nunca se cobraron */}
+                  {c.precioRegular > c.precio && <span className={styles.oldPrice}>{formatearPrecio(c.precioRegular)}</span>}
                   <strong>{formatearPrecio(c.precio)}</strong>
                 </div>
                 <Link to={linkInscripcion(c)} className={destacado ? styles.btnPrimary : styles.btnSecondary}>

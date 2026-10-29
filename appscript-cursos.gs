@@ -57,6 +57,15 @@ var CONFIG = {
 // Valor de relleno para cursos cuya carpeta todavía no se cargó
 var FOLDER_PENDIENTE = "SIN FOLDER";
 
+// CYBER SRV: del 2 al 4 de noviembre de 2026 todo al 50% de su precio de lista. Durante la promo
+// el mínimo aceptado es la mitad del precioMinimo (o el de preventa, si es menor). Mismas fechas
+// que netlify/lib/cursos.js (precio que se cobra) y src/data/cursosGrabados.js (precio que se muestra).
+// Se decide con la fecha real del pago, así un webhook que llega tarde no rechaza una compra del Cyber.
+var CYBER = {
+  desde: new Date("2026-11-02T00:00:00-03:00"),
+  hasta: new Date("2026-11-05T00:00:00-03:00") // termina el 4/11 a las 23:59
+};
+
 // La clave (python, fundamentos-backend...) y el itemId deben coincidir con netlify/lib/cursos.js
 var CURSOS = {
   // PREVENTA: hasta "hasta" el mínimo aceptado es preventa.precioMinimo (después, precioMinimo).
@@ -417,7 +426,7 @@ function procesarPago_(paymentId, accessToken, forzar) {
   if (payer.phone && payer.phone.number) {
     telefono = String(payer.phone.area_code || "") + String(payer.phone.number);
   }
-  var fila = { paymentId: paymentId, nombre: nombre, email: email, telefono: telefono, monto: monto };
+  var fila = { paymentId: paymentId, nombre: nombre, email: email, telefono: telefono, monto: monto, neto: netoRecibido_(payment) };
   // Fecha real del pago: decide si corresponde el precio de preventa, aunque la notificación llegue después
   var fechaPago = new Date(payment.date_approved || payment.date_created || Date.now());
 
@@ -652,6 +661,12 @@ function enPreventa_(curso, fechaPago) {
   return fecha.getTime() < curso.preventa.hasta.getTime();
 }
 
+// ¿El pago (hecho en fechaPago) entra en el Cyber SRV?
+function enCyber_(fechaPago) {
+  var fecha = fechaPago instanceof Date && !isNaN(fechaPago.getTime()) ? fechaPago : new Date();
+  return fecha.getTime() >= CYBER.desde.getTime() && fecha.getTime() < CYBER.hasta.getTime();
+}
+
 // ¿El pago se hizo con el código de alumnos? Lo marca crear-preferencia (servidor de la web) en el
 // metadata de la preferencia de Mercado Pago después de validar el código; el navegador no puede ponerlo.
 function esCuponAlumnos_(curso, payment) {
@@ -659,9 +674,12 @@ function esCuponAlumnos_(curso, payment) {
   return !!(curso && curso.cuponAlumnos && meta.cupon === "alumnos");
 }
 
-// Mínimo de una unidad (curso o combo fijo) a la fecha del pago: preventa si corresponde, si no el regular
+// Mínimo de una unidad (curso o combo fijo) a la fecha del pago: preventa si corresponde, si no el
+// regular; durante el Cyber, la mitad del precio de lista (o la preventa, si es menor)
 function precioMinimoUnidad_(curso, fechaPago) {
-  return enPreventa_(curso, fechaPago) ? curso.preventa.precioMinimo : curso.precioMinimo;
+  var minimo = enPreventa_(curso, fechaPago) ? curso.preventa.precioMinimo : curso.precioMinimo;
+  if (enCyber_(fechaPago)) minimo = Math.min(minimo, Math.round(curso.precioMinimo / 2));
+  return minimo;
 }
 
 // Precio mínimo aceptado para un pago: el de alumnos si vino con código, el de la regla de packs si es
@@ -694,12 +712,12 @@ function getSheet_() {
   var sheet = ss.getSheetByName(CONFIG.SHEET_NAME);
   if (!sheet) {
     sheet = ss.insertSheet(CONFIG.SHEET_NAME);
-    sheet.appendRow(["Fecha", "Payment ID", "Detalle", "Estado", "Curso", "Nombre", "Email", "Teléfono", "Monto"]);
+    sheet.appendRow(["Fecha", "Payment ID", "Detalle", "Estado", "Curso", "Nombre", "Email", "Teléfono", "Monto", "Neto recibido"]);
     sheet.setFrozenRows(1);
     // Columna Payment ID como texto plano para que no se convierta a número
     sheet.getRange("B:B").setNumberFormat("@");
     // Filtro listo para usar por curso, estado, etc.
-    sheet.getRange(1, 1, 1, 9).createFilter();
+    sheet.getRange(1, 1, 1, 10).createFilter();
   }
   return sheet;
 }
@@ -716,9 +734,56 @@ function registrar_(datos) {
     sanitizarCelda_(datos.nombre || ""),
     sanitizarCelda_(datos.email || ""),
     sanitizarCelda_(datos.telefono || ""),
-    Number(datos.monto) || 0
+    Number(datos.monto) || 0,
+    (datos.neto === "" || datos.neto == null) ? "" : Number(datos.neto)
   ]);
   return sheet.getLastRow();
+}
+
+// Neto que te llega a Mercado Pago (monto - comisiones - impuestos). Solo para pagos aprobados.
+function netoRecibido_(payment) {
+  var td = (payment && payment.transaction_details) || {};
+  var neto = Number(td.net_received_amount);
+  if (String(payment && payment.status) === "approved" && neto > 0) return neto;
+  return "";
+}
+
+// Completa la columna "Neto recibido" (J) de los pagos aprobados y donaciones que la tengan vacía,
+// consultando cada pago a la API de Mercado Pago. Ejecutala a mano desde el editor cuando quieras
+// ponerte al día (ej. con las filas de antes de agregar la columna).
+function completarNetos() {
+  var accessToken = PropertiesService.getScriptProperties().getProperty("MP_ACCESS_TOKEN");
+  if (!accessToken) throw new Error("Falta MP_ACCESS_TOKEN en Propiedades del script");
+  var sheet = getSheet_();
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) return;
+  // Hojas creadas antes de la columna J: se agrega el encabezado y se extiende el filtro
+  if (sheet.getRange(1, 10).getValue() === "") sheet.getRange(1, 10).setValue("Neto recibido");
+  var filtro = sheet.getFilter();
+  if (filtro && filtro.getRange().getLastColumn() < 10) {
+    filtro.remove();
+    sheet.getRange(1, 1, 1, 10).createFilter();
+  }
+  var datos = sheet.getRange(2, 1, lastRow - 1, 10).getValues();
+  var completados = 0;
+  for (var i = 0; i < datos.length; i++) {
+    var estado = String(datos[i][COL_ESTADO - 1]);
+    var paymentId = String(datos[i][COL_PAYMENT_ID - 1]).trim();
+    var neto = datos[i][9];
+    if (!paymentId || neto !== "" || (estado !== ESTADO_APROBADO && estado !== ESTADO_DONACION)) continue;
+    var resp = UrlFetchApp.fetch("https://api.mercadopago.com/v1/payments/" + paymentId, {
+      method: "get",
+      headers: { Authorization: "Bearer " + accessToken },
+      muteHttpExceptions: true
+    });
+    if (resp.getResponseCode() !== 200) continue;
+    var valor = netoRecibido_(JSON.parse(resp.getContentText()));
+    if (valor !== "") {
+      sheet.getRange(i + 2, 10).setValue(valor);
+      completados++;
+    }
+  }
+  Logger.log("Netos completados: " + completados);
 }
 
 // Evita inyección de fórmulas en la planilla (=, +, -, @ al inicio)
@@ -1154,6 +1219,7 @@ function probarConfiguracion() {
 
   Logger.log("MP_ACCESS_TOKEN: " + (token ? "OK" : "FALTA"));
   Logger.log("WEBHOOK_SECRET: " + (secret ? (secret.length >= 32 ? "OK" : "MUY CORTO (usá 32+ caracteres)") : "FALTA"));
+  Logger.log("Cyber SRV: " + (enCyber_(new Date()) ? "ACTIVO (mínimos al 50%)" : "inactivo (rige del 2 al 4/11/2026)"));
 
   for (var key in CURSOS) {
     if (!Object.prototype.hasOwnProperty.call(CURSOS, key)) continue;

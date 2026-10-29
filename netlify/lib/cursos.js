@@ -10,6 +10,16 @@
 // comparte al instante (vacía) y las clases se suben ese día.
 const SCRATCH_PREVENTA_HASTA = Date.parse("2026-11-18T00:00:00-03:00");
 
+// CYBER SRV: del 2 al 4 de noviembre de 2026 todo al 50% de su precio de lista (el Intensivo Full
+// Stack en vivo no participa). Mismas fechas en src/data/cursosGrabados.js (precio que se muestra),
+// appscript-cursos.gs (mínimo que acepta el webhook) y PROMOCIONES en src/data/legal.js.
+const CYBER_DESDE = Date.parse("2026-11-02T00:00:00-03:00");
+const CYBER_HASTA = Date.parse("2026-11-05T00:00:00-03:00"); // termina el 4/11 a las 23:59
+const enCyber = () => {
+  const ahora = Date.now();
+  return ahora >= CYBER_DESDE && ahora < CYBER_HASTA;
+};
+
 export const CURSOS = {
   scratch: {
     itemId: "curso-scratch-chicos",
@@ -223,10 +233,11 @@ export function getCurso(key) {
   if (key.startsWith("pack-")) return productoPack(key);
   if (!Object.prototype.hasOwnProperty.call(CURSOS, key)) return null;
   const curso = CURSOS[key];
-  if (curso.preventaHasta && Date.now() < curso.preventaHasta) {
-    return { ...curso, precio: curso.precioPreventa };
-  }
-  return curso;
+  let precio = curso.precio;
+  if (curso.preventaHasta && Date.now() < curso.preventaHasta) precio = curso.precioPreventa;
+  // Durante el Cyber vale la mitad del precio de lista; si hay preventa, el menor de los dos
+  if (enCyber()) precio = Math.min(precio, Math.round(curso.precio / 2));
+  return precio === curso.precio ? curso : { ...curso, precio };
 }
 
 // ==========================================

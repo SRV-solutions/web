@@ -2,6 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styles from "./style.module.css";
 import { FaInstagram, FaTiktok, FaYoutube, FaDiscord, FaWhatsapp } from "react-icons/fa";
+import Dato, { hayDato } from "../Legal/Dato";
+import { LEGAL } from "../../data/legal";
 
 const PHONE_NUMBER = "5491123869799";
 const WHATSAPP_MESSAGE = encodeURIComponent("Hola, quiero cotizar un software");
@@ -182,6 +184,46 @@ export default function Footer() {
       </div>
 
       <div className={styles.bottom_bar}>
+        {/* Venta online: botón de arrepentimiento visible sin registrarse (Disp. 954/2025), contratos de adhesión
+            (Res. 271/2020), privacidad (Ley 25.326) y quién vende, con CUIT y Data Fiscal. Datos en src/data/legal.js */}
+        <nav className={styles.legal_links} aria-label="Información legal">
+          <Link className={styles.arrepentimiento} to="/arrepentimiento">
+            Botón de arrepentimiento
+          </Link>
+          <Link className={styles.legal_link} to="/baja">
+            Botón de baja de servicio
+          </Link>
+          <Link className={styles.legal_link} to="/terminos">
+            Contratos de adhesión – Ley 24.240
+          </Link>
+          <Link className={styles.legal_link} to="/privacidad">
+            Política de privacidad
+          </Link>
+        </nav>
+        <div className={styles.datos_legales}>
+          <p>
+            {[
+              { valor: LEGAL.razonSocial, nombre: "razón social" },
+              { valor: LEGAL.cuit && `CUIT ${LEGAL.cuit}`, nombre: "CUIT" },
+              { valor: LEGAL.domicilio, nombre: "domicilio" },
+              { valor: LEGAL.email, nombre: "mail" },
+            ]
+              .filter((d) => hayDato(d.valor))
+              .map((d, i) => (
+                <span key={d.nombre}>
+                  {i > 0 && " · "}
+                  <Dato valor={d.valor} nombre={d.nombre} />
+                </span>
+              ))}
+          </p>
+          {LEGAL.dataFiscalUrl && LEGAL.dataFiscalImg ? (
+            <a href={LEGAL.dataFiscalUrl} target="_F960AFIPInfo" rel="noopener noreferrer">
+              <img src={LEGAL.dataFiscalImg} alt="Data Fiscal" width="48" height="64" loading="lazy" />
+            </a>
+          ) : (
+            <Dato valor={null} nombre="QR de Data Fiscal" />
+          )}
+        </div>
         <p className={styles.derechos}>
           © {CURRENT_YEAR} <span className={styles.orange}>SRV</span>. Todos los derechos reservados.
         </p>

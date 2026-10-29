@@ -206,6 +206,26 @@
   line-height: 1.3;
 }
 
+.legalText {
+  margin: 0.4rem 0 0;
+  font-size: 0.72rem;
+  color: #777777;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.legalText a {
+  color: #f6950a;
+}
+
+/* Precio por clase, debajo del precio */
+.porClase {
+  display: block;
+  margin-top: 0.3rem;
+  color: #9ca3af;
+  font-size: 0.85rem;
+}
+
 /* Seccion Derecha: Módulos */
 .contentColumn {
   display: flex;
@@ -1042,4 +1062,29 @@
 
 .sumasTotal strong {
   color: #ffffff;
+}
+
+/* Modulos "Proximamente" (en grabacion): misma tarjeta, pero marcada en naranja */
+.moduleCardProximo {
+  border: 1px dashed #f6950a;
+  background: rgba(246, 149, 10, 0.05);
+}
+
+.moduleTagProximo {
+  color: #f6950a;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.proximosNota {
+  margin: 1rem 0 0;
+  padding: 0.85rem 1rem;
+  border: 1px dashed #f6950a;
+  border-radius: 8px;
+  background: rgba(246, 149, 10, 0.06);
+  color: #f6c27a;
+  font-size: 0.9rem;
+  line-height: 1.6;
 }

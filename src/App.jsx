@@ -25,9 +25,15 @@ const GraciasCurso = lazy(
   () => import("./components/Courses/GraciasCurso.jsx")
 );
 const Certificates = lazy(() => import("./components/Certificates/Index.jsx"));
+const Empresas = lazy(() => import("./components/Empresas/Index.jsx"));
+const ProximosCursos = lazy(() => import("./components/ProximosCursos/Index.jsx"));
 const ElDevelop = lazy(() => import("./components/ElDevelop/Index.jsx"));
 const Sentryx = lazy(() => import("./components/Sentryx/Index.jsx"));
 const EventBox = lazy(() => import("./components/EventBox/Index.jsx"));
+// Páginas legales para vender online (Ley 24.240, Disp. 954/2025 y Ley 25.326)
+const Terminos = lazy(() => import("./components/Legal/Terminos.jsx"));
+const Privacidad = lazy(() => import("./components/Legal/Privacidad.jsx"));
+const Arrepentimiento = lazy(() => import("./components/Legal/Arrepentimiento.jsx"));
 const NotFound = lazy(() => import("./components/NotFound/Index.jsx"));
 
 // Redirige una URL vieja conservando el query string (Mercado Pago vuelve con ?payment_id=... a la URL
@@ -201,10 +207,19 @@ function AppContent() {
           <Route path="/full-stack/inscripcion" element={<ContactoCursoWeb />} />
           <Route path="/full-stack/gracias" element={<GraciasCurso cursoKey="intensivo" />} />
           <Route path="/certificates/:id" element={<Certificates />} />
+          <Route path="/empresas" element={<Empresas />} />
+          <Route path="/proximos-cursos" element={<ProximosCursos />} />
+          {/* Link "Formate como DevOps en AWS" del Linktree: a la lista de espera de Redes, Linux y AWS */}
+          <Route path="/redes/inscripcion" element={<Navigate to="/proximos-cursos?curso=redes" replace />} />
           <Route path="/el-develop" element={<ElDevelop />} />
           <Route path="/sentryx" element={<Sentryx />} />
           <Route path="/eventbox" element={<EventBox />} />
           <Route path="/potrero-it" element={<Navigate to="/el-develop" replace />} />
+          <Route path="/terminos" element={<Terminos />} />
+          <Route path="/privacidad" element={<Privacidad />} />
+          {/* Mismo componente con distinta key: al pasar de una a otra no se arrastra el formulario */}
+          <Route path="/arrepentimiento" element={<Arrepentimiento key="arrepentimiento" modo="arrepentimiento" />} />
+          <Route path="/baja" element={<Arrepentimiento key="baja" modo="baja" />} />
           {/* Cualquier link viejo o inexistente (ej. cursos que ya cerraron) */}
           <Route path="*" element={<NotFound />} />
         </Routes>

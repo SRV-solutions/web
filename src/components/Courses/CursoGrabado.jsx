@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import styles from "./CursoGrabado.module.css";
 import Seo, { SITE_URL } from "../Seo";
 import { trackConversion, getMetaCookies } from "../../data/metaPixel";
-import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, comboQueIncluye, nombreCurso } from "../../data/cursosGrabados";
+import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, comboQueIncluye, nombreCurso, enCyber, precioSeparado, CYBER_FECHAS } from "../../data/cursosGrabados";
 import { AHORRO_POR_CURSO, agregablesPara, infoPack, normalizarSet, setValido, pitchUnidad, unidadesDeParametro } from "../../data/packs";
 
 const DISCORD_URL = "https://discord.com/invite/QuAmDxrNMu";
@@ -37,7 +37,7 @@ function preguntasFrecuentes(curso, preventa) {
           },
           {
             q: "¿Conviene el combo o comprarlos por separado?",
-            a: `Si ya sabés que vas por backend, el combo: pagás ${formatearPrecio(curso.precio)} en lugar de ${formatearPrecio(curso.precioRegular)} y te ahorrás ${formatearPrecio(curso.precioRegular - curso.precio)}. Si solo querés aprender JavaScript, comprá ese curso solo y, si después seguís, sumás el Avanzado.`,
+            a: `Si ya sabés que vas por backend, el combo: pagás ${formatearPrecio(curso.precio)} en lugar de ${formatearPrecio(precioSeparado(curso))} y te ahorrás ${formatearPrecio(precioSeparado(curso) - curso.precio)}. Si solo querés aprender JavaScript, comprá ese curso solo y, si después seguís, sumás el Avanzado.`,
           },
         ]
       : []),
@@ -107,9 +107,11 @@ export default function CursoGrabado({ cursoKey }) {
   const producto = CURSOS_GRABADOS[seleccion] || curso;
   const tituloProducto = [producto.tituloInicio, producto.tituloDestacado, producto.tituloFin].filter(Boolean).join(" ");
   const buyRef = useRef(null);
-  const descuento = Math.round((1 - producto.precio / producto.precioRegular) * 100);
+  // Solo hay descuento si precioRegular es un precio real (preventa con fecha o combo): ver cursosGrabados.js
+  const descuento = producto.precioRegular > producto.precio ? Math.round((1 - producto.precio / producto.precioRegular) * 100) : 0;
   const tituloCompleto = [curso.tituloInicio, curso.tituloDestacado, curso.tituloFin].filter(Boolean).join(" ");
   const preventa = estaEnPreventa(producto);
+  const cyber = enCyber();
   const fechaAcceso = preventa ? producto.preventa.fechaTexto : null;
   const faq = preguntasFrecuentes(producto, preventa);
   const pasos = pasosCompra(producto, preventa);
@@ -399,15 +401,19 @@ export default function CursoGrabado({ cursoKey }) {
                   ) : (
                     descuento > 0 && (
                       <span className={styles.promoBadge}>
-                        {preventa
-                          ? `🔥 Precio de preventa · ${descuento}% OFF`
-                          : producto.combo
-                            ? `🎁 Combo · ahorrás ${formatearPrecio(producto.precioRegular - producto.precio)}`
-                            : `🔥 ${descuento}% OFF · Precio promocional`}
+                        {cyber
+                          ? `🔥 Cyber SRV · ${descuento}% OFF`
+                          : preventa
+                            ? `🔥 Precio de preventa · ${descuento}% OFF`
+                            : producto.combo
+                              ? `🎁 Combo · ahorrás ${formatearPrecio(producto.precioRegular - producto.precio)}`
+                              : `🔥 ${descuento}% OFF · Precio promocional`}
                       </span>
                     )
                   )}
-                  <span className={styles.timerTag}>{preventa ? `Solo hasta el ${fechaAcceso}` : "Pago único, sin suscripción"}</span>
+                  <span className={styles.timerTag}>
+                    {cyber ? `Solo ${CYBER_FECHAS}` : preventa ? `Solo hasta el ${fechaAcceso}` : "Pago único, sin suscripción"}
+                  </span>
                 </div>
 
                 {opciones.length > 0 && (
@@ -425,7 +431,7 @@ export default function CursoGrabado({ cursoKey }) {
                             {op.combo ? "Los dos · Ruta Backend Completa" : nombreCorto(op)}
                             <small>
                               {op.combo
-                                ? `${op.clases} clases · ahorrás ${formatearPrecio(op.precioRegular - op.precio)}`
+                                ? `${op.clases} clases · ahorrás ${formatearPrecio(precioSeparado(op) - op.precio)}`
                                 : `${op.clases} clases`}
                             </small>
                           </span>
@@ -444,11 +450,13 @@ export default function CursoGrabado({ cursoKey }) {
                           ? "Precio promocional"
                           : pack
                             ? "Por separado"
-                            : preventa
-                              ? `Desde el ${fechaAcceso}`
-                              : producto.combo
-                                ? "Por separado"
-                                : "Precio regular"}
+                            : cyber
+                              ? "Precio regular"
+                              : preventa
+                                ? `Desde el ${fechaAcceso}`
+                                : producto.combo
+                                  ? "Por separado"
+                                  : "Precio regular"}
                       </span>
                       <span className={styles.oldPrice}>
                         {formatearPrecio(cuponAplicado ? producto.precio : pack ? pack.precioSeparado : producto.precioRegular)}
@@ -468,6 +476,10 @@ export default function CursoGrabado({ cursoKey }) {
                     <div className={styles.mainPrice}>
                       {formatearPrecio(compra.precio)} <span className={styles.currency}>ARS</span>
                     </div>
+                    {/* Ancla honesta en lugar del precio tachado: cuánto sale cada clase */}
+                    <span className={styles.porClase}>
+                      {compra.clases} clases · {formatearPrecio(Math.round(compra.precio / compra.clases))} por clase
+                    </span>
                   </div>
                 </div>
 
@@ -584,6 +596,11 @@ export default function CursoGrabado({ cursoKey }) {
                 🔒 Pago 100% seguro procesado por Mercado Pago.{" "}
                 {preventa ? `Tu carpeta te llega al mail al instante. Las clases se habilitan el ${fechaAcceso}.` : "El acceso te llega al mail al instante."}
               </p>
+              <p className={styles.legalText}>
+                Al pagar aceptás los <Link to="/terminos">términos y condiciones</Link> y la{" "}
+                <Link to="/privacidad">política de privacidad</Link>. Tenés 10 días para arrepentirte desde el{" "}
+                <Link to="/arrepentimiento">botón de arrepentimiento</Link>.
+              </p>
             </div>
           </div>
         </div>
@@ -604,7 +621,7 @@ export default function CursoGrabado({ cursoKey }) {
                 <strong>¿Vas por backend? Llevá los dos cursos juntos.</strong>
                 <span>
                   {combo.combo.map((k) => nombreCorto(CURSOS_GRABADOS[k])).join(" + ")} por {formatearPrecio(combo.precio)}:
-                  ahorrás {formatearPrecio(combo.precioRegular - combo.precio)} frente a comprarlos por separado.
+                  ahorrás {formatearPrecio(precioSeparado(combo) - combo.precio)} frente a comprarlos por separado.
                 </span>
               </span>
               <span className={styles.comboCta}>Elegir los dos →</span>
@@ -650,7 +667,30 @@ export default function CursoGrabado({ cursoKey }) {
                   </ul>
                 </div>
               ))}
+
+              {/* Módulos en grabación: se anuncian aparte para no venderlos como ya disponibles */}
+              {(producto.proximosModulos || []).map((mod) => (
+                <div key={mod.titulo} className={`${styles.moduleCard} ${styles.moduleCardProximo}`}>
+                  <div className={styles.moduleCardHeader}>
+                    <span className={styles.moduleNum}>🤖</span>
+                    <span className={styles.moduleTagProximo}>Próximamente · gratis con tu acceso</span>
+                  </div>
+                  <h3>{mod.titulo}</h3>
+                  <ul className={styles.taskList}>
+                    {mod.temas.map((tema) => (
+                      <li key={tema}>{tema}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
+            {producto.proximosModulos && (
+              <p className={styles.proximosNota}>
+                El módulo marcado como «Próximamente» está en grabación y todavía no está en la carpeta. Cuando se
+                publique, aparece en tu misma carpeta de Google Drive sin costo: las actualizaciones del curso están
+                incluidas en tu acceso de por vida.
+              </p>
+            )}
           </div>
 
           <div>

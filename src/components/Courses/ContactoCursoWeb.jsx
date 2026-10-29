@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback } from "react";
 import styles from "./ContactoCursoWeb.module.css";
 import { trackConversion } from "../../data/metaPixel";
 import Seo from "../Seo";
+import { Link } from "react-router-dom";
 
 // Inscripción + pago: la función crea el link de Mercado Pago del alumno y carga la fila
 // en el Sheet "Curso FullStack" (ver netlify/functions/inscripcion-intensivo.js).
@@ -712,6 +713,11 @@ function ContactoCursoWeb() {
                     transferencia, te enviamos los datos por mail.
                   </span>
                 )}
+                <span className={styles.formHint}>
+                  Al inscribirte aceptás los <Link to="/terminos">términos y condiciones</Link> y la{" "}
+                  <Link to="/privacidad">política de privacidad</Link>. Tenés 10 días para arrepentirte desde el{" "}
+                  <Link to="/arrepentimiento">botón de arrepentimiento</Link>.
+                </span>
               </form>
             ) : (
               <div className={styles.successMessage}>

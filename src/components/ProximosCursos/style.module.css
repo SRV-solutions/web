@@ -1,0 +1,115 @@
+/* Página de próximos cursos con lista de espera */
+.page {
+  background-color: #000;
+  color: #fff;
+  padding: 4rem 1.25rem 5rem;
+}
+
+.inner {
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.kicker {
+  margin: 0;
+  color: #0b78fb;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0.4rem 0 1rem;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 900;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.orange {
+  color: #f6950a;
+}
+
+.lead {
+  margin: 0 0 2rem;
+  max-width: 65ch;
+  color: #ccc;
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.4rem;
+  border: 1px solid #1f1f1f;
+  border-radius: 12px;
+  background-color: #0d0d0d;
+  min-width: 0;
+}
+
+.cardDestacada {
+  border-color: #f6950a;
+  box-shadow: 0 0 24px rgba(246, 149, 10, 0.18);
+}
+
+.card h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.card p {
+  margin: 0;
+  color: #c8c8c8;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.para {
+  color: #8fb7e8 !important;
+  font-size: 0.88rem !important;
+}
+
+.cardTag {
+  align-self: flex-start;
+  padding: 0.25rem 0.7rem;
+  border: 1px solid #0b78fb;
+  border-radius: 999px;
+  color: #0b78fb;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.btnLista {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.2rem;
+  border-radius: 8px;
+  background-color: #30a05a;
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.btnLista:hover {
+  filter: brightness(1.1);
+}
+
+.nota {
+  margin: 2.2rem 0 0;
+  color: #999;
+  line-height: 1.6;
+}

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creativos Cyber SRV 2026</title>
+<!--
+  Creativos para redes del Cyber SRV (2 al 4 de noviembre de 2026).
+  Abrir este archivo en Chrome (doble click) y usar los botones "Descargar PNG":
+  cada placa sale en su tamaño real (feed 1080x1080, historia 1080x1920).
+  "Descargar todos" baja las 10 placas de una. Necesita internet (fuentes y html2canvas).
+  Los precios salen de src/data/cursosGrabados.js con el 50% del Cyber aplicado.
+-->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;600;800&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root {
+    --negro: #000000;
+    --carbon: #0d0d0d;
+    --azul: #0b78fb;
+    --naranja: #f6950a;
+    --verde: #30a05a;
+    --blanco: #ffffff;
+    --gris: #9ca3af;
+    --display: "Anton", "Arial Narrow", sans-serif;
+    --texto: "Archivo", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #111318;
+    color: var(--blanco);
+    font-family: var(--texto);
+    padding: 32px max(16px, env(safe-area-inset-left, 0px)) 80px max(16px, env(safe-area-inset-right, 0px));
+  }
+  h1 { font-family: var(--display); font-weight: 400; letter-spacing: 1px; font-size: 2rem; margin: 0 0 4px; }
+  h1 .srv { color: var(--naranja); }
+  .sub { color: var(--gris); margin: 0 0 24px; max-width: 65ch; }
+  .acciones { margin: 0 0 32px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  button {
+    font-family: var(--texto); font-weight: 600; font-size: 0.95rem;
+    background: var(--azul); color: #fff; border: 0; border-radius: 8px;
+    padding: 10px 18px; cursor: pointer;
+  }
+  button:hover { filter: brightness(1.15); }
+  button:focus-visible { outline: 3px solid var(--naranja); outline-offset: 2px; }
+  .estado { color: var(--verde); font-weight: 600; }
+  .galeria { display: flex; flex-wrap: wrap; gap: 28px; }
+  .pieza { display: flex; flex-direction: column; gap: 10px; }
+  .pieza h2 { font-size: 0.9rem; font-weight: 600; color: var(--gris); margin: 0; }
+  .marco {
+    width: 340px; height: 340px; overflow: hidden; border-radius: 10px;
+    border: 1px solid #2a2f3a; background: var(--negro);
+  }
+  .marco.vertical { height: 604px; }
+  .marco > .placa { transform: scale(0.31481); transform-origin: top left; }
+
+  /* ---------- Las placas (tamaño real 1080px) ---------- */
+  .placa {
+    width: 1080px; height: 1080px; background: var(--negro); color: var(--blanco);
+    font-family: var(--texto); position: relative; overflow: hidden;
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 72px 80px;
+  }
+  .placa.story { height: 1920px; }
+  /* Resplandores de marca, bien sutiles */
+  .placa::before, .placa::after {
+    content: ""; position: absolute; border-radius: 50%; pointer-events: none;
+  }
+  .placa::before { width: 900px; height: 900px; right: -420px; top: -420px; background: radial-gradient(circle, rgba(11,120,251,0.22), transparent 65%); }
+  .placa::after { width: 800px; height: 800px; left: -380px; bottom: -380px; background: radial-gradient(circle, rgba(246,149,10,0.16), transparent 65%); }
+  .placa > * { position: relative; z-index: 1; }
+
+  .cabecera { display: flex; justify-content: space-between; align-items: center; }
+  .logo { font-family: var(--display); font-size: 52px; letter-spacing: 2px; }
+  .logo .srv { color: var(--naranja); }
+  .fechas {
+    border: 3px solid var(--azul); color: var(--azul); border-radius: 999px;
+    font-weight: 800; font-size: 28px; letter-spacing: 2px; padding: 12px 28px;
+    text-transform: uppercase; white-space: nowrap;
+  }
+
+  .centro { display: flex; flex-direction: column; gap: 8px; }
+  .cyberTitulo { font-family: var(--display); font-size: 150px; line-height: 0.95; margin: 0; }
+  .cyberTitulo .srv { color: var(--naranja); }
+  .off { font-family: var(--display); font-size: 300px; line-height: 0.9; color: var(--naranja); margin: 0; }
+  .off small { font-size: 120px; color: var(--blanco); }
+  .bajada { font-size: 46px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin: 18px 0 0; }
+  .bajada b { color: var(--azul); }
+
+  .etiquetaCurso {
+    display: inline-block; align-self: flex-start; background: var(--naranja); color: #000;
+    font-weight: 800; font-size: 34px; letter-spacing: 3px; text-transform: uppercase;
+    border-radius: 8px; padding: 10px 22px;
+  }
+  .nombreCurso { font-family: var(--display); font-size: 118px; line-height: 1.02; margin: 20px 0 0; text-transform: uppercase; }
+  .nombreCurso .srv { color: var(--naranja); }
+  .detalleCurso { font-size: 40px; font-weight: 600; color: var(--gris); margin: 22px 0 0; }
+
+  .precios { display: flex; align-items: flex-end; gap: 40px; flex-wrap: wrap; }
+  .antes { font-size: 44px; font-weight: 600; color: var(--gris); }
+  .antes .tachado { text-decoration: line-through; text-decoration-thickness: 4px; text-decoration-color: var(--naranja); font-size: 58px; display: block; }
+  .ahora { font-family: var(--display); font-size: 150px; line-height: 0.95; color: var(--verde); }
+  .ahora small { font-size: 50px; color: var(--gris); font-family: var(--texto); font-weight: 600; }
+
+  .pie { display: flex; justify-content: space-between; align-items: center; border-top: 3px solid #1f2430; padding-top: 32px; }
+  .web { font-size: 42px; font-weight: 800; color: var(--azul); letter-spacing: 1px; }
+  .claim { font-size: 32px; font-weight: 600; color: var(--gris); }
+
+  /* Lista de cursos (placa resumen y story) */
+  .lista { display: flex; flex-direction: column; gap: 0; margin-top: 10px; }
+  .lista .fila {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 24px;
+    padding: 14px 0; border-bottom: 2px solid #1f2430;
+  }
+  .lista .fila:last-child { border-bottom: 0; }
+  .lista .curso { font-size: 35px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+  .lista .valores { display: flex; align-items: baseline; gap: 20px; white-space: nowrap; }
+  .lista .viejo { color: var(--gris); text-decoration: line-through; text-decoration-color: var(--naranja); font-size: 28px; font-weight: 600; }
+  .lista .nuevo { color: var(--verde); font-family: var(--display); font-size: 46px; }
+  .story .cyberTitulo { font-size: 170px; }
+  .story .off { font-size: 270px; }
+</style>
+</head>
+<body>
+<h1>CREATIVOS CYBER <span class="srv">SRV</span> · 2 al 4 de noviembre</h1>
+<p class="sub">Abrí este archivo en Chrome y descargá cada placa en PNG a tamaño real: feed 1080×1080 e historia 1080×1920.
+Todos los precios tienen el 50% del Cyber ya aplicado (los mismos que cobra la web).</p>
+<div class="acciones">
+  <button id="todos" type="button">⬇ Descargar todos (10 PNG)</button>
+  <span class="estado" id="estado"></span>
+</div>
+<div class="galeria" id="galeria"></div>
+
+<script>
+const CURSOS = [
+  { nombre: "Scratch para<br>Chicos", archivo: "cyber-scratch", clases: "14 clases · para chicos de 8 a 13", antes: 18000, ahora: 9000 },
+  { nombre: "Curso de<br>Scripting", archivo: "cyber-scripting", clases: "32 clases · JavaScript, Python y Apps Script", antes: 15000, ahora: 7500 },
+  { nombre: "Master en<br>Python", archivo: "cyber-python", clases: "98 clases · de la lógica a tus propias apps", antes: 80000, ahora: 40000 },
+  { nombre: "Master en<br>JavaScript", archivo: "cyber-javascript", clases: "90 clases · el lenguaje de la web, de verdad", antes: 84900, ahora: 42450 },
+  { nombre: "Backend<br>Avanzado", archivo: "cyber-backend-avanzado", clases: "73 clases · servidores y APIs con Node y Express", antes: 99900, ahora: 49950 },
+  { nombre: "Ruta Backend<br>Completa", archivo: "cyber-ruta-backend", clases: "163 clases · JavaScript + Backend Avanzado", antes: 149900, ahora: 74950 },
+  { nombre: "Fullstack con<br>C# y React", archivo: "cyber-fullstack-csharp", clases: "30 clases · .NET, PostgreSQL y React", antes: 87900, ahora: 43950 },
+];
+const LISTA_CORTA = [
+  ["Scratch para Chicos", 18000, 9000],
+  ["Scripting", 15000, 7500],
+  ["Master en Python", 80000, 40000],
+  ["Master en JavaScript", 84900, 42450],
+  ["Backend Avanzado", 99900, 49950],
+  ["Ruta Backend Completa", 149900, 74950],
+  ["Fullstack C# y React", 87900, 43950],
+];
+const $ = (v) => "$" + v.toLocaleString("es-AR");
+const cabecera = `
+  <div class="cabecera">
+    <div class="logo">WEARE<span class="srv">SRV</span></div>
+    <div class="fechas">2 · 3 · 4 de noviembre</div>
+  </div>`;
+const pie = `
+  <div class="pie">
+    <span class="web">wearesrv.com</span>
+    <span class="claim">Clases grabadas · Acceso de por vida</span>
+  </div>`;
+
+// Placa 1: anuncio general del Cyber
+const placaGeneral = `
+  <div class="placa" id="p-general">
+    ${cabecera}
+    <div class="centro">
+      <p class="cyberTitulo">CYBER <span class="srv">SRV</span></p>
+      <p class="off">50<small>% OFF</small></p>
+      <p class="bajada">En <b>todos</b> los cursos grabados · Pago único</p>
+    </div>
+    ${pie}
+  </div>`;
+
+// Placa 2: lista de precios (feed)
+const filas = LISTA_CORTA.map(([n, a, b]) => `
+  <div class="fila">
+    <span class="curso">${n}</span>
+    <span class="valores"><span class="viejo">${$(a)}</span><span class="nuevo">${$(b)}</span></span>
+  </div>`).join("");
+const placaLista = `
+  <div class="placa" id="p-lista">
+    ${cabecera}
+    <div class="centro">
+      <p class="cyberTitulo" style="font-size:96px;">CYBER <span class="srv">SRV</span> · 50% OFF</p>
+      <div class="lista">${filas}</div>
+    </div>
+    ${pie}
+  </div>`;
+
+// Placa 3: historia (1080x1920)
+const placaStory = `
+  <div class="placa story" id="p-story">
+    ${cabecera}
+    <div class="centro">
+      <p class="cyberTitulo">CYBER<br><span class="srv">SRV</span></p>
+      <p class="off">50<small>% OFF</small></p>
+      <p class="bajada">En <b>todos</b> los cursos grabados</p>
+      <div class="lista">${filas}</div>
+      <p class="bajada" style="margin-top:36px;">Solo el 2, 3 y 4 de noviembre</p>
+    </div>
+    ${pie}
+  </div>`;
+
+// Placas por curso
+const placaCurso = (c, i) => `
+  <div class="placa" id="p-curso-${i}">
+    ${cabecera}
+    <div class="centro">
+      <span class="etiquetaCurso">Cyber SRV · 50% OFF</span>
+      <p class="nombreCurso">${c.nombre}</p>
+      <p class="detalleCurso">${c.clases}</p>
+    </div>
+    <div class="precios">
+      <span class="antes">Precio regular<span class="tachado">${$(c.antes)}</span></span>
+      <span class="ahora">${$(c.ahora)} <small>· ${$(Math.round(c.ahora / parseInt(c.clases)))} por clase</small></span>
+    </div>
+    ${pie}
+  </div>`;
+
+const piezas = [
+  { id: "p-general", archivo: "cyber-srv-general", titulo: "Feed · Anuncio general (1080×1080)", vertical: false, html: placaGeneral },
+  { id: "p-lista", archivo: "cyber-srv-lista-precios", titulo: "Feed · Lista de precios (1080×1080)", vertical: false, html: placaLista },
+  { id: "p-story", archivo: "cyber-srv-historia", titulo: "Historia (1080×1920)", vertical: true, html: placaStory },
+  ...CURSOS.map((c, i) => ({
+    id: `p-curso-${i}`, archivo: c.archivo,
+    titulo: `Feed · ${c.nombre.replace("<br>", " ")} (1080×1080)`,
+    vertical: false, html: placaCurso(c, i),
+  })),
+];
+
+document.getElementById("galeria").innerHTML = piezas.map((p) => `
+  <div class="pieza">
+    <h2>${p.titulo}</h2>
+    <div class="marco${p.vertical ? " vertical" : ""}">${p.html}</div>
+    <button type="button" data-id="${p.id}" data-archivo="${p.archivo}">⬇ Descargar PNG</button>
+  </div>`).join("");
+
+const estado = document.getElementById("estado");
+
+async function descargar(id, archivo) {
+  await document.fonts.ready;
+  const original = document.getElementById(id);
+  // Se captura un clon a tamaño real, fuera del marco escalado
+  const refugio = document.createElement("div");
+  refugio.style.cssText = "position:fixed;left:-20000px;top:0;";
+  const clon = original.cloneNode(true);
+  refugio.appendChild(clon);
+  document.body.appendChild(refugio);
+  try {
+    const canvas = await html2canvas(clon, { backgroundColor: "#000000", scale: 1, logging: false });
+    const a = document.createElement("a");
+    a.href = canvas.toDataURL("image/png");
+    a.download = archivo + ".png";
+    a.click();
+  } finally {
+    refugio.remove();
+  }
+}
+
+document.getElementById("galeria").addEventListener("click", async (e) => {
+  const btn = e.target.closest("button[data-id]");
+  if (!btn) return;
+  estado.textContent = "Generando " + btn.dataset.archivo + ".png…";
+  await descargar(btn.dataset.id, btn.dataset.archivo);
+  estado.textContent = "Listo: " + btn.dataset.archivo + ".png";
+});
+
+document.getElementById("todos").addEventListener("click", async () => {
+  for (let i = 0; i < piezas.length; i++) {
+    estado.textContent = `Generando ${i + 1} de ${piezas.length}: ${piezas[i].archivo}.png…`;
+    await descargar(piezas[i].id, piezas[i].archivo);
+    await new Promise((r) => setTimeout(r, 400));
+  }
+  estado.textContent = "Listo: se descargaron las " + piezas.length + " placas.";
+});
+</script>
+</body>
+</html>

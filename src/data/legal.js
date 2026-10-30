@@ -7,8 +7,8 @@
 // Los campos en null se ven como "⚠ completar" en desarrollo y NO se muestran en producción.
 export const LEGAL = {
   marca: "WEARESRV",
-  razonSocial: null, // nombre y apellido (monotributo) o razón social de la sociedad
-  cuit: null, // con guiones: 20-12345678-9
+  razonSocial: "Marcos Roberto Costa Schmite",
+  cuit: "23-94799356-9",
   domicilio: null, // domicilio comercial o fiscal
   email: null, // correo de atención al cliente
   horario: null, // horario de atención, por ejemplo "lunes a viernes de 10 a 18 h"

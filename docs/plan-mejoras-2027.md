@@ -11,8 +11,10 @@ así que nada se sube ni se mergea sin el OK de Marcos.
 ## Tanda 1: base legal y precios honestos (antes del CyberMonday, 2 al 4/11)
 
 - [x] Datos legales en un solo lugar: `src/data/legal.js`.
-- [ ] Completar en `src/data/legal.js`: razón social, CUIT, domicilio, mail de atención, horario y QR de Data Fiscal
-      (en local se ven como «⚠ completar»; en producción no se muestran).
+- [ ] Completar en `src/data/legal.js`: razón social y CUIT ya cargados (Marcos Roberto Costa Schmite,
+      23-94799356-9). Faltan domicilio, mail de atención, horario y el QR de Data Fiscal, que se genera en
+      ARCA con clave fiscal (servicio «Formulario 960/NM – Data Fiscal»). Los campos en null se ven como
+      «⚠ completar» en local y en producción no se muestran.
 - [x] Páginas `/terminos` (Contratos de adhesión – Ley 24.240), `/privacidad`, `/arrepentimiento` y `/baja`.
 - [x] Pie de página con los links legales, el botón de arrepentimiento destacado y los datos del vendedor.
 - [x] Aviso legal junto a los botones de pago (cursos grabados e intensivo).
@@ -43,8 +45,12 @@ así que nada se sube ni se mergea sin el OK de Marcos.
 - [x] Página gratuita «Fundamentos de IA» (`/fundamentos-ia`): 4 temas con lugar para video y guía (completar
       `url`/`guia` en el componente a medida que Marcos los sube), CTA a YouTube y Discord, y camino a los pagos.
 - [x] Captura de contactos en Fundamentos IA (nombre, mail y celular) con Netlify Forms: los registros quedan en
-      Netlify → Forms (activar ahí la notificación por mail). El envío automático del material por correo se hace
-      con un Apps Script cuando exista el primer video o guía.
+      Netlify → Forms. La entrega automática está lista en `appscript-fundamentos.gs` (proyecto de Apps Script
+      separado del de pagos): registra en una hoja, comparte la carpeta de Drive del material, manda el mail de
+      bienvenida y avisa a Marcos. Pendiente a mano: crear la Sheet, pegar el script, implementarlo como app web
+      y conectar el webhook saliente en Netlify Forms (instrucciones en el encabezado del archivo). Mientras la
+      carpeta no exista, los registros quedan en espera y se entregan con `darAccesoPendientes()`. El alta en
+      E-stellarium se suma al script cuando la plataforma esté disponible.
 - [x] Certificado de Scratch para los chicos: evaluación con preguntas y un jueguito desde E-stellarium
       («muy pronto» en la página hasta que la plataforma lo tenga).
 - [ ] Precios de lanzamiento en las tarjetas de la lista de espera: faltan los números (publicarlos obliga,

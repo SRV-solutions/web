@@ -101,10 +101,10 @@ export default function FundamentosIA() {
 
         <div className={styles.registro}>
           <h2>Recibí cada video y guía por correo</h2>
-          <p>Dejanos tus datos y te mandamos cada material nuevo apenas sale. Gratis, sin spam.</p>
+          <p>Dejanos tus datos: te llega por correo el acceso al material y cada novedad apenas sale. Gratis, sin spam.</p>
           {envio === "listo" ? (
             <p className={styles.registroOk}>
-              ✅ ¡Listo! Quedaste en la lista: te va a llegar cada video y guía nueva por correo.
+              ✅ ¡Listo! Quedaste en la lista: el acceso al material y cada novedad te llegan por correo.
             </p>
           ) : (
             <form className={styles.form} onSubmit={registrar}>

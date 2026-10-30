@@ -91,6 +91,11 @@
   text-transform: uppercase;
 }
 
+.lanzamiento {
+  color: #f6c27a !important;
+  font-size: 0.82rem !important;
+}
+
 .btnLista {
   margin-top: auto;
   display: inline-flex;

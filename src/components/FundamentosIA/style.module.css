@@ -1,0 +1,164 @@
+/* Página gratuita Fundamentos de IA */
+.page {
+  background-color: #000;
+  color: #fff;
+  padding: 4rem 1.25rem 5rem;
+}
+
+.inner {
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.kicker {
+  margin: 0;
+  color: #30a05a;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0.4rem 0 1rem;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 900;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.orange {
+  color: #f6950a;
+}
+
+.lead {
+  margin: 0 0 2rem;
+  max-width: 65ch;
+  color: #ccc;
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.4rem;
+  border: 1px solid #1f1f1f;
+  border-radius: 12px;
+  background-color: #0d0d0d;
+  min-width: 0;
+}
+
+.card h2 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.card p {
+  margin: 0;
+  color: #c8c8c8;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.cardAcciones {
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding-top: 0.4rem;
+}
+
+.btnVideo,
+.btnGuia,
+.btnYoutube,
+.btnDiscord {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1.1rem;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.btnVideo,
+.btnYoutube {
+  background-color: #0b78fb;
+}
+
+.btnGuia,
+.btnDiscord {
+  background-color: #1f1f1f;
+  border: 1px solid #333;
+}
+
+.enCamino {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.7rem 1.1rem;
+  border: 1px dashed #f6950a;
+  border-radius: 8px;
+  color: #f6c27a;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.comunidad {
+  margin-top: 3rem;
+  padding: 2rem 1.5rem;
+  border: 1px solid #30a05a;
+  border-radius: 14px;
+  background: rgba(48, 160, 90, 0.07);
+  text-align: center;
+}
+
+.comunidad h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1.4rem;
+  font-weight: 900;
+}
+
+.comunidad p {
+  margin: 0 0 1.2rem;
+  color: #c8c8c8;
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.siguiente {
+  margin-top: 2.5rem;
+}
+
+.siguiente h2 {
+  margin: 0 0 0.5rem;
+  padding-left: 0.75rem;
+  border-left: 3px solid #0b78fb;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.siguiente p {
+  margin: 0;
+  color: #c8c8c8;
+  line-height: 1.7;
+}
+
+.siguiente a {
+  color: #f6950a;
+}

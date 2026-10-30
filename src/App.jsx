@@ -27,6 +27,7 @@ const GraciasCurso = lazy(
 const Certificates = lazy(() => import("./components/Certificates/Index.jsx"));
 const Empresas = lazy(() => import("./components/Empresas/Index.jsx"));
 const ProximosCursos = lazy(() => import("./components/ProximosCursos/Index.jsx"));
+const FundamentosIA = lazy(() => import("./components/FundamentosIA/Index.jsx"));
 const ElDevelop = lazy(() => import("./components/ElDevelop/Index.jsx"));
 const Sentryx = lazy(() => import("./components/Sentryx/Index.jsx"));
 const EventBox = lazy(() => import("./components/EventBox/Index.jsx"));
@@ -209,6 +210,7 @@ function AppContent() {
           <Route path="/certificates/:id" element={<Certificates />} />
           <Route path="/empresas" element={<Empresas />} />
           <Route path="/proximos-cursos" element={<ProximosCursos />} />
+          <Route path="/fundamentos-ia" element={<FundamentosIA />} />
           {/* Link "Formate como DevOps en AWS" del Linktree: a la lista de espera de Redes, Linux y AWS */}
           <Route path="/redes/inscripcion" element={<Navigate to="/proximos-cursos?curso=redes" replace />} />
           <Route path="/el-develop" element={<ElDevelop />} />

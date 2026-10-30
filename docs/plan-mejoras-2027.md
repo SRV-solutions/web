@@ -31,9 +31,19 @@ así que nada se sube ni se mergea sin el OK de Marcos.
 - [x] Página «Empresas e instituciones» (`/empresas`): talleres de IA, automatización y AWS para equipos; crédito
       fiscal (texto en neutro: ⚠ confirmar el estado del alta como Unidad Capacitadora en DNA2 antes de prometer);
       paquete para colegios con IA para docentes, Scratch y Sentryx.
-- [x] «Próximos cursos» con lista de espera (`/proximos-cursos`): IA para el trabajo, SQL gratis con certificado,
-      IA para docentes, Redes, Linux y AWS. La lista de espera sale por WhatsApp con texto prellenado; cuando esté
-      el Apps Script de listas se cambia por un formulario con Netlify Function.
+- [x] «Próximos cursos» con lista de espera (`/proximos-cursos`): IA para el trabajo, SQL desde cero (pago, con
+      guías de apoyo gratis; las clases ya están grabadas y editadas con Remotion), IA para docentes, Redes, Linux
+      y AWS. La lista de espera sale por WhatsApp con texto prellenado; cuando esté el Apps Script de listas se
+      cambia por un formulario con Netlify Function.
+- [x] Certificación con examen final en vivo (sin la palabra «oficial», que sugiere reconocimiento estatal):
+      beneficio y pregunta frecuente en las páginas de cursos (excepto Scratch). Gratis para quien compró el curso;
+      por ahora se coordina por WhatsApp y después se pide desde E-stellarium.
+- [x] Beneficio «Acceso a E-stellarium (muy pronto)» en todos los cursos. Cuando la plataforma esté en uso,
+      sacar el «muy pronto» y sumar el botón de pedir examen.
+- [x] Página gratuita «Fundamentos de IA» (`/fundamentos-ia`): 4 temas con lugar para video y guía (completar
+      `url`/`guia` en el componente a medida que Marcos los sube), CTA a YouTube y Discord, y camino a los pagos.
+- [ ] Precios de lanzamiento en las tarjetas de la lista de espera: faltan los números (publicarlos obliga,
+      Ley 24.240; van como «precio de lanzamiento · primera cohorte»).
 - [x] `/redes/inscripcion` (el link «Formate como DevOps en AWS» de Linktree) redirige a
       `/proximos-cursos?curso=redes` con esa tarjeta destacada.
 - [x] Módulos de IA anunciados como «Próximamente · gratis con tu acceso» en Scripting («Automatizá con IA») y

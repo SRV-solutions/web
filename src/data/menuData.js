@@ -59,6 +59,11 @@ const menuData = [
         isNew: true
       },
       {
+        label: "Fundamentos IA · Gratis",
+        to: "/fundamentos-ia",
+        isNew: true
+      },
+      {
         label: "Próximos cursos · Lista de espera",
         to: "/proximos-cursos",
         isNew: true

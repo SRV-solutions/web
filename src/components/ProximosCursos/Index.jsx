@@ -19,10 +19,10 @@ const PROXIMOS = [
   },
   {
     key: "sql",
-    nombre: "SQL gratis con certificado",
-    tag: "Gratis",
+    nombre: "SQL desde cero",
+    tag: "Muy pronto",
     texto:
-      "Las bases de datos desde cero: consultas, filtros, JOIN y reportes. Gratis, con certificado verificable si aprobás la evaluación final.",
+      "Las bases de datos desde cero: consultas, filtros, JOIN y reportes. Las clases ya están grabadas, con resúmenes animados de cada tema, y vienen con guías de apoyo gratuitas. Certificado verificable con examen final en vivo.",
     para: "Para sumar la herramienta que piden en casi todos los trabajos con datos.",
   },
   {
@@ -50,8 +50,8 @@ export default function ProximosCursos() {
   return (
     <section className={styles.page}>
       <Seo
-        title="Próximos cursos: IA para el trabajo, SQL gratis, IA para docentes y DevOps | WEARESRV"
-        description="Anotate en la lista de espera de los próximos cursos de WEARESRV: IA para el trabajo, SQL gratis con certificado, IA para docentes y Redes, Linux y AWS. Te avisamos primero y accedés al precio de lanzamiento."
+        title="Próximos cursos: IA para el trabajo, SQL, IA para docentes y DevOps | WEARESRV"
+        description="Anotate en la lista de espera de los próximos cursos de WEARESRV: IA para el trabajo, SQL desde cero, IA para docentes y Redes, Linux y AWS. Te avisamos primero y accedés al precio de lanzamiento."
         path="/proximos-cursos"
       />
       <div className={styles.inner}>
@@ -60,8 +60,9 @@ export default function ProximosCursos() {
           Lo que se viene en <span className={styles.orange}>WEARESRV</span>
         </h1>
         <p className={styles.lead}>
-          Estos cursos están en preparación. Sumate a la lista de espera: no te comprometés a nada, te avisamos antes
-          que a nadie cuando abran y entrás con el precio de lanzamiento.
+          Estos cursos están en preparación, todos con certificado verificable y examen final en vivo. Sumate a la
+          lista de espera: no te comprometés a nada, te avisamos antes que a nadie cuando abran y el precio de
+          lanzamiento se anuncia primero a la lista.
         </p>
 
         <div className={styles.grid}>
@@ -71,6 +72,7 @@ export default function ProximosCursos() {
               <h2>{c.nombre}</h2>
               <p>{c.texto}</p>
               <p className={styles.para}>{c.para}</p>
+              <p className={styles.lanzamiento}>El precio de lanzamiento se anuncia primero a la lista de espera.</p>
               <a
                 className={styles.btnLista}
                 href={whatsappLink(`Hola, quiero sumarme a la lista de espera de "${c.nombre}"`)}

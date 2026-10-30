@@ -65,7 +65,8 @@ así que nada se sube ni se mergea sin el OK de Marcos.
 - [ ] Precios de lanzamiento en las tarjetas de la lista de espera: faltan los números (publicarlos obliga,
       Ley 24.240; van como «precio de lanzamiento · primera cohorte», con fechas cuando abra cada curso).
       Recomendación del 30/10: SQL $49.900 (lanzamiento $34.900), IA para el trabajo $44.900 ($29.900),
-      IA para docentes $34.900 ($24.900), Redes/Linux/AWS en vivo $200.000 en 3 cuotas ($180.000 en un pago).
+      IA para docentes $34.900 ($24.900), Redes/Linux/AWS $89.900 ($62.900). Los cuatro son grabados (no hay
+      otro curso en vivo hasta terminar el Intensivo actual).
 - [x] `/redes/inscripcion` (el link «Formate como DevOps en AWS» de Linktree) redirige a
       `/proximos-cursos?curso=redes` con esa tarjeta destacada.
 - [x] Módulos de IA anunciados como «Próximamente · gratis con tu acceso» en Scripting («Automatizá con IA») y

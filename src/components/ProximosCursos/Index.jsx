@@ -39,7 +39,7 @@ const PROXIMOS = [
     nombre: "Redes, Linux y AWS",
     tag: "DevOps",
     texto:
-      "Formate como DevOps: redes desde cero, Linux a fondo y despliegues en AWS, con práctica real sobre servidores propios.",
+      "Formate como DevOps: redes desde cero, Linux a fondo y despliegues en AWS, en clases grabadas con práctica real paso a paso.",
     para: "Para quienes ya programan o trabajan en soporte y quieren dar el salto a infraestructura.",
   },
 ];

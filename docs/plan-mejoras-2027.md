@@ -11,10 +11,10 @@ así que nada se sube ni se mergea sin el OK de Marcos.
 ## Tanda 1: base legal y precios honestos (antes del CyberMonday, 2 al 4/11)
 
 - [x] Datos legales en un solo lugar: `src/data/legal.js`.
-- [ ] Completar en `src/data/legal.js`: razón social y CUIT ya cargados (Marcos Roberto Costa Schmite,
-      23-94799356-9). Faltan domicilio, mail de atención, horario y el QR de Data Fiscal, que se genera en
-      ARCA con clave fiscal (servicio «Formulario 960/NM – Data Fiscal»). Los campos en null se ven como
-      «⚠ completar» en local y en producción no se muestran.
+- [x] Datos del vendedor completos en `src/data/legal.js` (publicado el 30/10/2026): Marcos Roberto Costa
+      Schmite, CUIT 23-94799356-9, domicilio declarado en ARCA (Mar Dulce 305, piso 1, depto. 9, CABA),
+      `info@wearesrv.com`, lunes a viernes de 10 a 18 h, y el F960/D para sitios web (link de ARCA + su logo
+      oficial en `public/data-fiscal.jpg`) en el pie de página.
 - [x] Páginas `/terminos` (Contratos de adhesión – Ley 24.240), `/privacidad`, `/arrepentimiento` y `/baja`.
 - [x] Pie de página con los links legales, el botón de arrepentimiento destacado y los datos del vendedor.
 - [x] Aviso legal junto a los botones de pago (cursos grabados e intensivo).

@@ -9,14 +9,16 @@ export const LEGAL = {
   marca: "WEARESRV",
   razonSocial: "Marcos Roberto Costa Schmite",
   cuit: "23-94799356-9",
-  domicilio: null, // domicilio comercial o fiscal
-  email: null, // correo de atención al cliente
-  horario: null, // horario de atención, por ejemplo "lunes a viernes de 10 a 18 h"
+  domicilio: "Mar Dulce 305, piso 1, depto. 9, Ciudad Autónoma de Buenos Aires", // el declarado en ARCA
+  email: "info@wearesrv.com",
+  horario: "lunes a viernes de 10 a 18 h",
   whatsapp: "+54 9 11 2386-9799",
   whatsappNumero: "5491123869799",
-  dataFiscalUrl: null, // link del QR de Data Fiscal (ARCA, formulario 960/NM)
-  dataFiscalImg: null, // imagen del QR guardada en public/, por ejemplo "/data-fiscal.png"
-  actualizacion: "29 de octubre de 2026",
+  // Formulario 960/D para sitios web (ARCA). El link es el que da ARCA (solo http); la imagen es su
+  // logo oficial DATAWEB.jpg, guardado en public/.
+  dataFiscalUrl: "http://qr.afip.gob.ar/?qr=2fo6inei48mGOnEZH3MeZg,,",
+  dataFiscalImg: "/data-fiscal.jpg",
+  actualizacion: "30 de octubre de 2026",
 };
 
 export const whatsappLink = (texto) => `https://wa.me/${LEGAL.whatsappNumero}?text=${encodeURIComponent(texto)}`;

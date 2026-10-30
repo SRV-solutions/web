@@ -102,15 +102,138 @@
   align-items: center;
   justify-content: center;
   padding: 0.85rem 1.2rem;
+  border: none;
   border-radius: 8px;
   background-color: #30a05a;
   color: #fff;
+  font: inherit;
   font-weight: 700;
-  text-decoration: none;
+  cursor: pointer;
 }
 
-.btnLista:hover {
+.btnLista:hover,
+.btnOtro:hover {
   filter: brightness(1.1);
+}
+
+/* Formulario de la lista de espera */
+.registro {
+  margin-top: 3rem;
+  padding: 2rem 1.5rem;
+  border: 1px solid #30a05a;
+  border-radius: 14px;
+  background: rgba(48, 160, 90, 0.07);
+  scroll-margin-top: 90px;
+}
+
+.registro h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1.4rem;
+  font-weight: 900;
+}
+
+.registro > p {
+  margin: 0 0 1.2rem;
+  max-width: 65ch;
+  color: #c8c8c8;
+  line-height: 1.6;
+}
+
+.form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.campo {
+  width: 100%;
+  padding: 0.85rem 0.9rem;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background-color: #000;
+  color: #fff;
+  font: inherit;
+}
+
+.campo:focus {
+  border-color: #30a05a;
+  outline: none;
+}
+
+.campoCurso {
+  grid-column: 1 / -1;
+}
+
+/* Campo trampa para bots: fuera de la vista, sin ocupar lugar en la grilla */
+.trampa {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.btnRegistro {
+  padding: 0.85rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #f6950a;
+  color: #000;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.btnRegistro:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.consentimiento {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #888;
+  font-size: 0.82rem;
+}
+
+.consentimiento a,
+.registroError a {
+  color: #f6950a;
+}
+
+.registroOk {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid #30a05a;
+  border-radius: 8px;
+  background: rgba(48, 160, 90, 0.08);
+}
+
+.registroOk p {
+  margin: 0;
+  color: #c8f0d6;
+}
+
+.btnOtro {
+  padding: 0.6rem 1rem;
+  border: 1px solid #30a05a;
+  border-radius: 8px;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.registroError {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #ff7b7b;
+  font-size: 0.9rem;
 }
 
 .nota {

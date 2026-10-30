@@ -12,6 +12,11 @@
  *       les llega el acceso solo, sin ejecutar nada a mano.
  *    4. Una vez por día te manda un resumen con los registros nuevos.
  *
+ *  LISTAS DE ESPERA: también recibe las inscripciones a la lista de espera de los próximos
+ *  cursos (wearesrv.com/proximos-cursos, Netlify Function lista-espera). Van a la pestaña
+ *  "Lista de espera" con curso, nombre, apellido, email y celular, y el anotado recibe un mail
+ *  de confirmación. Cuando abra un curso, filtrás esa pestaña por curso y tenés la lista.
+ *
  *  CUOTA DE MAILS: una cuenta de Gmail manda unos 100 mails por día desde Apps Script, y esa
  *  cuota es de la CUENTA: la comparte con el script de pagos. Este script nunca usa los
  *  últimos CONFIG.RESERVA_MAILS, que quedan para los mails de las compras. Si se llega a ese
@@ -63,6 +68,17 @@ var COL_ESTADO = 5;
 var COL_DETALLE = 6;
 var TOTAL_COLS = 6;
 
+// Pestaña de las listas de espera (columnas 1 = A)
+var SHEET_LISTA = "Lista de espera";
+var LISTA_COL_FECHA = 1;
+var LISTA_COL_CURSO = 2;
+var LISTA_COL_NOMBRE = 3;
+var LISTA_COL_APELLIDO = 4;
+var LISTA_COL_EMAIL = 5;
+var LISTA_COL_CELULAR = 6;
+var LISTA_COL_DETALLE = 7;
+var LISTA_TOTAL_COLS = 7;
+
 // ============================================================
 //  ENTRADA DEL WEBHOOK (Netlify Function -> acá)
 // ============================================================
@@ -82,6 +98,10 @@ function doPost(e) {
     var body = {};
     if (e.postData && e.postData.contents) {
       try { body = JSON.parse(e.postData.contents); } catch (parseErr) { body = {}; }
+    }
+
+    if (body.accion === "lista-espera") {
+      return procesarListaEspera_(body);
     }
 
     var nombre = String(body.nombre || "").trim().slice(0, 80) || "Estudiante";
@@ -165,6 +185,82 @@ function entregarAcceso_(numFila, nombre, email, folder) {
 }
 
 // ============================================================
+//  LISTA DE ESPERA DE LOS PRÓXIMOS CURSOS
+// ============================================================
+// body = { accion: "lista-espera", curso: "SQL desde cero", contacto: { nombre, apellido, email, celular } }
+function procesarListaEspera_(body) {
+  var c = body.contacto || {};
+  var curso = String(body.curso || "").trim().slice(0, 60);
+  var nombre = String(c.nombre || "").trim().slice(0, 60);
+  var apellido = String(c.apellido || "").trim().slice(0, 60);
+  var email = String(c.email || "").trim().toLowerCase().slice(0, 120);
+  var celular = String(c.celular || "").replace(/^[\s=+\-@]+/, "").trim().slice(0, 25);
+  if (!curso || !emailValido_(email)) return responder_("invalid_data");
+
+  // Sin lock (por ejemplo, mientras corre la entrega de cada hora) se guarda igual, sin antiduplicados
+  var lock = LockService.getScriptLock();
+  var conLock = lock.tryLock(20000);
+  try {
+    if (conLock && yaEnLista_(curso, email)) return responder_("lista_ya_registrado");
+
+    var hoja = getHojaLista_();
+    hoja.appendRow([
+      new Date(),
+      curso,
+      sanitizarCelda_(nombre),
+      sanitizarCelda_(apellido),
+      sanitizarCelda_(email),
+      sanitizarCelda_(celular),
+      ""
+    ]);
+    var fila = hoja.getLastRow();
+
+    // La confirmación es un extra: si no hay cuota, el registro queda igual
+    if (hayCuota_()) {
+      try {
+        GmailApp.sendEmail(email, "Estás en la lista de espera de " + curso + " - WEARESRV", "", {
+          name: CONFIG.NOMBRE_REMITENTE,
+          replyTo: CONFIG.EMAIL_ADMIN,
+          htmlBody: construirEmailListaHtml_(nombre, curso)
+        });
+      } catch (mailErr) {
+        hoja.getRange(fila, LISTA_COL_DETALLE).setValue(sanitizarCelda_("Mail: " + mailErr));
+      }
+    } else {
+      hoja.getRange(fila, LISTA_COL_DETALLE).setValue("Sin mail de confirmación (cuota del día)");
+    }
+    return responder_("lista_ok");
+  } finally {
+    if (conLock) lock.releaseLock();
+  }
+}
+
+function yaEnLista_(curso, email) {
+  var hoja = getHojaLista_();
+  var lastRow = hoja.getLastRow();
+  if (lastRow < 2) return false;
+  var datos = hoja.getRange(2, 1, lastRow - 1, LISTA_TOTAL_COLS).getValues();
+  for (var i = 0; i < datos.length; i++) {
+    if (String(datos[i][LISTA_COL_CURSO - 1]) === curso &&
+        String(datos[i][LISTA_COL_EMAIL - 1]).toLowerCase() === email) return true;
+  }
+  return false;
+}
+
+function getHojaLista_() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var hoja = ss.getSheetByName(SHEET_LISTA);
+  if (!hoja) {
+    hoja = ss.insertSheet(SHEET_LISTA);
+    hoja.appendRow(["Fecha", "Curso", "Nombre", "Apellido", "Email", "Celular", "Detalle"]);
+    hoja.setFrozenRows(1);
+    hoja.getRange("F:F").setNumberFormat("@");
+    hoja.getRange(1, 1, 1, LISTA_TOTAL_COLS).createFilter();
+  }
+  return hoja;
+}
+
+// ============================================================
 //  ACTIVADORES (los instala probarConfiguracion)
 // ============================================================
 
@@ -198,38 +294,71 @@ function entregarPendientes() {
   }
 }
 
-// Una vez por día: resumen de los registros de las últimas 24 horas (un solo mail, cuida la cuota)
+// Una vez por día: resumen de los registros de las últimas 24 horas de Fundamentos IA y de las
+// listas de espera (un solo mail, cuida la cuota). Si no hubo nada nuevo, no manda nada.
 function resumenDiario() {
-  var sheet = getSheet_();
-  var lastRow = sheet.getLastRow();
-  if (lastRow < 2) return;
-  var datos = sheet.getRange(2, 1, lastRow - 1, TOTAL_COLS).getValues();
   var desde = Date.now() - 24 * 60 * 60 * 1000;
-  var nuevos = [];
-  var enEspera = 0;
-  var sinGoogle = 0;
-  for (var i = 0; i < datos.length; i++) {
-    var fecha = datos[i][COL_FECHA - 1];
-    var estado = String(datos[i][COL_ESTADO - 1]);
-    if (estado === ESTADO_EN_ESPERA) enEspera++;
-    if (estado === ESTADO_SIN_GOOGLE) sinGoogle++;
-    if (fecha instanceof Date && fecha.getTime() >= desde && datos[i][COL_EMAIL - 1]) {
-      nuevos.push("• " + datos[i][COL_NOMBRE - 1] + " <" + datos[i][COL_EMAIL - 1] + "> · " + (datos[i][COL_CELULAR - 1] || "-"));
+  var esNuevo = function (fecha) { return fecha instanceof Date && fecha.getTime() >= desde; };
+  var listar = function (items) {
+    return items.slice(0, 50).join("\n") + (items.length > 50 ? "\n... y " + (items.length - 50) + " más" : "");
+  };
+
+  // Fundamentos IA
+  var nuevosFund = [];
+  var totalFund = 0, enEspera = 0, sinGoogle = 0;
+  var sheet = getSheet_();
+  if (sheet.getLastRow() >= 2) {
+    var datos = sheet.getRange(2, 1, sheet.getLastRow() - 1, TOTAL_COLS).getValues();
+    for (var i = 0; i < datos.length; i++) {
+      if (!datos[i][COL_EMAIL - 1]) continue;
+      totalFund++;
+      var estado = String(datos[i][COL_ESTADO - 1]);
+      if (estado === ESTADO_EN_ESPERA) enEspera++;
+      if (estado === ESTADO_SIN_GOOGLE) sinGoogle++;
+      if (esNuevo(datos[i][COL_FECHA - 1])) {
+        nuevosFund.push("• " + datos[i][COL_NOMBRE - 1] + " <" + datos[i][COL_EMAIL - 1] + "> · " + (datos[i][COL_CELULAR - 1] || "-"));
+      }
     }
   }
-  if (!nuevos.length) return;
 
-  var listado = nuevos.slice(0, 50).join("\n") + (nuevos.length > 50 ? "\n... y " + (nuevos.length - 50) + " más" : "");
+  // Listas de espera
+  var nuevosLista = [];
+  var totalPorCurso = {};
+  var hoja = getHojaLista_();
+  if (hoja.getLastRow() >= 2) {
+    var filas = hoja.getRange(2, 1, hoja.getLastRow() - 1, LISTA_TOTAL_COLS).getValues();
+    for (var j = 0; j < filas.length; j++) {
+      var curso = String(filas[j][LISTA_COL_CURSO - 1]);
+      if (!curso) continue;
+      totalPorCurso[curso] = (totalPorCurso[curso] || 0) + 1;
+      if (esNuevo(filas[j][LISTA_COL_FECHA - 1])) {
+        nuevosLista.push("• " + curso + ": " + filas[j][LISTA_COL_NOMBRE - 1] + " " + filas[j][LISTA_COL_APELLIDO - 1] +
+          " <" + filas[j][LISTA_COL_EMAIL - 1] + "> · " + (filas[j][LISTA_COL_CELULAR - 1] || "-"));
+      }
+    }
+  }
+
+  if (!nuevosFund.length && !nuevosLista.length) return;
+
+  var partes = ["¡Hola Marcos! Estos son los registros de las últimas 24 horas."];
+  if (nuevosFund.length) {
+    partes.push(
+      "FUNDAMENTOS IA (" + nuevosFund.length + " nuevos)\n" + listar(nuevosFund) + "\n\n" +
+      "Total: " + totalFund + " · Esperando el acceso: " + enEspera +
+      (enEspera && !carpetaConMaterial_() ? " (la carpeta todavía no tiene material: subí los videos y las guías y les llega solo)" : "") +
+      " · Sin cuenta de Google (fijate si respondieron con un Gmail): " + sinGoogle
+    );
+  }
+  if (nuevosLista.length) {
+    var totales = Object.keys(totalPorCurso).map(function (k) { return k + ": " + totalPorCurso[k]; }).join(" · ");
+    partes.push("LISTAS DE ESPERA (" + nuevosLista.length + " nuevos)\n" + listar(nuevosLista) + "\n\nTotal por curso: " + totales);
+  }
+  partes.push("Planilla: " + SpreadsheetApp.getActiveSpreadsheet().getUrl());
+
   MailApp.sendEmail({
     to: CONFIG.EMAIL_ADMIN,
-    subject: "📩 Fundamentos IA: " + nuevos.length + " registro(s) nuevo(s) en las últimas 24 h",
-    body:
-      "¡Hola Marcos! Estos son los registros nuevos de Fundamentos IA:\n\n" + listado + "\n\n" +
-      "Total de registros: " + datos.length + "\n" +
-      "Esperando el acceso: " + enEspera +
-      (enEspera && !carpetaConMaterial_() ? " (la carpeta todavía no tiene material: subí los videos y las guías y les llega solo)" : "") + "\n" +
-      "Sin cuenta de Google (fijate si respondieron con un Gmail): " + sinGoogle + "\n\n" +
-      "Planilla: " + SpreadsheetApp.getActiveSpreadsheet().getUrl()
+    subject: "📩 Registros del día: " + nuevosFund.length + " en Fundamentos IA y " + nuevosLista.length + " en listas de espera",
+    body: partes.join("\n\n")
   });
 }
 
@@ -270,6 +399,8 @@ function probarConfiguracion() {
 
   var sheet = getSheet_();
   mensajes.push("✅ Hoja \"" + CONFIG.SHEET_NAME + "\" OK: " + Math.max(sheet.getLastRow() - 1, 0) + " registro(s)");
+  var hojaLista = getHojaLista_();
+  mensajes.push("✅ Hoja \"" + SHEET_LISTA + "\" OK: " + Math.max(hojaLista.getLastRow() - 1, 0) + " anotado(s)");
 
   instalarActivadores_();
   mensajes.push("✅ Activadores: entrega cada hora y resumen diario a las " + CONFIG.HORA_RESUMEN + " h");
@@ -406,11 +537,11 @@ function responder_(status) {
 }
 
 // ============================================================
-//  EMAIL HTML DE ACCESO
-//  compartida = false: el mail no es cuenta de Google; se le pide que responda con un Gmail.
+//  EMAILS HTML
 // ============================================================
+
+// Acceso a Fundamentos IA. compartida = false: el mail no es cuenta de Google; se le pide un Gmail.
 function construirEmailHtml_(nombre, linkDrive, compartida) {
-  var nombreSeguro = escaparHtml_(nombre);
   var etiquetaBadge = compartida ? "REGISTRO CONFIRMADO • ACCESO HABILITADO" : "REGISTRO CONFIRMADO";
 
   var texto = compartida
@@ -428,13 +559,42 @@ function construirEmailHtml_(nombre, linkDrive, compartida) {
             </tr>`
     : "";
 
+  return envolverEmailHtml_(
+    etiquetaBadge,
+    'FUNDAMENTOS DE <span style="color:#f6950a;">IA</span> · 100% GRATIS',
+    saludoHtml_(nombre) + texto + "<br><br>" +
+      "Muy pronto también vas a poder entrar con este mismo correo a <strong>E-stellarium</strong>, nuestra plataforma educativa: cuando esté disponible te avisamos por acá.",
+    boton
+  );
+}
+
+// Confirmación de la lista de espera de un próximo curso
+function construirEmailListaHtml_(nombre, curso) {
+  return envolverEmailHtml_(
+    "LISTA DE ESPERA • ANOTADO",
+    'LISTA DE ESPERA: <span style="color:#f6950a;">' + escaparHtml_(curso.toUpperCase()) + "</span>",
+    saludoHtml_(nombre) +
+      "Quedaste en la lista de espera de <strong>" + escaparHtml_(curso) + "</strong>. Cuando abra la inscripción te avisamos " +
+      "a este correo antes que a nadie, con el precio de lanzamiento para la lista. Anotarte no te compromete a nada.<br><br>" +
+      "Como todos nuestros cursos, va a tener certificado verificable con examen final en vivo y acceso a " +
+      "<strong>E-stellarium</strong>, nuestra plataforma educativa.",
+    ""
+  );
+}
+
+function saludoHtml_(nombre) {
+  return '¡Hola <strong style="color:#f6950a;">' + escaparHtml_(nombre || "") + "</strong>!<br><br>";
+}
+
+// Estructura común de los mails: logo, etiqueta, título, cuerpo, botón opcional, comunidad y firma
+function envolverEmailHtml_(etiquetaBadge, tituloHtml, cuerpoHtml, botonHtml) {
   return `
   <!DOCTYPE html>
   <html>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fundamentos IA</title>
+    <title>WEARESRV</title>
   </head>
   <body style="margin:0; padding:0; background-color:#000000; font-family:'Roboto', Arial, sans-serif; color:#ffffff;">
     <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#000000; padding: 20px 0;">
@@ -459,17 +619,15 @@ function construirEmailHtml_(nombre, linkDrive, compartida) {
             </tr>
             <tr>
               <td style="padding: 10px 30px 0px 30px; font-size:24px; font-weight:900; text-transform:uppercase; color:#ffffff; line-height:1.2;">
-                FUNDAMENTOS DE <span style="color:#f6950a;">IA</span> · 100% GRATIS
+                ${tituloHtml}
               </td>
             </tr>
             <tr>
               <td style="padding: 20px 30px; font-size:15px; line-height:1.6; color:#ffffff;">
-                ¡Hola <strong style="color:#f6950a;">${nombreSeguro}</strong>!<br><br>
-                ${texto}<br><br>
-                Muy pronto también vas a poder entrar con este mismo correo a <strong>E-stellarium</strong>, nuestra plataforma educativa: cuando esté disponible te avisamos por acá.
+                ${cuerpoHtml}
               </td>
             </tr>
-            ${boton}
+            ${botonHtml}
             <tr>
               <td style="padding: 8px 30px 20px 30px;">
                 <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#000000; border:1px solid #30a05a; border-radius:8px; padding:15px;">

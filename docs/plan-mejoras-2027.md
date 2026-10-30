@@ -57,8 +57,15 @@ así que nada se sube ni se mergea sin el OK de Marcos.
       El alta en E-stellarium se suma al script cuando la plataforma esté disponible.
 - [x] Certificado de Scratch para los chicos: evaluación con preguntas y un jueguito desde E-stellarium
       («muy pronto» en la página hasta que la plataforma lo tenga).
+- [x] Lista de espera con formulario (curso, nombre, apellido, mail y celular): Netlify Function `lista-espera`
+      → pestaña «Lista de espera» del mismo Apps Script de Fundamentos IA, con mail de confirmación al anotado y
+      los anotados en el resumen diario. Reemplaza al botón de WhatsApp (que queda como salida si falla).
+      Publicar recién después de pegar la versión nueva de `appscript-fundamentos.gs` («Nueva versión»):
+      con la versión anterior el formulario muestra el error.
 - [ ] Precios de lanzamiento en las tarjetas de la lista de espera: faltan los números (publicarlos obliga,
-      Ley 24.240; van como «precio de lanzamiento · primera cohorte»).
+      Ley 24.240; van como «precio de lanzamiento · primera cohorte», con fechas cuando abra cada curso).
+      Recomendación del 30/10: SQL $49.900 (lanzamiento $34.900), IA para el trabajo $44.900 ($29.900),
+      IA para docentes $34.900 ($24.900), Redes/Linux/AWS en vivo $200.000 en 3 cuotas ($180.000 en un pago).
 - [x] `/redes/inscripcion` (el link «Formate como DevOps en AWS» de Linktree) redirige a
       `/proximos-cursos?curso=redes` con esa tarjeta destacada.
 - [x] Módulos de IA anunciados como «Próximamente · gratis con tu acceso» en Scripting («Automatizá con IA») y

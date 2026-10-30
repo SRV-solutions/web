@@ -16,7 +16,7 @@ export const LEGAL = {
   whatsappNumero: "5491123869799",
   dataFiscalUrl: null, // link del QR de Data Fiscal (ARCA, formulario 960/NM)
   dataFiscalImg: null, // imagen del QR guardada en public/, por ejemplo "/data-fiscal.png"
-  actualizacion: "29 de octubre de 2026",
+  actualizacion: "30 de octubre de 2026",
 };
 
 export const whatsappLink = (texto) => `https://wa.me/${LEGAL.whatsappNumero}?text=${encodeURIComponent(texto)}`;

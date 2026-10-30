@@ -44,13 +44,17 @@ así que nada se sube ni se mergea sin el OK de Marcos.
       sacar el «muy pronto» y sumar el botón de pedir examen.
 - [x] Página gratuita «Fundamentos de IA» (`/fundamentos-ia`): 4 temas con lugar para video y guía (completar
       `url`/`guia` en el componente a medida que Marcos los sube), CTA a YouTube y Discord, y camino a los pagos.
-- [x] Captura de contactos en Fundamentos IA (nombre, mail y celular) con Netlify Forms: los registros quedan en
-      Netlify → Forms. La entrega automática está lista en `appscript-fundamentos.gs` (proyecto de Apps Script
-      separado del de pagos): registra en una hoja, comparte la carpeta de Drive del material, manda el mail de
-      bienvenida y avisa a Marcos. Pendiente a mano: crear la Sheet, pegar el script, implementarlo como app web
-      y conectar el webhook saliente en Netlify Forms (instrucciones en el encabezado del archivo). Mientras la
-      carpeta no exista, los registros quedan en espera y se entregan con `darAccesoPendientes()`. El alta en
-      E-stellarium se suma al script cuando la plataforma esté disponible.
+- [x] Registro en Fundamentos IA (nombre, mail y celular): el formulario postea a la Netlify Function
+      `registro-fundamentos`, que se lo pasa al Apps Script `appscript-fundamentos.gs` (proyecto separado del de
+      pagos). El script guarda el registro en su planilla, comparte la carpeta de Drive y manda el mail de acceso;
+      mientras la carpeta esté vacía los registros esperan y cada hora se entregan solos. A Marcos le llega un
+      resumen diario (no un mail por registro: la cuota de ~100 mails por día es de la cuenta y la comparte con
+      el script de pagos; este script deja siempre 40 libres para las compras). Se dejó Netlify Forms porque la
+      detección de formularios del sitio está apagada y el plan gratis tiene tope de envíos.
+- [ ] Activar el registro de Fundamentos IA: instalar el Apps Script (prompt para el Claude del navegador) y cargar
+      en Netlify `FUNDAMENTOS_WEBHOOK_URL` y `FUNDAMENTOS_WEBHOOK_SECRET` (los manda por mail
+      `probarConfiguracion()`), y redeployar. Hasta entonces el formulario muestra el error con salida a WhatsApp.
+      El alta en E-stellarium se suma al script cuando la plataforma esté disponible.
 - [x] Certificado de Scratch para los chicos: evaluación con preguntas y un jueguito desde E-stellarium
       («muy pronto» en la página hasta que la plataforma lo tenga).
 - [ ] Precios de lanzamiento en las tarjetas de la lista de espera: faltan los números (publicarlos obliga,

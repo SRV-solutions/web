@@ -38,21 +38,30 @@ const TEMAS = [
 ];
 
 export default function FundamentosIA() {
-  // Registro a la lista de Fundamentos IA por Netlify Forms (formulario oculto en index.html).
-  // En local no funciona (Vite no procesa los forms de Netlify): probarlo en el deploy.
+  // Registro a Fundamentos IA: netlify/functions/registro-fundamentos.js se lo pasa al Apps Script
+  // (appscript-fundamentos.gs), que da el acceso al Drive y manda el mail.
+  // En local no funciona (Vite no corre las Netlify Functions): probarlo en el deploy.
   const [envio, setEnvio] = useState("inicial"); // inicial | enviando | listo | error
+  const [campoInvalido, setCampoInvalido] = useState(null);
 
   const registrar = async (e) => {
     e.preventDefault();
-    const datos = new FormData(e.target);
+    const datos = Object.fromEntries(new FormData(e.target));
     setEnvio("enviando");
+    setCampoInvalido(null);
     try {
-      const res = await fetch("/", {
+      const res = await fetch("/.netlify/functions/registro-fundamentos", {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams([...datos, ["form-name", "fundamentos-ia"]]).toString(),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(datos),
       });
-      setEnvio(res.ok ? "listo" : "error");
+      if (res.ok) {
+        setEnvio("listo");
+        return;
+      }
+      const data = await res.json().catch(() => ({}));
+      setCampoInvalido(res.status === 400 ? data.campo || null : null);
+      setEnvio("error");
     } catch {
       setEnvio("error");
     }
@@ -66,14 +75,14 @@ export default function FundamentosIA() {
         path="/fundamentos-ia"
       />
       <div className={styles.inner}>
-        <p className={styles.kicker}>100% gratis · Sin registro</p>
+        <p className={styles.kicker}>100% gratis · Acceso por mail</p>
         <h1 className={styles.title}>
           Fundamentos de <span className={styles.orange}>IA</span>
         </h1>
         <p className={styles.lead}>
-          Videos y guías gratuitas para entender la IA y empezar a usarla hoy, sin saber programar. Material abierto
-          para toda la comunidad: estamos subiendo los primeros contenidos, y los nuevos se anuncian en el canal de
-          YouTube y en Discord.
+          Videos y guías gratuitas para entender la IA y empezar a usarla hoy, sin saber programar. Anotate más abajo
+          y te llega por mail el acceso a la carpeta con todo el material; cada contenido nuevo se suma ahí y se
+          anuncia en el canal de YouTube y en Discord.
         </p>
 
         <div className={styles.grid}>
@@ -111,6 +120,7 @@ export default function FundamentosIA() {
               <input className={styles.campo} type="text" name="nombre" placeholder="Tu nombre" required autoComplete="name" />
               <input className={styles.campo} type="email" name="email" placeholder="Tu mail" required autoComplete="email" />
               <input className={styles.campo} type="tel" name="celular" placeholder="Tu celular (con código de área)" required autoComplete="tel" />
+              <input className={styles.trampa} type="text" name="empresa" tabIndex={-1} autoComplete="off" aria-hidden="true" />
               <button className={styles.btnRegistro} type="submit" disabled={envio === "enviando"}>
                 {envio === "enviando" ? "Enviando..." : "Quiero recibirlos"}
               </button>
@@ -118,7 +128,16 @@ export default function FundamentosIA() {
                 Al enviar aceptás nuestra <Link to="/privacidad">política de privacidad</Link>. Podés darte de baja
                 cuando quieras.
               </p>
-              {envio === "error" && (
+              {envio === "error" && campoInvalido && (
+                <p className={styles.registroError}>
+                  {campoInvalido === "celular"
+                    ? "Revisá el celular: escribilo con código de área, por ejemplo 11 2345-6789."
+                    : campoInvalido === "email"
+                      ? "Revisá el mail: parece que tiene un error."
+                      : "Revisá tu nombre."}
+                </p>
+              )}
+              {envio === "error" && !campoInvalido && (
                 <p className={styles.registroError}>
                   No pudimos registrarte. Probá de nuevo o{" "}
                   <a href={whatsappLink("Hola, quiero recibir el material gratuito de Fundamentos IA")} target="_blank" rel="noopener noreferrer">

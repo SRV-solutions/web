@@ -3,45 +3,37 @@
  *  FUNDAMENTOS IA (gratis) -> REGISTRO + ACCESO AL DRIVE
  * ============================================================
  *
- *  Recibe cada registro del formulario de wearesrv.com/fundamentos-ia (que postea a
- *  Netlify Forms) a través de un webhook saliente de Netlify, y hace todo solo:
+ *  Recibe cada registro del formulario de wearesrv.com/fundamentos-ia (lo manda la Netlify
+ *  Function registro-fundamentos) y hace todo solo:
  *    1. Guarda nombre, email y celular en la hoja "Fundamentos IA".
- *    2. Comparte la carpeta de Drive del material (solo lectura) con ese email.
- *    3. Le manda el mail de bienvenida con el botón a la carpeta.
- *    4. Te avisa a vos por mail de cada registro nuevo.
+ *    2. Si la carpeta de Drive ya tiene material, la comparte (solo lectura) con ese email
+ *       y le manda el mail de acceso. Si la carpeta está vacía, el registro queda EN_ESPERA.
+ *    3. Cada hora entrega a los que esperan: apenas subís el material a la carpeta, a todos
+ *       les llega el acceso solo, sin ejecutar nada a mano.
+ *    4. Una vez por día te manda un resumen con los registros nuevos.
  *
- *  Si la carpeta todavía no está configurada (FOLDER_ID = "SIN FOLDER"), el registro
- *  queda guardado como REGISTRADO y el mail de bienvenida avisa que el acceso llega
- *  apenas esté el primer material. Cuando la carpeta esté lista: completás FOLDER_ID,
- *  pegás la versión nueva y ejecutás darAccesoPendientes() una vez desde el editor:
- *  comparte la carpeta y manda el mail de acceso a todos los que estaban esperando.
+ *  CUOTA DE MAILS: una cuenta de Gmail manda unos 100 mails por día desde Apps Script, y esa
+ *  cuota es de la CUENTA: la comparte con el script de pagos. Este script nunca usa los
+ *  últimos CONFIG.RESERVA_MAILS, que quedan para los mails de las compras. Si se llega a ese
+ *  límite, los registros esperan y salen solos en la próxima hora con cuota disponible.
  *
- *  E-STELLARIUM: cuando la plataforma esté disponible y tenga forma de dar altas
- *  (API o planilla), el acceso se suma acá, en darAcceso_(). Mientras tanto el mail
- *  ya avisa que el acceso a E-stellarium se habilita con este mismo correo.
+ *  E-STELLARIUM: cuando la plataforma tenga forma de dar altas, se suma en entregarAcceso_().
  *
- *  CONFIGURACIÓN INICIAL (una sola vez; es un proyecto SEPARADO del de pagos,
- *  porque cada proyecto de Apps Script tiene un solo doPost):
- *
- *  1. Crear una Google Sheet nueva ("Registros Fundamentos IA") -> Extensiones ->
- *     Apps Script -> pegar este archivo.
- *  2. Configuración del proyecto (ícono ⚙️) -> "Propiedades de la secuencia de comandos":
- *       FORM_SECRET = una clave inventada por vos, larga y aleatoria (40+ caracteres).
- *     ⚠️ NUNCA pegues la clave directamente en el código.
- *  3. Completar FOLDER_ID (abajo en CONFIG) con el ID de la carpeta de Drive del
- *     material. Si todavía no existe, dejá "SIN FOLDER": los registros quedan en
- *     espera y después corrés darAccesoPendientes().
- *  4. Ejecutar una vez probarConfiguracion() para autorizar permisos (Drive, Gmail,
- *     Sheets) y verificar que todo esté OK.
- *  5. Implementar -> Nueva implementación -> Aplicación web
+ *  CONFIGURACIÓN (una sola vez; es un proyecto SEPARADO del de pagos):
+ *  1. Crear una Google Sheet nueva ("Registros Fundamentos IA") en la misma cuenta de Google
+ *     que la planilla de pagos -> Extensiones -> Apps Script -> pegar este archivo -> Guardar.
+ *  2. Ejecutar probarConfiguracion() y aceptar los permisos. La primera vez crea sola la
+ *     carpeta "Fundamentos IA · WEARESRV" en tu Drive, la clave secreta y los activadores.
+ *  3. Implementar -> Nueva implementación -> Aplicación web
  *       Ejecutar como: Yo   |   Quién tiene acceso: Cualquier usuario
- *     Copiar la URL (termina en /exec).
- *  6. En Netlify: Project configuration -> Notifications -> Form submission
- *     notifications -> Add notification -> "Outgoing webhook":
- *       Event: New form submission   |   Form: fundamentos-ia
- *       URL: la del paso 5 + "?key=" + tu FORM_SECRET
- *     (ejemplo: https://script.google.com/macros/s/XXXX/exec?key=TU_CLAVE)
+ *  4. Volver a ejecutar probarConfiguracion(): te llega un mail con los dos valores para Netlify.
+ *  5. En Netlify -> Project configuration -> Environment variables, agregar:
+ *       FUNDAMENTOS_WEBHOOK_URL    = la URL /exec de la implementación
+ *       FUNDAMENTOS_WEBHOOK_SECRET = la clave del mail
+ *     y después Deploys -> Trigger deploy -> Deploy project (las variables toman efecto ahí).
+ *  6. Subir los videos y las guías a la carpeta "Fundamentos IA · WEARESRV".
  *
+ *  Para usar otra carpeta: Configuración del proyecto -> Propiedades -> cambiar FOLDER_ID.
  *  ⚠️ Después de pegar una versión nueva: Implementar -> Gestionar implementaciones ->
  *  editar (lápiz) -> Versión: "Nueva versión" -> Implementar. Así la URL /exec no cambia.
  * ============================================================
@@ -52,16 +44,15 @@ var CONFIG = {
   NOMBRE_REMITENTE: "WEARESRV",
   LOGO_URL: "https://wearesrv.com/SRV-LOGO.png",
   SHEET_NAME: "Fundamentos IA",
-  // ID de la carpeta de Drive con los videos y las guías de Fundamentos IA.
-  // Mientras diga "SIN FOLDER" los registros quedan en espera (estado REGISTRADO).
-  FOLDER_ID: "SIN FOLDER"
+  NOMBRE_CARPETA: "Fundamentos IA · WEARESRV",
+  RESERVA_MAILS: 40,  // mails por día que este script deja libres para el script de pagos
+  HORA_RESUMEN: 9     // hora del resumen diario (zona horaria del proyecto)
 };
 
-var FOLDER_PENDIENTE = "SIN FOLDER";
-
 // Estados de la hoja
-var ESTADO_REGISTRADO = "REGISTRADO"; // guardado, esperando que exista la carpeta
+var ESTADO_EN_ESPERA = "EN_ESPERA";   // guardado; recibe el acceso cuando haya material y cuota
 var ESTADO_ACCESO = "ACCESO";         // carpeta compartida y mail de acceso enviado
+var ESTADO_SIN_GOOGLE = "SIN_GOOGLE"; // el mail no es cuenta de Google: se le pidió que responda con un Gmail
 
 // Columnas de la hoja (1 = A)
 var COL_FECHA = 1;
@@ -73,45 +64,41 @@ var COL_DETALLE = 6;
 var TOTAL_COLS = 6;
 
 // ============================================================
-//  ENTRADA DEL WEBHOOK (Netlify -> acá)
+//  ENTRADA DEL WEBHOOK (Netlify Function -> acá)
 // ============================================================
 function doPost(e) {
   try {
-    var secret = PropertiesService.getScriptProperties().getProperty("FORM_SECRET");
+    var secret = PropertiesService.getScriptProperties().getProperty("WEBHOOK_SECRET");
     if (!secret) {
-      registrar_({ estado: "ERROR_CONFIG", detalle: "Falta FORM_SECRET en Propiedades del script" });
+      registrar_({ estado: "ERROR_CONFIG", detalle: "Falta WEBHOOK_SECRET: ejecutá probarConfiguracion()" });
       return responder_("config_error");
     }
 
     var params = (e && e.parameter) || {};
-    // La clave viaja en la URL del webhook (?key=...): descarta llamadas ajenas
     if (!compararSeguro_(String(params.key || ""), secret)) {
       return responder_("unauthorized");
     }
 
-    // Netlify manda un JSON con los campos del formulario dentro de "data".
-    // También se aceptan los campos directo en el body (por si algún día el
-    // formulario de la web postea acá sin pasar por Netlify).
     var body = {};
     if (e.postData && e.postData.contents) {
       try { body = JSON.parse(e.postData.contents); } catch (parseErr) { body = {}; }
     }
-    var campos = body.data || body || {};
 
-    var nombre = String(campos.nombre || params.nombre || "").trim() || "Estudiante";
-    var email = String(campos.email || params.email || "").trim().toLowerCase();
-    var celular = String(campos.celular || params.celular || "").trim();
+    var nombre = String(body.nombre || "").trim().slice(0, 80) || "Estudiante";
+    var email = String(body.email || "").trim().toLowerCase().slice(0, 120);
+    // Sin el "+" inicial: en la planilla, un valor que empieza con + puede tomarse como fórmula
+    var celular = String(body.celular || "").replace(/^[\s=+\-@]+/, "").trim().slice(0, 25);
 
     if (!emailValido_(email)) {
-      registrar_({ nombre: nombre, celular: celular, estado: "EMAIL_INVALIDO", detalle: "Email recibido: " + email });
       return responder_("invalid_email");
     }
 
-    // Lock: evita duplicados si llegan dos registros al mismo tiempo
+    // Lock: evita duplicados si llegan dos registros juntos. Si no se consigue (por ejemplo,
+    // mientras corre la entrega de cada hora), el registro igual se guarda y sale en la próxima.
     var lock = LockService.getScriptLock();
-    if (!lock.tryLock(30000)) {
-      registrar_({ nombre: nombre, email: email, celular: celular, estado: "LOCK_TIMEOUT", detalle: "Reintentar a mano con darAccesoPendientes()" });
-      return responder_("busy");
+    if (!lock.tryLock(20000)) {
+      registrar_({ nombre: nombre, email: email, celular: celular, estado: ESTADO_EN_ESPERA, detalle: "Guardado sin lock" });
+      return responder_("success");
     }
 
     try {
@@ -134,163 +121,220 @@ function doGet() {
 //  LÓGICA PRINCIPAL
 // ============================================================
 function procesarRegistro_(nombre, email, celular) {
-  // ANTIDUPLICADOS: si el mail ya está en la hoja no se agrega otra fila.
-  // Si estaba esperando (REGISTRADO) y la carpeta ya existe, se le da el acceso ahora.
-  var filaExistente = buscarEmail_(email);
-  if (filaExistente) {
-    var estado = String(getSheet_().getRange(filaExistente, COL_ESTADO).getValue());
-    if (estado === ESTADO_ACCESO) return responder_("already_registered");
-    if (estado === ESTADO_REGISTRADO && carpetaConfigurada_()) {
-      entregarAcceso_(filaExistente, nombre, email);
-      return responder_("access_granted");
-    }
-    return responder_("already_registered");
-  }
+  // ANTIDUPLICADOS: si el mail ya está en la hoja no se agrega otra fila
+  if (buscarEmail_(email)) return responder_("already_registered");
 
-  var numFila;
-  if (carpetaConfigurada_()) {
-    numFila = registrar_({ nombre: nombre, email: email, celular: celular, estado: ESTADO_REGISTRADO });
-    entregarAcceso_(numFila, nombre, email);
-  } else {
-    numFila = registrar_({ nombre: nombre, email: email, celular: celular, estado: ESTADO_REGISTRADO, detalle: "En espera: falta FOLDER_ID" });
-    // Mail de bienvenida sin link: avisa que el acceso llega con el primer material
-    try {
-      GmailApp.sendEmail(email, "¡Ya estás en Fundamentos IA! - WEARESRV", "", {
-        name: CONFIG.NOMBRE_REMITENTE,
-        replyTo: CONFIG.EMAIL_ADMIN,
-        htmlBody: construirEmailHtml_(nombre, null)
-      });
-    } catch (mailErr) {
-      getSheet_().getRange(numFila, COL_DETALLE).setValue(sanitizarCelda_("Mail bienvenida: " + mailErr));
-    }
-  }
-
-  avisarAdmin_(nombre, email, celular);
+  var numFila = registrar_({ nombre: nombre, email: email, celular: celular, estado: ESTADO_EN_ESPERA });
+  var folder = carpetaConMaterial_();
+  if (folder && hayCuota_()) entregarAcceso_(numFila, nombre, email, folder);
   return responder_("success");
 }
 
-// Comparte la carpeta con el email, manda el mail de acceso y marca la fila como ACCESO.
+// Comparte la carpeta con el email, manda el mail de acceso y actualiza el estado de la fila.
+// Si el mail falla, la fila queda EN_ESPERA y la entrega de cada hora lo vuelve a intentar.
 // E-STELLARIUM (TODO): cuando la plataforma tenga API o planilla de altas, el alta va acá.
-function entregarAcceso_(numFila, nombre, email) {
+function entregarAcceso_(numFila, nombre, email, folder) {
   var sheet = getSheet_();
-  var linkDrive = "https://drive.google.com/drive/folders/" + CONFIG.FOLDER_ID;
+  var compartida = true;
   try {
-    var folder = DriveApp.getFolderById(CONFIG.FOLDER_ID);
     folder.addViewer(email);
-    linkDrive = folder.getUrl();
   } catch (driveErr) {
-    sheet.getRange(numFila, COL_ESTADO).setValue("ERROR_DRIVE");
-    sheet.getRange(numFila, COL_DETALLE).setValue(sanitizarCelda_(String(driveErr)));
-    MailApp.sendEmail({
-      to: CONFIG.EMAIL_ADMIN,
-      subject: "⚠️ Fundamentos IA: no se pudo compartir la carpeta",
-      body:
-        "Email: " + email + "\nNombre: " + nombre + "\n\nError: " + driveErr +
-        "\n\nCompartí la carpeta a mano (puede ser un email que no es cuenta de Google)."
-    });
+    compartida = false; // casi siempre: el mail no es una cuenta de Google
+  }
+
+  try {
+    GmailApp.sendEmail(
+      email,
+      compartida ? "Tu acceso a Fundamentos IA - WEARESRV" : "Fundamentos IA: te falta un paso para el acceso",
+      "",
+      {
+        name: CONFIG.NOMBRE_REMITENTE,
+        replyTo: CONFIG.EMAIL_ADMIN,
+        htmlBody: construirEmailHtml_(nombre, folder.getUrl(), compartida)
+      }
+    );
+  } catch (mailErr) {
+    sheet.getRange(numFila, COL_DETALLE).setValue(sanitizarCelda_("Mail: " + mailErr));
     return;
   }
 
-  try {
-    GmailApp.sendEmail(email, "Tu acceso a Fundamentos IA - WEARESRV", "", {
-      name: CONFIG.NOMBRE_REMITENTE,
-      replyTo: CONFIG.EMAIL_ADMIN,
-      htmlBody: construirEmailHtml_(nombre, linkDrive)
-    });
-  } catch (mailErr) {
-    sheet.getRange(numFila, COL_DETALLE).setValue(sanitizarCelda_("Carpeta compartida, pero falló el mail: " + mailErr));
-  }
-
-  sheet.getRange(numFila, COL_ESTADO).setValue(ESTADO_ACCESO);
-}
-
-function avisarAdmin_(nombre, email, celular) {
-  try {
-    var total = Math.max(getSheet_().getLastRow() - 1, 0);
-    MailApp.sendEmail({
-      to: CONFIG.EMAIL_ADMIN,
-      subject: "📩 Nuevo registro en Fundamentos IA (" + total + " en total)",
-      body:
-        "¡Hola Marcos! Alguien se anotó en Fundamentos IA.\n\n" +
-        "Nombre: " + nombre + "\n" +
-        "Email: " + email + "\n" +
-        "Celular: " + (celular || "-") + "\n\n" +
-        (carpetaConfigurada_()
-          ? "Ya se le compartió la carpeta de Drive y le llegó el mail de acceso."
-          : "Quedó en espera (falta FOLDER_ID): cuando la carpeta esté, corré darAccesoPendientes().")
-    });
-  } catch (err) {
-    Logger.log("No se pudo avisar al admin: " + err);
-  }
+  sheet.getRange(numFila, COL_ESTADO).setValue(compartida ? ESTADO_ACCESO : ESTADO_SIN_GOOGLE);
+  sheet.getRange(numFila, COL_DETALLE).setValue(
+    compartida ? "" : "No es cuenta de Google: si responde con un Gmail, compartile la carpeta a mano"
+  );
 }
 
 // ============================================================
-//  EJECUCIONES MANUALES (desde el editor)
+//  ACTIVADORES (los instala probarConfiguracion)
 // ============================================================
 
-// Después de completar FOLDER_ID: comparte la carpeta y manda el mail de acceso
-// a todos los que quedaron esperando (estado REGISTRADO o ERROR_DRIVE).
-function darAccesoPendientes() {
-  if (!carpetaConfigurada_()) throw new Error("Primero completá CONFIG.FOLDER_ID con el ID de la carpeta de Drive");
+// Cada hora: entrega el acceso a los que esperan, si la carpeta ya tiene material y hay cuota.
+// También se puede ejecutar a mano desde el editor.
+function entregarPendientes() {
+  var folder = carpetaConMaterial_();
+  if (!folder) { Logger.log("La carpeta todavía no tiene material"); return; }
+
+  var lock = LockService.getScriptLock();
+  if (!lock.tryLock(30000)) return;
+  try {
+    var sheet = getSheet_();
+    var lastRow = sheet.getLastRow();
+    if (lastRow < 2) return;
+    var datos = sheet.getRange(2, 1, lastRow - 1, TOTAL_COLS).getValues();
+    var inicio = Date.now();
+    var entregados = 0;
+    for (var i = 0; i < datos.length; i++) {
+      if (String(datos[i][COL_ESTADO - 1]) !== ESTADO_EN_ESPERA) continue;
+      // Corta antes del límite de 6 minutos de Apps Script y antes de tocar la reserva de mails
+      if (Date.now() - inicio > 4 * 60 * 1000 || !hayCuota_()) break;
+      var email = String(datos[i][COL_EMAIL - 1]).trim().toLowerCase();
+      if (!emailValido_(email)) continue;
+      entregarAcceso_(i + 2, String(datos[i][COL_NOMBRE - 1]) || "Estudiante", email, folder);
+      entregados++;
+    }
+    Logger.log("Accesos entregados: " + entregados);
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+// Una vez por día: resumen de los registros de las últimas 24 horas (un solo mail, cuida la cuota)
+function resumenDiario() {
   var sheet = getSheet_();
   var lastRow = sheet.getLastRow();
-  if (lastRow < 2) { Logger.log("No hay registros"); return; }
+  if (lastRow < 2) return;
   var datos = sheet.getRange(2, 1, lastRow - 1, TOTAL_COLS).getValues();
-  var entregados = 0;
+  var desde = Date.now() - 24 * 60 * 60 * 1000;
+  var nuevos = [];
+  var enEspera = 0;
+  var sinGoogle = 0;
   for (var i = 0; i < datos.length; i++) {
+    var fecha = datos[i][COL_FECHA - 1];
     var estado = String(datos[i][COL_ESTADO - 1]);
-    var email = String(datos[i][COL_EMAIL - 1]).trim().toLowerCase();
-    if ((estado !== ESTADO_REGISTRADO && estado !== "ERROR_DRIVE") || !emailValido_(email)) continue;
-    entregarAcceso_(i + 2, String(datos[i][COL_NOMBRE - 1]) || "Estudiante", email);
-    entregados++;
+    if (estado === ESTADO_EN_ESPERA) enEspera++;
+    if (estado === ESTADO_SIN_GOOGLE) sinGoogle++;
+    if (fecha instanceof Date && fecha.getTime() >= desde && datos[i][COL_EMAIL - 1]) {
+      nuevos.push("• " + datos[i][COL_NOMBRE - 1] + " <" + datos[i][COL_EMAIL - 1] + "> · " + (datos[i][COL_CELULAR - 1] || "-"));
+    }
   }
-  Logger.log("Accesos entregados: " + entregados);
+  if (!nuevos.length) return;
+
+  var listado = nuevos.slice(0, 50).join("\n") + (nuevos.length > 50 ? "\n... y " + (nuevos.length - 50) + " más" : "");
+  MailApp.sendEmail({
+    to: CONFIG.EMAIL_ADMIN,
+    subject: "📩 Fundamentos IA: " + nuevos.length + " registro(s) nuevo(s) en las últimas 24 h",
+    body:
+      "¡Hola Marcos! Estos son los registros nuevos de Fundamentos IA:\n\n" + listado + "\n\n" +
+      "Total de registros: " + datos.length + "\n" +
+      "Esperando el acceso: " + enEspera +
+      (enEspera && !carpetaConMaterial_() ? " (la carpeta todavía no tiene material: subí los videos y las guías y les llega solo)" : "") + "\n" +
+      "Sin cuenta de Google (fijate si respondieron con un Gmail): " + sinGoogle + "\n\n" +
+      "Planilla: " + SpreadsheetApp.getActiveSpreadsheet().getUrl()
+  });
 }
 
-// Verifica la configuración y autoriza los permisos. Ejecutala una vez al principio
-// y después de cada cambio de configuración.
+// ============================================================
+//  CONFIGURACIÓN Y PRUEBA (ejecutar desde el editor)
+// ============================================================
+// La primera vez crea la clave secreta, la carpeta de Drive y los activadores. Las siguientes
+// solo verifica. Te manda un mail con el estado y los valores para Netlify.
 function probarConfiguracion() {
+  var props = PropertiesService.getScriptProperties();
   var mensajes = [];
 
-  var secret = PropertiesService.getScriptProperties().getProperty("FORM_SECRET");
-  mensajes.push(secret && secret.length >= 20 ? "✅ FORM_SECRET configurado" : "❌ Falta FORM_SECRET (o es muy corto) en Propiedades del script");
-
-  if (carpetaConfigurada_()) {
-    try {
-      var folder = DriveApp.getFolderById(CONFIG.FOLDER_ID);
-      mensajes.push("✅ Carpeta de Drive OK: " + folder.getName());
-    } catch (err) {
-      mensajes.push("❌ No se pudo abrir la carpeta FOLDER_ID: " + err);
-    }
+  var secret = props.getProperty("WEBHOOK_SECRET");
+  if (!secret) {
+    secret = Utilities.getUuid().replace(/-/g, "") + Utilities.getUuid().replace(/-/g, "");
+    props.setProperty("WEBHOOK_SECRET", secret);
+    mensajes.push("✅ Clave secreta creada");
   } else {
-    mensajes.push("⚠️ FOLDER_ID sin completar: los registros quedan en espera (después corré darAccesoPendientes())");
+    mensajes.push("✅ Clave secreta OK");
+  }
+
+  var folder = carpeta_();
+  if (!folder && props.getProperty("FOLDER_ID")) {
+    mensajes.push("❌ No se pudo abrir la carpeta de FOLDER_ID: revisá el ID en Propiedades del script");
+  } else {
+    if (!folder) {
+      folder = DriveApp.createFolder(CONFIG.NOMBRE_CARPETA);
+      props.setProperty("FOLDER_ID", folder.getId());
+      mensajes.push("✅ Carpeta creada en tu Drive: " + folder.getName());
+    } else {
+      mensajes.push("✅ Carpeta OK: " + folder.getName());
+    }
+    mensajes.push("   " + folder.getUrl());
+    mensajes.push(carpetaConMaterial_()
+      ? "✅ La carpeta tiene material: cada registro recibe el acceso al instante"
+      : "⚠️ La carpeta está vacía: los registros quedan en espera y reciben el acceso solos cuando subas el material");
   }
 
   var sheet = getSheet_();
-  var total = Math.max(sheet.getLastRow() - 1, 0);
-  mensajes.push("✅ Hoja \"" + CONFIG.SHEET_NAME + "\" OK: " + total + " registro(s)");
+  mensajes.push("✅ Hoja \"" + CONFIG.SHEET_NAME + "\" OK: " + Math.max(sheet.getLastRow() - 1, 0) + " registro(s)");
+
+  instalarActivadores_();
+  mensajes.push("✅ Activadores: entrega cada hora y resumen diario a las " + CONFIG.HORA_RESUMEN + " h");
+
+  mensajes.push("✉️ Mails disponibles hoy en la cuenta: " + MailApp.getRemainingDailyQuota() +
+    " (este script deja siempre " + CONFIG.RESERVA_MAILS + " para las compras)");
+
+  var url = ScriptApp.getService().getUrl();
+  var urlLista = url && /\/exec$/.test(url);
+  mensajes.push("");
+  mensajes.push("VALORES PARA NETLIFY (Project configuration -> Environment variables):");
+  mensajes.push("FUNDAMENTOS_WEBHOOK_URL = " + (urlLista
+    ? url
+    : "la URL de la implementación (Implementar -> Gestionar implementaciones; termina en /exec). Si todavía no implementaste, hacelo y volvé a ejecutar probarConfiguracion()"));
+  mensajes.push("FUNDAMENTOS_WEBHOOK_SECRET = " + secret);
+  mensajes.push("Después: Deploys -> Trigger deploy -> Deploy project.");
 
   var resumen = mensajes.join("\n");
   Logger.log(resumen);
   MailApp.sendEmail({
     to: CONFIG.EMAIL_ADMIN,
-    subject: "Prueba de configuración: Fundamentos IA",
-    body: resumen + "\n\nSi todo está ✅, implementá como Aplicación web y pegá la URL (+ ?key=...) en el webhook de Netlify Forms."
+    subject: "Configuración de Fundamentos IA",
+    body: resumen
   });
+}
+
+function instalarActivadores_() {
+  var existentes = ScriptApp.getProjectTriggers().map(function (t) { return t.getHandlerFunction(); });
+  if (existentes.indexOf("entregarPendientes") === -1) {
+    ScriptApp.newTrigger("entregarPendientes").timeBased().everyHours(1).create();
+  }
+  if (existentes.indexOf("resumenDiario") === -1) {
+    ScriptApp.newTrigger("resumenDiario").timeBased().everyDays(1).atHour(CONFIG.HORA_RESUMEN).create();
+  }
 }
 
 // ============================================================
 //  HELPERS
 // ============================================================
-function carpetaConfigurada_() {
-  return !!CONFIG.FOLDER_ID && CONFIG.FOLDER_ID !== FOLDER_PENDIENTE;
+function carpeta_() {
+  var id = PropertiesService.getScriptProperties().getProperty("FOLDER_ID");
+  if (!id) return null;
+  try {
+    return DriveApp.getFolderById(id);
+  } catch (err) {
+    return null;
+  }
+}
+
+// La carpeta, solo si ya tiene algún archivo o subcarpeta (si no, null: nadie recibe una carpeta vacía)
+function carpetaConMaterial_() {
+  var folder = carpeta_();
+  if (!folder) return null;
+  return folder.getFiles().hasNext() || folder.getFolders().hasNext() ? folder : null;
+}
+
+function hayCuota_() {
+  return MailApp.getRemainingDailyQuota() > CONFIG.RESERVA_MAILS;
 }
 
 function emailValido_(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-// Devuelve el número de fila donde ya está ese email, o 0 si no está
+// Número de fila donde ya está ese email, o 0 si no está
 function buscarEmail_(email) {
   var sheet = getSheet_();
   var lastRow = sheet.getLastRow();
@@ -309,6 +353,8 @@ function getSheet_() {
     sheet = ss.insertSheet(CONFIG.SHEET_NAME);
     sheet.appendRow(["Fecha", "Nombre", "Email", "Celular", "Estado", "Detalle"]);
     sheet.setFrozenRows(1);
+    // Celular como texto plano para que no se convierta a número
+    sheet.getRange("D:D").setNumberFormat("@");
     sheet.getRange(1, 1, 1, TOTAL_COLS).createFilter();
   }
   return sheet;
@@ -360,19 +406,18 @@ function responder_(status) {
 }
 
 // ============================================================
-//  EMAIL HTML DE BIENVENIDA
-//  linkDrive = null: la carpeta todavía no está; el texto avisa que el acceso llega
-//  con el primer material. Con link: botón directo a la carpeta.
+//  EMAIL HTML DE ACCESO
+//  compartida = false: el mail no es cuenta de Google; se le pide que responda con un Gmail.
 // ============================================================
-function construirEmailHtml_(nombre, linkDrive) {
+function construirEmailHtml_(nombre, linkDrive, compartida) {
   var nombreSeguro = escaparHtml_(nombre);
-  var etiquetaBadge = linkDrive ? "REGISTRO CONFIRMADO • ACCESO HABILITADO" : "REGISTRO CONFIRMADO";
+  var etiquetaBadge = compartida ? "REGISTRO CONFIRMADO • ACCESO HABILITADO" : "REGISTRO CONFIRMADO";
 
-  var texto = linkDrive
-    ? "¡Bienvenido a <strong>Fundamentos IA</strong>! Ya tenés acceso a la carpeta de Google Drive con los videos y las guías (asociado a este correo). Cada material nuevo aparece ahí y además te lo avisamos por mail."
-    : "¡Bienvenido a <strong>Fundamentos IA</strong>! Quedaste en la lista: apenas el primer material esté listo, te llega a este mismo correo el acceso a la carpeta de Google Drive con todos los videos y las guías.";
+  var texto = compartida
+    ? "¡Bienvenido a <strong>Fundamentos IA</strong>! Ya tenés acceso a la carpeta de Google Drive con los videos y las guías (asociada a este correo). Cada material nuevo se suma ahí."
+    : "¡Bienvenido a <strong>Fundamentos IA</strong>! El material está en una carpeta de Google Drive, pero <strong style=\"color:#f6950a;\">este correo no es una cuenta de Google</strong> y no pudimos darte el acceso. Respondé este mail con una cuenta de Gmail (o de Google) y te lo habilitamos a la brevedad.";
 
-  var boton = linkDrive
+  var boton = compartida
     ? `
             <tr>
               <td align="center" style="padding: 5px 30px 12px 30px;">

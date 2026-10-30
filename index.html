@@ -125,16 +125,6 @@
 
   <div id="root"></div>
 
-  <!-- Formulario oculto para que Netlify Forms registre "fundamentos-ia" al buildear.
-       El formulario real está en src/components/FundamentosIA/Index.jsx y postea por fetch.
-       Los registros se ven en Netlify -> Forms (activar ahí la notificación por mail). -->
-  <form name="fundamentos-ia" data-netlify="true" netlify-honeypot="bot-field" hidden>
-    <input type="text" name="nombre" />
-    <input type="email" name="email" />
-    <input type="tel" name="celular" />
-    <input type="text" name="bot-field" />
-  </form>
-
   <script type="module" src="/src/main.jsx"></script>
 </body>
 

@@ -156,6 +156,15 @@
   outline: none;
 }
 
+/* Campo trampa para bots: fuera de la vista, sin ocupar lugar en la grilla */
+.trampa {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
 .btnRegistro {
   padding: 0.85rem 1.2rem;
   border: none;

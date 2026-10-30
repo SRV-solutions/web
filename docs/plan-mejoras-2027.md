@@ -69,8 +69,18 @@ así que nada se sube ni se mergea sin el OK de Marcos.
       Recomendación del 30/10: SQL $49.900 (lanzamiento $34.900), IA para el trabajo $44.900 ($29.900),
       IA para docentes $34.900 ($24.900), Redes/Linux/AWS $89.900 ($62.900). Los cuatro son grabados (no hay
       otro curso en vivo hasta terminar el Intensivo actual).
-- [x] `/redes/inscripcion` (el link «Formate como DevOps en AWS» de Linktree) redirige a
-      `/proximos-cursos?curso=redes` con esa tarjeta destacada.
+- [ ] **Preventa y campaña de Redes, Linux y AWS** (rama `preventa-redes`, publicar el 5/11/2026, después del
+      Cyber): curso grabado para rendir AWS Certified Cloud Practitioner (CLF-C02). Página `/redes/inscripcion`
+      (el link de Linktree y de la campaña), preventa a $62.900 hasta el 27/01/2027 (ese día se habilitan las
+      clases; después $89.900). Mientras dura la preventa, desde esa página se suman cursos a precio fijo
+      (`SUMA_CON_REDES`): Scripting de regalo, Python, JavaScript, Backend Avanzado o C# $20.000 más, Ruta Backend
+      $35.000 más. Misma tabla en `src/data/packs.js`, `netlify/lib/cursos.js` y `appscript-cursos.gs`, publicada
+      en `PROMOCIONES`. Antes de publicar: Marcos confirma temario, cantidad de clases y precios; crea la carpeta
+      de Drive (su ID va en `CURSOS.redes.folderId` del script de compras) y pega los dos scripts
+      («Nueva versión»). El 5/11 corre `avisarPreventaRedes()` (script de Fundamentos) para avisarle a la lista
+      de espera; el 27/01 sube las clases y corre `avisarAperturaRedes()` (script de compras).
+- [x] `/redes/inscripcion` (el link «Formate como DevOps en AWS» de Linktree) redirigía a la lista de espera;
+      con la preventa es la página del curso.
 - [x] Módulos de IA anunciados como «Próximamente · gratis con tu acceso» en Scripting («Automatizá con IA») y
       Python («Automatizaciones con IA»), con temario borrador en `cursosGrabados.js` (`proximosModulos`).
       Cuando las clases estén grabadas y subidas a Drive: mover el módulo a `modulos` y actualizar `clases`.

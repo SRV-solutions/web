@@ -263,6 +263,88 @@ function getHojaLista_() {
 }
 
 // ============================================================
+//  AVISO A LA LISTA DE ESPERA CUANDO ABRE UN CURSO (ejecutar a mano desde el editor)
+//  Le manda a cada anotado del curso un mail con el link de compra y marca su fila con
+//  "AVISO_APERTURA_ENVIADO" en Detalle, así se puede volver a correr sin mandar dos veces.
+//  Respeta la reserva de mails de las compras: si se corta por la cuota del día, volvé a
+//  correrlo al día siguiente y sigue con los que faltan.
+// ============================================================
+var MARCA_AVISO_APERTURA = "AVISO_APERTURA_ENVIADO";
+
+// Preventa de Redes, Linux y AWS: correrlo el 5/11/2026, cuando se publica la página del curso.
+// Los precios y fechas son los de netlify/lib/cursos.js: si cambian, cambiarlos también acá.
+function avisarPreventaRedes() {
+  avisarAperturaLista_({
+    curso: "Redes, Linux y AWS", // tal cual figura en la columna Curso
+    asunto: "Abrió la preventa de Redes, Linux y AWS - WEARESRV",
+    etiqueta: "LISTA DE ESPERA • ABRIÓ LA PREVENTA",
+    tituloHtml: 'REDES, LINUX Y <span style="color:#f6950a;">AWS</span> · PREVENTA',
+    cuerpoHtml:
+      "Abrió la preventa de <strong>Redes, Linux y AWS</strong>, el curso grabado para rendir la certificación " +
+      "<strong>AWS Certified Cloud Practitioner</strong>. Como estás en la lista de espera, te avisamos antes que a nadie.<br><br>" +
+      "Hasta el 26 de enero de 2027 inclusive lo reservás a <strong style=\"color:#f6950a;\">$62.900</strong> " +
+      "(después cuesta $89.900). Apenas pagás te llega el acceso a tu carpeta de Google Drive, y el " +
+      "<strong>27 de enero de 2027</strong> se habilitan ahí todas las clases.<br><br>" +
+      "El examen de AWS no está incluido en el curso: lo toma y lo cobra AWS. En el curso te explicamos paso a paso cómo anotarte.",
+    boton: "Reservar mi lugar",
+    link: "https://wearesrv.com/redes/inscripcion"
+  });
+}
+
+function avisarAperturaLista_(aviso) {
+  var hoja = getHojaLista_();
+  var lastRow = hoja.getLastRow();
+  if (lastRow < 2) { Logger.log("La lista de espera está vacía."); return; }
+  var datos = hoja.getRange(2, 1, lastRow - 1, LISTA_TOTAL_COLS).getValues();
+
+  var boton = `
+            <tr>
+              <td align="center" style="padding: 5px 30px 12px 30px;">
+                <a href="${escaparHtml_(aviso.link)}" target="_blank" style="background-color:#0b78fb; border-radius:8px; font-size:15px; font-weight:bold; color:#ffffff; text-decoration:none; padding:14px 28px; display:inline-block; box-shadow:0 4px 10px rgba(11, 120, 251, 0.4);">
+                  ${escaparHtml_(aviso.boton)}
+                </a>
+              </td>
+            </tr>`;
+
+  var marcar = function (i, detalle) {
+    hoja.getRange(i + 2, LISTA_COL_DETALLE).setValue(sanitizarCelda_((detalle ? detalle + " | " : "") + MARCA_AVISO_APERTURA));
+  };
+
+  var avisados = {};
+  var enviados = 0, pendientes = 0;
+  var inicio = Date.now();
+  for (var i = 0; i < datos.length; i++) {
+    if (String(datos[i][LISTA_COL_CURSO - 1]) !== aviso.curso) continue;
+    var detalle = String(datos[i][LISTA_COL_DETALLE - 1] || "");
+    var email = String(datos[i][LISTA_COL_EMAIL - 1] || "").trim().toLowerCase();
+    if (detalle.indexOf(MARCA_AVISO_APERTURA) !== -1 || !emailValido_(email)) continue;
+    // Mismo mail anotado dos veces: se marca sin mandarle otro
+    if (avisados[email]) { marcar(i, detalle); continue; }
+    // Corta antes del límite de 6 minutos de Apps Script y antes de tocar la reserva de mails
+    if (Date.now() - inicio > 4 * 60 * 1000 || !hayCuota_()) { pendientes++; continue; }
+    try {
+      GmailApp.sendEmail(email, aviso.asunto, "", {
+        name: CONFIG.NOMBRE_REMITENTE,
+        replyTo: CONFIG.EMAIL_ADMIN,
+        htmlBody: envolverEmailHtml_(aviso.etiqueta, aviso.tituloHtml, saludoHtml_(String(datos[i][LISTA_COL_NOMBRE - 1])) + aviso.cuerpoHtml, boton)
+      });
+      avisados[email] = true;
+      enviados++;
+      marcar(i, detalle);
+    } catch (err) {
+      Logger.log("No se pudo avisar a " + email + ": " + err);
+    }
+  }
+
+  var resumen = "Aviso de apertura de " + aviso.curso + ": " + enviados + " enviados" +
+    (pendientes ? ", " + pendientes + " pendientes (volvé a correrlo mañana)" : "");
+  Logger.log(resumen);
+  if (hayCuota_()) {
+    MailApp.sendEmail({ to: CONFIG.EMAIL_ADMIN, subject: "📣 " + resumen, body: resumen + "\n\nLink del aviso: " + aviso.link });
+  }
+}
+
+// ============================================================
 //  ACTIVADORES (los instala probarConfiguracion)
 // ============================================================
 

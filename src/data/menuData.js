@@ -26,7 +26,7 @@ const menuData = [
     disabled: false,
     isExternal: false,
     hasNotification: true,
-    badgeCount: 6,
+    badgeCount: 7,
     links: [
       {
         label: "Scratch para Chicos",
@@ -51,6 +51,11 @@ const menuData = [
       {
         label: "Fullstack con C# y React",
         to: "/fullstack-csharp/inscripcion",
+        isNew: true
+      },
+      {
+        label: "Redes, Linux y AWS · Preventa",
+        to: "/redes/inscripcion",
         isNew: true
       },
       {

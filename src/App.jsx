@@ -211,8 +211,9 @@ function AppContent() {
           <Route path="/empresas" element={<Empresas />} />
           <Route path="/proximos-cursos" element={<ProximosCursos />} />
           <Route path="/fundamentos-ia" element={<FundamentosIA />} />
-          {/* Link "Formate como DevOps en AWS" del Linktree: a la lista de espera de Redes, Linux y AWS */}
-          <Route path="/redes/inscripcion" element={<Navigate to="/proximos-cursos?curso=redes" replace />} />
+          {/* Redes, Linux y AWS en preventa. /redes/inscripcion es también el link "Formate como DevOps en AWS" del Linktree */}
+          <Route path="/redes/inscripcion" element={<CursoGrabado cursoKey="redes" />} />
+          <Route path="/redes/gracias" element={<GraciasCurso cursoKey="redes" />} />
           <Route path="/el-develop" element={<ElDevelop />} />
           <Route path="/sentryx" element={<Sentryx />} />
           <Route path="/eventbox" element={<EventBox />} />

@@ -10,6 +10,10 @@
 // La misma fecha vive en netlify/lib/cursos.js.
 const SCRATCH_ACCESO = new Date("2026-11-18T00:00:00-03:00");
 
+// Preventa de Redes, Linux y AWS: igual que Scratch. Abre el 5/11/2026 (después del Cyber) y el 27/01/2027
+// se habilitan las clases. La misma fecha vive en netlify/lib/cursos.js y en appscript-cursos.gs.
+const REDES_ACCESO = new Date("2027-01-27T00:00:00-03:00");
+
 // Clases grabadas del Curso Fullstack con C# (12 módulos)
 const CLASES_FULLSTACK = 30;
 
@@ -624,6 +628,117 @@ export const CURSOS_GRABADOS = {
       { titulo: "React desde cero", temas: ["Crear y levantar un proyecto con Vite", "Componentes, JSX y props", "useState, formularios controlados y useEffect", "Listas con key, condicionales y React Router"] },
       { titulo: "Conectar front y back con Axios", temas: ["Instancia de Axios con la URL de la API", "GET dentro de useEffect con carga y errores", "POST, PUT y DELETE desde formularios y botones", "res.data, res.status, camelCase y el recorrido completo de un pedido"] },
       { titulo: "Proyecto final: app tipo Instagram", temas: ["Planificar pantallas y endpoints antes de programar", "La base con datos de prueba y los modelos de la API", "Las pantallas de React, ruta protegida y cómo se conectan", "Levantar todo en orden y extras: carrusel, likes y comentarios"] },
+    ],
+  },
+
+  // Redes, Linux y AWS: curso grabado en preventa hasta el 27/01/2027 (ver REDES_ACCESO). Es la página de la
+  // campaña: mientras dura la preventa, los cursos que se le suman tienen precio fijo (SUMA_CON_REDES en packs.js).
+  // El objetivo del curso es que el alumno pueda rendir AWS Certified Cloud Practitioner (CLF-C02). El examen
+  // lo toma y lo cobra AWS: la página lo aclara (preguntasExtra) para que nadie entienda que está incluido.
+  // ⚠ Temario, cantidad de clases y requisitos son un BORRADOR: confirmarlos con Marcos antes de publicar.
+  redes: {
+    key: "redes",
+    itemId: "curso-redes-linux-aws", // mismo itemId que netlify/lib/cursos.js (content_ids de Meta)
+    ruta: "redes",
+    contentName: "Infoproducto Redes Linux AWS",
+    tituloInicio: "Redes, Linux y",
+    tituloDestacado: "AWS",
+    tituloFin: "",
+    descripcion:
+      "Preparate para rendir la certificación AWS Certified Cloud Practitioner (CLF-C02) con las bases que pide el trabajo en DevOps: redes desde cero, Linux desde la terminal y AWS con práctica real, en clases grabadas con animaciones que explican cada tema.",
+    precio: Date.now() < REDES_ACCESO.getTime() ? 62900 : 89900,
+    precioRegular: 89900,
+    preventa: { hasta: REDES_ACCESO, fechaTexto: "27 de enero de 2027" },
+    clases: 36,
+    beneficios: [
+      "Acceso vitalicio al material en Google Drive",
+      "Preparación completa para rendir AWS Certified Cloud Practitioner (CLF-C02)",
+      "Preguntas de práctica tipo examen para llegar seguro",
+      "Clases grabadas con animaciones que explican cada tema",
+      "Práctica real en AWS con la capa gratuita",
+    ],
+    subTituloDesc:
+      "Primero entendés la red y dominás Linux; después aprendés AWS con los cuatro temas del examen Cloud Practitioner y practicás hasta llegar seguro.",
+    gancho: "Tu primera certificación de AWS, con las bases de redes y Linux que la hacen fácil.",
+    metaDescripcion:
+      "Curso grabado para rendir AWS Certified Cloud Practitioner (CLF-C02): redes desde cero, Linux y AWS con práctica real y preguntas tipo examen. Preventa a $62.900 hasta el 27 de enero de 2027, cuando se habilitan las clases.",
+    nivel: "Desde cero en redes y Linux · Ideal si ya programás o trabajás en soporte",
+    requisitos:
+      "No. Redes y Linux arrancan desde cero, y no hace falta programar. Si ya programás o trabajás en soporte, le vas a sacar todavía más jugo. Para practicar en AWS vas a crear tu propia cuenta: trabajamos con la capa gratuita y te mostramos cómo evitar cargos.",
+    paraQuien: [
+      "Querés tu primera certificación de AWS para sumar a tu CV y a LinkedIn",
+      "Trabajás en soporte o mesa de ayuda y querés dar el salto a cloud e infraestructura",
+      "Ya programás y querés entender dónde y cómo corre tu código",
+      "Querés orientarte a DevOps o cloud, uno de los perfiles que más crece",
+    ],
+    resultados: [
+      "Llegar preparado al examen AWS Certified Cloud Practitioner (CLF-C02)",
+      "Entender cómo viaja la información: direcciones IP, subredes, DNS, puertos y protocolos",
+      "Moverte con soltura en la terminal de Linux y administrar un servidor",
+      "Crear servidores en AWS y publicar una aplicación en la nube",
+    ],
+    // Aclaraciones propias de este curso: se suman a las preguntas frecuentes de la página
+    preguntasExtra: [
+      {
+        q: "¿El curso incluye el examen de AWS?",
+        a: "No. El curso te prepara para rendir AWS Certified Cloud Practitioner (CLF-C02), pero el examen lo toma y lo cobra AWS, aparte del curso. Se rinde en español, online o en un centro de Pearson VUE, y te explicamos paso a paso cómo anotarte. WEARESRV no es un centro oficial de AWS. Además, al terminar el curso podés rendir nuestro examen final en vivo y obtener el certificado verificable de WEARESRV, sin costo extra.",
+      },
+    ],
+    modulos: [
+      {
+        titulo: "Redes desde cero",
+        temas: [
+          "Cómo viaja la información: modelos OSI y TCP/IP",
+          "Direcciones IP, máscaras y subredes",
+          "DNS, DHCP y NAT: lo que pasa cuando entrás a una web",
+          "Puertos, protocolos y diagnóstico con ping, traceroute y nslookup",
+        ],
+      },
+      {
+        titulo: "Linux y servidores",
+        temas: [
+          "Instalar Linux en una máquina virtual y moverte por la terminal",
+          "Usuarios, grupos y permisos",
+          "Paquetes, procesos, servicios y SSH con claves",
+          "Un servidor web con Nginx",
+        ],
+      },
+      {
+        titulo: "Conceptos de la nube",
+        temas: [
+          "Qué es la nube y qué ganás frente a tener servidores propios",
+          "Modelos IaaS, PaaS y SaaS, y formas de desplegar",
+          "Infraestructura global de AWS: regiones, zonas de disponibilidad y edge",
+          "El marco AWS Well-Architected",
+        ],
+      },
+      {
+        titulo: "Seguridad y cumplimiento",
+        temas: [
+          "El modelo de responsabilidad compartida",
+          "IAM: usuarios, grupos, roles, políticas y MFA",
+          "Grupos de seguridad, cifrado y servicios de protección",
+          "Cumplimiento y auditoría con CloudTrail",
+        ],
+      },
+      {
+        titulo: "Servicios de AWS con práctica real",
+        temas: [
+          "Cómputo: EC2, Lambda y contenedores",
+          "Redes en AWS: VPC, subredes y Route 53",
+          "Almacenamiento y bases de datos: S3, EBS, RDS y DynamoDB",
+          "Proyecto: tu aplicación publicada en AWS y monitoreada con CloudWatch",
+        ],
+      },
+      {
+        titulo: "Costos y preparación del examen",
+        temas: [
+          "Precios, capa gratuita, facturación y alertas de costos",
+          "Planes de soporte de AWS",
+          "Preguntas de práctica tipo examen, con la explicación de cada respuesta",
+          "Cómo anotarte y qué esperar el día del examen",
+        ],
+      },
     ],
   },
 };

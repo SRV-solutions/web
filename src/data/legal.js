@@ -34,6 +34,13 @@ export const PROMOCIONES = [
     hasta: "04/11/2026 a las 23:59",
   },
   {
+    nombre: "Preventa de Redes, Linux y AWS",
+    detalle:
+      "El curso cuesta $62.900 en lugar de $89.900. La carpeta llega al instante y las clases se habilitan el 27/01/2027. El examen AWS Certified Cloud Practitioner no está incluido: lo toma y lo cobra AWS. Si en el mismo pago sumás otros cursos desde la página de Redes, Linux y AWS, cada uno cuesta: Curso de Scripting, sin costo extra; Master en Python, Master en JavaScript, Backend Avanzado o Curso Fullstack con C#, $20.000 más; Ruta Backend Completa, $35.000 más. Esos cursos llegan al instante.",
+    desde: "05/11/2026",
+    hasta: "26/01/2027 a las 23:59",
+  },
+  {
     nombre: "Preventa de Scratch para Chicos",
     detalle: "El curso cuesta $10.000 en lugar de $18.000. La carpeta llega al instante y las clases se habilitan el 18/11/2026.",
     desde: "20/10/2026",
@@ -55,7 +62,8 @@ export const PRECIOS_ESPECIALES = [
   },
   {
     nombre: "Sumá a tu compra",
-    detalle: "Al comprar dos o más cursos grabados en un mismo pago, cada curso que se suma cuesta $30.000 menos.",
+    detalle:
+      "Al comprar dos o más cursos grabados en un mismo pago, cada curso que se suma cuesta $30.000 menos. Mientras dura la preventa de Redes, Linux y AWS, los packs con ese curso tienen los precios de su promoción.",
   },
   {
     nombre: "Código de alumnos",

@@ -513,7 +513,7 @@ export default function CursoGrabado({ cursoKey }) {
                     </li>
                   )}
                   <li className={styles.benefitItem}>
-                    ✓ Acceso a E-stellarium, nuestra plataforma educativa (muy pronto)
+                    ✓ Acceso gratis a E-stellarium, nuestra plataforma educativa (desde el 20 de noviembre)
                   </li>
                 </ul>
 

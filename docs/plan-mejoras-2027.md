@@ -40,8 +40,10 @@ así que nada se sube ni se mergea sin el OK de Marcos.
 - [x] Certificación con examen final en vivo (sin la palabra «oficial», que sugiere reconocimiento estatal):
       beneficio y pregunta frecuente en las páginas de cursos (excepto Scratch). Gratis para quien compró el curso;
       por ahora se coordina por WhatsApp y después se pide desde E-stellarium.
-- [x] Beneficio «Acceso a E-stellarium (muy pronto)» en todos los cursos. Cuando la plataforma esté en uso,
-      sacar el «muy pronto» y sumar el botón de pedir examen.
+- [x] Beneficio «Acceso gratis a E-stellarium (desde el 20 de noviembre)» en todos los cursos, anuncio en el
+      inicio (después del hero) y pregunta frecuente: E-stellarium abre el 20/11/2026, con acceso inmediato y
+      gratis para quien ya compró un curso. Cuando esté en uso: cambiar el anuncio por el link para entrar,
+      sumar el botón de pedir examen y el acceso en el mail de compra (`appscript-cursos.gs`, después del Cyber).
 - [x] Página gratuita «Fundamentos de IA» (`/fundamentos-ia`): 4 temas con lugar para video y guía (completar
       `url`/`guia` en el componente a medida que Marcos los sube), CTA a YouTube y Discord, y camino a los pagos.
 - [x] Registro en Fundamentos IA (nombre, mail y celular): el formulario postea a la Netlify Function

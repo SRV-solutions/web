@@ -44,6 +44,7 @@ const FAQ = [
   { q: "¿Las clases son en vivo o grabadas?", a: "Los cursos de Scripting, Python, Master en JavaScript, Backend Avanzado y Scratch para Chicos son grabados, con acceso de por vida. El Intensivo Full Stack es una cursada en vivo." },
   { q: "¿Tienen algo para chicos?", a: "Sí: Scratch para Chicos, un curso grabado de 14 clases para que chicos de 8 a 13 años creen una historia animada y su primer videojuego. Está en preventa a $10.000 hasta el 18 de noviembre: el acceso a la carpeta llega al instante y ese día se habilitan las clases." },
   { q: "¿Cómo recibo el curso después de pagar?", a: "Automáticamente: apenas Mercado Pago aprueba el pago, te llega un mail con el acceso a la carpeta del curso en Google Drive." },
+  { q: "¿Qué es E-stellarium?", a: "Es nuestra plataforma educativa. Está disponible desde el 20 de noviembre de 2026 y el acceso es inmediato y gratis para todos los que ya compraron un curso, sin pagar nada extra; los cursos que se compren de ahora en más también lo incluyen. Cómo entrar lo avisamos por mail y en nuestras redes." },
   { q: "¿Hacen software para empresas?", a: "Sí. Además de la escuela, desarrollamos backend, APIs, plataformas web y automatizaciones a medida. Escribinos por WhatsApp y lo cotizamos." },
   { q: "¿Tienen productos propios?", a: "Sí, dos plataformas por suscripción mensual: Sentryx, para colegios (comunicados, boletines, asistencia y aulas virtuales), y Event Box, para empresas de eventos (stock, contenedores y órdenes de servicio). Los planes están en la página de cada una." },
 ];
@@ -139,6 +140,33 @@ export default function Home() {
             <strong>Mercado Pago</strong> pago seguro
           </li>
         </ul>
+      </section>
+
+      {/* ---------- Anuncio E-stellarium: cuando esté en uso, cambiar por el link para entrar ---------- */}
+      <section className={`${styles.section} ${styles.sectionAnuncio}`}>
+        <div className={styles.estellarium}>
+          <span className={styles.estellariumTag}>Nuevo · 20 de noviembre</span>
+          <h2 className={styles.estellariumTitle}>
+            Llega <span className={styles.blue}>E-stellarium</span>, nuestra plataforma educativa
+          </h2>
+          <p>
+            Desde el 20 de noviembre vas a poder entrar a E-stellarium. <strong>Si ya compraste un curso, tu acceso es
+            inmediato y gratis</strong>: no pagás nada extra. Y todos los cursos que compres de ahora en más también lo
+            incluyen.
+          </p>
+          <p className={styles.estellariumAviso}>Estate atento a nuestras redes y a tu mail: por ahí te avisamos cómo entrar.</p>
+          <div className={styles.estellariumRedes}>
+            <a href="https://www.instagram.com/wearesrv/" target="_blank" rel="noopener noreferrer">
+              Instagram
+            </a>
+            <a href="https://www.youtube.com/@weareSRV" target="_blank" rel="noopener noreferrer">
+              YouTube
+            </a>
+            <a href="https://discord.com/invite/QuAmDxrNMu" target="_blank" rel="noopener noreferrer">
+              Discord
+            </a>
+          </div>
+        </div>
       </section>
 
       {/* ---------- Dolores ---------- */}

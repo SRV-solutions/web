@@ -14,6 +14,7 @@ const PROXIMOS = [
     key: "ia-trabajo",
     nombre: "IA para el trabajo",
     tag: "Nuevo",
+    salida: "Sale en diciembre",
     texto:
       "Usá IA todos los días sin saber programar: redactá mails e informes, analizá datos, resumí documentos y automatizá tareas repetitivas con prompts que funcionan.",
     para: "Para cualquier persona que trabaje con una computadora.",
@@ -22,6 +23,7 @@ const PROXIMOS = [
     key: "sql",
     nombre: "SQL desde cero",
     tag: "Muy pronto",
+    salida: "Sale el 20 de diciembre",
     texto:
       "Las bases de datos desde cero: consultas, filtros, JOIN y reportes. Las clases ya están grabadas, con resúmenes animados de cada tema, y vienen con guías de apoyo gratuitas. Certificado verificable con examen final en vivo.",
     para: "Para sumar la herramienta que piden en casi todos los trabajos con datos.",
@@ -30,6 +32,7 @@ const PROXIMOS = [
     key: "ia-docentes",
     nombre: "IA para docentes",
     tag: "Educación",
+    salida: "Sale en diciembre",
     texto:
       "Planificaciones, correcciones, rúbricas y material didáctico con IA, pensado para el aula real y con criterio pedagógico.",
     para: "Para docentes y equipos directivos de cualquier nivel.",
@@ -38,6 +41,7 @@ const PROXIMOS = [
     key: "redes",
     nombre: "Redes, Linux y AWS",
     tag: "DevOps",
+    salida: "Sale a fines de enero de 2027",
     texto:
       "Formate como DevOps: redes desde cero, Linux a fondo y despliegues en AWS, en clases grabadas con práctica real paso a paso.",
     para: "Para quienes ya programan o trabajan en soporte y quieren dar el salto a infraestructura.",
@@ -120,6 +124,7 @@ export default function ProximosCursos() {
             <article key={c.key} className={`${styles.card} ${destacado === c.key ? styles.cardDestacada : ""}`}>
               <span className={styles.cardTag}>{c.tag}</span>
               <h2>{c.nombre}</h2>
+              <p className={styles.salida}>📅 {c.salida}</p>
               <p>{c.texto}</p>
               <p className={styles.para}>{c.para}</p>
               <p className={styles.lanzamiento}>El precio de lanzamiento se anuncia primero a la lista de espera.</p>

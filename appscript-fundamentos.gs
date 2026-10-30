@@ -187,10 +187,12 @@ function entregarAcceso_(numFila, nombre, email, folder) {
 // ============================================================
 //  LISTA DE ESPERA DE LOS PRÓXIMOS CURSOS
 // ============================================================
-// body = { accion: "lista-espera", curso: "SQL desde cero", contacto: { nombre, apellido, email, celular } }
+// body = { accion: "lista-espera", curso: "SQL desde cero", salida: "sale el 20 de diciembre",
+//          contacto: { nombre, apellido, email, celular } }
 function procesarListaEspera_(body) {
   var c = body.contacto || {};
   var curso = String(body.curso || "").trim().slice(0, 60);
+  var salida = String(body.salida || "").trim().slice(0, 60);
   var nombre = String(c.nombre || "").trim().slice(0, 60);
   var apellido = String(c.apellido || "").trim().slice(0, 60);
   var email = String(c.email || "").trim().toLowerCase().slice(0, 120);
@@ -221,7 +223,7 @@ function procesarListaEspera_(body) {
         GmailApp.sendEmail(email, "Estás en la lista de espera de " + curso + " - WEARESRV", "", {
           name: CONFIG.NOMBRE_REMITENTE,
           replyTo: CONFIG.EMAIL_ADMIN,
-          htmlBody: construirEmailListaHtml_(nombre, curso)
+          htmlBody: construirEmailListaHtml_(nombre, curso, salida)
         });
       } catch (mailErr) {
         hoja.getRange(fila, LISTA_COL_DETALLE).setValue(sanitizarCelda_("Mail: " + mailErr));
@@ -568,13 +570,15 @@ function construirEmailHtml_(nombre, linkDrive, compartida) {
   );
 }
 
-// Confirmación de la lista de espera de un próximo curso
-function construirEmailListaHtml_(nombre, curso) {
+// Confirmación de la lista de espera de un próximo curso. salida (opcional): "sale el 20 de diciembre"
+function construirEmailListaHtml_(nombre, curso, salida) {
   return envolverEmailHtml_(
     "LISTA DE ESPERA • ANOTADO",
     'LISTA DE ESPERA: <span style="color:#f6950a;">' + escaparHtml_(curso.toUpperCase()) + "</span>",
     saludoHtml_(nombre) +
-      "Quedaste en la lista de espera de <strong>" + escaparHtml_(curso) + "</strong>. Cuando abra la inscripción te avisamos " +
+      "Quedaste en la lista de espera de <strong>" + escaparHtml_(curso) + "</strong>" +
+      (salida ? " (<strong style=\"color:#f6950a;\">" + escaparHtml_(salida) + "</strong>)" : "") +
+      ". Cuando abra la inscripción te avisamos " +
       "a este correo antes que a nadie, con el precio de lanzamiento para la lista. Anotarte no te compromete a nada.<br><br>" +
       "Como todos nuestros cursos, va a tener certificado verificable con examen final en vivo y acceso a " +
       "<strong>E-stellarium</strong>, nuestra plataforma educativa.",

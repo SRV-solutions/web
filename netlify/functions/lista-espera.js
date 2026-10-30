@@ -9,12 +9,13 @@ import { limpiar, emailValido, celularValido, enviarAlAppsScript } from "../lib/
 // anotado un mail de confirmación. Variables de entorno: ver netlify/lib/registros.js.
 // ==========================================
 
-// Mismas claves que PROXIMOS en src/components/ProximosCursos/Index.jsx
+// Mismas claves y fechas de salida que PROXIMOS en src/components/ProximosCursos/Index.jsx.
+// La fecha va en el mail de confirmación: la pone el servidor, nunca el formulario.
 const CURSOS = {
-  "ia-trabajo": "IA para el trabajo",
-  sql: "SQL desde cero",
-  "ia-docentes": "IA para docentes",
-  redes: "Redes, Linux y AWS",
+  "ia-trabajo": { nombre: "IA para el trabajo", salida: "sale en diciembre" },
+  sql: { nombre: "SQL desde cero", salida: "sale el 20 de diciembre" },
+  "ia-docentes": { nombre: "IA para docentes", salida: "sale en diciembre" },
+  redes: { nombre: "Redes, Linux y AWS", salida: "sale a fines de enero de 2027" },
 };
 
 export async function handler(event) {
@@ -33,7 +34,7 @@ export async function handler(event) {
     return json(200, { ok: true });
   }
 
-  const curso = CURSOS[body.curso];
+  const curso = Object.hasOwn(CURSOS, body.curso) ? CURSOS[body.curso] : null;
   if (!curso) return json(400, { error: "Datos inválidos", campo: "curso" });
 
   const contacto = {
@@ -49,7 +50,7 @@ export async function handler(event) {
   if (!celularValido(contacto.celular)) return json(400, { error: "Datos inválidos", campo: "celular" });
 
   const status = await enviarAlAppsScript(
-    { accion: "lista-espera", curso, contacto },
+    { accion: "lista-espera", curso: curso.nombre, salida: curso.salida, contacto },
     ["lista_ok", "lista_ya_registrado"],
     "Lista de espera"
   );

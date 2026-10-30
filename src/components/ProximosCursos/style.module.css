@@ -91,6 +91,12 @@
   text-transform: uppercase;
 }
 
+.salida {
+  color: #fff !important;
+  font-size: 0.9rem !important;
+  font-weight: 700;
+}
+
 .lanzamiento {
   color: #f6c27a !important;
   font-size: 0.82rem !important;

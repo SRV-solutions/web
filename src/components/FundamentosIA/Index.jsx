@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Seo from "../Seo";
 import styles from "./style.module.css";
+import { whatsappLink } from "../../data/legal";
 
 // Contenido gratuito para gente que empieza en el mundo de la IA (plan 2027).
 // Los videos y las guías los va subiendo Marcos: completar "url" (video de YouTube)
@@ -37,6 +38,26 @@ const TEMAS = [
 ];
 
 export default function FundamentosIA() {
+  // Registro a la lista de Fundamentos IA por Netlify Forms (formulario oculto en index.html).
+  // En local no funciona (Vite no procesa los forms de Netlify): probarlo en el deploy.
+  const [envio, setEnvio] = useState("inicial"); // inicial | enviando | listo | error
+
+  const registrar = async (e) => {
+    e.preventDefault();
+    const datos = new FormData(e.target);
+    setEnvio("enviando");
+    try {
+      const res = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams([...datos, ["form-name", "fundamentos-ia"]]).toString(),
+      });
+      setEnvio(res.ok ? "listo" : "error");
+    } catch {
+      setEnvio("error");
+    }
+  };
+
   return (
     <section className={styles.page}>
       <Seo
@@ -76,6 +97,37 @@ export default function FundamentosIA() {
               </div>
             </article>
           ))}
+        </div>
+
+        <div className={styles.registro}>
+          <h2>Recibí cada video y guía por correo</h2>
+          <p>Dejanos tus datos y te mandamos cada material nuevo apenas sale. Gratis, sin spam.</p>
+          {envio === "listo" ? (
+            <p className={styles.registroOk}>
+              ✅ ¡Listo! Quedaste en la lista: te va a llegar cada video y guía nueva por correo.
+            </p>
+          ) : (
+            <form className={styles.form} onSubmit={registrar}>
+              <input className={styles.campo} type="text" name="nombre" placeholder="Tu nombre" required autoComplete="name" />
+              <input className={styles.campo} type="email" name="email" placeholder="Tu mail" required autoComplete="email" />
+              <input className={styles.campo} type="tel" name="celular" placeholder="Tu celular (con código de área)" required autoComplete="tel" />
+              <button className={styles.btnRegistro} type="submit" disabled={envio === "enviando"}>
+                {envio === "enviando" ? "Enviando..." : "Quiero recibirlos"}
+              </button>
+              <p className={styles.consentimiento}>
+                Al enviar aceptás nuestra <Link to="/privacidad">política de privacidad</Link>. Podés darte de baja
+                cuando quieras.
+              </p>
+              {envio === "error" && (
+                <p className={styles.registroError}>
+                  No pudimos registrarte. Probá de nuevo o{" "}
+                  <a href={whatsappLink("Hola, quiero recibir el material gratuito de Fundamentos IA")} target="_blank" rel="noopener noreferrer">
+                    escribinos por WhatsApp
+                  </a>.
+                </p>
+              )}
+            </form>
+          )}
         </div>
 
         <div className={styles.comunidad}>

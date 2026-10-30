@@ -42,6 +42,11 @@ así que nada se sube ni se mergea sin el OK de Marcos.
       sacar el «muy pronto» y sumar el botón de pedir examen.
 - [x] Página gratuita «Fundamentos de IA» (`/fundamentos-ia`): 4 temas con lugar para video y guía (completar
       `url`/`guia` en el componente a medida que Marcos los sube), CTA a YouTube y Discord, y camino a los pagos.
+- [x] Captura de contactos en Fundamentos IA (nombre, mail y celular) con Netlify Forms: los registros quedan en
+      Netlify → Forms (activar ahí la notificación por mail). El envío automático del material por correo se hace
+      con un Apps Script cuando exista el primer video o guía.
+- [x] Certificado de Scratch para los chicos: evaluación con preguntas y un jueguito desde E-stellarium
+      («muy pronto» en la página hasta que la plataforma lo tenga).
 - [ ] Precios de lanzamiento en las tarjetas de la lista de espera: faltan los números (publicarlos obliga,
       Ley 24.240; van como «precio de lanzamiento · primera cohorte»).
 - [x] `/redes/inscripcion` (el link «Formate como DevOps en AWS» de Linktree) redirige a

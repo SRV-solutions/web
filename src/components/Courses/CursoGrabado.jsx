@@ -69,7 +69,7 @@ function preguntasFrecuentes(curso, preventa) {
       q: "¿Por cuánto tiempo tengo acceso?",
       a: "De por vida. Pagás una sola vez y el material queda disponible para que lo repases cuando lo necesites.",
     },
-    // El examen final en vivo no aplica a Scratch para Chicos
+    // En Scratch el examen no es en vivo: es una evaluación para chicos desde la plataforma
     ...(curso.key !== "scratch"
       ? [
           {
@@ -77,7 +77,12 @@ function preguntasFrecuentes(curso, preventa) {
             a: "Sí. Cuando terminás el curso podés rendir un examen final en vivo con un docente, sin costo extra por haber comprado el curso, y obtenés un certificado verificable online para sumar a tu CV o LinkedIn. Por ahora el examen se coordina por WhatsApp; muy pronto se va a pedir directamente desde E-stellarium, nuestra plataforma educativa.",
           },
         ]
-      : []),
+      : [
+          {
+            q: "¿Mi hijo o hija recibe un certificado?",
+            a: "Sí. Muy pronto va a poder hacer una evaluación pensada para chicos desde E-stellarium, nuestra plataforma educativa: unas preguntas y un jueguito, y se lleva su propio certificado verificable para mostrar con orgullo.",
+          },
+        ]),
     {
       q: "¿Qué medios de pago puedo usar?",
       a: "Todos los que ofrece Mercado Pago: tarjeta de crédito o débito y dinero en cuenta, entre otros. Las opciones de cuotas las muestra Mercado Pago al momento de pagar.",
@@ -498,9 +503,13 @@ export default function CursoGrabado({ cursoKey }) {
                       ✓ {beneficio}
                     </li>
                   ))}
-                  {producto.key !== "scratch" && (
+                  {producto.key !== "scratch" ? (
                     <li className={styles.benefitItem}>
                       ✓ Certificado verificable con examen final en vivo, sin costo extra
+                    </li>
+                  ) : (
+                    <li className={styles.benefitItem}>
+                      ✓ Su propio certificado: evaluación para chicos con preguntas y un jueguito (muy pronto)
                     </li>
                   )}
                   <li className={styles.benefitItem}>

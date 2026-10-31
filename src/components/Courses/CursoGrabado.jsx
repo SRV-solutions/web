@@ -507,26 +507,6 @@ export default function CursoGrabado({ cursoKey }) {
                   </div>
                 </div>
 
-                <ul className={styles.benefitsList}>
-                  {producto.beneficios.map((beneficio) => (
-                    <li key={beneficio} className={styles.benefitItem}>
-                      ✓ {beneficio}
-                    </li>
-                  ))}
-                  {producto.key !== "scratch" ? (
-                    <li className={styles.benefitItem}>
-                      ✓ Certificado verificable con examen final en vivo, sin costo extra
-                    </li>
-                  ) : (
-                    <li className={styles.benefitItem}>
-                      ✓ Su propio certificado: evaluación para chicos con preguntas y un jueguito (muy pronto)
-                    </li>
-                  )}
-                  <li className={styles.benefitItem}>
-                    ✓ Acceso gratis a E-stellarium, nuestra plataforma educativa (desde el 20 de noviembre)
-                  </li>
-                </ul>
-
                 {/* Código de alumnos de SRV: el servidor valida el código y define el precio especial */}
                 {producto.cuponAlumnos && (
                   <form className={styles.cuponBox} onSubmit={aplicarCupon}>
@@ -564,79 +544,11 @@ export default function CursoGrabado({ cursoKey }) {
                     )}
                   </form>
                 )}
-
-                {/* Sumá a tu compra: el visitante arma su pack; la regla de precio vive en src/data/packs.js */}
-                {agregables.length > 0 && (
-                  <fieldset className={styles.sumas}>
-                    {campaniaRedes ? (
-                      <>
-                        <legend className={styles.sumasTitle}>🎁 Sumá cursos a precio de campaña</legend>
-                        <p className={styles.sumasIntro}>
-                          Solo durante la preventa: cada curso que sumás a Redes, Linux y AWS tiene un precio especial. Tildá
-                          todos los que quieras y van en el mismo pago. Los demás cursos te llegan al instante.
-                        </p>
-                      </>
-                    ) : (
-                      <>
-                        <legend className={styles.sumasTitle}>🎁 Sumá cursos y ahorrá {formatearPrecio(AHORRO_POR_CURSO)} por cada uno</legend>
-                        <p className={styles.sumasIntro}>
-                          Tildá todos los que quieras: van en el mismo pago y cada curso que sumás descuenta{" "}
-                          {formatearPrecio(AHORRO_POR_CURSO)} del total. Si vale menos, va de regalo.
-                        </p>
-                      </>
-                    )}
-                    {agregables.map((k) => {
-                      const unidad = CURSOS_GRABADOS[k];
-                      const activa = extrasValidos.includes(k);
-                      // Master en JavaScript o Backend Avanzado con la Ruta Backend ya tildada: vienen dentro de la ruta
-                      const combo = activa ? null : extrasValidos.map((x) => CURSOS_GRABADOS[x]).find((c) => c.combo?.includes(k));
-                      const disponible = !combo && puedeSumar(k);
-                      const extra = disponible ? costoDeSumar(k) : null;
-                      return (
-                        <label
-                          key={k}
-                          className={`${styles.sumaCard} ${activa ? styles.sumaCardActiva : ""} ${disponible ? "" : styles.sumaCardNo}`}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={activa}
-                            disabled={!disponible}
-                            onChange={() => toggleExtra(k)}
-                            aria-label={`Sumar ${nombreCurso(unidad)}`}
-                          />
-                          <span className={styles.sumaBody}>
-                            <span className={styles.sumaTop}>
-                              <span className={styles.sumaEtiqueta}>{extra !== null && extra <= 0 ? "De regalo" : `${unidad.clases} clases`}</span>
-                              {disponible && <span className={styles.sumaAhorro}>Ahorrás {formatearPrecio(unidad.precio - extra)}</span>}
-                            </span>
-                            <span className={styles.sumaNombre}>+ {nombreCurso(unidad)}</span>
-                            <span className={styles.sumaPitch}>{pitchUnidad(k)}</span>
-                            <span className={styles.sumaPrecios}>
-                              {disponible ? (
-                                <strong>
-                                  {extra > 0 ? `Por solo ${formatearPrecio(extra)} más` : "¡Sin costo extra!"} <s>{formatearPrecio(unidad.precio)}</s>
-                                </strong>
-                              ) : combo ? (
-                                <span>Ya viene incluido en la {nombreCurso(combo)}.</span>
-                              ) : (
-                                <span>No se combina con los cursos que elegiste.</span>
-                              )}
-                            </span>
-                          </span>
-                        </label>
-                      );
-                    })}
-                    {pack && (
-                      <p className={styles.sumasTotal}>
-                        Tu pack: <strong>{pack.cantidadCursos} cursos</strong> por <strong>{formatearPrecio(pack.precio)}</strong> · por separado{" "}
-                        {formatearPrecio(pack.precioSeparado)} · ahorrás <strong>{formatearPrecio(pack.ahorro)}</strong>
-                      </p>
-                    )}
-                  </fieldset>
-                )}
               </div>
             </div>
 
+            {/* El botón va pegado al precio; los cursos para sumar, debajo: al tildar uno, el botón de arriba
+                cambia al total del pack (y en celular la barra fija también) */}
             <div className={styles.actionContainer} ref={buyRef}>
               {pack && (
                 <p className={styles.compraResumen}>
@@ -658,6 +570,90 @@ export default function CursoGrabado({ cursoKey }) {
                 <Link to="/arrepentimiento">botón de arrepentimiento</Link>.
               </p>
             </div>
+
+            {/* Sumá a tu compra: el visitante arma su pack; la regla de precio vive en src/data/packs.js.
+                Tarjetas compactas (nombre y precio); la descripción de cada curso queda en el title */}
+            {agregables.length > 0 && (
+              <fieldset className={styles.sumas}>
+                <legend className={styles.sumasTitle}>
+                  {campaniaRedes
+                    ? "🎁 Sumá cursos a precio de campaña"
+                    : `🎁 Sumá cursos y ahorrá ${formatearPrecio(AHORRO_POR_CURSO)} por cada uno`}
+                </legend>
+                <p className={styles.sumasIntro}>
+                  {campaniaRedes
+                    ? "Solo durante la preventa. Tildá los que quieras: van en el mismo pago y te llegan al instante."
+                    : `Tildá los que quieras: van en el mismo pago y cada uno descuenta ${formatearPrecio(AHORRO_POR_CURSO)}. Si vale menos, va de regalo.`}
+                </p>
+                <div className={styles.sumasLista}>
+                  {agregables.map((k) => {
+                    const unidad = CURSOS_GRABADOS[k];
+                    const activa = extrasValidos.includes(k);
+                    // Master en JavaScript o Backend Avanzado con la Ruta Backend ya tildada: vienen dentro de la ruta
+                    const combo = activa ? null : extrasValidos.map((x) => CURSOS_GRABADOS[x]).find((c) => c.combo?.includes(k));
+                    const disponible = !combo && puedeSumar(k);
+                    const extra = disponible ? costoDeSumar(k) : null;
+                    return (
+                      <label
+                        key={k}
+                        title={pitchUnidad(k)}
+                        className={`${styles.sumaCard} ${activa ? styles.sumaCardActiva : ""} ${disponible ? "" : styles.sumaCardNo}`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={activa}
+                          disabled={!disponible}
+                          onChange={() => toggleExtra(k)}
+                          aria-label={`Sumar ${nombreCurso(unidad)}`}
+                        />
+                        <span className={styles.sumaBody}>
+                          <span className={styles.sumaNombre}>+ {nombreCurso(unidad)}</span>
+                          <span className={styles.sumaPrecios}>
+                            {disponible ? (
+                              <>
+                                <strong>{extra > 0 ? `+${formatearPrecio(extra)}` : "De regalo"}</strong>
+                                <s>{formatearPrecio(unidad.precio)}</s>
+                                <small>{unidad.clases} clases</small>
+                              </>
+                            ) : combo ? (
+                              <small>Incluido en la {nombreCurso(combo)}</small>
+                            ) : (
+                              <small>No se combina con lo que elegiste</small>
+                            )}
+                          </span>
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+                {pack && (
+                  <p className={styles.sumasTotal}>
+                    Tu pack: <strong>{pack.cantidadCursos} cursos</strong> por <strong>{formatearPrecio(pack.precio)}</strong> · por separado{" "}
+                    {formatearPrecio(pack.precioSeparado)} · ahorrás <strong>{formatearPrecio(pack.ahorro)}</strong>
+                  </p>
+                )}
+              </fieldset>
+            )}
+
+            <ul className={styles.benefitsList}>
+              {producto.beneficios.map((beneficio) => (
+                <li key={beneficio} className={styles.benefitItem}>
+                  ✓ {beneficio}
+                </li>
+              ))}
+              {producto.key !== "scratch" ? (
+                <li className={styles.benefitItem}>
+                  ✓ Certificado verificable con examen final en vivo, sin costo extra
+                </li>
+              ) : (
+                <li className={styles.benefitItem}>
+                  ✓ Su propio certificado: evaluación para chicos con preguntas y un jueguito (muy pronto)
+                </li>
+              )}
+              <li className={styles.benefitItem}>
+                ✓ Acceso gratis a E-stellarium, nuestra plataforma educativa (desde el 20 de noviembre)
+              </li>
+            </ul>
           </div>
         </div>
 

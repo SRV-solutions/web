@@ -10,7 +10,8 @@
 
 .fullLayout {
   display: grid;
-  grid-template-columns: 420px 1fr;
+  /* Columna de compra más ancha en pantallas grandes: los cursos para sumar entran de a dos */
+  grid-template-columns: clamp(420px, 38vw, 540px) 1fr;
   gap: 2.5rem;
   align-items: start;
 }
@@ -155,7 +156,7 @@
 
 .benefitsList {
   list-style: none;
-  margin: 0;
+  margin: 1.2rem 0 0;
   padding-left: 0;
   padding-right: 0;
   padding-bottom: 0;
@@ -802,13 +803,21 @@
   }
 }
 
-/* Sumá a tu compra: combos dentro de la tarjeta de compra */
+/* Sumá a tu compra: debajo del botón de pago, con tarjetas compactas en grilla */
 .sumas {
-  margin: 1rem 0 0;
-  padding: 0;
+  margin: 1.4rem 0 0;
+  padding: 1.1rem 0 0;
   border: 0;
+  border-top: 1px dashed rgba(246, 149, 10, 0.4);
   display: grid;
   gap: 0.6rem;
+  min-width: 0;
+}
+
+.sumasLista {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 0.5rem;
 }
 
 .sumasTitle {
@@ -830,8 +839,8 @@
 .sumaCard {
   display: flex;
   align-items: flex-start;
-  gap: 0.7rem;
-  padding: 0.8rem 0.85rem;
+  gap: 0.55rem;
+  padding: 0.55rem 0.65rem;
   border: 1px dashed #f6950a;
   border-radius: 10px;
   background: #0d0d0d;
@@ -845,9 +854,9 @@
 
 .sumaCard input {
   flex-shrink: 0;
-  width: 20px;
-  height: 20px;
-  margin: 0.15rem 0 0;
+  width: 18px;
+  height: 18px;
+  margin: 0.1rem 0 0;
   accent-color: #f6950a;
   cursor: pointer;
 }
@@ -863,64 +872,51 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-}
-
-.sumaTop {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.sumaEtiqueta {
-  font-size: 0.65rem;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #000000;
-  background: #f6950a;
-  padding: 0.15rem 0.45rem;
-  border-radius: 4px;
-}
-
-.sumaAhorro {
-  font-size: 0.72rem;
-  font-weight: 800;
-  color: #00bf63;
+  gap: 0.15rem;
 }
 
 .sumaNombre {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-weight: 800;
   color: #ffffff;
   line-height: 1.25;
 }
 
-.sumaPitch {
-  font-size: 0.78rem;
-  color: #cccccc;
-  line-height: 1.4;
-}
-
 .sumaPrecios {
   display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-  margin-top: 0.2rem;
-  font-size: 0.78rem;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.45rem;
+  font-size: 0.74rem;
   color: #9ca3af;
-  line-height: 1.4;
+  line-height: 1.35;
 }
 
 .sumaPrecios strong {
-  font-size: 1rem;
+  font-size: 0.95rem;
+  font-weight: 900;
   color: #f6950a;
 }
 
 .sumaPrecios s {
   color: #6b7280;
+}
+
+/* En el celular, de a dos por fila para que no haya que scrollear tanto */
+@media (max-width: 600px) {
+  .sumasLista {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.4rem;
+  }
+
+  .sumaCard {
+    gap: 0.4rem;
+    padding: 0.5rem 0.5rem;
+  }
+
+  .sumaNombre {
+    font-size: 0.8rem;
+  }
 }
 
 .compraResumen {

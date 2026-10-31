@@ -40,7 +40,7 @@ const PASOS = [
 
 const FAQ = [
   { q: "Nunca programé, ¿por dónde empiezo?", a: "Por el Curso de Scripting: arranca desde cero, cuesta $15.000 y te da la base de lógica para después seguir con Python o Backend." },
-  { q: "¿Enseñan a usar IA?", a: "Sí. Estamos sumando módulos de automatización con IA a los cursos de Scripting y Python (gratis para quienes ya los compraron), y preparando el curso 'IA para el trabajo'. Anotate en la lista de espera desde la página de próximos cursos." },
+  { q: "¿Enseñan a usar IA?", a: "Sí. Los cursos de Scripting y Python ya incluyen un módulo de automatización con IA, de 8 clases cada uno (si los compraste antes, ya lo tenés en tu carpeta). En Fundamentos de IA tenés 4 videos y sus guías gratis, y estamos preparando el curso 'IA para el trabajo': anotate en la lista de espera desde la página de próximos cursos." },
   { q: "¿Las clases son en vivo o grabadas?", a: "Los cursos de Scripting, Python, Master en JavaScript, Backend Avanzado y Scratch para Chicos son grabados, con acceso de por vida. El Intensivo Full Stack es una cursada en vivo." },
   { q: "¿Tienen algo para chicos?", a: "Sí: Scratch para Chicos, un curso grabado de 14 clases para que chicos de 8 a 13 años creen una historia animada y su primer videojuego. Está en preventa a $10.000 hasta el 18 de noviembre: el acceso a la carpeta llega al instante y ese día se habilitan las clases." },
   { q: "¿Cómo recibo el curso después de pagar?", a: "Automáticamente: apenas Mercado Pago aprueba el pago, te llega un mail con el acceso a la carpeta del curso en Google Drive." },

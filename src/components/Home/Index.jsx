@@ -214,7 +214,7 @@ export default function Home() {
                   <li>🎯 {c.nivel.split(" · ")[0]}</li>
                 </ul>
                 <div className={styles.coursePrice}>
-                  {/* Tachado solo si es un precio real (preventa con fecha): nada de "precios regulares" que nunca se cobraron */}
+                  {/* Tachado: precioRegular de cursosGrabados.js (ver la nota de arriba de ese archivo) */}
                   {c.precioRegular > c.precio && <span className={styles.oldPrice}>{formatearPrecio(c.precioRegular)}</span>}
                   <strong>{formatearPrecio(c.precio)}</strong>
                 </div>

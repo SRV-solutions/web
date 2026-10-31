@@ -1,9 +1,11 @@
 // Datos visuales de los cursos grabados con pago por Mercado Pago.
 // El precio que se cobra realmente se define en netlify/lib/cursos.js
 // (acá solo se muestra en pantalla y se usa para Meta Pixel; mantenerlos iguales).
-// precioRegular va SOLO cuando es un precio real: el de después de una preventa con fecha o la suma de las
-// partes de un combo. Un "precio regular" que nunca se cobró puede considerarse publicidad engañosa
-// (DNU 274/2019, arts. 10 y 11; Código Civil y Comercial, art. 1101).
+// precioRegular es el precio que se muestra tachado. En las preventas es el de después de la fecha y en los
+// combos, la suma de las partes. En los demás cursos es un precio de referencia que nunca se cobró: se sacó
+// el 29/10/2026 por riesgo de publicidad engañosa (DNU 274/2019, arts. 10 y 11; Código Civil y Comercial,
+// art. 1101) y Marcos decidió volver a mostrarlo el 31/10/2026, sabiendo ese riesgo. Durante el Cyber se
+// reemplaza por el precio de lista real (ver más abajo).
 
 // Preventa de Scratch: hasta esta fecha se vende a precio de preventa. El acceso a la carpeta de Drive
 // llega al instante (vacía) y ese día se suben las clases.
@@ -118,6 +120,7 @@ export const CURSOS_GRABADOS = {
     descripcion:
       "Aprendé a programar desde cero con JavaScript, Python y Google Apps Script, y poné a la IA a trabajar en tus automatizaciones: 40 clases grabadas y más de 59 horas para automatizar planillas, mails, documentos y tareas repetitivas, consumir APIs y armar tus propios bots.",
     precio: 15000,
+    precioRegular: 60000,
     clases: 40,
     beneficios: [
       "Acceso vitalicio al material en Google Drive",
@@ -231,6 +234,7 @@ export const CURSOS_GRABADOS = {
     descripcion:
       "106 clases grabadas para aprender Python desde cero y usarlo con IA: lógica de programación, programación orientada a objetos, archivos, consumo de APIs, asincronismo, aplicaciones con interfaz gráfica (GUI) y automatizaciones con IA, de las salidas estructuradas a los agentes y el RAG.",
     precio: 80000,
+    precioRegular: 450000,
     clases: 106,
     beneficios: [
       "Acceso vitalicio al material en Google Drive",
@@ -337,6 +341,7 @@ export const CURSOS_GRABADOS = {
     descripcion:
       "90 clases grabadas para dominar JavaScript desde cero con Node.js: lógica, estructuras de datos, POO, promesas, consumo de APIs reales, bots y testing. El lenguaje de la web, aprendido de verdad.",
     precio: 84900,
+    precioRegular: 350000,
     clases: 90,
     beneficios: [
       "Acceso vitalicio al material en Google Drive",
@@ -486,6 +491,7 @@ export const CURSOS_GRABADOS = {
     descripcion:
       "73 clases grabadas, la continuación del Master en JavaScript: creá tus propios servidores y APIs REST con Node.js y Express, middlewares, sockets en tiempo real, rate limit, testing y Docker.",
     precio: 99900,
+    precioRegular: 420000,
     clases: 73,
     beneficios: [
       "Acceso vitalicio al material en Google Drive",
@@ -591,6 +597,7 @@ export const CURSOS_GRABADOS = {
     descripcion:
       "30 clases grabadas para construir una aplicación completa de punta a punta: una API en .NET con C#, una base de datos PostgreSQL y un front en React con Vite. 12 módulos con teoría paso a paso, 21 ejercicios resueltos y un proyecto final tipo Instagram, más una guía de estudio con 80 preguntas para ponerte a prueba.",
     precio: 87900,
+    precioRegular: 390000,
     clases: CLASES_FULLSTACK,
     cuponAlumnos: true,
     beneficios: [

@@ -95,6 +95,10 @@ así que nada se sube ni se mergea sin el OK de Marcos.
       el footer, los packs, el título de Mercado Pago y los creativos del Cyber. Las rutas (/scripting, /python),
       las claves, los itemId y los contentName de Meta no cambian. Los Apps Script siguen con el nombre viejo en
       los mails, a propósito: no se tocan.
+- [x] Precios tachados de referencia (31/10/2026, decisión de Marcos): vuelven los de antes del 29/10 en los
+      cursos sin preventa (Scripting $60.000, Python $450.000, JavaScript $350.000, Backend Avanzado $420.000,
+      C# $390.000), sabiendo el riesgo de publicidad engañosa (DNU 274/2019). Durante el Cyber el tachado es
+      el precio de lista real, como dicen las bases.
 - [x] Promo «Cyber SRV» del 2 al 4/11 con fecha de inicio y fin publicadas: todos los cursos grabados al 50%
       (el Intensivo Full Stack en vivo no participa). Código listo en la rama: precio mostrado, precio cobrado
       (`netlify/lib/cursos.js`), mínimo del webhook (`appscript-cursos.gs`, que además suma la columna «Neto

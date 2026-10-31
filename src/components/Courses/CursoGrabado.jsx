@@ -129,7 +129,7 @@ export default function CursoGrabado({ cursoKey }) {
   const producto = CURSOS_GRABADOS[seleccion] || curso;
   const tituloProducto = [producto.tituloInicio, producto.tituloDestacado, producto.tituloFin].filter(Boolean).join(" ");
   const buyRef = useRef(null);
-  // Solo hay descuento si precioRegular es un precio real (preventa con fecha o combo): ver cursosGrabados.js
+  // Descuento contra precioRegular (preventa, combo o precio de referencia): ver la nota de cursosGrabados.js
   const descuento = producto.precioRegular > producto.precio ? Math.round((1 - producto.precio / producto.precioRegular) * 100) : 0;
   const tituloCompleto = [curso.tituloInicio, curso.tituloDestacado, curso.tituloFin].filter(Boolean).join(" ");
   const preventa = estaEnPreventa(producto);

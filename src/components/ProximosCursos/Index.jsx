@@ -3,7 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import Seo from "../Seo";
 import styles from "./style.module.css";
 import { whatsappLink } from "../../data/legal";
-import { CURSOS_GRABADOS, estaEnPreventa, formatearPrecio } from "../../data/cursosGrabados";
+import { CURSOS_GRABADOS, estaEnPreventa, formatearPrecio, enCyber, CYBER_FECHAS } from "../../data/cursosGrabados";
 
 // Próximos cursos con lista de espera (plan 2027, Tanda 2). El formulario postea a
 // netlify/functions/lista-espera.js, que lo guarda en la pestaña "Lista de espera" del Apps Script
@@ -140,8 +140,9 @@ export default function ProximosCursos() {
                   <>
                     {preventa && (
                       <p className={styles.lanzamiento}>
-                        Preventa: {formatearPrecio(curso.precio)} hasta el {curso.preventa.fechaTexto} (después,{" "}
-                        {formatearPrecio(curso.precioRegular)}).
+                        {enCyber()
+                          ? `Cyber SRV: ${formatearPrecio(curso.precio)} solo ${CYBER_FECHAS}. Después, preventa a ${formatearPrecio(curso.preventa.precio)} hasta el ${curso.preventa.fechaTexto} (luego, ${formatearPrecio(curso.precioRegular)}).`
+                          : `Preventa: ${formatearPrecio(curso.precio)} hasta el ${curso.preventa.fechaTexto} (después, ${formatearPrecio(curso.precioRegular)}).`}
                       </p>
                     )}
                     <Link className={styles.btnLista} to={`/${curso.ruta}/inscripcion`}>

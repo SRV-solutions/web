@@ -271,9 +271,16 @@ function getHojaLista_() {
 // ============================================================
 var MARCA_AVISO_APERTURA = "AVISO_APERTURA_ENVIADO";
 
-// Preventa de Redes, Linux y AWS: correrlo el 5/11/2026, cuando se publica la página del curso.
+// Preventa de Redes, Linux y AWS: correrlo apenas se publica la página del curso (abrió el 30/10/2026).
 // Los precios y fechas son los de netlify/lib/cursos.js: si cambian, cambiarlos también acá.
+// Hasta que termina el Cyber SRV (4/11) el mail también da el precio del Cyber.
 function avisarPreventaRedes() {
+  var antesDelFinDelCyber = new Date() < new Date("2026-11-05T00:00:00-03:00");
+  var precios = antesDelFinDelCyber
+    ? "Del 2 al 4 de noviembre, en el <strong>Cyber SRV</strong>, lo reservás a <strong style=\"color:#f6950a;\">$44.950</strong>. " +
+      "Fuera del Cyber, la preventa cuesta $62.900 hasta el 26 de enero de 2027 inclusive, y después el curso cuesta $89.900. "
+    : "Hasta el 26 de enero de 2027 inclusive lo reservás a <strong style=\"color:#f6950a;\">$62.900</strong> " +
+      "(después cuesta $89.900). ";
   avisarAperturaLista_({
     curso: "Redes, Linux y AWS", // tal cual figura en la columna Curso
     asunto: "Abrió la preventa de Redes, Linux y AWS - WEARESRV",
@@ -282,9 +289,8 @@ function avisarPreventaRedes() {
     cuerpoHtml:
       "Abrió la preventa de <strong>Redes, Linux y AWS</strong>, el curso grabado para rendir la certificación " +
       "<strong>AWS Certified Cloud Practitioner</strong>. Como estás en la lista de espera, te avisamos antes que a nadie.<br><br>" +
-      "Hasta el 26 de enero de 2027 inclusive lo reservás a <strong style=\"color:#f6950a;\">$62.900</strong> " +
-      "(después cuesta $89.900). Apenas pagás te llega el acceso a tu carpeta de Google Drive, y el " +
-      "<strong>27 de enero de 2027</strong> se habilitan ahí todas las clases.<br><br>" +
+      precios + "Apenas pagás te llega el acceso a tu carpeta de Google Drive: el " +
+      "<strong>27 de enero de 2027</strong> se habilitan ahí las 32 clases, y el 3 de febrero, los dos simulacros del examen.<br><br>" +
       "El examen de AWS no está incluido en el curso: lo toma y lo cobra AWS. En el curso te explicamos paso a paso cómo anotarte.",
     boton: "Reservar mi lugar",
     link: "https://wearesrv.com/redes/inscripcion"

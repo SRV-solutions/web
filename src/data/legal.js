@@ -29,15 +29,15 @@ export const PROMOCIONES = [
   {
     nombre: "Cyber SRV",
     detalle:
-      "Todos los cursos grabados (incluida la Ruta Backend Completa) al 50% de su precio de lista. No participa el Intensivo Full Stack en vivo. Los packs \"Sumá a tu compra\" se calculan sobre los precios del Cyber, con su regla de siempre.",
+      "Todos los cursos grabados (incluida la Ruta Backend Completa) al 50% de su precio de lista. No participa el Intensivo Full Stack en vivo. Los packs \"Sumá a tu compra\" se calculan sobre los precios del Cyber, con su regla de siempre. Redes, Linux y AWS, en preventa, también vale la mitad de su precio de lista ($44.950), y los cursos que se le suman desde su página tienen los precios de su promoción.",
     desde: "02/11/2026 a las 00:00",
     hasta: "04/11/2026 a las 23:59",
   },
   {
     nombre: "Preventa de Redes, Linux y AWS",
     detalle:
-      "El curso cuesta $62.900 en lugar de $89.900. La carpeta llega al instante y las clases se habilitan el 27/01/2027. El examen AWS Certified Cloud Practitioner no está incluido: lo toma y lo cobra AWS. Si en el mismo pago sumás otros cursos desde la página de Redes, Linux y AWS, cada uno cuesta: Curso de Scripting, sin costo extra; Master en Python, Master en JavaScript, Backend Avanzado o Curso Fullstack con C#, $20.000 más; Ruta Backend Completa, $35.000 más. Esos cursos llegan al instante.",
-    desde: "05/11/2026",
+      "El curso cuesta $62.900 en lugar de $89.900 (del 02/11/2026 al 04/11/2026, $44.950 por el Cyber SRV). La carpeta llega al instante, las 32 clases se habilitan el 27/01/2027 y los dos simulacros del examen, el 03/02/2027. El examen AWS Certified Cloud Practitioner no está incluido: lo toma y lo cobra AWS. Si en el mismo pago sumás otros cursos desde la página de Redes, Linux y AWS, cada uno cuesta: Curso de Scripting, sin costo extra; Master en Python, Master en JavaScript, Backend Avanzado o Curso Fullstack con C#, $20.000 más; Ruta Backend Completa, $35.000 más. Esos cursos llegan al instante.",
+    desde: "30/10/2026",
     hasta: "26/01/2027 a las 23:59",
   },
   {

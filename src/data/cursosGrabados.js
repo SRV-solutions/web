@@ -10,8 +10,9 @@
 // La misma fecha vive en netlify/lib/cursos.js.
 const SCRATCH_ACCESO = new Date("2026-11-18T00:00:00-03:00");
 
-// Preventa de Redes, Linux y AWS: igual que Scratch. Abre el 5/11/2026 (después del Cyber) y el 27/01/2027
-// se habilitan las clases. La misma fecha vive en netlify/lib/cursos.js y en appscript-cursos.gs.
+// Preventa de Redes, Linux y AWS: igual que Scratch. Abrió el 30/10/2026; el 27/01/2027 se habilitan las 32
+// clases y el 3/02/2027 los dos simulacros. Durante el Cyber vale la mitad de su precio de lista, como los demás.
+// La misma fecha vive en netlify/lib/cursos.js y en appscript-cursos.gs.
 const REDES_ACCESO = new Date("2027-01-27T00:00:00-03:00");
 
 // Clases grabadas del Curso Fullstack con C# (12 módulos)
@@ -30,6 +31,13 @@ export const enCyber = () => {
 
 export const estaEnPreventa = (curso) => Boolean(curso?.preventa) && Date.now() < curso.preventa.hasta.getTime();
 
+// Precio de una preventa en una línea (banners y tarjetas). Durante el Cyber el precio del Cyber vale solo
+// esos días: no se puede decir que dura hasta el fin de la preventa.
+export const textoPreventa = (curso) =>
+  enCyber()
+    ? `Cyber SRV: ${formatearPrecio(curso.precio)} solo ${CYBER_FECHAS}`
+    : `En preventa a ${formatearPrecio(curso.precio)} hasta el ${curso.preventa.fechaTexto}`;
+
 export const CURSOS_GRABADOS = {
   scratch: {
     key: "scratch",
@@ -43,7 +51,7 @@ export const CURSOS_GRABADOS = {
       "14 clases grabadas para que chicos de 8 a 13 años aprendan a programar jugando con Scratch: en el primer módulo arman una historia animada y en el segundo, su primer videojuego con puntaje, vidas y niveles. Sin instalar nada.",
     precio: Date.now() < SCRATCH_ACCESO.getTime() ? 10000 : 18000,
     precioRegular: 18000,
-    preventa: { hasta: SCRATCH_ACCESO, fechaTexto: "18 de noviembre" },
+    preventa: { hasta: SCRATCH_ACCESO, fechaTexto: "18 de noviembre", precio: 10000 },
     clases: 14,
     beneficios: [
       "Acceso vitalicio al material en Google Drive",
@@ -635,7 +643,9 @@ export const CURSOS_GRABADOS = {
   // campaña: mientras dura la preventa, los cursos que se le suman tienen precio fijo (SUMA_CON_REDES en packs.js).
   // El objetivo del curso es que el alumno pueda rendir AWS Certified Cloud Practitioner (CLF-C02). El examen
   // lo toma y lo cobra AWS: la página lo aclara (preguntasExtra) para que nadie entienda que está incluido.
-  // ⚠ Temario, cantidad de clases y requisitos son un BORRADOR: confirmarlos con Marcos antes de publicar.
+  // Temario: el cronograma de la cursada (REDES\guias-redes\contenido\cronograma.py), clases 1 a 32. El 27/01 se
+  // habilitan esas 32 (27 en vivo con su video resumen y 5 TP asincrónicos) y el 3/02 los dos simulacros (clases
+  // 33 y 34). El proyecto final y las presentaciones (35 y 36) son de la cursada en vivo y no se prometen acá.
   redes: {
     key: "redes",
     itemId: "curso-redes-linux-aws", // mismo itemId que netlify/lib/cursos.js (content_ids de Meta)
@@ -645,26 +655,27 @@ export const CURSOS_GRABADOS = {
     tituloDestacado: "AWS",
     tituloFin: "",
     descripcion:
-      "Preparate para rendir la certificación AWS Certified Cloud Practitioner (CLF-C02) con las bases que pide el trabajo en DevOps: redes desde cero, Linux desde la terminal y AWS con práctica real, en clases grabadas con animaciones que explican cada tema.",
+      "Preparate para rendir la certificación AWS Certified Cloud Practitioner (CLF-C02) con las bases que pide el trabajo en cloud y DevOps: redes desde cero con Cisco Packet Tracer, Linux con Ubuntu Server y AWS con práctica real. 32 clases, la guía de cada una en PDF y dos simulacros del examen.",
     precio: Date.now() < REDES_ACCESO.getTime() ? 62900 : 89900,
     precioRegular: 89900,
-    preventa: { hasta: REDES_ACCESO, fechaTexto: "27 de enero de 2027" },
-    clases: 36,
+    preventa: { hasta: REDES_ACCESO, fechaTexto: "27 de enero de 2027", precio: 62900 },
+    clases: 32,
     beneficios: [
       "Acceso vitalicio al material en Google Drive",
-      "Preparación completa para rendir AWS Certified Cloud Practitioner (CLF-C02)",
-      "Preguntas de práctica tipo examen para llegar seguro",
-      "Clases grabadas con animaciones que explican cada tema",
+      "Preparación para rendir AWS Certified Cloud Practitioner (CLF-C02), con los cuatro dominios del examen",
+      "27 clases grabadas en vivo, cada una con su video resumen animado, y 5 trabajos prácticos guiados",
+      "La guía de cada clase en PDF",
+      "Dos simulacros del examen (65 preguntas en 90 minutos), que se suman el 3 de febrero de 2027",
       "Práctica real en AWS con la capa gratuita",
     ],
     subTituloDesc:
-      "Primero entendés la red y dominás Linux; después aprendés AWS con los cuatro temas del examen Cloud Practitioner y practicás hasta llegar seguro.",
+      "Primero entendés cómo funciona una red y la armás con equipos Cisco; después administrás un servidor Ubuntu, y al final llevás todo a AWS siguiendo los cuatro dominios del examen Cloud Practitioner.",
     gancho: "Tu primera certificación de AWS, con las bases de redes y Linux que la hacen fácil.",
     metaDescripcion:
-      "Curso grabado para rendir AWS Certified Cloud Practitioner (CLF-C02): redes desde cero, Linux y AWS con práctica real y preguntas tipo examen. Preventa a $62.900 hasta el 27 de enero de 2027, cuando se habilitan las clases.",
-    nivel: "Desde cero en redes y Linux · Ideal si ya programás o trabajás en soporte",
+      "Curso grabado para rendir AWS Certified Cloud Practitioner (CLF-C02): 32 clases de redes con Cisco, Linux con Ubuntu Server y AWS con práctica real, guías en PDF y dos simulacros del examen. Preventa a $62.900 hasta el 27 de enero de 2027, cuando se habilitan las clases.",
+    nivel: "Desde cero en redes y Linux · Hasta rendir AWS Cloud Practitioner",
     requisitos:
-      "No. Redes y Linux arrancan desde cero, y no hace falta programar. Si ya programás o trabajás en soporte, le vas a sacar todavía más jugo. Para practicar en AWS vas a crear tu propia cuenta: trabajamos con la capa gratuita y te mostramos cómo evitar cargos.",
+      "No. Redes y Linux arrancan desde cero y no hace falta programar. Necesitás una computadora donde instalar programas gratuitos (Cisco Packet Tracer y VirtualBox). Para practicar en AWS vas a crear tu propia cuenta: trabajamos con la capa gratuita y en la primera clase de AWS configurás una alerta de presupuesto para evitar cargos.",
     paraQuien: [
       "Querés tu primera certificación de AWS para sumar a tu CV y a LinkedIn",
       "Trabajás en soporte o mesa de ayuda y querés dar el salto a cloud e infraestructura",
@@ -672,13 +683,18 @@ export const CURSOS_GRABADOS = {
       "Querés orientarte a DevOps o cloud, uno de los perfiles que más crece",
     ],
     resultados: [
-      "Llegar preparado al examen AWS Certified Cloud Practitioner (CLF-C02)",
-      "Entender cómo viaja la información: direcciones IP, subredes, DNS, puertos y protocolos",
-      "Moverte con soltura en la terminal de Linux y administrar un servidor",
-      "Crear servidores en AWS y publicar una aplicación en la nube",
+      "Llegar preparado al examen AWS Certified Cloud Practitioner (CLF-C02), sabiendo qué servicio elegir en cada caso",
+      "Entender cómo viaja la información: modelos OSI y TCP/IP, direcciones IP, máscaras, DHCP y DNS",
+      "Configurar switches y routers Cisco por consola, con VLANs",
+      "Administrar un servidor Ubuntu: usuarios, permisos, servicios, Nginx y SSH con claves",
+      "Publicar en AWS un sitio con dominio y HTTPS, una app en contenedores y un pipeline que despliega solo",
     ],
     // Aclaraciones propias de este curso: se suman a las preguntas frecuentes de la página
     preguntasExtra: [
+      {
+        q: "¿Qué incluye el curso y cuándo está cada cosa?",
+        a: "El 27 de enero de 2027 se habilitan las 32 clases: 27 grabadas en vivo, cada una con su video resumen animado, y 5 trabajos prácticos guiados, todas con su guía en PDF. El 3 de febrero de 2027 se suman los dos simulacros del examen: 65 preguntas en 90 minutos, como el examen real, y cómo anotarte para rendirlo.",
+      },
       {
         q: "¿El curso incluye el examen de AWS?",
         a: "No. El curso te prepara para rendir AWS Certified Cloud Practitioner (CLF-C02), pero el examen lo toma y lo cobra AWS, aparte del curso. Se rinde en español, online o en un centro de Pearson VUE, y te explicamos paso a paso cómo anotarte. WEARESRV no es un centro oficial de AWS. Además, al terminar el curso podés rendir nuestro examen final en vivo y obtener el certificado verificable de WEARESRV, sin costo extra.",
@@ -686,57 +702,66 @@ export const CURSOS_GRABADOS = {
     ],
     modulos: [
       {
-        titulo: "Redes desde cero",
+        titulo: "Fundamentos: servidores y redes",
         temas: [
-          "Cómo viaja la información: modelos OSI y TCP/IP",
-          "Direcciones IP, máscaras y subredes",
-          "DNS, DHCP y NAT: lo que pasa cuando entrás a una web",
-          "Puertos, protocolos y diagnóstico con ping, traceroute y nslookup",
+          "Servidores y entorno de trabajo: la terminal, Git Bash, permisos, Nano y tu primer script",
+          "Fundamentos de redes: componentes, topologías, protocolos, modelos OSI y TCP/IP",
+          "La dirección IP: binario, privada y pública, máscara, puerta de enlace y DNS",
+          "Packet Tracer en acción: switch y PCs, DHCP, DNS y un servidor web",
         ],
       },
       {
-        titulo: "Linux y servidores",
+        titulo: "Redes con Cisco",
         temas: [
-          "Instalar Linux en una máquina virtual y moverte por la terminal",
-          "Usuarios, grupos y permisos",
-          "Paquetes, procesos, servicios y SSH con claves",
-          "Un servidor web con Nginx",
+          "La consola de Cisco: modos del IOS, comandos show, contraseñas y guardar la configuración",
+          "Cómo aprende un switch: tabla MAC, broadcast y ARP",
+          "Tu red desde cero y un switch protegido con IP de gestión",
+          "El router por consola y VLANs con puertos de acceso y troncales 802.1Q",
         ],
       },
       {
-        titulo: "Conceptos de la nube",
+        titulo: "Linux con Ubuntu Server",
         temas: [
-          "Qué es la nube y qué ganás frente a tener servidores propios",
-          "Modelos IaaS, PaaS y SaaS, y formas de desplegar",
-          "Infraestructura global de AWS: regiones, zonas de disponibilidad y edge",
-          "El marco AWS Well-Architected",
+          "Ubuntu Server en VirtualBox: red, usuarios, sudo, apt y SSH desde tu PC",
+          "TP: usuarios, grupos, permisos, carpetas compartidas y paquetes",
+          "TP: procesos, servicios y logs con ps, top, systemctl y journalctl",
+          "Servicios: Nginx, SSH con claves y el firewall ufw",
         ],
       },
       {
-        titulo: "Seguridad y cumplimiento",
+        titulo: "AWS: la nube, IAM, VPC y EC2",
         temas: [
-          "El modelo de responsabilidad compartida",
-          "IAM: usuarios, grupos, roles, políticas y MFA",
-          "Grupos de seguridad, cifrado y servicios de protección",
-          "Cumplimiento y auditoría con CloudTrail",
+          "La nube y AWS: IaaS, PaaS y SaaS, regiones y zonas, capa gratuita y alertas de presupuesto",
+          "IAM y la responsabilidad compartida: usuarios, grupos, políticas, roles y MFA",
+          "VPC: subredes públicas y privadas, NAT Gateway, security groups y NACL",
+          "EC2: tu Ubuntu en la nube y los modelos de precio; TP: tu servidor en AWS",
         ],
       },
       {
-        titulo: "Servicios de AWS con práctica real",
+        titulo: "AWS: almacenamiento y formas de publicar",
         temas: [
-          "Cómputo: EC2, Lambda y contenedores",
-          "Redes en AWS: VPC, subredes y Route 53",
-          "Almacenamiento y bases de datos: S3, EBS, RDS y DynamoDB",
-          "Proyecto: tu aplicación publicada en AWS y monitoreada con CloudWatch",
+          "S3, EBS y EFS: buckets, clases de almacenamiento y sitio estático",
+          "Route 53, Certificate Manager y CloudFront: tu sitio con dominio y HTTPS",
+          "Contenedores con ECS y Fargate, y serverless con Lambda, API Gateway, SQS y SNS",
+          "Amplify, Elastic Beanstalk y Lightsail, y CI/CD con CodePipeline",
         ],
       },
       {
-        titulo: "Costos y preparación del examen",
+        titulo: "AWS: bases de datos, arquitectura y seguridad",
         temas: [
-          "Precios, capa gratuita, facturación y alertas de costos",
-          "Planes de soporte de AWS",
-          "Preguntas de práctica tipo examen, con la explicación de cada respuesta",
-          "Cómo anotarte y qué esperar el día del examen",
+          "Bases de datos: RDS, Aurora, DynamoDB y ElastiCache",
+          "TP: un pipeline que despliega solo y tu app con su base de datos",
+          "Alta disponibilidad: Load Balancer, Auto Scaling, multi-AZ y Well-Architected",
+          "Monitoreo y seguridad: CloudWatch, CloudTrail, CloudFormation, KMS, WAF, GuardDuty y más",
+        ],
+      },
+      {
+        titulo: "Costos, soporte y el examen",
+        temas: [
+          "Pricing Calculator, Cost Explorer, Budgets y planes de soporte",
+          "Marketplace, migración y servicios de IA como Amazon Q",
+          "Los cuatro dominios del CLF-C02 y en qué clase se ve cada uno",
+          "Dos simulacros del examen y cómo anotarte: se suman el 3 de febrero de 2027",
         ],
       },
     ],

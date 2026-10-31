@@ -45,7 +45,11 @@ function preguntasFrecuentes(curso, preventa) {
       ? [
           {
             q: "¿Qué es la preventa y cuándo empieza el curso?",
-            a: `Las clases se habilitan el ${curso.preventa.fechaTexto}. Si lo comprás antes, lo pagás ${formatearPrecio(curso.precio)} en lugar de ${formatearPrecio(curso.precioRegular)}. El acceso a tu carpeta de Google Drive te llega al mail apenas pagás, y ese día aparecen ahí las clases.`,
+            a: `Las clases se habilitan el ${curso.preventa.fechaTexto}. ${
+              enCyber()
+                ? `Por el Cyber SRV, ${CYBER_FECHAS} lo pagás ${formatearPrecio(curso.precio)}; después vuelve al precio de preventa, ${formatearPrecio(curso.preventa.precio)}, hasta que se habilitan las clases, y desde ese día cuesta ${formatearPrecio(curso.precioRegular)}.`
+                : `Si lo comprás antes, lo pagás ${formatearPrecio(curso.precio)} en lugar de ${formatearPrecio(curso.precioRegular)}.`
+            } El acceso a tu carpeta de Google Drive te llega al mail apenas pagás, y ese día aparecen ahí las clases.`,
           },
         ]
       : []),
@@ -781,7 +785,9 @@ export default function CursoGrabado({ cursoKey }) {
             <p>
               {pack
                 ? `${compra.clases} clases en ${pack.cantidadCursos} cursos, acceso de por vida y un solo pago de ${formatearPrecio(compra.precio)}. Por separado pagarías ${formatearPrecio(pack.precioSeparado)}.`
-                : preventa
+                : preventa && cyber
+                  ? `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(producto.precio)}: precio del Cyber SRV, solo ${CYBER_FECHAS}. Las clases se habilitan en tu carpeta el ${fechaAcceso}.`
+                  : preventa
                   ? `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(producto.precio)}. Desde el ${fechaAcceso} pasa a ${formatearPrecio(producto.precioRegular)}, y ese mismo día se habilitan las clases en tu carpeta.`
                   : `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(compra.precio)}${cuponAplicado ? " con tu código de alumno" : ""}. Empezá esta misma noche.`}
             </p>

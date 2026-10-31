@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import styles from "./style.module.css";
 import Seo, { SITE_URL } from "../Seo";
-import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, linkInscripcion } from "../../data/cursosGrabados";
+import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, textoPreventa, linkInscripcion } from "../../data/cursosGrabados";
 import { infoPack, AHORRO_POR_CURSO } from "../../data/packs";
 import { TESTIMONIOS, ENCUESTA, promedioEncuesta } from "../../data/testimonios";
 import { LuQuote, LuStar } from "react-icons/lu";
@@ -250,7 +250,7 @@ export default function Home() {
           <span>
             <strong>Nuevo: Scratch para Chicos (8 a 13 años).</strong>{" "}
             {estaEnPreventa(CURSOS_GRABADOS.scratch)
-              ? `En preventa a ${formatearPrecio(CURSOS_GRABADOS.scratch.precio)} hasta el ${CURSOS_GRABADOS.scratch.preventa.fechaTexto} →`
+              ? `${textoPreventa(CURSOS_GRABADOS.scratch)} →`
               : "Que cree su primer videojuego desde cero →"}
           </span>
         </Link>
@@ -260,7 +260,7 @@ export default function Home() {
           <span>
             <strong>Nuevo: Redes, Linux y AWS.</strong> Preparate para rendir la certificación AWS Cloud Practitioner.{" "}
             {estaEnPreventa(CURSOS_GRABADOS.redes)
-              ? `En preventa a ${formatearPrecio(CURSOS_GRABADOS.redes.precio)} hasta el ${CURSOS_GRABADOS.redes.preventa.fechaTexto} →`
+              ? `${textoPreventa(CURSOS_GRABADOS.redes)} →`
               : "Ver el curso →"}
           </span>
         </Link>

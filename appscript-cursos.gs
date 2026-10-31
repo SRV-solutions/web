@@ -136,9 +136,9 @@ var CURSOS = {
       hasta: new Date("2027-01-27T00:00:00-03:00"), // misma fecha que netlify/lib/cursos.js
       precioMinimo: 62900,
       fechaTexto: "27 de enero de 2027",
-      queEncontrara: "todas las clases del curso"
+      queEncontrara: "las 32 clases del curso, y el 3 de febrero de 2027, los dos simulacros del examen"
     },
-    folderId: FOLDER_PENDIENTE // ⚠️ pegar el ID de la carpeta de Drive del curso
+    folderId: "12Iye_viv4sZy9SEKLj-fUENRW1h7-UNa" // "AWS Y REDES - Preventa", en Mi unidad > CURSOS
   },
   // COMBO: Master en JavaScript + Backend Avanzado en un solo pago. Sin carpeta propia:
   // comparte las carpetas de los cursos listados en "incluye" (mismo orden en el mail).

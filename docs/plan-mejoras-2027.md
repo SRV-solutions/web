@@ -86,6 +86,11 @@ así que nada se sube ni se mergea sin el OK de Marcos.
 - [x] Módulos de IA anunciados como «Próximamente · gratis con tu acceso» en Scripting («Automatizá con IA») y
       Python («Automatizaciones con IA»), con temario borrador en `cursosGrabados.js` (`proximosModulos`).
       Cuando las clases estén grabadas y subidas a Drive: mover el módulo a `modulos` y actualizar `clases`.
+- [x] Módulos de IA publicados (30/10/2026): grabados y subidos a la carpeta de cada curso. Scripting suma el
+      módulo 15 «Automatizá con IA» (clases 33 a 40: 40 clases en total) y Python el módulo 09 «Automatizaciones
+      con IA» (clases 99 a 106: 106 en total), cada uno con guías breves, guía de estudio, guía práctica y
+      materiales. Fundamentos de IA: los 4 temas con video y guía, más la guía completa, en su carpeta; la página
+      los muestra como disponibles con el registro.
 - [x] Promo «Cyber SRV» del 2 al 4/11 con fecha de inicio y fin publicadas: todos los cursos grabados al 50%
       (el Intensivo Full Stack en vivo no participa). Código listo en la rama: precio mostrado, precio cobrado
       (`netlify/lib/cursos.js`), mínimo del webhook (`appscript-cursos.gs`, que además suma la columna «Neto

@@ -114,24 +114,24 @@ export const CURSOS_GRABADOS = {
     tituloDestacado: "Scripting",
     tituloFin: "Desde Cero",
     descripcion:
-      "Aprendé a programar desde cero con JavaScript, Python y Google Apps Script: 32 clases grabadas y más de 59 horas para automatizar planillas, mails, documentos y tareas repetitivas, consumir APIs y armar tus propios bots.",
+      "Aprendé a programar desde cero con JavaScript, Python y Google Apps Script: 40 clases grabadas y más de 59 horas para automatizar planillas, mails, documentos y tareas repetitivas, consumir APIs, armar tus propios bots y sumarle IA a tus automatizaciones.",
     precio: 15000,
-    clases: 32,
+    clases: 40,
     beneficios: [
       "Acceso vitalicio al material en Google Drive",
       "Guía de estudio en PDF con 66 preguntas y sus respuestas",
       "Más de 59 horas de clases grabadas",
       "JavaScript, Python y Google Apps Script en un solo curso",
-      "Nuevo módulo de automatización con IA en camino: gratis con tu acceso",
+      "Nuevo módulo «Automatizá con IA»: 8 clases con guía de estudio, guía práctica y archivos para practicar",
       "Envío automático de accesos al abonar",
     ],
     subTituloDesc:
       "Ideal para arrancar de cero: aprendés la lógica de programación y la aplicás a automatizaciones reales.",
     gancho: "Dejá de hacer a mano lo que una computadora hace sola.",
-    metaDescripcion: "Aprendé a programar desde cero con JavaScript, Python y Google Apps Script. 32 clases, más de 59 horas y acceso de por vida por $15.000.",
+    metaDescripcion: "Aprendé a programar desde cero con JavaScript, Python y Google Apps Script, y automatizá con IA. 40 clases, más de 59 horas y acceso de por vida por $15.000.",
     nivel: "Desde cero · No necesitás saber nada de programación",
     paraQuien: ["Nunca programaste y querés arrancar sin pagar una fortuna", "Trabajás con planillas, mails o documentos y querés automatizar tareas repetitivas", "Querés probar si la programación es para vos antes de invertir en una carrera", "Necesitás una base sólida de lógica para después ir a Python o JavaScript"],
-    resultados: ["Escribir programas en JavaScript y Python con variables, condicionales, bucles y funciones", "Automatizar Google Sheets, Docs, Gmail y Calendar con Apps Script", "Pedir datos a APIs reales, como la cotización del dólar", "Armar tu propio bot de Discord y tus primeros scripts útiles para el día a día"],
+    resultados: ["Escribir programas en JavaScript y Python con variables, condicionales, bucles y funciones", "Automatizar Google Sheets, Docs, Gmail y Calendar con Apps Script", "Pedir datos a APIs reales, como la cotización del dólar", "Armar tu propio bot de Discord y tus primeros scripts útiles para el día a día", "Sumarle IA a tus automatizaciones: clasificar datos, responder mails y armar el resumen del día con n8n"],
     modulos: [
       {
         titulo: "Introducción, Entorno & Terminal",
@@ -205,17 +205,14 @@ export const CURSOS_GRABADOS = {
           "Crear eventos en Google Calendar",
         ],
       },
-    ],
-    // Módulos anunciados como "Próximamente" en la página: todavía NO están en la carpeta.
-    // Cuando las clases estén grabadas y subidas, mover el módulo a "modulos" y actualizar "clases".
-    proximosModulos: [
       {
+        // Módulo 15 de la carpeta (clases 33 a 40), sumado el 30/10/2026
         titulo: "Automatizá con IA",
         temas: [
-          "Qué es un modelo de lenguaje y cómo pedirle código que funcione (prompts para programar)",
-          "Tu primera llamada a una API de IA desde Python: resumir textos y clasificar datos",
-          "IA en Google Apps Script: respuestas automáticas en Gmail y planillas que se completan solas",
-          "Proyecto: un asistente que lee tus mails y te arma el resumen del día",
+          "Programar con IA y tu primera llamada a una API de IA",
+          "Clasificar datos con IA y llevar la IA a Google Sheets",
+          "IA en Gmail, herramientas y agentes",
+          "Automatizar con n8n y proyecto: el resumen del día",
         ],
       },
     ],
@@ -230,22 +227,22 @@ export const CURSOS_GRABADOS = {
     tituloDestacado: "Python",
     tituloFin: "Desde Cero",
     descripcion:
-      "98 clases grabadas para aprender Python desde cero: lógica de programación, programación orientada a objetos, archivos, consumo de APIs, asincronismo y aplicaciones con interfaz gráfica (GUI).",
+      "106 clases grabadas para aprender Python desde cero: lógica de programación, programación orientada a objetos, archivos, consumo de APIs, asincronismo, aplicaciones con interfaz gráfica (GUI) y automatizaciones con IA.",
     precio: 80000,
-    clases: 98,
+    clases: 106,
     beneficios: [
       "Acceso vitalicio al material en Google Drive",
       "Estudiá a tu propio ritmo (100% grabado)",
-      "Nuevo módulo de automatizaciones con IA en camino: gratis con tu acceso",
+      "Nuevo módulo «Automatizaciones con IA»: 8 clases con guía de estudio, guía práctica y archivos para practicar",
       "Envío automático de accesos al abonar",
     ],
     subTituloDesc:
       "Estructura práctica diseñada para llevarte desde las bases hasta proyectos profesionales.",
     gancho: "El lenguaje más pedido del mundo, explicado desde la primera línea.",
-    metaDescripcion: "Master en Python desde cero: 98 clases grabadas de lógica, POO, APIs, asincronismo y apps con interfaz gráfica. Acceso de por vida.",
+    metaDescripcion: "Master en Python desde cero: 106 clases grabadas de lógica, POO, APIs, asincronismo, apps con interfaz gráfica y automatizaciones con IA. Acceso de por vida.",
     nivel: "Desde cero · Ideal como primer lenguaje",
     paraQuien: ["Querés aprender el lenguaje más usado en automatización, datos e inteligencia artificial", "Empezás desde cero y buscás un curso completo, no videos sueltos", "Querés armar proyectos reales para tu portfolio", "Te interesa automatizar tareas o trabajar con datos"],
-    resultados: ["Programar en Python con buenas prácticas, de la lógica a la POO", "Leer y escribir archivos, manejar errores y usar expresiones regulares", "Consumir APIs con requests y armar tu propio bot", "Crear apps de escritorio con interfaz gráfica: To Do List, generador de contraseñas y más"],
+    resultados: ["Programar en Python con buenas prácticas, de la lógica a la POO", "Leer y escribir archivos, manejar errores y usar expresiones regulares", "Consumir APIs con requests y armar tu propio bot", "Crear apps de escritorio con interfaz gráfica: To Do List, generador de contraseñas y más", "Automatizar con IA desde Python: clasificar un CSV, resumir PDFs y armar un bot que responde sobre tus documentos"],
     modulos: [
       {
         titulo: "Introducción & Entorno de Trabajo",
@@ -312,17 +309,14 @@ export const CURSOS_GRABADOS = {
           "Modularización y cierre del curso",
         ],
       },
-    ],
-    // Módulos anunciados como "Próximamente" en la página: todavía NO están en la carpeta.
-    // Cuando las clases estén grabadas y subidas, mover el módulo a "modulos" y actualizar "clases".
-    proximosModulos: [
       {
+        // Módulo 09 de la carpeta (clases 99 a 106), sumado el 30/10/2026
         titulo: "Automatizaciones con IA",
         temas: [
-          "Consumir una API de IA con requests: prompts, tokens y respuestas en JSON",
-          "Procesar archivos con IA: resumir PDFs y clasificar un CSV completo",
-          "Un script que lee tus datos y redacta el informe solo",
-          "Proyecto: un bot que responde preguntas sobre tus propios documentos",
+          "Python + IA: trabajar con un asistente y tu propio cliente de IA con requests",
+          "Salidas estructuradas para clasificar un CSV y resumir PDFs",
+          "El informe que se escribe solo, asincronismo y agentes",
+          "RAG: preguntas sobre tus documentos, y proyecto: el bot de tus documentos",
         ],
       },
     ],

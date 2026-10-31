@@ -179,8 +179,9 @@ export default function FundamentosIA() {
         <div className={styles.siguiente}>
           <h2>¿Querés ir más allá de los fundamentos?</h2>
           <p>
-            El <Link to="/scripting/inscripcion">Curso de Scripting</Link> te enseña a programar desde cero (con un
-            módulo de automatización con IA en camino), y <Link to="/proximos-cursos?curso=ia-trabajo">IA para el
+            El <Link to="/scripting/inscripcion">Curso de Scripting</Link> te enseña a programar desde cero y ya
+            incluye un módulo de 8 clases para automatizar con IA; el <Link to="/python/inscripcion">Master en
+            Python</Link> también suma el suyo. Y <Link to="/proximos-cursos?curso=ia-trabajo">IA para el
             trabajo</Link> ya tiene lista de espera.
           </p>
         </div>

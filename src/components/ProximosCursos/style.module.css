@@ -102,6 +102,40 @@
   font-size: 0.82rem !important;
 }
 
+.precio {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding-top: 0.6rem;
+  border-top: 1px dashed #2a2a2a;
+}
+
+.precioRotulo {
+  color: #f6950a;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.precioValores {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.precioValores strong {
+  color: #30a05a;
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.precioValores s {
+  color: #8a8a8a;
+  font-size: 0.95rem;
+}
+
 .btnLista {
   margin-top: auto;
   display: inline-flex;

@@ -10,6 +10,10 @@ import { CURSOS_GRABADOS, estaEnPreventa, formatearPrecio, enCyber, CYBER_FECHAS
 // de registros (appscript-fundamentos.gs). Las claves de PROXIMOS tienen que coincidir con las de
 // esa función. En local no funciona (Vite no corre las Netlify Functions): probarlo en el deploy.
 // Un curso con "curso" ya se vende (preventa): su tarjeta lleva a la página del curso.
+// precio / precioLanzamiento: publicados el 31/10/2026 (Marcos). El de lanzamiento vale los primeros
+// DIAS_LANZAMIENTO días desde que abre la inscripción de cada curso; cuando abra, cargar la fecha en
+// PROMOCIONES de src/data/legal.js.
+const DIAS_LANZAMIENTO = 7;
 const PROXIMOS = [
   {
     key: "ia-trabajo",
@@ -19,6 +23,8 @@ const PROXIMOS = [
     texto:
       "Usá IA todos los días sin saber programar: redactá mails e informes, analizá datos, resumí documentos y automatizá tareas repetitivas con prompts que funcionan.",
     para: "Para cualquier persona que trabaje con una computadora.",
+    precio: 44900,
+    precioLanzamiento: 29900,
   },
   {
     key: "sql",
@@ -28,6 +34,8 @@ const PROXIMOS = [
     texto:
       "Las bases de datos desde cero: consultas, filtros, JOIN y reportes. Las clases ya están grabadas, con resúmenes animados de cada tema, y vienen con guías de apoyo gratuitas. Certificado verificable con examen final en vivo.",
     para: "Para sumar la herramienta que piden en casi todos los trabajos con datos.",
+    precio: 49900,
+    precioLanzamiento: 34900,
   },
   {
     key: "ia-docentes",
@@ -37,6 +45,8 @@ const PROXIMOS = [
     texto:
       "Planificaciones, correcciones, rúbricas y material didáctico con IA, pensado para el aula real y con criterio pedagógico.",
     para: "Para docentes y equipos directivos de cualquier nivel.",
+    precio: 34900,
+    precioLanzamiento: 24900,
   },
   {
     key: "redes",
@@ -121,8 +131,8 @@ export default function ProximosCursos() {
         </h1>
         <p className={styles.lead}>
           Estos cursos están en preparación, todos con certificado verificable y examen final en vivo. Sumate a la
-          lista de espera: no te comprometés a nada, te avisamos antes que a nadie cuando abran y el precio de
-          lanzamiento se anuncia primero a la lista.
+          lista de espera: no te comprometés a nada y te avisamos antes que a nadie cuando abran, para que llegues
+          al precio de lanzamiento.
         </p>
 
         <div className={styles.grid}>
@@ -151,7 +161,17 @@ export default function ProximosCursos() {
                   </>
                 ) : (
                   <>
-                    <p className={styles.lanzamiento}>El precio de lanzamiento se anuncia primero a la lista de espera.</p>
+                    <div className={styles.precio}>
+                      <span className={styles.precioRotulo}>Precio de lanzamiento</span>
+                      <span className={styles.precioValores}>
+                        <strong>{formatearPrecio(c.precioLanzamiento)}</strong>
+                        <s>{formatearPrecio(c.precio)}</s>
+                      </span>
+                    </div>
+                    <p className={styles.lanzamiento}>
+                      Los primeros {DIAS_LANZAMIENTO} días desde que abre la inscripción; después,{" "}
+                      {formatearPrecio(c.precio)}. A la lista de espera le avisamos primero.
+                    </p>
                     <button type="button" className={styles.btnLista} onClick={() => elegir(c.key)}>
                       Sumarme a la lista de espera
                     </button>
@@ -165,8 +185,8 @@ export default function ProximosCursos() {
         <div className={styles.registro} ref={formRef} id="lista-espera">
           <h2>{nombreElegido ? `Lista de espera: ${nombreElegido}` : "Anotate en la lista de espera"}</h2>
           <p>
-            Dejanos tus datos y te avisamos por mail antes que a nadie cuando abra la inscripción, con el precio de
-            lanzamiento para la lista. No te compromete a nada.
+            Dejanos tus datos y te avisamos por mail antes que a nadie cuando abra la inscripción, para que
+            aproveches el precio de lanzamiento. No te compromete a nada.
           </p>
           {envio === "listo" ? (
             <div className={styles.registroOk}>

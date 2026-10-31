@@ -64,11 +64,11 @@ así que nada se sube ni se mergea sin el OK de Marcos.
       los anotados en el resumen diario. Reemplaza al botón de WhatsApp (que queda como salida si falla).
       Publicar recién después de pegar la versión nueva de `appscript-fundamentos.gs` («Nueva versión»):
       con la versión anterior el formulario muestra el error.
-- [ ] Precios de lanzamiento en las tarjetas de la lista de espera: faltan los números (publicarlos obliga,
-      Ley 24.240; van como «precio de lanzamiento · primera cohorte», con fechas cuando abra cada curso).
-      Recomendación del 30/10: SQL $49.900 (lanzamiento $34.900), IA para el trabajo $44.900 ($29.900),
-      IA para docentes $34.900 ($24.900), Redes/Linux/AWS $89.900 ($62.900). Los cuatro son grabados (no hay
-      otro curso en vivo hasta terminar el Intensivo actual).
+- [x] Precios de lanzamiento en las tarjetas de la lista de espera (31/10/2026, confirmados por Marcos): SQL
+      $49.900 (lanzamiento $34.900), IA para el trabajo $44.900 ($29.900), IA para docentes $34.900 ($24.900).
+      El de lanzamiento vale los primeros 7 días desde que abre la inscripción de cada curso (publicarlo obliga,
+      Ley 24.240). Cuando abra cada uno: cargar la promo con sus fechas en `PROMOCIONES` de `src/data/legal.js`.
+      Los tres son grabados (no hay otro curso en vivo hasta terminar el Intensivo actual).
 - [ ] **Preventa y campaña de Redes, Linux y AWS** (rama `preventa-redes`, se publica el 30/10/2026): curso
       grabado para rendir AWS Certified Cloud Practitioner (CLF-C02). Página `/redes/inscripcion` (el link de
       Linktree y de la campaña), preventa a $62.900 hasta el 27/01/2027 (después $89.900); en el Cyber (2 al 4/11)

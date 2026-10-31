@@ -5,10 +5,6 @@
 /backend-avanzado/inscripcion      /ruta-backend/inscripcion?elegir=backend-avanzado      301
 # Gracias vieja de Backend Fundamentos -> la de JavaScript (Netlify conserva el ?payment_id=... de Mercado Pago)
 /fundamentos-backend/gracias       /javascript/gracias       301
-# El curso de Redes & AWS ya no se vende: su inscripcion vieja (todavia linkeada desde anuncios
-# viejos de Meta) va a la home en vez de caer en la pagina de "no encontrado".
-/redes/inscripcion                 /                         301
-
 # Funciones de Netlify (API de conversiones de Meta). Tiene que ir antes del SPA:
 # las reglas de este archivo se aplican antes que las de netlify.toml.
 /api/*    /.netlify/functions/:splat   200

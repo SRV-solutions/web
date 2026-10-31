@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creativos Cyber y Preventas</title>
+<!--
+  Creativos para redes de noviembre de 2026: Cyber SRV (2 al 4/11) y las dos preventas (Redes, Linux y AWS,
+  y Scratch para Chicos). Post 1080x1350 (4:5, feed y anuncios) e historia 1080x1920.
+  Se abre por el dev server de Vite (npx vite --port 3481 -> http://localhost:3481/docs/creativos/cyber-y-preventas-2026.html)
+  porque usa el isotipo de /public. "Descargar PNG" baja cada placa a tamaño real (html2canvas).
+  Precios y clases: los de src/data/cursosGrabados.js, src/data/packs.js (SUMA_CON_REDES) y PROMOCIONES de
+  src/data/legal.js al 31/10/2026. Si cambia un precio o una fecha, cambiarlo también acá.
+  Historias: lo importante queda entre los 220 px de arriba y los 300 px de abajo (ahí van la barra y la
+  caja de respuesta de Instagram).
+-->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;600;800&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root {
+    --negro: #000000;
+    --carbon: #0d0d0d;
+    --linea: #1f2430;
+    --azul: #0b78fb;
+    --naranja: #f6950a;
+    --verde: #30a05a;
+    --verdeClaro: #4cc27a;
+    --blanco: #ffffff;
+    --gris: #9ca3af;
+    --grisOscuro: #6b7280;
+    --display: "Anton", "Arial Narrow", sans-serif;
+    --texto: "Archivo", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #111318;
+    color: var(--blanco);
+    font-family: var(--texto);
+    padding: 32px max(16px, env(safe-area-inset-left, 0px)) 80px max(16px, env(safe-area-inset-right, 0px));
+  }
+  h1 { font-family: var(--display); font-weight: 400; letter-spacing: 1px; font-size: 2rem; margin: 0 0 4px; }
+  h1 .srv, .seccion h2 .srv { color: var(--naranja); }
+  .sub { color: var(--gris); margin: 0 0 20px; max-width: 70ch; line-height: 1.5; }
+  .acciones { margin: 0 0 32px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  button {
+    font-family: var(--texto); font-weight: 600; font-size: 0.95rem;
+    background: var(--azul); color: #fff; border: 0; border-radius: 8px;
+    padding: 10px 18px; cursor: pointer;
+  }
+  button.secundario { background: #232838; }
+  button:hover { filter: brightness(1.15); }
+  button:focus-visible { outline: 3px solid var(--naranja); outline-offset: 2px; }
+  .estado { color: var(--verdeClaro); font-weight: 600; }
+  .seccion { margin: 0 0 48px; }
+  .seccion h2 { font-family: var(--display); font-weight: 400; font-size: 1.6rem; letter-spacing: 1px; margin: 0 0 6px; }
+  .seccion .sub { margin-bottom: 14px; }
+  .galeria { display: flex; flex-wrap: wrap; gap: 24px; }
+  .pieza { display: flex; flex-direction: column; gap: 10px; width: 300px; }
+  .pieza h3 { font-size: 0.85rem; font-weight: 600; color: var(--gris); margin: 0; min-height: 2.4em; }
+  .marco { width: 300px; height: 375px; overflow: hidden; border-radius: 10px; border: 1px solid #2a2f3a; background: var(--negro); }
+  .marco.vertical { height: 533px; }
+  .marco > .placa { transform: scale(0.277778); transform-origin: top left; }
+
+  /* ---------- Las placas (tamaño real) ---------- */
+  .placa {
+    width: 1080px; height: 1350px; background: var(--negro); color: var(--blanco);
+    font-family: var(--texto); position: relative; overflow: hidden;
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 64px 80px 56px;
+  }
+  .placa.story { height: 1920px; padding: 220px 84px 300px; }
+  .placa::before, .placa::after { content: ""; position: absolute; border-radius: 50%; pointer-events: none; }
+  .placa::before { width: 1000px; height: 1000px; right: -460px; top: -420px; background: radial-gradient(circle, rgba(11,120,251,0.24), transparent 65%); }
+  .placa::after { width: 900px; height: 900px; left: -420px; bottom: -380px; background: radial-gradient(circle, rgba(246,149,10,0.17), transparent 65%); }
+  .placa > * { position: relative; z-index: 1; }
+
+  /* Franja de marca azul / naranja / verde */
+  .franja { position: absolute; left: 0; right: 0; top: 0; height: 14px; display: flex; z-index: 2; }
+  .franja span { flex: 1; }
+  .franja span:nth-child(1) { background: var(--azul); }
+  .franja span:nth-child(2) { background: var(--naranja); }
+  .franja span:nth-child(3) { background: var(--verde); }
+  .story .franja { top: auto; bottom: 0; }
+
+  .cabecera { display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+  .marca { display: flex; align-items: center; gap: 16px; }
+  .marca img { width: 76px; height: 76px; }
+  .logo { font-family: var(--display); font-size: 52px; letter-spacing: 2px; line-height: 1; }
+  .srv { color: var(--naranja); }
+  .pill {
+    border: 3px solid var(--azul); color: var(--azul); border-radius: 999px;
+    font-weight: 800; font-size: 26px; letter-spacing: 2px; padding: 12px 26px;
+    text-transform: uppercase; white-space: nowrap;
+  }
+  .pill.naranja { border-color: var(--naranja); color: var(--naranja); }
+  .pill.verde { border-color: var(--verde); color: var(--verdeClaro); }
+
+  .cuerpo { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 26px; padding: 28px 0; }
+  .story .cuerpo { gap: 34px; }
+
+  .etiqueta {
+    align-self: flex-start; background: var(--naranja); color: #000;
+    font-weight: 800; font-size: 32px; letter-spacing: 3px; text-transform: uppercase;
+    border-radius: 8px; padding: 10px 22px;
+  }
+  .etiqueta.azul { background: var(--azul); color: #fff; }
+  .titulo { font-family: var(--display); font-weight: 400; font-size: 128px; line-height: 1; margin: 0; text-transform: uppercase; }
+  .story .titulo { font-size: 150px; }
+  .detalle { font-size: 38px; font-weight: 800; color: var(--azul); margin: 0; text-transform: uppercase; letter-spacing: 1px; }
+  .bajada { font-size: 38px; font-weight: 600; color: #d1d5db; margin: 0; line-height: 1.3; }
+  .bajada b { color: var(--blanco); }
+
+  .puntos { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+  .puntos li { font-size: 34px; font-weight: 600; line-height: 1.25; color: #e5e7eb; display: flex; gap: 20px; align-items: baseline; }
+  .puntos li::before { content: ""; flex: 0 0 18px; height: 18px; border-radius: 4px; background: var(--naranja); transform: translateY(-4px); }
+  .story .puntos li { font-size: 38px; }
+
+  .precios { display: flex; align-items: flex-end; gap: 44px; flex-wrap: wrap; }
+  .antes { display: flex; flex-direction: column; gap: 4px; }
+  .rotulo { font-size: 26px; font-weight: 800; color: var(--gris); text-transform: uppercase; letter-spacing: 2px; }
+  .tachado { font-size: 60px; font-weight: 600; color: var(--gris); text-decoration: line-through; text-decoration-thickness: 4px; text-decoration-color: var(--naranja); }
+  .ahora { display: flex; flex-direction: column; gap: 6px; }
+  .ahora .monto { font-family: var(--display); font-size: 156px; line-height: 0.9; color: var(--verdeClaro); }
+  .story .ahora .monto { font-size: 180px; }
+  .ahora small { font-size: 28px; font-weight: 600; color: var(--gris); }
+  .nota {
+    margin: 0; font-size: 28px; font-weight: 600; color: #e5e7eb; line-height: 1.35;
+    border-left: 6px solid var(--azul); padding: 6px 0 6px 22px;
+  }
+  .nota b { color: var(--naranja); }
+
+  .pie { display: flex; flex-direction: column; gap: 16px; border-top: 3px solid var(--linea); padding-top: 26px; }
+  .pieFila { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+  .web { font-size: 40px; font-weight: 800; color: var(--azul); letter-spacing: 1px; }
+  .claim { font-size: 28px; font-weight: 600; color: var(--gris); }
+  .legal { font-size: 20px; color: var(--grisOscuro); line-height: 1.4; margin: 0; }
+
+  /* Cyber: anuncio general */
+  .cyberTitulo { font-family: var(--display); font-size: 170px; line-height: 0.95; margin: 0; }
+  .story .cyberTitulo { font-size: 200px; }
+  .off { font-family: var(--display); font-size: 330px; line-height: 0.85; color: var(--naranja); margin: 0; }
+  .off small { font-size: 130px; color: var(--blanco); }
+  .story .off { font-size: 360px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 12px; }
+  .chips span {
+    font-size: 26px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+    border: 2px solid #2d3445; background: rgba(13,13,13,0.9); border-radius: 999px; padding: 10px 20px;
+  }
+  .story .chips span { font-size: 30px; }
+
+  /* Listas de precios (Cyber y sumas de Redes) */
+  .lista { display: flex; flex-direction: column; }
+  .lista .fila { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 12px 0; border-bottom: 2px solid var(--linea); }
+  .lista .fila:last-child { border-bottom: 0; }
+  .lista .curso { display: flex; flex-direction: column; gap: 2px; }
+  .lista .curso b { font-size: 34px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+  .lista .curso small { font-size: 22px; font-weight: 600; color: var(--gris); }
+  .lista .valores { display: flex; align-items: baseline; gap: 18px; white-space: nowrap; }
+  .lista .viejo { color: var(--gris); text-decoration: line-through; text-decoration-color: var(--naranja); text-decoration-thickness: 3px; font-size: 28px; font-weight: 600; }
+  .lista .nuevo { color: var(--verdeClaro); font-family: var(--display); font-size: 50px; }
+  .lista .nuevo.regalo { color: var(--naranja); }
+  .story .lista .fila { padding: 14px 0; }
+  .story .lista .curso b { font-size: 38px; }
+  .story .lista .nuevo { font-size: 56px; }
+  /* Placas con mucho texto: todo un poco más compacto para que el pie no se salga */
+  .denso .cuerpo { gap: 18px; padding: 16px 0; }
+  .denso .titulo { font-size: 108px; }
+  .story.denso .titulo { font-size: 124px; }
+  .denso .bajada { font-size: 33px; }
+  .denso .puntos { gap: 10px; }
+  .denso .puntos li { font-size: 31px; }
+  .story.denso .puntos li { font-size: 34px; }
+  .denso .ahora .monto { font-size: 136px; }
+  .story.denso .ahora .monto { font-size: 156px; }
+  .denso .lista .fila { padding: 8px 0; }
+  .denso .lista .curso b { font-size: 30px; }
+  .story.denso .lista .curso b { font-size: 34px; }
+  .denso .lista .curso small { font-size: 20px; }
+  .denso .lista .nuevo { font-size: 44px; }
+  .story.denso .lista .nuevo { font-size: 50px; }
+  .baseRedes { display: flex; justify-content: space-between; align-items: center; gap: 20px; background: rgba(11,120,251,0.12); border: 2px solid var(--azul); border-radius: 14px; padding: 14px 26px; }
+  .baseRedes b { font-size: 34px; font-weight: 800; text-transform: uppercase; }
+  .baseRedes .monto { font-family: var(--display); font-size: 64px; color: var(--verdeClaro); }
+</style>
+</head>
+<body>
+<h1>CREATIVOS · CYBER <span class="srv">SRV</span> Y PREVENTAS</h1>
+<p class="sub">Post 1080×1350 (4:5, sirve para el feed y para anuncios) e historia 1080×1920. Los precios son los que cobra la web:
+el Cyber es el 50% del precio de lista; las preventas, sus precios publicados. Cada placa lleva su letra chica (fechas y bases).</p>
+<div class="acciones">
+  <button id="todos" type="button">⬇ Descargar todos</button>
+  <span class="estado" id="estado" role="status"></span>
+</div>
+<div id="secciones"></div>
+
+<script>
+const $ = (v) => "$" + v.toLocaleString("es-AR");
+const porClase = (monto, clases) => $(Math.round(monto / clases)) + " por clase";
+
+// Cursos grabados al 31/10/2026 (cursosGrabados.js). lista = precio de lista; cyber = la mitad (lo que cobra la web del 2 al 4/11)
+const CURSOS = [
+  { key: "scratch", nombre: "Scratch para<br>Chicos", corto: "Scratch para Chicos", clases: 14, detalle: "14 clases · para chicos de 8 a 13 años",
+    puntos: ["Aprenden a programar jugando, sin experiencia previa", "Crean una historia animada y su primer videojuego", "Sin instalar nada: Scratch va en el navegador"],
+    lista: 18000, cyber: 9000,
+    notaCyber: "Fuera del Cyber, en preventa a <b>$10.000</b> hasta el 17/11. Las clases se habilitan el 18/11." },
+  { key: "scripting", nombre: "Curso de<br>Scripting", corto: "Curso de Scripting", clases: 40, detalle: "40 clases · más de 59 horas",
+    puntos: ["JavaScript, Python y Google Apps Script desde cero", "Automatizá planillas, mails y documentos", "Nuevo módulo: automatizá con IA (8 clases)"],
+    lista: 15000, cyber: 7500 },
+  { key: "python", nombre: "Master en<br>Python", corto: "Master en Python", clases: 106, detalle: "106 clases · desde cero",
+    puntos: ["De la lógica a la POO, APIs y apps con interfaz", "Nuevo módulo: automatizaciones con IA (8 clases)", "Proyectos reales para tu portfolio"],
+    lista: 80000, cyber: 40000 },
+  { key: "javascript", nombre: "Master en<br>JavaScript", corto: "Master en JavaScript", clases: 90, detalle: "90 clases · con Node.js",
+    puntos: ["JavaScript desde cero: el lenguaje de la web", "POO, promesas, APIs reales, bots y testing", "Guía de estudio con 109 preguntas"],
+    lista: 84900, cyber: 42450 },
+  { key: "backend-avanzado", nombre: "Backend<br>Avanzado", corto: "Backend Avanzado", clases: 73, detalle: "73 clases · Node.js y Express",
+    puntos: ["Servidores y APIs REST como en una empresa", "Middlewares, sockets, testing y Docker", "5 proyectos prácticos de servidores"],
+    lista: 99900, cyber: 49950 },
+  { key: "ruta-backend", nombre: "Ruta Backend<br>Completa", corto: "Ruta Backend Completa", clases: 163, detalle: "163 clases · JavaScript + Backend Avanzado",
+    puntos: ["Los dos cursos de la ruta backend en un solo pago", "De tu primer «Hola mundo» a tus propias APIs", "Dos guías de estudio: 109 + 62 preguntas"],
+    lista: 149900, cyber: 74950 },
+  { key: "fullstack-csharp", nombre: "Fullstack con<br>C# y React", corto: "Fullstack C# y React", clases: 30, detalle: "30 clases · .NET, PostgreSQL y React",
+    puntos: ["Una API en .NET con C# y PostgreSQL", "El front en React con Vite, de punta a punta", "Proyecto final: tu propia app tipo Instagram"],
+    lista: 87900, cyber: 43950 },
+  { key: "redes", nombre: "Redes, Linux<br>y <span class=\"srv\">AWS</span>", corto: "Redes, Linux y AWS", clases: 32, detalle: "32 clases · rumbo a AWS CLF-C02",
+    puntos: ["Redes con Cisco, Linux con Ubuntu Server y AWS", "Preparación para el examen CLF-C02", "2 simulacros del examen (se suman el 3/02)"],
+    lista: 89900, cyber: 44950,
+    notaCyber: "Fuera del Cyber, en preventa a <b>$62.900</b> hasta el 26/01. Las clases se habilitan el 27/01/2027.",
+    legalExtra: " El examen de AWS no está incluido: lo cobra AWS." },
+];
+
+// Campaña de Redes: lo que se suma a Redes desde su página durante la preventa (SUMA_CON_REDES en packs.js)
+const SUMAS_REDES = [
+  ["Curso de Scripting", "40 clases", 15000, 0],
+  ["Master en Python", "106 clases", 80000, 20000],
+  ["Master en JavaScript", "90 clases", 84900, 20000],
+  ["Backend Avanzado", "73 clases", 99900, 20000],
+  ["Fullstack C# y React", "30 clases", 87900, 20000],
+  ["Ruta Backend Completa", "163 clases", 149900, 35000],
+];
+
+const LEGAL_CYBER = "Cyber SRV: del 2/11/2026 00:00 al 4/11/2026 23:59 (hora de Argentina). 50% sobre el precio de lista de los cursos grabados; no participa el Intensivo en vivo. Bases: wearesrv.com/terminos.";
+const LEGAL_REDES = "Preventa hasta el 26/01/2027 23:59; las clases se habilitan el 27/01/2027 y los simulacros, el 3/02/2027. El examen de AWS no está incluido: lo toma y lo cobra AWS. WEARESRV no es un centro oficial de AWS. Bases: wearesrv.com/terminos.";
+const LEGAL_SUMAS = "Precios de la preventa de Redes, Linux y AWS, en un solo pago desde su página, hasta el 26/01/2027 23:59. Del 2 al 4/11 Redes vale $44.950 por el Cyber SRV y lo que sumás mantiene estos montos. El examen de AWS no está incluido. Bases: wearesrv.com/terminos.";
+const LEGAL_SCRATCH = "Preventa hasta el 17/11/2026 23:59. El acceso a la carpeta llega al instante y las clases se habilitan el 18/11/2026. Del 2 al 4/11 vale $9.000 por el Cyber SRV. Bases: wearesrv.com/terminos.";
+
+const franja = `<div class="franja"><span></span><span></span><span></span></div>`;
+const cabecera = (pill, color = "") => `
+  <div class="cabecera">
+    <div class="marca"><img src="/SRV-LOGO.png" alt=""><span class="logo">WEARE<span class="srv">SRV</span></span></div>
+    <div class="pill ${color}">${pill}</div>
+  </div>`;
+const pie = (legal, claim = "Pago único · Acceso de por vida") => `
+  <div class="pie">
+    <div class="pieFila"><span class="web">wearesrv.com</span><span class="claim">${claim}</span></div>
+    <p class="legal">${legal}</p>
+  </div>`;
+const placa = (id, formato, contenido, extra = "") => `<div class="placa ${formato} ${extra}" id="${id}">${franja}${contenido}</div>`;
+
+// ---------- Cyber SRV ----------
+const chips = `<div class="chips">${CURSOS.map((c) => `<span>${c.corto}</span>`).join("")}</div>`;
+const cyberGeneral = (formato) => placa(`cyber-general-${formato}`, formato, `
+  ${cabecera("2 · 3 · 4 de noviembre")}
+  <div class="cuerpo">
+    <p class="cyberTitulo">CYBER <span class="srv">SRV</span></p>
+    <p class="off">50<small>% OFF</small></p>
+    <p class="bajada">En <b>todos los cursos grabados</b>, también en las preventas. Pago único, sin suscripción.</p>
+    ${chips}
+  </div>
+  ${pie(LEGAL_CYBER)}`);
+
+const filasCyber = CURSOS.map((c) => `
+  <div class="fila">
+    <span class="curso"><b>${c.corto}</b><small>${c.clases} clases</small></span>
+    <span class="valores"><span class="viejo">${$(c.lista)}</span><span class="nuevo">${$(c.cyber)}</span></span>
+  </div>`).join("");
+const cyberLista = (formato) => placa(`cyber-lista-${formato}`, formato, `
+  ${cabecera("2 · 3 · 4 de noviembre")}
+  <div class="cuerpo">
+    ${formato === "story"
+      ? `<p class="cyberTitulo" style="font-size:116px;">CYBER <span class="srv">SRV</span><br>50% OFF</p>`
+      : `<p class="cyberTitulo" style="font-size:96px;">CYBER <span class="srv">SRV</span> · 50% OFF</p>`}
+    <div class="lista">${filasCyber}</div>
+  </div>
+  ${pie(LEGAL_CYBER)}`, "denso");
+
+const cyberCurso = (c, formato) => placa(`cyber-${c.key}-${formato}`, formato, `
+  ${cabecera("Cyber SRV · 2 al 4/11")}
+  <div class="cuerpo">
+    <span class="etiqueta">50% OFF</span>
+    <p class="titulo">${c.nombre}</p>
+    <p class="detalle">${c.detalle}</p>
+    <ul class="puntos">${c.puntos.map((p) => `<li>${p}</li>`).join("")}</ul>
+    <div class="precios">
+      <span class="antes"><span class="rotulo">Precio de lista</span><span class="tachado">${$(c.lista)}</span></span>
+      <span class="ahora"><span class="monto">${$(c.cyber)}</span><small>${porClase(c.cyber, c.clases)}</small></span>
+    </div>
+    ${c.notaCyber ? `<p class="nota">${c.notaCyber}</p>` : ""}
+  </div>
+  ${pie(LEGAL_CYBER + (c.legalExtra || ""))}`);
+
+// ---------- Preventa de Redes, Linux y AWS ----------
+const redesPreventa = (formato) => placa(`redes-preventa-${formato}`, formato, `
+  ${cabecera("Preventa · hasta el 26/01", "naranja")}
+  <div class="cuerpo">
+    <span class="etiqueta azul">Nuevo curso</span>
+    <p class="titulo">Redes, Linux<br>y <span class="srv">AWS</span></p>
+    <p class="bajada">Preparate para rendir la certificación <b>AWS Certified Cloud Practitioner (CLF-C02)</b>.</p>
+    <ul class="puntos">
+      <li>Redes desde cero con Cisco Packet Tracer</li>
+      <li>Linux con Ubuntu Server: usuarios, servicios y SSH</li>
+      <li>AWS con práctica real: IAM, VPC, EC2, S3 y más</li>
+      <li>32 clases con su guía en PDF y 2 simulacros del examen</li>
+    </ul>
+    <div class="precios">
+      <span class="antes"><span class="rotulo">Desde el 27/01</span><span class="tachado">$89.900</span></span>
+      <span class="ahora"><span class="monto">$62.900</span><small>precio de preventa</small></span>
+    </div>
+    <p class="nota">Pagás hoy y la carpeta te llega al instante. Las clases se habilitan el <b>27/01/2027</b>.</p>
+  </div>
+  ${pie(LEGAL_REDES)}`, "denso");
+
+const filasSumas = SUMAS_REDES.map(([nombre, clases, precio, extra]) => `
+  <div class="fila">
+    <span class="curso"><b>+ ${nombre}</b><small>${clases} · por separado ${$(precio)}</small></span>
+    <span class="valores">${extra === 0 ? `<span class="nuevo regalo">DE REGALO</span>` : `<span class="nuevo">+${$(extra)}</span>`}</span>
+  </div>`).join("");
+const redesSumas = (formato) => placa(`redes-sumas-${formato}`, formato, `
+  ${cabecera("Preventa · hasta el 26/01", "naranja")}
+  <div class="cuerpo">
+    <p class="titulo" style="font-size:${formato === "story" ? 112 : 80}px;">AWS + lo que<br>quieras <span class="srv">aprender</span></p>
+    <div class="baseRedes"><b>Redes, Linux y AWS</b><span class="monto">$62.900</span></div>
+    <div class="lista">${filasSumas}</div>
+    <p class="nota">Todo en un solo pago desde la página de Redes. Los cursos que sumás llegan <b>al instante</b>.</p>
+  </div>
+  ${pie(LEGAL_SUMAS)}`, "denso");
+
+// ---------- Preventa de Scratch para Chicos ----------
+const scratchPreventa = (formato) => placa(`scratch-preventa-${formato}`, formato, `
+  ${cabecera("Preventa · hasta el 17/11", "verde")}
+  <div class="cuerpo">
+    <span class="etiqueta">Para chicos de 8 a 13 años</span>
+    <p class="titulo">Scratch para<br><span class="srv">Chicos</span></p>
+    <ul class="puntos">
+      <li>14 clases para aprender a programar jugando</li>
+      <li>Crean una historia animada y su primer videojuego</li>
+      <li>Sin instalar nada: Scratch va en el navegador</li>
+      <li>Ideal para hacer en familia, a su ritmo</li>
+    </ul>
+    <div class="precios">
+      <span class="antes"><span class="rotulo">Desde el 18/11</span><span class="tachado">$18.000</span></span>
+      <span class="ahora"><span class="monto">$10.000</span><small>precio de preventa</small></span>
+    </div>
+    <p class="nota">La carpeta llega al instante y las clases se habilitan el <b>18/11</b>.</p>
+  </div>
+  ${pie(LEGAL_SCRATCH)}`);
+
+// ---------- Armado de la galería ----------
+const FORMATOS = [["post", "Post 1080×1350"], ["story", "Historia 1080×1920"]];
+const ambos = (prefijo, titulo, fn) => FORMATOS.map(([f, nombreFormato]) => ({
+  id: `${prefijo}-${f}`, archivo: `${prefijo}-${f === "post" ? "post" : "historia"}`,
+  titulo: `${titulo} · ${nombreFormato}`, vertical: f === "story", html: fn(f),
+}));
+
+const SECCIONES = [
+  {
+    titulo: 'Cyber <span class="srv">SRV</span> · 2 al 4 de noviembre',
+    texto: "Anuncio general, lista de precios y una placa por curso. Redes y Scratch muestran también su precio de preventa de fuera del Cyber.",
+    piezas: [
+      ...ambos("cyber-general", "Anuncio general", cyberGeneral),
+      ...ambos("cyber-lista", "Lista de precios", cyberLista),
+      ...CURSOS.flatMap((c) => ambos(`cyber-${c.key}`, c.corto, (f) => cyberCurso(c, f))),
+    ],
+  },
+  {
+    titulo: 'Preventa Redes, Linux y <span class="srv">AWS</span>',
+    texto: "Para la campaña de AWS (link: wearesrv.com/redes/inscripcion). La de sumas muestra los cursos que se agregan a precio de campaña.",
+    piezas: [
+      ...ambos("redes-preventa", "Preventa", redesPreventa),
+      ...ambos("redes-sumas", "Sumá cursos", redesSumas),
+    ],
+  },
+  {
+    titulo: 'Preventa Scratch para <span class="srv">Chicos</span>',
+    texto: "Hasta el 17/11; las clases se habilitan el 18/11.",
+    piezas: ambos("scratch-preventa", "Preventa", scratchPreventa),
+  },
+];
+
+const TODAS = SECCIONES.flatMap((s) => s.piezas);
+document.getElementById("todos").textContent = `⬇ Descargar todos (${TODAS.length} PNG)`;
+
+document.getElementById("secciones").innerHTML = SECCIONES.map((s, i) => `
+  <section class="seccion">
+    <h2>${s.titulo}</h2>
+    <p class="sub">${s.texto}</p>
+    <div class="acciones"><button type="button" class="secundario" data-seccion="${i}">⬇ Descargar esta sección (${s.piezas.length} PNG)</button></div>
+    <div class="galeria">${s.piezas.map((p) => `
+      <div class="pieza">
+        <h3>${p.titulo}</h3>
+        <div class="marco${p.vertical ? " vertical" : ""}">${p.html}</div>
+        <button type="button" data-id="${p.id}" data-archivo="${p.archivo}">⬇ Descargar PNG</button>
+      </div>`).join("")}
+    </div>
+  </section>`).join("");
+
+const estado = document.getElementById("estado");
+
+async function descargar(id, archivo) {
+  await document.fonts.ready;
+  const original = document.getElementById(id);
+  // Se captura un clon a tamaño real, fuera del marco escalado
+  const refugio = document.createElement("div");
+  refugio.style.cssText = "position:fixed;left:-20000px;top:0;";
+  const clon = original.cloneNode(true);
+  refugio.appendChild(clon);
+  document.body.appendChild(refugio);
+  try {
+    const canvas = await html2canvas(clon, { backgroundColor: "#000000", scale: 1, logging: false, useCORS: true });
+    const a = document.createElement("a");
+    a.href = canvas.toDataURL("image/png");
+    a.download = archivo + ".png";
+    a.click();
+  } finally {
+    refugio.remove();
+  }
+}
+
+async function descargarVarias(piezas) {
+  for (let i = 0; i < piezas.length; i++) {
+    estado.textContent = `Generando ${i + 1} de ${piezas.length}: ${piezas[i].archivo}.png…`;
+    await descargar(piezas[i].id, piezas[i].archivo);
+    await new Promise((r) => setTimeout(r, 400));
+  }
+  estado.textContent = `Listo: se descargaron ${piezas.length} placas.`;
+}
+
+document.body.addEventListener("click", async (e) => {
+  const una = e.target.closest("button[data-id]");
+  const seccion = e.target.closest("button[data-seccion]");
+  if (una) {
+    estado.textContent = "Generando " + una.dataset.archivo + ".png…";
+    await descargar(una.dataset.id, una.dataset.archivo);
+    estado.textContent = "Listo: " + una.dataset.archivo + ".png";
+  } else if (seccion) {
+    await descargarVarias(SECCIONES[Number(seccion.dataset.seccion)].piezas);
+  } else if (e.target.id === "todos") {
+    await descargarVarias(TODAS);
+  }
+});
+</script>
+</body>
+</html>

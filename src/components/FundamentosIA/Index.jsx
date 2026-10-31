@@ -5,8 +5,9 @@ import styles from "./style.module.css";
 import { whatsappLink } from "../../data/legal";
 
 // Contenido gratuito para gente que empieza en el mundo de la IA (plan 2027).
-// Los videos y las guías los va subiendo Marcos: completar "url" (video de YouTube)
-// o "guia" (PDF en Drive) en cada tema y la tarjeta pasa sola de "En camino" a los botones.
+// El video y la guía de cada tema están en la carpeta de Drive «Fundamentos IA · WEARESRV», que llega por mail
+// con el registro ("enCarpeta"). Si un tema se publica también abierto, completar "url" (video de YouTube) o
+// "guia" (PDF) y la tarjeta muestra los botones. Un tema nuevo sin material va con enCarpeta: false ("En camino").
 const YOUTUBE_URL = "https://www.youtube.com/@weareSRV";
 const DISCORD_URL = "https://discord.com/invite/QuAmDxrNMu";
 
@@ -14,24 +15,28 @@ const TEMAS = [
   {
     nombre: "Qué es la IA generativa",
     texto: "Modelos de lenguaje explicados sin humo: qué son, qué hacen bien, en qué se equivocan y por qué.",
+    enCarpeta: true,
     url: null,
     guia: null,
   },
   {
     nombre: "Prompts que funcionan",
     texto: "Cómo pedirle a la IA lo que necesitás: contexto, ejemplos, formato de salida y cómo iterar la respuesta.",
+    enCarpeta: true,
     url: null,
     guia: null,
   },
   {
     nombre: "IA en tu trabajo diario",
     texto: "Mails, planillas, resúmenes e informes: casos reales de oficina resueltos con IA, paso a paso.",
+    enCarpeta: true,
     url: null,
     guia: null,
   },
   {
     nombre: "De la IA al código",
     texto: "Tu primer script generado con IA: cómo pedirlo, cómo probarlo y cómo darte cuenta si está mal.",
+    enCarpeta: true,
     url: null,
     guia: null,
   },
@@ -75,14 +80,15 @@ export default function FundamentosIA() {
         path="/fundamentos-ia"
       />
       <div className={styles.inner}>
-        <p className={styles.kicker}>100% gratis · Acceso por mail</p>
+        <p className={styles.kicker}>100% gratis · 4 videos y sus guías · Acceso por mail</p>
         <h1 className={styles.title}>
           Fundamentos de <span className={styles.orange}>IA</span>
         </h1>
         <p className={styles.lead}>
-          Videos y guías gratuitas para entender la IA y empezar a usarla hoy, sin saber programar. Anotate más abajo
-          y te llega por mail el acceso a la carpeta con todo el material; cada contenido nuevo se suma ahí y se
-          anuncia en el canal de YouTube y en Discord.
+          Videos y guías gratuitas para entender la IA y empezar a usarla hoy, sin saber programar. Ya están los 4
+          temas, cada uno con su video y su guía en PDF, más una guía completa. Anotate más abajo y te llega por mail
+          el acceso a la carpeta con todo el material; cada contenido nuevo se suma ahí y se anuncia en el canal de
+          YouTube y en Discord.
         </p>
 
         <div className={styles.grid}>
@@ -94,6 +100,10 @@ export default function FundamentosIA() {
                 {t.url ? (
                   <a className={styles.btnVideo} href={t.url} target="_blank" rel="noopener noreferrer">
                     ▶ Ver el video
+                  </a>
+                ) : t.enCarpeta ? (
+                  <a className={styles.disponible} href="#registro">
+                    ✅ Video y guía disponibles
                   </a>
                 ) : (
                   <span className={styles.enCamino}>🎬 En camino</span>
@@ -108,12 +118,16 @@ export default function FundamentosIA() {
           ))}
         </div>
 
-        <div className={styles.registro}>
-          <h2>Recibí cada video y guía por correo</h2>
-          <p>Dejanos tus datos: te llega por correo el acceso al material y cada novedad apenas sale. Gratis, sin spam.</p>
+        <div className={styles.registro} id="registro">
+          <h2>Recibí los videos y las guías por correo</h2>
+          <p>
+            Dejanos tus datos: te llega por correo el acceso a la carpeta con los 4 videos y las guías, y cada novedad
+            apenas sale. Usá un mail de Gmail o de Google: la carpeta se abre con esa cuenta. Gratis, sin spam.
+          </p>
           {envio === "listo" ? (
             <p className={styles.registroOk}>
-              ✅ ¡Listo! Quedaste en la lista: el acceso al material y cada novedad te llegan por correo.
+              ✅ ¡Listo! Te llega por correo el acceso a la carpeta con los videos y las guías (si no lo ves, revisá
+              el spam).
             </p>
           ) : (
             <form className={styles.form} onSubmit={registrar}>

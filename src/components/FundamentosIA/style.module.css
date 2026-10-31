@@ -114,6 +114,19 @@
   font-size: 0.9rem;
 }
 
+/* El tema ya está en la carpeta: llega con el registro */
+.disponible {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.7rem 1.1rem;
+  border: 1px solid #30a05a;
+  border-radius: 8px;
+  color: #7fd09c;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
 /* Registro a la lista (Netlify Forms) */
 .registro {
   margin-top: 3rem;

@@ -10,10 +10,10 @@
  *  COMBOS: un curso con la clave "incluye" (ej. "ruta-backend") no tiene carpeta propia:
  *  comparte las carpetas de los cursos que incluye y manda un solo mail con todos los links.
  *
- *  PREVENTA (ej. Scratch): hasta la fecha "hasta" se acepta el precio de preventa. El comprador
- *  recibe AL INSTANTE el acceso a la carpeta (vacía hasta el lanzamiento) con un mail que se lo
- *  aclara. El día del lanzamiento subís las clases a esa carpeta y listo: todos las ven. Si querés
- *  avisarles, ese día ejecutás avisarAperturaScratch() desde el editor.
+ *  PREVENTA (Scratch y Redes, Linux y AWS): hasta la fecha "hasta" se acepta el precio de preventa.
+ *  El comprador recibe AL INSTANTE el acceso a la carpeta (vacía hasta el lanzamiento) con un mail que
+ *  se lo aclara. El día del lanzamiento subís las clases a esa carpeta y listo: todos las ven. Si querés
+ *  avisarles, ese día ejecutás avisarAperturaScratch() o avisarAperturaRedes() desde el editor.
  *
  *  Las donaciones del juego El Develop ("donacion:uuid") NO dan acceso a nada:
  *  solo se registran y te avisan por mail.
@@ -124,6 +124,21 @@ var CURSOS = {
     precioMinimo: 87900,
     cuponAlumnos: { precioMinimo: 20000 },
     folderId: "1eQPWcinDKEjpV7pYo6qfveT2Vbe7Q8xf"
+  },
+  // PREVENTA como Scratch: la carpeta se comparte al instante (vacía) y las clases se habilitan el
+  // 27/01/2027. Ese día: subís las clases y corrés avisarAperturaRedes(). Sus packs: SUMA_CON_REDES.
+  "redes": {
+    itemId: "curso-redes-linux-aws",
+    nombre: "Redes, Linux y AWS",
+    tituloHtml: 'REDES, LINUX Y <span style="color:#f6950a;">AWS</span>',
+    precioMinimo: 89900,
+    preventa: {
+      hasta: new Date("2027-01-27T00:00:00-03:00"), // misma fecha que netlify/lib/cursos.js
+      precioMinimo: 62900,
+      fechaTexto: "27 de enero de 2027",
+      queEncontrara: "las 32 clases del curso, y el 3 de febrero de 2027, los dos simulacros del examen"
+    },
+    folderId: "12Iye_viv4sZy9SEKLj-fUENRW1h7-UNa" // "AWS Y REDES - Preventa", en Mi unidad > CURSOS
   },
   // COMBO: Master en JavaScript + Backend Avanzado en un solo pago. Sin carpeta propia:
   // comparte las carpetas de los cursos listados en "incluye" (mismo orden en el mail).
@@ -250,9 +265,21 @@ var UNIDADES_PACK = [
   { key: "fundamentos-backend", corto: "javascript" },
   { key: "backend-avanzado", corto: "backend" },
   { key: "ruta-backend", corto: "ruta" },
-  { key: "fullstack-csharp", corto: "csharp" }
+  { key: "fullstack-csharp", corto: "csharp" },
+  { key: "redes", corto: "redes" }
 ];
 var SOLO_CON_SCRATCH = ["scripting", "python"];
+
+// CAMPAÑA DE REDES: si el pago se hizo durante la preventa de Redes, un pack con Redes tiene como mínimo
+// el de preventa de Redes más estos montos fijos por cada curso sumado (misma tabla que netlify/lib/cursos.js)
+var SUMA_CON_REDES = {
+  "scripting": 0,
+  "python": 20000,
+  "fundamentos-backend": 20000,
+  "backend-avanzado": 20000,
+  "ruta-backend": 35000,
+  "fullstack-csharp": 20000
+};
 
 function setPackValido_(keys) {
   if (keys.length < 2) return false;
@@ -274,6 +301,13 @@ function redondear900_(n) {
 // Mínimo aceptado para un pack: aplica la regla sobre el mínimo de cada unidad a la fecha del pago
 // (así la preventa de Scratch también vale dentro de un pack)
 function precioPack_(keys, fechaPago) {
+  if (keys.indexOf("redes") !== -1 && enPreventa_(CURSOS["redes"], fechaPago)) {
+    var total = 0;
+    for (var j = 0; j < keys.length; j++) {
+      total += keys[j] === "redes" ? precioMinimoUnidad_(CURSOS["redes"], fechaPago) : SUMA_CON_REDES[keys[j]];
+    }
+    return total;
+  }
   var suma = 0, maximo = 0;
   for (var i = 0; i < keys.length; i++) {
     var precio = precioMinimoUnidad_(CURSOS[keys[i]], fechaPago);
@@ -300,9 +334,27 @@ function generarPacks_() {
       nombre: "Pack: " + nombres.join(" + "),
       tituloHtml: 'PACK <span style="color:#f6950a;">' + escaparHtml_(nombres.join(" + ")).toUpperCase() + '</span>',
       pack: true,
-      incluye: keys
+      incluye: keys,
+      preventa: preventaDePack_(keys)
     };
   }
+}
+
+// Si el pack incluye un curso en preventa (Scratch o Redes), el mail avisa cuándo aparecen sus clases.
+// Solo da la fecha y el texto: el mínimo de un pack lo calcula siempre precioPack_.
+function preventaDePack_(keys) {
+  for (var i = 0; i < keys.length; i++) {
+    var p = CURSOS[keys[i]].preventa;
+    if (p) {
+      return {
+        hasta: p.hasta,
+        fechaTexto: p.fechaTexto,
+        queEncontrara: "en la carpeta de " + CURSOS[keys[i]].nombre + " " + (p.queEncontrara || "las clases") +
+          " (los demás cursos ya están en sus carpetas)"
+      };
+    }
+  }
+  return undefined;
 }
 generarPacks_();
 
@@ -1087,6 +1139,10 @@ function avisarAperturaScratch() {
   avisarApertura_("scratch");
 }
 
+function avisarAperturaRedes() {
+  avisarApertura_("redes");
+}
+
 function avisarApertura_(cursoKey) {
   var curso = CURSOS[cursoKey];
   if (!curso) throw new Error("No existe el curso " + cursoKey + " en CURSOS");
@@ -1195,7 +1251,7 @@ function construirEmailAperturaHtml_(curso, nombre, email, link) {
             <tr>
               <td style="padding: 10px 30px 25px 30px; font-size:14px; line-height:1.6; color:#ffffff; border-top:1px dashed #333333;">
                 Ante cualquier duda, respondé este mail.<br><br>
-                ¡Que lo disfruten!<br>
+                ¡A disfrutarlo!<br>
                 <strong>Marcos Costa Schmite</strong><br>
                 <span style="color:#0b78fb; font-size:12px;">SRV | Somos Revolución</span>
               </td>

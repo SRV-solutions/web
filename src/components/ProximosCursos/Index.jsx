@@ -3,12 +3,13 @@ import { Link, useSearchParams } from "react-router-dom";
 import Seo from "../Seo";
 import styles from "./style.module.css";
 import { whatsappLink } from "../../data/legal";
+import { CURSOS_GRABADOS, estaEnPreventa, formatearPrecio, enCyber, CYBER_FECHAS } from "../../data/cursosGrabados";
 
 // Próximos cursos con lista de espera (plan 2027, Tanda 2). El formulario postea a
 // netlify/functions/lista-espera.js, que lo guarda en la pestaña "Lista de espera" del Apps Script
 // de registros (appscript-fundamentos.gs). Las claves de PROXIMOS tienen que coincidir con las de
 // esa función. En local no funciona (Vite no corre las Netlify Functions): probarlo en el deploy.
-// /redes/inscripcion (link "Formate como DevOps en AWS" del Linktree) redirige acá con ?curso=redes.
+// Un curso con "curso" ya se vende (preventa): su tarjeta lleva a la página del curso.
 const PROXIMOS = [
   {
     key: "ia-trabajo",
@@ -40,13 +41,18 @@ const PROXIMOS = [
   {
     key: "redes",
     nombre: "Redes, Linux y AWS",
-    tag: "DevOps",
-    salida: "Sale a fines de enero de 2027",
+    tag: "Preventa",
+    salida: "Las clases se habilitan el 27 de enero de 2027",
     texto:
-      "Formate como DevOps: redes desde cero, Linux a fondo y despliegues en AWS, en clases grabadas con práctica real paso a paso.",
-    para: "Para quienes ya programan o trabajan en soporte y quieren dar el salto a infraestructura.",
+      "Preparate para rendir la certificación AWS Cloud Practitioner: redes desde cero, Linux y AWS, en clases grabadas con práctica real paso a paso.",
+    para: "Para quienes quieren su primera certificación de AWS o dar el salto de soporte a cloud.",
+    // Ya se vende en preventa: la tarjeta lleva a su página y no entra en la lista de espera
+    curso: "redes",
   },
 ];
+
+// Cursos que todavía se anotan en la lista de espera (los que ya están en preventa tienen su página)
+const EN_LISTA = PROXIMOS.filter((c) => !c.curso);
 
 const MENSAJES_CAMPO = {
   curso: "Elegí el curso.",
@@ -61,7 +67,7 @@ export default function ProximosCursos() {
   const destacado = searchParams.get("curso");
   const formRef = useRef(null);
 
-  const [cursoElegido, setCursoElegido] = useState(PROXIMOS.some((c) => c.key === destacado) ? destacado : "");
+  const [cursoElegido, setCursoElegido] = useState(EN_LISTA.some((c) => c.key === destacado) ? destacado : "");
   const [envio, setEnvio] = useState("inicial"); // inicial | enviando | listo | error
   const [campoInvalido, setCampoInvalido] = useState(null);
   const [ultimos, setUltimos] = useState({}); // datos del último envío, para anotarse en otro curso sin retipear
@@ -104,8 +110,8 @@ export default function ProximosCursos() {
   return (
     <section className={styles.page}>
       <Seo
-        title="Próximos cursos: IA para el trabajo, SQL, IA para docentes y DevOps | WEARESRV"
-        description="Anotate en la lista de espera de los próximos cursos de WEARESRV: IA para el trabajo, SQL desde cero, IA para docentes y Redes, Linux y AWS. Te avisamos primero y accedés al precio de lanzamiento."
+        title="Próximos cursos: IA para el trabajo, SQL, IA para docentes y AWS | WEARESRV"
+        description="Anotate en la lista de espera de los próximos cursos de WEARESRV: IA para el trabajo, SQL desde cero e IA para docentes. Y reservá en preventa Redes, Linux y AWS, para rendir AWS Cloud Practitioner."
         path="/proximos-cursos"
       />
       <div className={styles.inner}>
@@ -120,19 +126,40 @@ export default function ProximosCursos() {
         </p>
 
         <div className={styles.grid}>
-          {PROXIMOS.map((c) => (
-            <article key={c.key} className={`${styles.card} ${destacado === c.key ? styles.cardDestacada : ""}`}>
-              <span className={styles.cardTag}>{c.tag}</span>
-              <h2>{c.nombre}</h2>
-              <p className={styles.salida}>📅 {c.salida}</p>
-              <p>{c.texto}</p>
-              <p className={styles.para}>{c.para}</p>
-              <p className={styles.lanzamiento}>El precio de lanzamiento se anuncia primero a la lista de espera.</p>
-              <button type="button" className={styles.btnLista} onClick={() => elegir(c.key)}>
-                Sumarme a la lista de espera
-              </button>
-            </article>
-          ))}
+          {PROXIMOS.map((c) => {
+            const curso = c.curso ? CURSOS_GRABADOS[c.curso] : null;
+            const preventa = curso && estaEnPreventa(curso);
+            return (
+              <article key={c.key} className={`${styles.card} ${destacado === c.key ? styles.cardDestacada : ""}`}>
+                <span className={styles.cardTag}>{c.tag}</span>
+                <h2>{c.nombre}</h2>
+                <p className={styles.salida}>📅 {c.salida}</p>
+                <p>{c.texto}</p>
+                <p className={styles.para}>{c.para}</p>
+                {curso ? (
+                  <>
+                    {preventa && (
+                      <p className={styles.lanzamiento}>
+                        {enCyber()
+                          ? `Cyber SRV: ${formatearPrecio(curso.precio)} solo ${CYBER_FECHAS}. Después, preventa a ${formatearPrecio(curso.preventa.precio)} hasta el ${curso.preventa.fechaTexto} (luego, ${formatearPrecio(curso.precioRegular)}).`
+                          : `Preventa: ${formatearPrecio(curso.precio)} hasta el ${curso.preventa.fechaTexto} (después, ${formatearPrecio(curso.precioRegular)}).`}
+                      </p>
+                    )}
+                    <Link className={styles.btnLista} to={`/${curso.ruta}/inscripcion`}>
+                      {preventa ? "Reservar en preventa" : "Ver el curso"}
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <p className={styles.lanzamiento}>El precio de lanzamiento se anuncia primero a la lista de espera.</p>
+                    <button type="button" className={styles.btnLista} onClick={() => elegir(c.key)}>
+                      Sumarme a la lista de espera
+                    </button>
+                  </>
+                )}
+              </article>
+            );
+          })}
         </div>
 
         <div className={styles.registro} ref={formRef} id="lista-espera">
@@ -170,7 +197,7 @@ export default function ProximosCursos() {
                 <option value="" disabled>
                   Elegí el curso
                 </option>
-                {PROXIMOS.map((c) => (
+                {EN_LISTA.map((c) => (
                   <option key={c.key} value={c.key}>
                     {c.nombre}
                   </option>

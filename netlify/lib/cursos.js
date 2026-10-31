@@ -10,6 +10,10 @@
 // comparte al instante (vacía) y las clases se suben ese día.
 const SCRATCH_PREVENTA_HASTA = Date.parse("2026-11-18T00:00:00-03:00");
 
+// Preventa de Redes, Linux y AWS: igual que Scratch, hasta el 27/01/2027 (ese día se habilitan las clases).
+// Misma fecha que en src/data/cursosGrabados.js y en appscript-cursos.gs.
+const REDES_PREVENTA_HASTA = Date.parse("2027-01-27T00:00:00-03:00");
+
 // CYBER SRV: del 2 al 4 de noviembre de 2026 todo al 50% de su precio de lista (el Intensivo Full
 // Stack en vivo no participa). Mismas fechas en src/data/cursosGrabados.js (precio que se muestra),
 // appscript-cursos.gs (mínimo que acepta el webhook) y PROMOCIONES en src/data/legal.js.
@@ -74,6 +78,16 @@ export const CURSOS = {
     precio: 87900,
     cuponAlumnos: { precio: 20000, envHash: "CUPON_ALUMNOS_FULLSTACK_SHA256" },
     ruta: "fullstack-csharp",
+  },
+  // Curso grabado en preventa. En sus packs vale la tabla de la campaña (SUMA_CON_REDES, más abajo).
+  redes: {
+    itemId: "curso-redes-linux-aws",
+    titulo: "Redes, Linux y AWS - WEARESRV",
+    contentName: "Infoproducto Redes Linux AWS",
+    precio: 89900,
+    precioPreventa: 62900,
+    preventaHasta: REDES_PREVENTA_HASTA,
+    ruta: "redes",
   },
   // Combo: Master en JavaScript + Backend Avanzado en un solo pago.
   // El Apps Script comparte las dos carpetas de Drive (clave "incluye" en appscript-cursos.gs).
@@ -258,8 +272,21 @@ const UNIDADES_PACK = [
   { key: "backend-avanzado", corto: "backend" },
   { key: "ruta-backend", corto: "ruta" },
   { key: "fullstack-csharp", corto: "csharp" },
+  { key: "redes", corto: "redes" },
 ];
 const SOLO_CON_SCRATCH = ["scripting", "python"];
+
+// CAMPAÑA DE REDES: mientras dura la preventa de Redes, un pack con Redes cuesta el precio de Redes más
+// estos montos fijos por cada curso que se suma (misma tabla que src/data/packs.js y appscript-cursos.gs)
+const SUMA_CON_REDES = {
+  scripting: 0,
+  python: 20000,
+  "fundamentos-backend": 20000,
+  "backend-avanzado": 20000,
+  "ruta-backend": 35000,
+  "fullstack-csharp": 20000,
+};
+const enCampaniaRedes = () => Date.now() < REDES_PREVENTA_HASTA;
 const unidadPorKey = Object.fromEntries(UNIDADES_PACK.map((u) => [u.key, u]));
 const keyPorCorto = Object.fromEntries(UNIDADES_PACK.map((u) => [u.corto, u.key]));
 const ordenUnidad = (key) => UNIDADES_PACK.findIndex((u) => u.key === key);
@@ -299,6 +326,9 @@ const redondear900 = (n) => Math.floor((n - 900) / 1000) * 1000 + 900;
 
 export function precioPack(keys) {
   const set = normalizarSet(keys);
+  if (set.includes("redes") && enCampaniaRedes()) {
+    return set.reduce((t, k) => t + (k === "redes" ? getCurso("redes").precio : SUMA_CON_REDES[k]), 0);
+  }
   const precios = set.map((k) => getCurso(k).precio);
   const suma = precios.reduce((t, p) => t + p, 0);
   const maximo = Math.max(...precios);

@@ -14,9 +14,24 @@
 // sueltos, el pack los convierte en la ruta. Scratch (chicos) solo se mezcla con Scripting y Python.
 // La clave del pack es "pack-" + nombres cortos ordenados alfabéticamente, y es lo que viaja
 // como external_reference del pago, igual que la clave de un curso.
-import { CURSOS_GRABADOS } from "./cursosGrabados.js";
+//
+// CAMPAÑA DE REDES: mientras dura la preventa de Redes, Linux y AWS, un pack con Redes NO usa la regla
+// de arriba: cuesta el precio de Redes más un monto fijo por cada curso que se suma (SUMA_CON_REDES).
+// En esos días Redes solo se suma desde su propia página. Misma tabla en netlify/lib/cursos.js y
+// appscript-cursos.gs, y publicada en PROMOCIONES de src/data/legal.js.
+import { CURSOS_GRABADOS, estaEnPreventa } from "./cursosGrabados.js";
 
 export const AHORRO_POR_CURSO = 30000;
+
+export const SUMA_CON_REDES = {
+  scripting: 0,
+  python: 20000,
+  "fundamentos-backend": 20000,
+  "backend-avanzado": 20000,
+  "ruta-backend": 35000,
+  "fullstack-csharp": 20000,
+};
+export const enCampaniaRedes = () => estaEnPreventa(CURSOS_GRABADOS.redes);
 
 // Orden en que se muestran las unidades y nombre corto para la clave del pack
 export const UNIDADES = [
@@ -27,6 +42,7 @@ export const UNIDADES = [
   { key: "backend-avanzado", corto: "backend", pitch: "Servidores y APIs REST con Express, sockets, testing y Docker." },
   { key: "ruta-backend", corto: "ruta", pitch: "Master en JavaScript + Backend Avanzado: la ruta backend completa con Node.js." },
   { key: "fullstack-csharp", corto: "csharp", pitch: "Una app completa con C#, .NET, PostgreSQL y React, de punta a punta." },
+  { key: "redes", corto: "redes", pitch: "Redes, Linux y AWS para rendir la certificación AWS Cloud Practitioner." },
 ];
 
 const SOLO_CON_SCRATCH = ["scripting", "python"];
@@ -72,6 +88,9 @@ const redondear900 = (n) => Math.floor((n - 900) / 1000) * 1000 + 900;
 
 export function precioPack(keys) {
   const set = normalizarSet(keys);
+  if (set.includes("redes") && enCampaniaRedes()) {
+    return set.reduce((t, k) => t + (k === "redes" ? CURSOS_GRABADOS.redes.precio : SUMA_CON_REDES[k]), 0);
+  }
   const precios = set.map((k) => CURSOS_GRABADOS[k].precio);
   const suma = precios.reduce((t, p) => t + p, 0);
   const maximo = Math.max(...precios);
@@ -121,6 +140,8 @@ export function agregablesPara(baseKey) {
     if (k === baseKey) return false;
     if (baseKey === "scratch") return SOLO_CON_SCRATCH.includes(k);
     if (k === "scratch") return SOLO_CON_SCRATCH.includes(baseKey);
+    // Durante la campaña, Redes con sus precios especiales se arma solo desde la página de Redes
+    if (k === "redes") return !enCampaniaRedes();
     if (baseKey === "ruta-backend") return k !== "fundamentos-backend" && k !== "backend-avanzado";
     if (baseKey === "fundamentos-backend" || baseKey === "backend-avanzado") return k !== "ruta-backend";
     return true;

@@ -9,6 +9,7 @@
 - [Master en Python Desde Cero](https://wearesrv.com/python/inscripcion): 98 clases. Lógica, POO, APIs, asincronismo y apps con interfaz gráfica.
 - [Ruta Backend](https://wearesrv.com/ruta-backend/inscripcion): una sola página para elegir Master en JavaScript Desde Cero (90 clases de JavaScript con Node.js: lógica, POO, promesas, APIs, bots y testing, $84.900), Backend Avanzado (73 clases de servidores y APIs REST con Express, middlewares, sockets, testing y Docker, $99.900) o los dos juntos (Ruta Backend Completa, 163 clases, $149.900 en lugar de $184.800). Cada curso incluye guía de estudio.
 - [Curso Fullstack con C# y React](https://wearesrv.com/fullstack-csharp/inscripcion): 30 clases: API en .NET con C#, base de datos PostgreSQL y front en React con Vite. 12 módulos, 21 ejercicios resueltos, proyecto final tipo Instagram y guía de estudio con 80 preguntas. $87.900 (los alumnos de SRV tienen un código con precio especial).
+- [Redes, Linux y AWS](https://wearesrv.com/redes/inscripcion): curso grabado para rendir la certificación AWS Certified Cloud Practitioner (CLF-C02): 32 clases de redes con Cisco, Linux con Ubuntu Server y AWS con práctica real, con la guía de cada clase en PDF, y dos simulacros del examen. Preventa a $62.900 hasta el 26 de enero de 2027 (después $89.900); el acceso a la carpeta llega al instante, las clases se habilitan el 27 de enero de 2027 y los simulacros, el 3 de febrero de 2027. El examen lo toma y lo cobra AWS, aparte del curso.
 
 ## Cursos en vivo
 

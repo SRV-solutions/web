@@ -15,7 +15,8 @@ const CURSOS = {
   "ia-trabajo": { nombre: "IA para el trabajo", salida: "sale en diciembre" },
   sql: { nombre: "SQL desde cero", salida: "sale el 20 de diciembre" },
   "ia-docentes": { nombre: "IA para docentes", salida: "sale en diciembre" },
-  redes: { nombre: "Redes, Linux y AWS", salida: "sale a fines de enero de 2027" },
+  // Redes ya se vende en preventa y no figura en el formulario; queda por si alguien envía desde una página vieja
+  redes: { nombre: "Redes, Linux y AWS", salida: "sale el 27 de enero de 2027" },
 };
 
 export async function handler(event) {

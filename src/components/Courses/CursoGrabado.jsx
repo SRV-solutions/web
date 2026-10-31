@@ -4,7 +4,7 @@ import styles from "./CursoGrabado.module.css";
 import Seo, { SITE_URL } from "../Seo";
 import { trackConversion, getMetaCookies } from "../../data/metaPixel";
 import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, comboQueIncluye, nombreCurso, enCyber, precioSeparado, CYBER_FECHAS } from "../../data/cursosGrabados";
-import { AHORRO_POR_CURSO, agregablesPara, infoPack, normalizarSet, setValido, pitchUnidad, unidadesDeParametro } from "../../data/packs";
+import { AHORRO_POR_CURSO, agregablesPara, infoPack, normalizarSet, setValido, pitchUnidad, unidadesDeParametro, enCampaniaRedes } from "../../data/packs";
 
 const DISCORD_URL = "https://discord.com/invite/QuAmDxrNMu";
 const WHATSAPP_URL = "https://wa.me/5491123869799?text=" + encodeURIComponent("Hola, tengo una consulta sobre los cursos");
@@ -45,15 +45,23 @@ function preguntasFrecuentes(curso, preventa) {
       ? [
           {
             q: "¿Qué es la preventa y cuándo empieza el curso?",
-            a: `Las clases se habilitan el ${curso.preventa.fechaTexto}. Si lo comprás antes, lo pagás ${formatearPrecio(curso.precio)} en lugar de ${formatearPrecio(curso.precioRegular)}. El acceso a tu carpeta de Google Drive te llega al mail apenas pagás, y ese día aparecen ahí las clases.`,
+            a: `Las clases se habilitan el ${curso.preventa.fechaTexto}. ${
+              enCyber()
+                ? `Por el Cyber SRV, ${CYBER_FECHAS} lo pagás ${formatearPrecio(curso.precio)}; después vuelve al precio de preventa, ${formatearPrecio(curso.preventa.precio)}, hasta que se habilitan las clases, y desde ese día cuesta ${formatearPrecio(curso.precioRegular)}.`
+                : `Si lo comprás antes, lo pagás ${formatearPrecio(curso.precio)} en lugar de ${formatearPrecio(curso.precioRegular)}.`
+            } El acceso a tu carpeta de Google Drive te llega al mail apenas pagás, y ese día aparecen ahí las clases.`,
           },
         ]
       : []),
+    ...(curso.preguntasExtra || []),
     {
       q: "¿Necesito saber programar antes de empezar?",
-      a: curso.nivel.startsWith("Desde cero")
-        ? "No. El curso arranca desde cero: instalás las herramientas y escribís tu primera línea de código en la primera clase."
-        : "Conviene tener las bases de JavaScript. Si todavía no las tenés, te recomendamos empezar por el Master en JavaScript.",
+      // "requisitos" es para los cursos que no son de programación (Redes, Linux y AWS)
+      a: curso.requisitos
+        ? curso.requisitos
+        : curso.nivel.startsWith("Desde cero")
+          ? "No. El curso arranca desde cero: instalás las herramientas y escribís tu primera línea de código en la primera clase."
+          : "Conviene tener las bases de JavaScript. Si todavía no las tenés, te recomendamos empezar por el Master en JavaScript.",
     },
     {
       q: "¿Cómo y cuándo recibo el curso?",
@@ -140,6 +148,8 @@ export default function CursoGrabado({ cursoKey }) {
   // Un conjunto es combinable si forma un pack válido o si se convierte en un combo existente
   // (Master en JavaScript + Backend Avanzado = Ruta Backend).
   const agregables = cuponAplicado ? [] : agregablesPara(producto.key);
+  // Página de Redes durante su preventa: los cursos que se suman tienen precio de campaña (src/data/packs.js)
+  const campaniaRedes = producto.key === "redes" && enCampaniaRedes();
   const combinable = (keys) => {
     const set = normalizarSet(keys);
     return set.length === 1 ? set[0] !== producto.key : setValido(set);
@@ -558,15 +568,29 @@ export default function CursoGrabado({ cursoKey }) {
                 {/* Sumá a tu compra: el visitante arma su pack; la regla de precio vive en src/data/packs.js */}
                 {agregables.length > 0 && (
                   <fieldset className={styles.sumas}>
-                    <legend className={styles.sumasTitle}>🎁 Sumá cursos y ahorrá {formatearPrecio(AHORRO_POR_CURSO)} por cada uno</legend>
-                    <p className={styles.sumasIntro}>
-                      Tildá todos los que quieras: van en el mismo pago y cada curso que sumás descuenta{" "}
-                      {formatearPrecio(AHORRO_POR_CURSO)} del total. Si vale menos, va de regalo.
-                    </p>
+                    {campaniaRedes ? (
+                      <>
+                        <legend className={styles.sumasTitle}>🎁 Sumá cursos a precio de campaña</legend>
+                        <p className={styles.sumasIntro}>
+                          Solo durante la preventa: cada curso que sumás a Redes, Linux y AWS tiene un precio especial. Tildá
+                          todos los que quieras y van en el mismo pago. Los demás cursos te llegan al instante.
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <legend className={styles.sumasTitle}>🎁 Sumá cursos y ahorrá {formatearPrecio(AHORRO_POR_CURSO)} por cada uno</legend>
+                        <p className={styles.sumasIntro}>
+                          Tildá todos los que quieras: van en el mismo pago y cada curso que sumás descuenta{" "}
+                          {formatearPrecio(AHORRO_POR_CURSO)} del total. Si vale menos, va de regalo.
+                        </p>
+                      </>
+                    )}
                     {agregables.map((k) => {
                       const unidad = CURSOS_GRABADOS[k];
                       const activa = extrasValidos.includes(k);
-                      const disponible = puedeSumar(k);
+                      // Master en JavaScript o Backend Avanzado con la Ruta Backend ya tildada: vienen dentro de la ruta
+                      const combo = activa ? null : extrasValidos.map((x) => CURSOS_GRABADOS[x]).find((c) => c.combo?.includes(k));
+                      const disponible = !combo && puedeSumar(k);
                       const extra = disponible ? costoDeSumar(k) : null;
                       return (
                         <label
@@ -592,6 +616,8 @@ export default function CursoGrabado({ cursoKey }) {
                                 <strong>
                                   {extra > 0 ? `Por solo ${formatearPrecio(extra)} más` : "¡Sin costo extra!"} <s>{formatearPrecio(unidad.precio)}</s>
                                 </strong>
+                              ) : combo ? (
+                                <span>Ya viene incluido en la {nombreCurso(combo)}.</span>
                               ) : (
                                 <span>No se combina con los cursos que elegiste.</span>
                               )}
@@ -620,7 +646,11 @@ export default function CursoGrabado({ cursoKey }) {
               {botonPago()}
               <p className={styles.secureText}>
                 🔒 Pago 100% seguro procesado por Mercado Pago.{" "}
-                {preventa ? `Tu carpeta te llega al mail al instante. Las clases se habilitan el ${fechaAcceso}.` : "El acceso te llega al mail al instante."}
+                {preventa
+                  ? pack
+                    ? `Las carpetas te llegan al mail al instante. Las clases de ${nombreCurso(producto)} se habilitan el ${fechaAcceso}; las de los demás cursos ya están.`
+                    : `Tu carpeta te llega al mail al instante. Las clases se habilitan el ${fechaAcceso}.`
+                  : "El acceso te llega al mail al instante."}
               </p>
               <p className={styles.legalText}>
                 Al pagar aceptás los <Link to="/terminos">términos y condiciones</Link> y la{" "}
@@ -755,7 +785,9 @@ export default function CursoGrabado({ cursoKey }) {
             <p>
               {pack
                 ? `${compra.clases} clases en ${pack.cantidadCursos} cursos, acceso de por vida y un solo pago de ${formatearPrecio(compra.precio)}. Por separado pagarías ${formatearPrecio(pack.precioSeparado)}.`
-                : preventa
+                : preventa && cyber
+                  ? `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(producto.precio)}: precio del Cyber SRV, solo ${CYBER_FECHAS}. Las clases se habilitan en tu carpeta el ${fechaAcceso}.`
+                  : preventa
                   ? `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(producto.precio)}. Desde el ${fechaAcceso} pasa a ${formatearPrecio(producto.precioRegular)}, y ese mismo día se habilitan las clases en tu carpeta.`
                   : `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(compra.precio)}${cuponAplicado ? " con tu código de alumno" : ""}. Empezá esta misma noche.`}
             </p>

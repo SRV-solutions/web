@@ -36,8 +36,8 @@ export const enCampaniaRedes = () => estaEnPreventa(CURSOS_GRABADOS.redes);
 // Orden en que se muestran las unidades y nombre corto para la clave del pack
 export const UNIDADES = [
   { key: "scratch", corto: "scratch", pitch: "Para que tu hijo o hija aprenda jugando mientras vos aprendés en serio." },
-  { key: "scripting", corto: "scripting", pitch: "Automatizá planillas, mails y documentos con JavaScript, Python y Apps Script." },
-  { key: "python", corto: "python", pitch: "El lenguaje más pedido del mundo: lógica, POO, APIs y apps con interfaz gráfica." },
+  { key: "scripting", corto: "scripting", pitch: "Automatizá planillas, mails y documentos con JavaScript, Python, Apps Script e IA." },
+  { key: "python", corto: "python", pitch: "El lenguaje de la IA: lógica, POO, APIs, apps con interfaz gráfica y automatizaciones con IA." },
   { key: "fundamentos-backend", corto: "javascript", pitch: "90 clases para programar en JavaScript con Node.js como un profesional." },
   { key: "backend-avanzado", corto: "backend", pitch: "Servidores y APIs REST con Express, sockets, testing y Docker." },
   { key: "ruta-backend", corto: "ruta", pitch: "Master en JavaScript + Backend Avanzado: la ruta backend completa con Node.js." },

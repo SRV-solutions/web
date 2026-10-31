@@ -36,14 +36,14 @@ export const CURSOS = {
   },
   scripting: {
     itemId: "curso-scripting",
-    titulo: "Curso de Scripting Desde Cero - WEARESRV",
+    titulo: "Curso de Scripting con IA Desde Cero - WEARESRV",
     contentName: "Infoproducto Scripting",
     precio: 15000,
     ruta: "scripting",
   },
   python: {
     itemId: "curso-python-infoproducto",
-    titulo: "Master en Python Desde Cero - WEARESRV",
+    titulo: "Master en Python con IA Desde Cero - WEARESRV",
     contentName: "Infoproducto Python Completo",
     precio: 80000,
     ruta: "python",
@@ -109,7 +109,7 @@ export const CURSOS = {
   // cuya página se compró ("desde"). El Apps Script comparte todas las carpetas (clave "incluye").
   "scripting-python": {
     itemId: "combo-scripting-python",
-    titulo: "Combo Curso de Scripting + Master en Python - WEARESRV",
+    titulo: "Combo Curso de Scripting con IA + Master en Python con IA - WEARESRV",
     contentName: "Combo Scripting + Python",
     precio: 69900,
     incluye: ["scripting", "python"],
@@ -117,7 +117,7 @@ export const CURSOS = {
   },
   "scratch-scripting": {
     itemId: "combo-scratch-scripting",
-    titulo: "Combo Scratch para Chicos + Curso de Scripting - WEARESRV",
+    titulo: "Combo Scratch para Chicos + Curso de Scripting con IA - WEARESRV",
     contentName: "Combo Scratch + Scripting",
     precio: 24900,
     precioPreventa: 17900,
@@ -127,7 +127,7 @@ export const CURSOS = {
   },
   "scripting-javascript": {
     itemId: "combo-scripting-javascript",
-    titulo: "Combo Curso de Scripting + Master en JavaScript - WEARESRV",
+    titulo: "Combo Curso de Scripting con IA + Master en JavaScript - WEARESRV",
     contentName: "Combo Scripting + Master en JavaScript",
     precio: 89900,
     incluye: ["scripting", "fundamentos-backend"],
@@ -135,7 +135,7 @@ export const CURSOS = {
   },
   "scripting-ruta-backend": {
     itemId: "combo-scripting-ruta-backend",
-    titulo: "Combo Curso de Scripting + Ruta Backend Completa - WEARESRV",
+    titulo: "Combo Curso de Scripting con IA + Ruta Backend Completa - WEARESRV",
     contentName: "Combo Scripting + Ruta Backend Completa",
     precio: 154900,
     incluye: ["scripting", "ruta-backend"],
@@ -143,7 +143,7 @@ export const CURSOS = {
   },
   "python-javascript": {
     itemId: "combo-python-javascript",
-    titulo: "Combo Master en Python + Master en JavaScript - WEARESRV",
+    titulo: "Combo Master en Python con IA + Master en JavaScript - WEARESRV",
     contentName: "Combo Python + Master en JavaScript",
     precio: 139900,
     incluye: ["python", "fundamentos-backend"],
@@ -151,7 +151,7 @@ export const CURSOS = {
   },
   "python-ruta-backend": {
     itemId: "combo-python-ruta-backend",
-    titulo: "Combo Master en Python + Ruta Backend Completa - WEARESRV",
+    titulo: "Combo Master en Python con IA + Ruta Backend Completa - WEARESRV",
     contentName: "Combo Python + Ruta Backend Completa",
     precio: 199900,
     incluye: ["python", "ruta-backend"],
@@ -161,7 +161,7 @@ export const CURSOS = {
   // En la web reemplaza a "python-ruta-backend", que se conserva acá por si quedó un pago en curso.
   "pack-completo": {
     itemId: "combo-pack-completo",
-    titulo: "Pack Completo: Scripting + Master en Python + Ruta Backend - WEARESRV",
+    titulo: "Pack Completo: Scripting con IA + Master en Python con IA + Ruta Backend - WEARESRV",
     contentName: "Pack Completo: Scripting + Python + Ruta Backend",
     precio: 199900,
     incluye: ["scripting", "python", "ruta-backend"],
@@ -170,7 +170,7 @@ export const CURSOS = {
   // Combos con Fullstack C# (mismas claves y precios que src/data/cursosGrabados.js > SUMAS)
   "scripting-csharp": {
     itemId: "combo-scripting-csharp",
-    titulo: "Combo Curso de Scripting + Curso Fullstack con C# - WEARESRV",
+    titulo: "Combo Curso de Scripting con IA + Curso Fullstack con C# - WEARESRV",
     contentName: "Combo Scripting + Fullstack C#",
     precio: 92900,
     incluye: ["scripting", "fullstack-csharp"],
@@ -178,7 +178,7 @@ export const CURSOS = {
   },
   "python-csharp": {
     itemId: "combo-python-csharp",
-    titulo: "Combo Master en Python + Curso Fullstack con C# - WEARESRV",
+    titulo: "Combo Master en Python con IA + Curso Fullstack con C# - WEARESRV",
     contentName: "Combo Python + Fullstack C#",
     precio: 139900,
     incluye: ["python", "fullstack-csharp"],
@@ -337,14 +337,18 @@ export function precioPack(keys) {
   return Math.max(maximo, redondear900(conDescuento));
 }
 
+const NOMBRE_EN_PACK = { scripting: "Scripting con IA", python: "Python con IA" };
+
 // Producto que se cobra por un pack: mismo formato que una entrada de CURSOS
 export function productoPack(clave) {
   const set = unidadesDeClave(clave);
   if (!set) return null;
   const nombres = set.map((k) => CURSOS[k].contentName.replace(/^Infoproducto /, ""));
+  // El título lo ve el cliente en Mercado Pago; contentName (Meta) queda igual para no cortar las métricas
+  const titulos = set.map((k, i) => NOMBRE_EN_PACK[k] || nombres[i]);
   return {
     itemId: clave,
-    titulo: `Pack ${nombres.join(" + ")} - WEARESRV`,
+    titulo: `Pack ${titulos.join(" + ")} - WEARESRV`,
     contentName: `Pack: ${nombres.join(" + ")}`,
     precio: precioPack(set),
     incluye: set,

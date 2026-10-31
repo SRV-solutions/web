@@ -107,6 +107,7 @@
   .etiqueta.azul { background: var(--azul); color: #fff; }
   .titulo { font-family: var(--display); font-weight: 400; font-size: 128px; line-height: 1; margin: 0; text-transform: uppercase; }
   .story .titulo { font-size: 150px; }
+  .titulo .ia { color: var(--azul); white-space: nowrap; }
   .detalle { font-size: 38px; font-weight: 800; color: var(--azul); margin: 0; text-transform: uppercase; letter-spacing: 1px; }
   .bajada { font-size: 38px; font-weight: 600; color: #d1d5db; margin: 0; line-height: 1.3; }
   .bajada b { color: var(--blanco); }
@@ -204,11 +205,11 @@ const CURSOS = [
     puntos: ["Aprenden a programar jugando, sin experiencia previa", "Crean una historia animada y su primer videojuego", "Sin instalar nada: Scratch va en el navegador"],
     lista: 18000, cyber: 9000,
     notaCyber: "Fuera del Cyber, en preventa a <b>$10.000</b> hasta el 17/11. Las clases se habilitan el 18/11." },
-  { key: "scripting", nombre: "Curso de<br>Scripting", corto: "Curso de Scripting", clases: 40, detalle: "40 clases · más de 59 horas",
-    puntos: ["JavaScript, Python y Google Apps Script desde cero", "Automatizá planillas, mails y documentos", "Nuevo módulo: automatizá con IA (8 clases)"],
+  { key: "scripting", nombre: "Curso de<br>Scripting <span class=\"ia\">con IA</span>", corto: "Curso de Scripting con IA", chip: "Scripting con IA", clases: 40, detalle: "40 clases · más de 59 horas",
+    puntos: ["JavaScript, Python y Google Apps Script desde cero", "Automatizá planillas, mails y documentos", "Módulo de 8 clases para automatizar con IA"],
     lista: 15000, cyber: 7500 },
-  { key: "python", nombre: "Master en<br>Python", corto: "Master en Python", clases: 106, detalle: "106 clases · desde cero",
-    puntos: ["De la lógica a la POO, APIs y apps con interfaz", "Nuevo módulo: automatizaciones con IA (8 clases)", "Proyectos reales para tu portfolio"],
+  { key: "python", nombre: "Master en<br>Python <span class=\"ia\">con IA</span>", corto: "Master en Python con IA", chip: "Python con IA", clases: 106, detalle: "106 clases · desde cero",
+    puntos: ["De la lógica a la POO, APIs y apps con interfaz", "Módulo de 8 clases de automatizaciones con IA", "Proyectos reales para tu portfolio"],
     lista: 80000, cyber: 40000 },
   { key: "javascript", nombre: "Master en<br>JavaScript", corto: "Master en JavaScript", clases: 90, detalle: "90 clases · con Node.js",
     puntos: ["JavaScript desde cero: el lenguaje de la web", "POO, promesas, APIs reales, bots y testing", "Guía de estudio con 109 preguntas"],
@@ -231,8 +232,8 @@ const CURSOS = [
 
 // Campaña de Redes: lo que se suma a Redes desde su página durante la preventa (SUMA_CON_REDES en packs.js)
 const SUMAS_REDES = [
-  ["Curso de Scripting", "40 clases", 15000, 0],
-  ["Master en Python", "106 clases", 80000, 20000],
+  ["Curso de Scripting con IA", "40 clases", 15000, 0],
+  ["Master en Python con IA", "106 clases", 80000, 20000],
   ["Master en JavaScript", "90 clases", 84900, 20000],
   ["Backend Avanzado", "73 clases", 99900, 20000],
   ["Fullstack C# y React", "30 clases", 87900, 20000],
@@ -258,7 +259,7 @@ const pie = (legal, claim = "Pago único · Acceso de por vida") => `
 const placa = (id, formato, contenido, extra = "") => `<div class="placa ${formato} ${extra}" id="${id}">${franja}${contenido}</div>`;
 
 // ---------- Cyber SRV ----------
-const chips = `<div class="chips">${CURSOS.map((c) => `<span>${c.corto}</span>`).join("")}</div>`;
+const chips = `<div class="chips">${CURSOS.map((c) => `<span>${c.chip || c.corto}</span>`).join("")}</div>`;
 const cyberGeneral = (formato) => placa(`cyber-general-${formato}`, formato, `
   ${cabecera("2 · 3 · 4 de noviembre")}
   <div class="cuerpo">

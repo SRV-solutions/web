@@ -91,6 +91,10 @@ así que nada se sube ni se mergea sin el OK de Marcos.
       con IA» (clases 99 a 106: 106 en total), cada uno con guías breves, guía de estudio, guía práctica y
       materiales. Fundamentos de IA: los 4 temas con video y guía, más la guía completa, en su carpeta; la página
       los muestra como disponibles con el registro.
+- [x] Nombres con IA (31/10/2026): «Curso de Scripting con IA» y «Master en Python con IA» en la web, el menú,
+      el footer, los packs, el título de Mercado Pago y los creativos del Cyber. Las rutas (/scripting, /python),
+      las claves, los itemId y los contentName de Meta no cambian. Los Apps Script siguen con el nombre viejo en
+      los mails, a propósito: no se tocan.
 - [x] Promo «Cyber SRV» del 2 al 4/11 con fecha de inicio y fin publicadas: todos los cursos grabados al 50%
       (el Intensivo Full Stack en vivo no participa). Código listo en la rama: precio mostrado, precio cobrado
       (`netlify/lib/cursos.js`), mínimo del webhook (`appscript-cursos.gs`, que además suma la columna «Neto

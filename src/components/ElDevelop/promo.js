@@ -18,14 +18,14 @@ export const COURSES = {
   scripting: {
     to: "/scripting/inscripcion",
     icon: "⚡",
-    name: "Curso de Scripting",
-    pitch: "JavaScript, Python y Apps Script desde cero. ¡Solo $15.000!",
+    name: "Curso de Scripting con IA",
+    pitch: "JavaScript, Python, Apps Script e IA desde cero. ¡Solo $15.000!",
   },
   python: {
     to: "/python/inscripcion",
     icon: "🐍",
-    name: "Master en Python",
-    pitch: "Lógica, POO, APIs y automatización desde cero.",
+    name: "Master en Python con IA",
+    pitch: "Lógica, POO, APIs y automatizaciones con IA desde cero.",
   },
   "fundamentos-backend": {
     to: "/ruta-backend/inscripcion?elegir=fundamentos-backend",

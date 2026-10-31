@@ -140,10 +140,10 @@ export default function Footer() {
             Scratch para Chicos
           </Link>
           <Link className={styles.footer_link} to="/scripting/inscripcion">
-            Curso de Scripting
+            Curso de Scripting con IA
           </Link>
           <Link className={styles.footer_link} to="/python/inscripcion">
-            Master en Python
+            Master en Python con IA
           </Link>
           <Link className={styles.footer_link} to="/ruta-backend/inscripcion">
             Ruta Backend: JavaScript + Backend Avanzado

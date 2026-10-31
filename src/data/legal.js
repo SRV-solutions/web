@@ -36,7 +36,7 @@ export const PROMOCIONES = [
   {
     nombre: "Preventa de Redes, Linux y AWS",
     detalle:
-      "El curso cuesta $62.900 en lugar de $89.900 (del 02/11/2026 al 04/11/2026, $44.950 por el Cyber SRV). La carpeta llega al instante, las 32 clases se habilitan el 27/01/2027 y los dos simulacros del examen, el 03/02/2027. El examen AWS Certified Cloud Practitioner no está incluido: lo toma y lo cobra AWS. Si en el mismo pago sumás otros cursos desde la página de Redes, Linux y AWS, cada uno cuesta: Curso de Scripting, sin costo extra; Master en Python, Master en JavaScript, Backend Avanzado o Curso Fullstack con C#, $20.000 más; Ruta Backend Completa, $35.000 más. Esos cursos llegan al instante.",
+      "El curso cuesta $62.900 en lugar de $89.900 (del 02/11/2026 al 04/11/2026, $44.950 por el Cyber SRV). La carpeta llega al instante, las 32 clases se habilitan el 27/01/2027 y los dos simulacros del examen, el 03/02/2027. El examen AWS Certified Cloud Practitioner no está incluido: lo toma y lo cobra AWS. Si en el mismo pago sumás otros cursos desde la página de Redes, Linux y AWS, cada uno cuesta: Curso de Scripting con IA, sin costo extra; Master en Python con IA, Master en JavaScript, Backend Avanzado o Curso Fullstack con C#, $20.000 más; Ruta Backend Completa, $35.000 más. Esos cursos llegan al instante.",
     desde: "30/10/2026",
     hasta: "26/01/2027 a las 23:59",
   },

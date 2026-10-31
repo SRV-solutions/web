@@ -34,12 +34,12 @@ const menuData = [
         isNew: true
       },
       {
-        label: "Scripting",
+        label: "Scripting con IA",
         to: "/scripting/inscripcion",
         isNew: true
       },
       {
-        label: "Master en Python",
+        label: "Master en Python con IA",
         to: "/python/inscripcion",
         isNew: true
       },

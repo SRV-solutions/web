@@ -39,9 +39,9 @@ const PASOS = [
 ];
 
 const FAQ = [
-  { q: "Nunca programé, ¿por dónde empiezo?", a: "Por el Curso de Scripting: arranca desde cero, cuesta $15.000 y te da la base de lógica para después seguir con Python o Backend." },
-  { q: "¿Enseñan a usar IA?", a: "Sí. Los cursos de Scripting y Python ya incluyen un módulo de automatización con IA, de 8 clases cada uno (si los compraste antes, ya lo tenés en tu carpeta). En Fundamentos de IA tenés 4 videos y sus guías gratis, y estamos preparando el curso 'IA para el trabajo': anotate en la lista de espera desde la página de próximos cursos." },
-  { q: "¿Las clases son en vivo o grabadas?", a: "Los cursos de Scripting, Python, Master en JavaScript, Backend Avanzado, Fullstack con C#, Scratch para Chicos y Redes, Linux y AWS son grabados, con acceso de por vida. El Intensivo Full Stack es una cursada en vivo." },
+  { q: "Nunca programé, ¿por dónde empiezo?", a: "Por el Curso de Scripting con IA: arranca desde cero, cuesta $15.000 y te da la base de lógica para después seguir con Python o Backend." },
+  { q: "¿Enseñan a usar IA?", a: "Sí. El Curso de Scripting con IA y el Master en Python con IA incluyen un módulo de 8 clases para automatizar con IA (si los compraste antes, ya lo tenés en tu carpeta). En Fundamentos de IA tenés 4 videos y sus guías gratis, y estamos preparando el curso 'IA para el trabajo': anotate en la lista de espera desde la página de próximos cursos." },
+  { q: "¿Las clases son en vivo o grabadas?", a: "El Curso de Scripting con IA, el Master en Python con IA, Master en JavaScript, Backend Avanzado, Fullstack con C#, Scratch para Chicos y Redes, Linux y AWS son grabados, con acceso de por vida. El Intensivo Full Stack es una cursada en vivo." },
   { q: "¿Tienen un curso para certificarme en AWS?", a: `Sí: Redes, Linux y AWS, un curso grabado para rendir la certificación AWS Certified Cloud Practitioner (CLF-C02).${estaEnPreventa(CURSOS_GRABADOS.redes) ? ` Está en preventa hasta el ${CURSOS_GRABADOS.redes.preventa.fechaTexto}, cuando se habilitan las clases.` : ""} El examen lo toma y lo cobra AWS, aparte del curso.` },
   { q: "¿Tienen algo para chicos?", a: "Sí: Scratch para Chicos, un curso grabado de 14 clases para que chicos de 8 a 13 años creen una historia animada y su primer videojuego. Está en preventa a $10.000 hasta el 18 de noviembre: el acceso a la carpeta llega al instante y ese día se habilitan las clases." },
   { q: "¿Cómo recibo el curso después de pagar?", a: "Automáticamente: apenas Mercado Pago aprueba el pago, te llega un mail con el acceso a la carpeta del curso en Google Drive." },
@@ -99,8 +99,8 @@ export default function Home() {
   return (
     <div className={styles.homeContainer}>
       <Seo
-        title="Aprendé a programar con IA y automatizá tu trabajo | Cursos de Scripting, Python, JavaScript y Backend | WEARESRV"
-        description={`Cursos grabados de programación con acceso de por vida: Scripting, Python, JavaScript, Backend con Node.js y Fullstack con C#. ${TOTAL_CLASES} clases grabadas y guías de estudio. Desde ${formatearPrecio(PRECIO_DESDE)}.`}
+        title="Aprendé a programar con IA y automatizá tu trabajo | Cursos de Scripting y Python con IA, JavaScript y Backend | WEARESRV"
+        description={`Cursos grabados de programación con acceso de por vida: Scripting y Python con IA, JavaScript, Backend con Node.js y Fullstack con C#. ${TOTAL_CLASES} clases grabadas y guías de estudio. Desde ${formatearPrecio(PRECIO_DESDE)}.`}
         path="/"
         jsonLd={jsonLd}
       />
@@ -112,7 +112,7 @@ export default function Home() {
           Aprendé a programar <span className={styles.blue}>con IA</span> y <span className={styles.orange}>automatizá</span> tu trabajo
         </h1>
         <p className={styles.heroSubtitle}>
-          Cursos grabados de Scripting, Python, JavaScript y Backend con acceso de por vida, un intensivo con profe en vivo y
+          Cursos grabados de Scripting y Python con IA, JavaScript y Backend con acceso de por vida, un intensivo con profe en vivo y
           certificados verificables online. Por una fracción de lo que cuesta una academia: pagás una vez y empezás hoy mismo.
         </p>
         <div className={styles.heroActions}>

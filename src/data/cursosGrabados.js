@@ -110,25 +110,27 @@ export const CURSOS_GRABADOS = {
     itemId: "curso-scripting",
     ruta: "scripting",
     contentName: "Infoproducto Scripting",
+    // "con IA" va en el destacado para que figure en todos los nombres (home, listas, packs y Mercado Pago).
+    // El Apps Script sigue con su nombre propio ("Curso de Scripting") en los mails: no se toca.
     tituloInicio: "Curso de",
-    tituloDestacado: "Scripting",
+    tituloDestacado: "Scripting con IA",
     tituloFin: "Desde Cero",
     descripcion:
-      "Aprendé a programar desde cero con JavaScript, Python y Google Apps Script: 40 clases grabadas y más de 59 horas para automatizar planillas, mails, documentos y tareas repetitivas, consumir APIs, armar tus propios bots y sumarle IA a tus automatizaciones.",
+      "Aprendé a programar desde cero con JavaScript, Python y Google Apps Script, y poné a la IA a trabajar en tus automatizaciones: 40 clases grabadas y más de 59 horas para automatizar planillas, mails, documentos y tareas repetitivas, consumir APIs y armar tus propios bots.",
     precio: 15000,
     clases: 40,
     beneficios: [
       "Acceso vitalicio al material en Google Drive",
+      "Módulo «Automatizá con IA»: 8 clases con guía de estudio, guía práctica y archivos para practicar",
       "Guía de estudio en PDF con 66 preguntas y sus respuestas",
       "Más de 59 horas de clases grabadas",
       "JavaScript, Python y Google Apps Script en un solo curso",
-      "Nuevo módulo «Automatizá con IA»: 8 clases con guía de estudio, guía práctica y archivos para practicar",
       "Envío automático de accesos al abonar",
     ],
     subTituloDesc:
-      "Ideal para arrancar de cero: aprendés la lógica de programación y la aplicás a automatizaciones reales.",
-    gancho: "Dejá de hacer a mano lo que una computadora hace sola.",
-    metaDescripcion: "Aprendé a programar desde cero con JavaScript, Python y Google Apps Script, y automatizá con IA. 40 clases, más de 59 horas y acceso de por vida por $15.000.",
+      "Ideal para arrancar de cero: aprendés la lógica de programación y la aplicás a automatizaciones reales, con IA incluida.",
+    gancho: "Dejá de hacer a mano lo que el código y la IA hacen solos.",
+    metaDescripcion: "Curso de Scripting con IA desde cero: programá con JavaScript, Python y Google Apps Script y automatizá con IA. 40 clases, más de 59 horas y acceso de por vida por $15.000.",
     nivel: "Desde cero · No necesitás saber nada de programación",
     paraQuien: ["Nunca programaste y querés arrancar sin pagar una fortuna", "Trabajás con planillas, mails o documentos y querés automatizar tareas repetitivas", "Querés probar si la programación es para vos antes de invertir en una carrera", "Necesitás una base sólida de lógica para después ir a Python o JavaScript"],
     resultados: ["Escribir programas en JavaScript y Python con variables, condicionales, bucles y funciones", "Automatizar Google Sheets, Docs, Gmail y Calendar con Apps Script", "Pedir datos a APIs reales, como la cotización del dólar", "Armar tu propio bot de Discord y tus primeros scripts útiles para el día a día", "Sumarle IA a tus automatizaciones: clasificar datos, responder mails y armar el resumen del día con n8n"],
@@ -224,22 +226,22 @@ export const CURSOS_GRABADOS = {
     ruta: "python",
     contentName: "Infoproducto Python Completo",
     tituloInicio: "Master en",
-    tituloDestacado: "Python",
+    tituloDestacado: "Python con IA",
     tituloFin: "Desde Cero",
     descripcion:
-      "106 clases grabadas para aprender Python desde cero: lógica de programación, programación orientada a objetos, archivos, consumo de APIs, asincronismo, aplicaciones con interfaz gráfica (GUI) y automatizaciones con IA.",
+      "106 clases grabadas para aprender Python desde cero y usarlo con IA: lógica de programación, programación orientada a objetos, archivos, consumo de APIs, asincronismo, aplicaciones con interfaz gráfica (GUI) y automatizaciones con IA, de las salidas estructuradas a los agentes y el RAG.",
     precio: 80000,
     clases: 106,
     beneficios: [
       "Acceso vitalicio al material en Google Drive",
+      "Módulo «Automatizaciones con IA»: 8 clases con guía de estudio, guía práctica y archivos para practicar",
       "Estudiá a tu propio ritmo (100% grabado)",
-      "Nuevo módulo «Automatizaciones con IA»: 8 clases con guía de estudio, guía práctica y archivos para practicar",
       "Envío automático de accesos al abonar",
     ],
     subTituloDesc:
-      "Estructura práctica diseñada para llevarte desde las bases hasta proyectos profesionales.",
-    gancho: "El lenguaje más pedido del mundo, explicado desde la primera línea.",
-    metaDescripcion: "Master en Python desde cero: 106 clases grabadas de lógica, POO, APIs, asincronismo, apps con interfaz gráfica y automatizaciones con IA. Acceso de por vida.",
+      "Estructura práctica diseñada para llevarte desde las bases hasta proyectos profesionales con IA.",
+    gancho: "El lenguaje de la IA y el más pedido del mundo, explicado desde la primera línea.",
+    metaDescripcion: "Master en Python con IA desde cero: 106 clases grabadas de lógica, POO, APIs, asincronismo, apps con interfaz gráfica y automatizaciones con IA. Acceso de por vida.",
     nivel: "Desde cero · Ideal como primer lenguaje",
     paraQuien: ["Querés aprender el lenguaje más usado en automatización, datos e inteligencia artificial", "Empezás desde cero y buscás un curso completo, no videos sueltos", "Querés armar proyectos reales para tu portfolio", "Te interesa automatizar tareas o trabajar con datos"],
     resultados: ["Programar en Python con buenas prácticas, de la lógica a la POO", "Leer y escribir archivos, manejar errores y usar expresiones regulares", "Consumir APIs con requests y armar tu propio bot", "Crear apps de escritorio con interfaz gráfica: To Do List, generador de contraseñas y más", "Automatizar con IA desde Python: clasificar un CSV, resumir PDFs y armar un bot que responde sobre tus documentos"],
@@ -842,7 +844,7 @@ export const linkInscripcion = (curso) => {
   return combo ? `/${combo.ruta}/inscripcion?elegir=${curso.key}` : `/${curso.ruta}/inscripcion`;
 };
 
-// Nombre corto de un curso para listas: "Curso de Scripting", "Master en Python", "Ruta Backend Completa"
+// Nombre corto de un curso para listas: "Curso de Scripting con IA", "Master en Python con IA", "Ruta Backend Completa"
 export const nombreCurso = (curso) =>
   [curso.tituloInicio, curso.tituloDestacado, curso.combo ? curso.tituloFin : null].filter(Boolean).join(" ");
 

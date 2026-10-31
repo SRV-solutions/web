@@ -5,8 +5,8 @@ import styles from "./style.module.css";
 
 const CURSOS_DISPONIBLES = [
   { label: "Scratch para Chicos", to: "/scratch/inscripcion" },
-  { label: "Curso de Scripting", to: "/scripting/inscripcion" },
-  { label: "Master en Python", to: "/python/inscripcion" },
+  { label: "Curso de Scripting con IA", to: "/scripting/inscripcion" },
+  { label: "Master en Python con IA", to: "/python/inscripcion" },
   { label: "Ruta Backend: JavaScript + Backend Avanzado", to: "/ruta-backend/inscripcion" },
   { label: "Curso Fullstack con C# y React", to: "/fullstack-csharp/inscripcion" },
   { label: "Redes, Linux y AWS", to: "/redes/inscripcion" },

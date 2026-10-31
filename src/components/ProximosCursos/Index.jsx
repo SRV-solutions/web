@@ -236,8 +236,8 @@ export default function ProximosCursos() {
         </div>
 
         <p className={styles.nota}>
-          ¿Querés arrancar hoy? Los cursos grabados de Scripting, Python, JavaScript, Backend y Fullstack con C# ya
-          están disponibles con acceso de por vida.
+          ¿Querés arrancar hoy? Los cursos grabados de Scripting y Python con IA, JavaScript, Backend y Fullstack con
+          C# ya están disponibles con acceso de por vida.
         </p>
       </div>
     </section>

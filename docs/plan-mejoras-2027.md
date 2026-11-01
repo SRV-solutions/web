@@ -84,8 +84,16 @@ así que nada se sube ni se mergea sin el OK de Marcos.
 - [x] `/redes/inscripcion` (el link «Formate como DevOps en AWS» de Linktree) redirigía a la lista de espera;
       con la preventa es la página del curso.
 - [x] Guía gratis «Redes y nube desde cero» en `/redes` (1/11/2026): las descripciones de los 12 clips de Redes
-      dicen «La guía gratis está en wearesrv.com/redes». Descarga directa del PDF, sin registro
-      (`public/guias/`), los 9 temas con la palabra que se comenta en cada clip y el pase al curso.
+      dicen «La guía gratis está en wearesrv.com/redes». La guía está en la página (el texto del PDF, en
+      `GuiaRedes/Guia.jsx`): la introducción, el índice con la palabra de cada clip y la sección 1 son abiertas;
+      el resto y el PDF (`public/guias/`) se desbloquean con el mail, que se suma al newsletter (Netlify Function
+      `newsletter` → pestaña «Newsletter» de `appscript-fundamentos.gs`, sin mail de bienvenida para cuidar la
+      cuota). Si el guardado falla, la guía se abre igual. Política de privacidad actualizada con el newsletter.
+      Antes del merge a `master`, Marcos pega `appscript-fundamentos.gs` («Nueva versión»): con el script viejo
+      la guía se abre pero el mail no se guarda.
+- [ ] Mandar el newsletter: hoy los mails solo se juntan. La cuota de Gmail (~100 por día, compartida con las
+      compras) no alcanza para un envío masivo: cuando haya que mandar, importar la pestaña «Newsletter» a una
+      herramienta de mailing con baja automática (Brevo o MailerLite tienen plan gratis).
 - [x] Módulos de IA anunciados como «Próximamente · gratis con tu acceso» en Scripting («Automatizá con IA») y
       Python («Automatizaciones con IA»), con temario borrador en `cursosGrabados.js` (`proximosModulos`).
       Cuando las clases estén grabadas y subidas a Drive: mover el módulo a `modulos` y actualizar `clases`.

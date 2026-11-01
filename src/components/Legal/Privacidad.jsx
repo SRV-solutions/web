@@ -37,7 +37,7 @@ export default function Privacidad() {
           <li>
             <strong>Los que nos das:</strong> nombre, apellido, mail y celular o WhatsApp en los formularios de
             inscripción, de consulta, del registro a Fundamentos IA, de la lista de espera de los próximos cursos y del
-            botón de arrepentimiento.
+            botón de arrepentimiento, y el mail con el que te suscribís al newsletter para desbloquear una guía gratis.
           </li>
           <li>
             <strong>Los de la compra:</strong> Mercado Pago procesa el pago y nos informa el estado, el monto y el mail
@@ -54,6 +54,7 @@ export default function Privacidad() {
           <li>Darte acceso a los cursos y a las cursadas en vivo.</li>
           <li>Darte acceso al material gratuito de Fundamentos IA y avisarte cuando sumamos material nuevo.</li>
           <li>Avisarte cuando abre la inscripción de un curso en cuya lista de espera te anotaste.</li>
+          <li>Mandarte el newsletter (guías gratis y novedades) si te suscribiste, por ejemplo al desbloquear una guía.</li>
           <li>Mandarte comprobantes, avisos de la cursada y certificados.</li>
           <li>Responder consultas y pedidos de arrepentimiento o de baja.</li>
           <li>Medir y mejorar nuestros anuncios y la web.</li>
@@ -113,13 +114,13 @@ export default function Privacidad() {
         <h2 className={styles.h2}>8. Cuánto tiempo guardamos los datos</h2>
         <p>
           Mientras seas alumno y durante el tiempo que exijan las obligaciones fiscales y de defensa del consumidor.
-          Los datos de Fundamentos IA y de las listas de espera, hasta que pidas la baja.
+          Los datos de Fundamentos IA, de las listas de espera y del newsletter, hasta que pidas la baja.
         </p>
 
         <h2 className={styles.h2}>9. Cambios en esta política</h2>
         <p>Si la cambiamos, publicamos acá la versión nueva con su fecha.</p>
 
-        <p className={styles.actualizacion}>Última actualización: {LEGAL.actualizacion}.</p>
+        <p className={styles.actualizacion}>Última actualización: {LEGAL.actualizacionPrivacidad}.</p>
       </div>
     </section>
   );

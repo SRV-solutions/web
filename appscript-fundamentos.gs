@@ -17,6 +17,10 @@
  *  "Lista de espera" con curso, nombre, apellido, email y celular, y el anotado recibe un mail
  *  de confirmación. Cuando abra un curso, filtrás esa pestaña por curso y tenés la lista.
  *
+ *  NEWSLETTER: también recibe los mails con los que se desbloquean las guías gratis (por ahora
+ *  wearesrv.com/redes, Netlify Function newsletter). Van a la pestaña "Newsletter" con la guía
+ *  que los trajo. No se les manda mail: la guía se abre en la página y la cuota queda libre.
+ *
  *  CUOTA DE MAILS: una cuenta de Gmail manda unos 100 mails por día desde Apps Script, y esa
  *  cuota es de la CUENTA: la comparte con el script de pagos. Este script nunca usa los
  *  últimos CONFIG.RESERVA_MAILS, que quedan para los mails de las compras. Si se llega a ese
@@ -79,6 +83,13 @@ var LISTA_COL_CELULAR = 6;
 var LISTA_COL_DETALLE = 7;
 var LISTA_TOTAL_COLS = 7;
 
+// Pestaña del newsletter (columnas 1 = A)
+var SHEET_NEWSLETTER = "Newsletter";
+var NEWS_COL_FECHA = 1;
+var NEWS_COL_EMAIL = 2;
+var NEWS_COL_ORIGEN = 3;
+var NEWS_TOTAL_COLS = 4; // la 4 es Detalle: queda para anotar a mano (por ejemplo, una baja)
+
 // ============================================================
 //  ENTRADA DEL WEBHOOK (Netlify Function -> acá)
 // ============================================================
@@ -102,6 +113,9 @@ function doPost(e) {
 
     if (body.accion === "lista-espera") {
       return procesarListaEspera_(body);
+    }
+    if (body.accion === "newsletter") {
+      return procesarNewsletter_(body);
     }
 
     var nombre = String(body.nombre || "").trim().slice(0, 80) || "Estudiante";
@@ -263,6 +277,52 @@ function getHojaLista_() {
 }
 
 // ============================================================
+//  NEWSLETTER (altas desde las guías gratis)
+// ============================================================
+// body = { accion: "newsletter", origen: "Guía Redes y nube", contacto: { email } }
+// Una fila por mail: si vuelve a desbloquear una guía (otro celular, otra guía) no se repite.
+function procesarNewsletter_(body) {
+  var c = body.contacto || {};
+  var origen = String(body.origen || "").trim().slice(0, 60);
+  var email = String(c.email || "").trim().toLowerCase().slice(0, 120);
+  if (!origen || !emailValido_(email)) return responder_("invalid_data");
+
+  // Sin lock (por ejemplo, mientras corre la entrega de cada hora) se guarda igual, sin antiduplicados
+  var lock = LockService.getScriptLock();
+  var conLock = lock.tryLock(20000);
+  try {
+    if (conLock && yaEnNewsletter_(email)) return responder_("newsletter_ya_registrado");
+    getHojaNewsletter_().appendRow([new Date(), sanitizarCelda_(email), origen, ""]);
+    return responder_("newsletter_ok");
+  } finally {
+    if (conLock) lock.releaseLock();
+  }
+}
+
+function yaEnNewsletter_(email) {
+  var hoja = getHojaNewsletter_();
+  var lastRow = hoja.getLastRow();
+  if (lastRow < 2) return false;
+  var emails = hoja.getRange(2, NEWS_COL_EMAIL, lastRow - 1, 1).getValues();
+  for (var i = 0; i < emails.length; i++) {
+    if (String(emails[i][0]).toLowerCase() === email) return true;
+  }
+  return false;
+}
+
+function getHojaNewsletter_() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var hoja = ss.getSheetByName(SHEET_NEWSLETTER);
+  if (!hoja) {
+    hoja = ss.insertSheet(SHEET_NEWSLETTER);
+    hoja.appendRow(["Fecha", "Email", "Origen", "Detalle"]);
+    hoja.setFrozenRows(1);
+    hoja.getRange(1, 1, 1, NEWS_TOTAL_COLS).createFilter();
+  }
+  return hoja;
+}
+
+// ============================================================
 //  AVISO A LA LISTA DE ESPERA CUANDO ABRE UN CURSO (ejecutar a mano desde el editor)
 //  Le manda a cada anotado del curso un mail con el link de compra y marca su fila con
 //  "AVISO_APERTURA_ENVIADO" en Detalle, así se puede volver a correr sin mandar dos veces.
@@ -384,8 +444,8 @@ function entregarPendientes() {
   }
 }
 
-// Una vez por día: resumen de los registros de las últimas 24 horas de Fundamentos IA y de las
-// listas de espera (un solo mail, cuida la cuota). Si no hubo nada nuevo, no manda nada.
+// Una vez por día: resumen de los registros de las últimas 24 horas de Fundamentos IA, de las
+// listas de espera y del newsletter (un solo mail, cuida la cuota). Si no hubo nada nuevo, no manda nada.
 function resumenDiario() {
   var desde = Date.now() - 24 * 60 * 60 * 1000;
   var esNuevo = function (fecha) { return fecha instanceof Date && fecha.getTime() >= desde; };
@@ -428,7 +488,22 @@ function resumenDiario() {
     }
   }
 
-  if (!nuevosFund.length && !nuevosLista.length) return;
+  // Newsletter
+  var nuevosNews = [];
+  var totalNews = 0;
+  var hojaNews = getHojaNewsletter_();
+  if (hojaNews.getLastRow() >= 2) {
+    var altas = hojaNews.getRange(2, 1, hojaNews.getLastRow() - 1, NEWS_TOTAL_COLS).getValues();
+    for (var k = 0; k < altas.length; k++) {
+      if (!altas[k][NEWS_COL_EMAIL - 1]) continue;
+      totalNews++;
+      if (esNuevo(altas[k][NEWS_COL_FECHA - 1])) {
+        nuevosNews.push("• " + altas[k][NEWS_COL_EMAIL - 1] + " · " + altas[k][NEWS_COL_ORIGEN - 1]);
+      }
+    }
+  }
+
+  if (!nuevosFund.length && !nuevosLista.length && !nuevosNews.length) return;
 
   var partes = ["¡Hola Marcos! Estos son los registros de las últimas 24 horas."];
   if (nuevosFund.length) {
@@ -443,11 +518,15 @@ function resumenDiario() {
     var totales = Object.keys(totalPorCurso).map(function (k) { return k + ": " + totalPorCurso[k]; }).join(" · ");
     partes.push("LISTAS DE ESPERA (" + nuevosLista.length + " nuevos)\n" + listar(nuevosLista) + "\n\nTotal por curso: " + totales);
   }
+  if (nuevosNews.length) {
+    partes.push("NEWSLETTER (" + nuevosNews.length + " nuevos)\n" + listar(nuevosNews) + "\n\nTotal: " + totalNews);
+  }
   partes.push("Planilla: " + SpreadsheetApp.getActiveSpreadsheet().getUrl());
 
   MailApp.sendEmail({
     to: CONFIG.EMAIL_ADMIN,
-    subject: "📩 Registros del día: " + nuevosFund.length + " en Fundamentos IA y " + nuevosLista.length + " en listas de espera",
+    subject: "📩 Registros del día: " + nuevosFund.length + " en Fundamentos IA, " + nuevosLista.length +
+      " en listas de espera y " + nuevosNews.length + " en el newsletter",
     body: partes.join("\n\n")
   });
 }
@@ -491,6 +570,8 @@ function probarConfiguracion() {
   mensajes.push("✅ Hoja \"" + CONFIG.SHEET_NAME + "\" OK: " + Math.max(sheet.getLastRow() - 1, 0) + " registro(s)");
   var hojaLista = getHojaLista_();
   mensajes.push("✅ Hoja \"" + SHEET_LISTA + "\" OK: " + Math.max(hojaLista.getLastRow() - 1, 0) + " anotado(s)");
+  var hojaNewsletter = getHojaNewsletter_();
+  mensajes.push("✅ Hoja \"" + SHEET_NEWSLETTER + "\" OK: " + Math.max(hojaNewsletter.getLastRow() - 1, 0) + " suscripto(s)");
 
   instalarActivadores_();
   mensajes.push("✅ Activadores: entrega cada hora y resumen diario a las " + CONFIG.HORA_RESUMEN + " h");

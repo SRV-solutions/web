@@ -83,6 +83,9 @@ así que nada se sube ni se mergea sin el OK de Marcos.
       sube las clases y corre `avisarAperturaRedes()`, y el 3/02 sube los simulacros.
 - [x] `/redes/inscripcion` (el link «Formate como DevOps en AWS» de Linktree) redirigía a la lista de espera;
       con la preventa es la página del curso.
+- [x] Guía gratis «Redes y nube desde cero» en `/redes` (1/11/2026): las descripciones de los 12 clips de Redes
+      dicen «La guía gratis está en wearesrv.com/redes». Descarga directa del PDF, sin registro
+      (`public/guias/`), los 9 temas con la palabra que se comenta en cada clip y el pase al curso.
 - [x] Módulos de IA anunciados como «Próximamente · gratis con tu acceso» en Scripting («Automatizá con IA») y
       Python («Automatizaciones con IA»), con temario borrador en `cursosGrabados.js` (`proximosModulos`).
       Cuando las clases estén grabadas y subidas a Drive: mover el módulo a `modulos` y actualizar `clases`.

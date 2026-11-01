@@ -28,6 +28,7 @@ const Certificates = lazy(() => import("./components/Certificates/Index.jsx"));
 const Empresas = lazy(() => import("./components/Empresas/Index.jsx"));
 const ProximosCursos = lazy(() => import("./components/ProximosCursos/Index.jsx"));
 const FundamentosIA = lazy(() => import("./components/FundamentosIA/Index.jsx"));
+const GuiaRedes = lazy(() => import("./components/GuiaRedes/Index.jsx"));
 const ElDevelop = lazy(() => import("./components/ElDevelop/Index.jsx"));
 const Sentryx = lazy(() => import("./components/Sentryx/Index.jsx"));
 const EventBox = lazy(() => import("./components/EventBox/Index.jsx"));
@@ -214,6 +215,8 @@ function AppContent() {
           {/* Redes, Linux y AWS en preventa. /redes/inscripcion es también el link "Formate como DevOps en AWS" del Linktree */}
           <Route path="/redes/inscripcion" element={<CursoGrabado cursoKey="redes" />} />
           <Route path="/redes/gracias" element={<GraciasCurso cursoKey="redes" />} />
+          {/* Guía gratis de los clips de Redes: las descripciones de los Reels, Shorts y TikTok apuntan acá */}
+          <Route path="/redes" element={<GuiaRedes />} />
           <Route path="/el-develop" element={<ElDevelop />} />
           <Route path="/sentryx" element={<Sentryx />} />
           <Route path="/eventbox" element={<EventBox />} />

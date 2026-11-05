@@ -110,6 +110,23 @@ así que nada se sube ni se mergea sin el OK de Marcos.
       cursos sin preventa (Scripting $60.000, Python $450.000, JavaScript $350.000, Backend Avanzado $420.000,
       C# $390.000), sabiendo el riesgo de publicidad engañosa (DNU 274/2019). Durante el Cyber el tachado es
       el precio de lista real, como dicen las bases.
+- [x] Página de venta de `/sentryx` (5/11/2026, brief del equipo de Sentryx): hero, antes y después, seis bloques con
+      capturas (`public/sentryx-landing/`), por qué ahora, roles, seguridad, planes con lo que hace la plataforma,
+      cómo empezamos, preguntas frecuentes y cierre con QR. Objetivo único: pedir la demo por WhatsApp. Los textos
+      están en `Sentryx/contenido.js`. ⚠ El texto del ciclo 2027 (`CICLO`) vence en marzo de 2027. `operatingSystem`
+      queda en «Web» hasta que la app esté en las tiendas.
+- [ ] Vista previa de `/sentryx` al compartir: `og:image` lo pone React, pero WhatsApp y Facebook no ejecutan
+      JavaScript y siguen viendo la imagen por defecto de `index.html`. Para que vean la propia hay que generar en
+      la compilación un HTML para esa ruta. Toca el build: espera el OK de Marcos.
+- [x] Kydo en `/sentryx` (5/11/2026, precios de Marcos): Kydo (kydo.com.ar, juegos de primaria de otro titular, que
+      autorizó a Marcos a ofrecerlo y a cobrar el excedente) se suma a los planes de Sentryx. Ampliado con selector:
+      $999 con Kydo, $720 sin Kydo. Profesional ($2.450) e Integral ($3.300) suben $300 y lo incluyen. Básico ($660)
+      sigue sin Kydo. Sección «Kydo» en la página con botón a WhatsApp, muestra para jugar y link a su web; las
+      imágenes se cargan desde kydo.com.ar. Se escribe «Kydo», como en su web.
+- [ ] Kydo, pendiente: dejar por escrito el acuerdo con el dueño (sus términos publicados prohíben revender),
+      confirmar cuánto hay que pagarle por persona (quedan $279 en el Ampliado y $300 en los otros, y Kydo vale
+      $10.000 por mes por chico para familias), cargar los precios en la plataforma Sentryx, avisar la suba a los
+      colegios que ya estén en Profesional o Integral y definir cómo se entrega el acceso a cada colegio.
 - [x] Promo «Cyber SRV» del 2 al 4/11 con fecha de inicio y fin publicadas: todos los cursos grabados al 50%
       (el Intensivo Full Stack en vivo no participa). Código listo en la rama: precio mostrado, precio cobrado
       (`netlify/lib/cursos.js`), mínimo del webhook (`appscript-cursos.gs`, que además suma la columna «Neto

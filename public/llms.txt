@@ -17,7 +17,7 @@
 
 ## Productos propios (SaaS por suscripción mensual)
 
-- [Sentryx](https://wearesrv.com/sentryx): plataforma escolar para colegios de Inicial, Primario y Secundario. Comunicados con confirmación de lectura, calificaciones, boletines, asistencia, aulas virtuales y administración. Se cobra por persona activa; plan Básico desde $660 por mes.
+- [Sentryx](https://wearesrv.com/sentryx): plataforma escolar para colegios de Inicial, Primario y Secundario. Comunicados con confirmación de lectura, calificaciones, boletines, asistencia, aulas virtuales y administración. Se cobra por persona activa; plan Básico desde $660 por mes. El plan Ampliado vale $720 por mes, o $999 con Kydo, juegos de 1.º a 7.º grado sobre los NAP y el Diseño Curricular de la Ciudad de Buenos Aires. Los planes Profesional ($2.450) e Integral ($3.300) incluyen Kydo.
 - [Event Box](https://wearesrv.com/eventbox): stock, contenedores y órdenes de servicio para empresas de eventos, con recorrido por etapas y responsables. Abono mensual por empresa en dólares, desde USD 520.
 
 ## Otros

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 42 40">
+  <!-- Logo de Kydo (kydo.com.ar), en azul claro para que se vea sobre el fondo negro de la web -->
+  <g fill="none" stroke="#6fb2e0" stroke-width="4" stroke-linecap="round">
+    <path d="M8 9 C22 9 19 20 33 20"/>
+    <path d="M8 31 C22 31 19 20 33 20"/>
+  </g>
+  <circle cx="8" cy="9" r="6" fill="#6fb2e0"/>
+  <circle cx="8" cy="31" r="6" fill="#6fb2e0"/>
+  <circle cx="34" cy="20" r="7" fill="#ffffff"/>
+</svg>

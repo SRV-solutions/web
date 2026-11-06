@@ -143,8 +143,6 @@ var CURSOS = {
   },
   // PREVENTA como Redes: la carpeta se comparte al instante (vacía) y las clases se habilitan el 1/01/2027.
   // Ese día: subís las clases y corrés avisarAperturaExcel(). Durante la campaña de Redes no se combina con Redes.
-  // ⚠️ El ID real se cargó a mano en el Apps Script publicado (6/11/2026) y falta copiarlo acá. Si se pega este
-  // archivo con FOLDER_PENDIENTE, los pagos de Excel quedan sin acceso automático: reemplazarlo antes de pegar.
   "excel": {
     itemId: "curso-excel-sheets",
     nombre: "Master en Excel y Sheets con IA",
@@ -156,7 +154,7 @@ var CURSOS = {
       fechaTexto: "1 de enero de 2027",
       queEncontrara: "las 255 clases del curso"
     },
-    folderId: FOLDER_PENDIENTE
+    folderId: "1fjdRyi98q3bO3dQHJRGqju9Ar8hHfOQq" // "Master en Excel y Sheets con IA: EXCEL Y SHEETS"
   },
   // COMBO con Scripting: se elige en la página de Excel o al sumar los dos desde cualquier página.
   "excel-scripting": {

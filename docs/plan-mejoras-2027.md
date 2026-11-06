@@ -86,9 +86,8 @@ así que nada se sube ni se mergea sin el OK de Marcos.
       $59.900 hasta el 1/01/2027 (después $89.900), cuando se habilitan todas las clases. Combo con Scripting:
       $69.900 en preventa y $99.900 después; se elige con el selector de la página de Excel o sumando los dos desde
       cualquier página (`normalizarSet`). Entra en «Sumá a tu compra» de los demás cursos, menos Redes durante su
-      campaña. Publicado el 6/11/2026: Marcos creó la carpeta y cargó su ID directo en el Apps Script, así que falta
-      copiarlo a `appscript-cursos.gs` (sigue `FOLDER_PENDIENTE`) antes de volver a pegar ese archivo. El 1/01/2027
-      sube las clases y corre `avisarAperturaExcel()`. La última clase recomienda Scripting.
+      campaña. Publicado el 6/11/2026, con el script y su carpeta de Drive cargados. El 1/01/2027 Marcos sube las
+      clases y corre `avisarAperturaExcel()`. La última clase recomienda Scripting.
 - [ ] **Escalera de «Sumá a tu compra» y «Llevate todos»** (rama `curso-excel`, 6/11/2026, pedido de Marcos: que
       sumar cursos se sienta muy conveniente): los cursos se ordenan de mayor a menor precio, el primero va entero, el
       2.º tiene $30.000 de descuento, el 3.º $50.000, el 4.º $70.000 y del 5.º en adelante van de regalo

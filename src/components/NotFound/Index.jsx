@@ -10,6 +10,7 @@ const CURSOS_DISPONIBLES = [
   { label: "Ruta Backend: JavaScript + Backend Avanzado", to: "/ruta-backend/inscripcion" },
   { label: "Curso Fullstack con C# y React", to: "/fullstack-csharp/inscripcion" },
   { label: "Redes, Linux y AWS", to: "/redes/inscripcion" },
+  { label: "Master en Excel y Sheets con IA", to: "/excel/inscripcion" },
   { label: "Intensivo Full Stack", to: "/full-stack/inscripcion" },
 ];
 

@@ -10,10 +10,11 @@
  *  COMBOS: un curso con la clave "incluye" (ej. "ruta-backend") no tiene carpeta propia:
  *  comparte las carpetas de los cursos que incluye y manda un solo mail con todos los links.
  *
- *  PREVENTA (Scratch y Redes, Linux y AWS): hasta la fecha "hasta" se acepta el precio de preventa.
+ *  PREVENTA (Scratch, Redes, Linux y AWS, y Excel): hasta la fecha "hasta" se acepta el precio de preventa.
  *  El comprador recibe AL INSTANTE el acceso a la carpeta (vacía hasta el lanzamiento) con un mail que
  *  se lo aclara. El día del lanzamiento subís las clases a esa carpeta y listo: todos las ven. Si querés
- *  avisarles, ese día ejecutás avisarAperturaScratch() o avisarAperturaRedes() desde el editor.
+ *  avisarles, ese día ejecutás avisarAperturaScratch(), avisarAperturaRedes() o avisarAperturaExcel()
+ *  desde el editor.
  *
  *  Las donaciones del juego El Develop ("donacion:uuid") NO dan acceso a nada:
  *  solo se registran y te avisan por mail.
@@ -140,6 +141,38 @@ var CURSOS = {
     },
     folderId: "12Iye_viv4sZy9SEKLj-fUENRW1h7-UNa" // "AWS Y REDES - Preventa", en Mi unidad > CURSOS
   },
+  // PREVENTA como Redes: la carpeta se comparte al instante (vacía) y las clases se habilitan el 1/01/2027.
+  // Ese día: subís las clases y corrés avisarAperturaExcel(). Durante la campaña de Redes no se combina con Redes.
+  // ⚠️ El ID real se cargó a mano en el Apps Script publicado (6/11/2026) y falta copiarlo acá. Si se pega este
+  // archivo con FOLDER_PENDIENTE, los pagos de Excel quedan sin acceso automático: reemplazarlo antes de pegar.
+  "excel": {
+    itemId: "curso-excel-sheets",
+    nombre: "Master en Excel y Sheets con IA",
+    tituloHtml: 'MASTER EN <span style="color:#f6950a;">EXCEL Y SHEETS CON IA</span> DESDE CERO',
+    precioMinimo: 89900,
+    preventa: {
+      hasta: new Date("2027-01-01T00:00:00-03:00"), // misma fecha que netlify/lib/cursos.js
+      precioMinimo: 59900,
+      fechaTexto: "1 de enero de 2027",
+      queEncontrara: "las 255 clases del curso"
+    },
+    folderId: FOLDER_PENDIENTE
+  },
+  // COMBO con Scripting: se elige en la página de Excel o al sumar los dos desde cualquier página.
+  "excel-scripting": {
+    itemId: "combo-excel-scripting",
+    nombre: "Combo Excel + Scripting",
+    tituloHtml: 'MASTER EN <span style="color:#f6950a;">EXCEL Y SHEETS CON IA</span> + CURSO DE <span style="color:#f6950a;">SCRIPTING</span>',
+    precioMinimo: 99900,
+    preventa: {
+      hasta: new Date("2027-01-01T00:00:00-03:00"), // misma fecha que netlify/lib/cursos.js
+      precioMinimo: 69900,
+      fechaTexto: "1 de enero de 2027",
+      queEncontrara: "en la carpeta de Master en Excel y Sheets con IA las 255 clases del curso (las de Scripting ya están en la suya)",
+      queEncontraraEnPack: "en la carpeta de Master en Excel y Sheets con IA las 255 clases del curso"
+    },
+    incluye: ["excel", "scripting"]
+  },
   // COMBO: Master en JavaScript + Backend Avanzado en un solo pago. Sin carpeta propia:
   // comparte las carpetas de los cursos listados en "incluye" (mismo orden en el mail).
   "ruta-backend": {
@@ -251,13 +284,20 @@ var CURSOS = {
 // ============================================================
 //  PACKS "SUMÁ A TU COMPRA": varios cursos en un solo pago, armados por el visitante en la web.
 //  La MISMA regla que netlify/lib/cursos.js y src/data/packs.js:
-//    precio = suma de precios − AHORRO_POR_CURSO × (cursos − 1), nunca menos que el curso más caro,
-//    redondeado a un número terminado en 900.
+//    la escalera: los cursos sueltos se ordenan de mayor a menor precio, el primero va entero, cada uno de
+//    los siguientes tiene más descuento (ESCALERA_PACK) y del 5.º en adelante van de regalo. Si un curso vale
+//    menos que su descuento, también va de regalo. Redondeado a un número terminado en 900.
 //  Clave del pago: "pack-" + nombres cortos ordenados (ej. "pack-csharp-python"). Acá se generan
 //  todas las combinaciones válidas como entradas de CURSOS, con "incluye" para compartir carpetas.
 //  Unidades: cada curso grabado y la Ruta Backend como una sola; Scratch solo con Scripting y Python.
 // ============================================================
-var AHORRO_POR_CURSO = 30000;
+var ESCALERA_PACK = [30000, 50000, 70000];
+// Regla anterior a la escalera: $30.000 menos por cada curso, y un curso más barato que eso restaba del total.
+// Para los pagos hechos antes de esta fecha el mínimo es el menor de las dos reglas: así no se rechaza a quien
+// pagó el precio viejo mientras se publica la web, ni un pago anterior que se reprocese a mano.
+// Si la web se publica después de esta fecha, correrla.
+var AHORRO_REGLA_ANTERIOR = 30000;
+var PACKS_REGLA_ANTERIOR_HASTA = new Date("2026-11-30T00:00:00-03:00");
 var UNIDADES_PACK = [
   { key: "scratch", corto: "scratch" },
   { key: "scripting", corto: "scripting" },
@@ -266,7 +306,9 @@ var UNIDADES_PACK = [
   { key: "backend-avanzado", corto: "backend" },
   { key: "ruta-backend", corto: "ruta" },
   { key: "fullstack-csharp", corto: "csharp" },
-  { key: "redes", corto: "redes" }
+  { key: "redes", corto: "redes" },
+  { key: "excel", corto: "excel" },
+  { key: "excel-scripting", corto: "excelscripting" }
 ];
 var SOLO_CON_SCRATCH = ["scripting", "python"];
 
@@ -278,7 +320,9 @@ var SUMA_CON_REDES = {
   "fundamentos-backend": 20000,
   "backend-avanzado": 20000,
   "ruta-backend": 35000,
-  "fullstack-csharp": 20000
+  "fullstack-csharp": 20000,
+  "excel": 30000,
+  "excel-scripting": 30000 // Scripting no suma nada en la campaña
 };
 
 function setPackValido_(keys) {
@@ -286,6 +330,9 @@ function setPackValido_(keys) {
   var tieneRuta = keys.indexOf("ruta-backend") !== -1;
   if (tieneRuta && (keys.indexOf("fundamentos-backend") !== -1 || keys.indexOf("backend-avanzado") !== -1)) return false;
   if (keys.indexOf("fundamentos-backend") !== -1 && keys.indexOf("backend-avanzado") !== -1) return false; // juntos son la ruta
+  var tieneComboExcel = keys.indexOf("excel-scripting") !== -1;
+  if (tieneComboExcel && (keys.indexOf("excel") !== -1 || keys.indexOf("scripting") !== -1)) return false;
+  if (keys.indexOf("excel") !== -1 && keys.indexOf("scripting") !== -1) return false; // juntos son el combo
   if (keys.indexOf("scratch") !== -1) {
     for (var i = 0; i < keys.length; i++) {
       if (keys[i] !== "scratch" && SOLO_CON_SCRATCH.indexOf(keys[i]) === -1) return false;
@@ -308,15 +355,37 @@ function precioPack_(keys, fechaPago) {
     }
     return total;
   }
-  var suma = 0, maximo = 0;
-  for (var i = 0; i < keys.length; i++) {
-    var precio = precioMinimoUnidad_(CURSOS[keys[i]], fechaPago);
-    suma += precio;
-    if (precio > maximo) maximo = precio;
+  var minimo = precioEscalera_(keys, fechaPago);
+  var fecha = fechaPago instanceof Date && !isNaN(fechaPago.getTime()) ? fechaPago : new Date();
+  if (fecha.getTime() < PACKS_REGLA_ANTERIOR_HASTA.getTime()) {
+    minimo = Math.min(minimo, precioReglaAnterior_(keys, fechaPago));
   }
-  var conDescuento = suma - AHORRO_POR_CURSO * (keys.length - 1);
-  if (conDescuento <= maximo) return maximo;
-  return Math.max(maximo, redondear900_(conDescuento));
+  return minimo;
+}
+
+// La escalera se calcula sobre los cursos sueltos: la Ruta Backend y el combo de Excel se abren en sus dos cursos
+function precioEscalera_(keys, fechaPago) {
+  var precios = [];
+  keys.forEach(function (k) {
+    (CURSOS[k].incluye || [k]).forEach(function (c) {
+      precios.push(precioMinimoUnidad_(CURSOS[c], fechaPago));
+    });
+  });
+  precios.sort(function (a, b) { return b - a; });
+  var total = precios[0];
+  for (var i = 1; i < precios.length; i++) {
+    var descuento = ESCALERA_PACK[i - 1];
+    if (descuento !== undefined) total += Math.max(precios[i] - descuento, 0);
+  }
+  return Math.max(precios[0], redondear900_(total));
+}
+
+function precioReglaAnterior_(keys, fechaPago) {
+  var precios = keys.map(function (k) { return precioMinimoUnidad_(CURSOS[k], fechaPago); });
+  precios.sort(function (a, b) { return b - a; });
+  var total = precios[0];
+  for (var i = 1; i < precios.length; i++) total += precios[i] - AHORRO_REGLA_ANTERIOR;
+  return Math.max(precios[0], redondear900_(total));
 }
 
 // Genera una entrada de CURSOS por cada combinación válida (2 a 7 unidades)
@@ -340,21 +409,28 @@ function generarPacks_() {
   }
 }
 
-// Si el pack incluye un curso en preventa (Scratch o Redes), el mail avisa cuándo aparecen sus clases.
-// Solo da la fecha y el texto: el mínimo de un pack lo calcula siempre precioPack_.
+// Si el pack incluye cursos en preventa, el mail avisa cuándo aparecen sus clases. Pueden ser varios, con fechas
+// distintas (Excel y Redes): solo cuentan los que siguen en preventa, de la fecha más cercana a la más lejana.
+// Solo da las fechas y el texto: el mínimo de un pack lo calcula siempre precioPack_.
 function preventaDePack_(keys) {
-  for (var i = 0; i < keys.length; i++) {
-    var p = CURSOS[keys[i]].preventa;
-    if (p) {
-      return {
-        hasta: p.hasta,
-        fechaTexto: p.fechaTexto,
-        queEncontrara: "en la carpeta de " + CURSOS[keys[i]].nombre + " " + (p.queEncontrara || "las clases") +
-          " (los demás cursos ya están en sus carpetas)"
-      };
-    }
-  }
-  return undefined;
+  var ahora = new Date().getTime();
+  var activas = [];
+  keys.forEach(function (k) {
+    var p = CURSOS[k].preventa;
+    if (p && p.hasta.getTime() > ahora) activas.push({ preventa: p, nombre: CURSOS[k].nombre });
+  });
+  if (!activas.length) return undefined;
+  activas.sort(function (a, b) { return a.preventa.hasta.getTime() - b.preventa.hasta.getTime(); });
+  var textos = activas.map(function (a, i) {
+    // Un combo en preventa ya nombra la carpeta que espera (queEncontraraEnPack)
+    var texto = a.preventa.queEncontraraEnPack || "en la carpeta de " + a.nombre + " " + (a.preventa.queEncontrara || "las clases");
+    return i === 0 ? texto : "y el " + a.preventa.fechaTexto + ", " + texto;
+  });
+  return {
+    hasta: activas[activas.length - 1].preventa.hasta,
+    fechaTexto: activas[0].preventa.fechaTexto,
+    queEncontrara: textos.join("; ") + " (los demás cursos ya están en sus carpetas)"
+  };
 }
 generarPacks_();
 
@@ -1141,6 +1217,10 @@ function avisarAperturaScratch() {
 
 function avisarAperturaRedes() {
   avisarApertura_("redes");
+}
+
+function avisarAperturaExcel() {
+  avisarApertura_("excel");
 }
 
 function avisarApertura_(cursoKey) {

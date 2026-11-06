@@ -217,6 +217,10 @@ function AppContent() {
           <Route path="/redes/gracias" element={<GraciasCurso cursoKey="redes" />} />
           {/* Guía gratis de los clips de Redes: las descripciones de los Reels, Shorts y TikTok apuntan acá */}
           <Route path="/redes" element={<GuiaRedes />} />
+          {/* Master en Excel y Sheets con IA en preventa: su página también vende el combo con Scripting */}
+          <Route path="/excel/inscripcion" element={<CursoGrabado cursoKey="excel" />} />
+          <Route path="/excel/gracias" element={<GraciasCurso cursoKey="excel" />} />
+          <Route path="/excel" element={<Navigate to="/excel/inscripcion" replace />} />
           <Route path="/el-develop" element={<ElDevelop />} />
           <Route path="/sentryx" element={<Sentryx />} />
           <Route path="/eventbox" element={<EventBox />} />

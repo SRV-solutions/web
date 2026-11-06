@@ -81,6 +81,22 @@ así que nada se sube ni se mergea sin el OK de Marcos.
       («Nueva versión»): con el script de compras viejo, un pago de Redes queda como SIN_CURSO sin avisar a nadie.
       Después corre `avisarPreventaRedes()` (script de Fundamentos) para avisarle a la lista de espera; el 27/01
       sube las clases y corre `avisarAperturaRedes()`, y el 3/02 sube los simulacros.
+- [ ] **Preventa del Master en Excel y Sheets con IA** (rama `curso-excel`, 6/11/2026): 255 clases en 32 módulos y
+      9 niveles (`src/data/temarioExcel.js`), más de 80 horas prometidas. Página `/excel/inscripcion`, preventa a
+      $59.900 hasta el 1/01/2027 (después $89.900), cuando se habilitan todas las clases. Combo con Scripting:
+      $69.900 en preventa y $99.900 después; se elige con el selector de la página de Excel o sumando los dos desde
+      cualquier página (`normalizarSet`). Entra en «Sumá a tu compra» de los demás cursos, menos Redes durante su
+      campaña. Publicado el 6/11/2026: Marcos creó la carpeta y cargó su ID directo en el Apps Script, así que falta
+      copiarlo a `appscript-cursos.gs` (sigue `FOLDER_PENDIENTE`) antes de volver a pegar ese archivo. El 1/01/2027
+      sube las clases y corre `avisarAperturaExcel()`. La última clase recomienda Scripting.
+- [ ] **Escalera de «Sumá a tu compra» y «Llevate todos»** (rama `curso-excel`, 6/11/2026, pedido de Marcos: que
+      sumar cursos se sienta muy conveniente): los cursos se ordenan de mayor a menor precio, el primero va entero, el
+      2.º tiene $30.000 de descuento, el 3.º $50.000, el 4.º $70.000 y del 5.º en adelante van de regalo
+      (`ESCALERA_PACK`, en las tres capas). Sumar un curso nunca baja el total. Excel entra en la campaña de Redes a
+      +$30.000. Los packs de dos cursos no cambian. La página muestra escalones, medidor de ahorro, sugerencia del
+      próximo curso y botón «Llevate todos» (`CURSOS_TODO`). «Uno por uno» es la suma de los precios reales de hoy. El
+      webhook acepta el menor de la regla vieja y la nueva en los pagos previos a `PACKS_REGLA_ANTERIOR_HASTA`
+      (30/11/2026): si la web se publica después, correr esa fecha. Publicado en `PRECIOS_ESPECIALES` y `PROMOCIONES`.
 - [x] `/redes/inscripcion` (el link «Formate como DevOps en AWS» de Linktree) redirigía a la lista de espera;
       con la preventa es la página del curso.
 - [x] Guía gratis «Redes y nube desde cero» en `/redes` (1/11/2026): las descripciones de los 12 clips de Redes

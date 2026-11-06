@@ -14,6 +14,10 @@ const SCRATCH_PREVENTA_HASTA = Date.parse("2026-11-18T00:00:00-03:00");
 // Misma fecha que en src/data/cursosGrabados.js y en appscript-cursos.gs.
 const REDES_PREVENTA_HASTA = Date.parse("2027-01-27T00:00:00-03:00");
 
+// Preventa del Master en Excel y Sheets con IA: igual que Redes, hasta el 1/01/2027 (ese día se habilitan las
+// clases). Misma fecha que en src/data/cursosGrabados.js y en appscript-cursos.gs.
+const EXCEL_PREVENTA_HASTA = Date.parse("2027-01-01T00:00:00-03:00");
+
 // CYBER SRV: del 2 al 4 de noviembre de 2026 todo al 50% de su precio de lista (el Intensivo Full
 // Stack en vivo no participa). Mismas fechas en src/data/cursosGrabados.js (precio que se muestra),
 // appscript-cursos.gs (mínimo que acepta el webhook) y PROMOCIONES en src/data/legal.js.
@@ -88,6 +92,28 @@ export const CURSOS = {
     precioPreventa: 62900,
     preventaHasta: REDES_PREVENTA_HASTA,
     ruta: "redes",
+  },
+  // Curso grabado en preventa. Durante la campaña de Redes no se combina con Redes (ver setValido).
+  excel: {
+    itemId: "curso-excel-sheets",
+    titulo: "Master en Excel y Sheets con IA Desde Cero - WEARESRV",
+    contentName: "Infoproducto Excel y Sheets con IA",
+    precio: 89900,
+    precioPreventa: 59900,
+    preventaHasta: EXCEL_PREVENTA_HASTA,
+    ruta: "excel",
+  },
+  // Combo: se elige en la página de Excel o al sumar Excel y Scripting desde cualquier página (normalizarSet).
+  // Scripting llega al instante y las clases de Excel se habilitan en la fecha de la preventa.
+  "excel-scripting": {
+    itemId: "combo-excel-scripting",
+    titulo: "Combo Master en Excel y Sheets con IA + Curso de Scripting con IA - WEARESRV",
+    contentName: "Combo Excel + Scripting",
+    precio: 99900,
+    precioPreventa: 69900,
+    preventaHasta: EXCEL_PREVENTA_HASTA,
+    incluye: ["excel", "scripting"],
+    ruta: "excel",
   },
   // Combo: Master en JavaScript + Backend Avanzado en un solo pago.
   // El Apps Script comparte las dos carpetas de Drive (clave "incluye" en appscript-cursos.gs).
@@ -257,11 +283,12 @@ export function getCurso(key) {
 // ==========================================
 // PACKS "SUMÁ A TU COMPRA": varios cursos en un pago, armados por el visitante.
 // La MISMA regla que src/data/packs.js (lo que se muestra) y appscript-cursos.gs (mínimo aceptado):
-//   precio = suma de precios − AHORRO_POR_CURSO × (cursos − 1), nunca menos que el curso más caro,
-//   redondeado a un número terminado en 900.
+//   la escalera: los cursos sueltos se ordenan de mayor a menor precio, el primero va entero, cada uno de los
+//   siguientes tiene más descuento (ESCALERA_PACK) y del 5.º en adelante van de regalo. Si un curso vale menos
+//   que su descuento, también va de regalo. Redondeado a un número terminado en 900.
 // Clave: "pack-" + nombres cortos ordenados alfabéticamente (ej. "pack-csharp-python").
 // ==========================================
-export const AHORRO_POR_CURSO = 30000;
+export const ESCALERA_PACK = [30000, 50000, 70000];
 
 // Unidades combinables: cursos grabados y la Ruta Backend como una sola unidad
 const UNIDADES_PACK = [
@@ -273,6 +300,8 @@ const UNIDADES_PACK = [
   { key: "ruta-backend", corto: "ruta" },
   { key: "fullstack-csharp", corto: "csharp" },
   { key: "redes", corto: "redes" },
+  { key: "excel", corto: "excel" },
+  { key: "excel-scripting", corto: "excelscripting" },
 ];
 const SOLO_CON_SCRATCH = ["scripting", "python"];
 
@@ -285,6 +314,8 @@ const SUMA_CON_REDES = {
   "backend-avanzado": 20000,
   "ruta-backend": 35000,
   "fullstack-csharp": 20000,
+  excel: 30000,
+  "excel-scripting": 30000, // Scripting no suma nada en la campaña
 };
 const enCampaniaRedes = () => Date.now() < REDES_PREVENTA_HASTA;
 const unidadPorKey = Object.fromEntries(UNIDADES_PACK.map((u) => [u.key, u]));
@@ -296,6 +327,11 @@ export function normalizarSet(keys) {
   if (set.includes("ruta-backend") || (set.includes("fundamentos-backend") && set.includes("backend-avanzado"))) {
     set = set.filter((k) => k !== "fundamentos-backend" && k !== "backend-avanzado");
     if (!set.includes("ruta-backend")) set.push("ruta-backend");
+  }
+  // Excel + Scripting se cobran como su combo: como pack, Scripting saldría de regalo
+  if (set.includes("excel-scripting") || (set.includes("excel") && set.includes("scripting"))) {
+    set = set.filter((k) => k !== "excel" && k !== "scripting");
+    if (!set.includes("excel-scripting")) set.push("excel-scripting");
   }
   return set.sort((a, b) => ordenUnidad(a) - ordenUnidad(b));
 }
@@ -329,15 +365,16 @@ export function precioPack(keys) {
   if (set.includes("redes") && enCampaniaRedes()) {
     return set.reduce((t, k) => t + (k === "redes" ? getCurso("redes").precio : SUMA_CON_REDES[k]), 0);
   }
-  const precios = set.map((k) => getCurso(k).precio);
-  const suma = precios.reduce((t, p) => t + p, 0);
-  const maximo = Math.max(...precios);
-  const conDescuento = suma - AHORRO_POR_CURSO * (set.length - 1);
-  if (conDescuento <= maximo) return maximo;
-  return Math.max(maximo, redondear900(conDescuento));
+  // Cursos sueltos: la Ruta Backend y el combo de Excel se abren en sus dos cursos
+  const [maximo, ...resto] = set
+    .flatMap((k) => CURSOS[k].incluye || [k])
+    .map((k) => getCurso(k).precio)
+    .sort((a, b) => b - a);
+  const total = resto.reduce((t, p, i) => t + (i < ESCALERA_PACK.length ? Math.max(p - ESCALERA_PACK[i], 0) : 0), maximo);
+  return Math.max(maximo, redondear900(total));
 }
 
-const NOMBRE_EN_PACK = { scripting: "Scripting con IA", python: "Python con IA" };
+const NOMBRE_EN_PACK = { scripting: "Scripting con IA", python: "Python con IA", "excel-scripting": "Excel + Scripting con IA" };
 
 // Producto que se cobra por un pack: mismo formato que una entrada de CURSOS
 export function productoPack(clave) {

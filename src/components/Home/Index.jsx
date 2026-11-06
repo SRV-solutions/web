@@ -3,7 +3,7 @@ import { useLocation, Link } from "react-router-dom";
 import styles from "./style.module.css";
 import Seo, { SITE_URL } from "../Seo";
 import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, textoPreventa, linkInscripcion } from "../../data/cursosGrabados";
-import { infoPack, AHORRO_POR_CURSO } from "../../data/packs";
+import { linkPackTodo, packTodo } from "../../data/packs";
 import { TESTIMONIOS, ENCUESTA, promedioEncuesta } from "../../data/testimonios";
 import { LuQuote, LuStar } from "react-icons/lu";
 
@@ -21,8 +21,8 @@ const ETIQUETAS = {
 
 // Combo de los dos cursos de backend (no va en RUTA para no duplicar clases ni precios)
 const COMBO = CURSOS_GRABADOS["ruta-backend"];
-// Pack Completo (Scripting + Python + Ruta Backend): se compra desde la página de Python con los cursos ya sumados
-const PACK = infoPack(["scripting", "python", "ruta-backend"]);
+// Todos los cursos en un pago: el link lleva a la página que los deja tildados
+const TODO = packTodo();
 const TOTAL_CLASES = RUTA.reduce((total, key) => total + CURSOS_GRABADOS[key].clases, 0);
 const PRECIO_DESDE = Math.min(...RUTA.map((key) => CURSOS_GRABADOS[key].precio));
 
@@ -41,8 +41,9 @@ const PASOS = [
 const FAQ = [
   { q: "Nunca programé, ¿por dónde empiezo?", a: "Por el Curso de Scripting con IA: arranca desde cero, cuesta $15.000 y te da la base de lógica para después seguir con Python o Backend." },
   { q: "¿Enseñan a usar IA?", a: "Sí. El Curso de Scripting con IA y el Master en Python con IA incluyen un módulo de 8 clases para automatizar con IA (si los compraste antes, ya lo tenés en tu carpeta). En Fundamentos de IA tenés 4 videos y sus guías gratis, y estamos preparando el curso 'IA para el trabajo': anotate en la lista de espera desde la página de próximos cursos." },
-  { q: "¿Las clases son en vivo o grabadas?", a: "El Curso de Scripting con IA, el Master en Python con IA, Master en JavaScript, Backend Avanzado, Fullstack con C#, Scratch para Chicos y Redes, Linux y AWS son grabados, con acceso de por vida. El Intensivo Full Stack es una cursada en vivo." },
+  { q: "¿Las clases son en vivo o grabadas?", a: "El Curso de Scripting con IA, el Master en Python con IA, Master en JavaScript, Backend Avanzado, Fullstack con C#, Scratch para Chicos, Redes, Linux y AWS y Master en Excel y Sheets con IA son grabados, con acceso de por vida. El Intensivo Full Stack es una cursada en vivo." },
   { q: "¿Tienen un curso para certificarme en AWS?", a: `Sí: Redes, Linux y AWS, un curso grabado para rendir la certificación AWS Certified Cloud Practitioner (CLF-C02).${estaEnPreventa(CURSOS_GRABADOS.redes) ? ` Está en preventa hasta el ${CURSOS_GRABADOS.redes.preventa.fechaTexto}, cuando se habilitan las clases.` : ""} El examen lo toma y lo cobra AWS, aparte del curso.` },
+  { q: "¿Tienen un curso de Excel?", a: `Sí: el Master en Excel y Sheets con IA, ${CURSOS_GRABADOS.excel.clases} clases grabadas para ir de cero a tablas dinámicas, Power Query, VBA y Google Apps Script, sin saber programar.${estaEnPreventa(CURSOS_GRABADOS.excel) ? ` Está en preventa hasta el ${CURSOS_GRABADOS.excel.preventa.fechaTexto}, cuando se habilitan las clases.` : ""} También se vende en combo con el Curso de Scripting con IA.` },
   { q: "¿Tienen algo para chicos?", a: "Sí: Scratch para Chicos, un curso grabado de 14 clases para que chicos de 8 a 13 años creen una historia animada y su primer videojuego. Está en preventa a $10.000 hasta el 18 de noviembre: el acceso a la carpeta llega al instante y ese día se habilitan las clases." },
   { q: "¿Cómo recibo el curso después de pagar?", a: "Automáticamente: apenas Mercado Pago aprueba el pago, te llega un mail con el acceso a la carpeta del curso en Google Drive." },
   { q: "¿Qué es E-stellarium?", a: "Es nuestra plataforma educativa. Está disponible desde el 20 de noviembre de 2026 y el acceso es inmediato y gratis para todos los que ya compraron un curso, sin pagar nada extra; los cursos que se compren de ahora en más también lo incluyen. Cómo entrar lo avisamos por mail y en nuestras redes." },
@@ -234,13 +235,13 @@ export default function Home() {
           </span>
         </Link>
 
-        {PACK && (
-          <Link to="/python/inscripcion?sumar=scripting,ruta" className={styles.comboBanner}>
+        {TODO && (
+          <Link to={linkPackTodo()} className={styles.comboBanner}>
             <span className={styles.kidsIcon}>🚀</span>
             <span>
-              <strong>Armá tu pack y ahorrá {formatearPrecio(AHORRO_POR_CURSO)} por cada curso que sumes.</strong>{" "}
-              Por ejemplo, {PACK.nombre} ({PACK.clases} clases) por {formatearPrecio(PACK.precio)}: ahorrás{" "}
-              {formatearPrecio(PACK.ahorro)} →
+              <strong>Cuantos más cursos sumás, menos pagás.</strong> Llevate los {TODO.cantidadCursos} cursos ({TODO.clases} clases) por{" "}
+              {formatearPrecio(TODO.precio)}: uno por uno saldrían {formatearPrecio(TODO.precioSeparado)}. Ahorrás{" "}
+              {formatearPrecio(TODO.ahorro)} →
             </span>
           </Link>
         )}
@@ -261,6 +262,16 @@ export default function Home() {
             <strong>Nuevo: Redes, Linux y AWS.</strong> Preparate para rendir la certificación AWS Cloud Practitioner.{" "}
             {estaEnPreventa(CURSOS_GRABADOS.redes)
               ? `${textoPreventa(CURSOS_GRABADOS.redes)} →`
+              : "Ver el curso →"}
+          </span>
+        </Link>
+
+        <Link to="/excel/inscripcion" className={styles.kidsBanner}>
+          <span className={styles.kidsIcon}>📊</span>
+          <span>
+            <strong>Nuevo: Master en Excel y Sheets con IA.</strong> De tu primera fórmula a Power Query, VBA y Apps Script.{" "}
+            {estaEnPreventa(CURSOS_GRABADOS.excel)
+              ? `${textoPreventa(CURSOS_GRABADOS.excel)} →`
               : "Ver el curso →"}
           </span>
         </Link>

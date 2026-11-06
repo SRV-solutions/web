@@ -59,6 +59,16 @@ const PROXIMOS = [
     // Ya se vende en preventa: la tarjeta lleva a su página y no entra en la lista de espera
     curso: "redes",
   },
+  {
+    key: "excel",
+    nombre: "Master en Excel y Sheets con IA",
+    tag: "Preventa",
+    salida: "Las clases se habilitan el 1 de enero de 2027",
+    texto:
+      "Excel y Google Sheets desde cero hasta Power Query, tableros, VBA y Apps Script, con IA y casos reales de Argentina: 255 clases y más de 80 horas de video.",
+    para: "Para quienes trabajan con planillas, buscan empleo en administración o tienen una pyme.",
+    curso: "excel",
+  },
 ];
 
 // Cursos que todavía se anotan en la lista de espera (los que ya están en preventa tienen su página)
@@ -120,8 +130,8 @@ export default function ProximosCursos() {
   return (
     <section className={styles.page}>
       <Seo
-        title="Próximos cursos: IA para el trabajo, SQL, IA para docentes y AWS | WEARESRV"
-        description="Anotate en la lista de espera de los próximos cursos de WEARESRV: IA para el trabajo, SQL desde cero e IA para docentes. Y reservá en preventa Redes, Linux y AWS, para rendir AWS Cloud Practitioner."
+        title="Próximos cursos: IA para el trabajo, SQL, IA para docentes, AWS y Excel | WEARESRV"
+        description="Anotate en la lista de espera de los próximos cursos de WEARESRV: IA para el trabajo, SQL desde cero e IA para docentes. Y reservá en preventa Redes, Linux y AWS, y el Master en Excel y Sheets con IA."
         path="/proximos-cursos"
       />
       <div className={styles.inner}>

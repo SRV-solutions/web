@@ -59,6 +59,11 @@ const menuData = [
         isNew: true
       },
       {
+        label: "Excel y Sheets con IA · Preventa",
+        to: "/excel/inscripcion",
+        isNew: true
+      },
+      {
         label: "Full Stack",
         to: "/full-stack/inscripcion",
         isNew: true

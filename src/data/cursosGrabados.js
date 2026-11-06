@@ -1,3 +1,5 @@
+import { NIVELES_EXCEL, MODULOS_EXCEL, CLASES_EXCEL } from "./temarioExcel.js";
+
 // Datos visuales de los cursos grabados con pago por Mercado Pago.
 // El precio que se cobra realmente se define en netlify/lib/cursos.js
 // (acá solo se muestra en pantalla y se usa para Meta Pixel; mantenerlos iguales).
@@ -16,6 +18,13 @@ const SCRATCH_ACCESO = new Date("2026-11-18T00:00:00-03:00");
 // clases y el 3/02/2027 los dos simulacros. Durante el Cyber vale la mitad de su precio de lista, como los demás.
 // La misma fecha vive en netlify/lib/cursos.js y en appscript-cursos.gs.
 const REDES_ACCESO = new Date("2027-01-27T00:00:00-03:00");
+
+// Preventa del Master en Excel y Sheets con IA: igual que Redes. Hasta esta fecha se vende a precio de preventa,
+// solo o en combo con Scripting, y ese día se habilitan las 255 clases. Decidido por Marcos el 6/11/2026.
+// La misma fecha vive en netlify/lib/cursos.js y en appscript-cursos.gs, y su texto en src/data/legal.js.
+const EXCEL_ACCESO = new Date("2027-01-01T00:00:00-03:00");
+const EXCEL_FECHA_TEXTO = "1 de enero de 2027";
+const EXCEL_EN_PREVENTA = Date.now() < EXCEL_ACCESO.getTime();
 
 // Clases grabadas del Curso Fullstack con C# (12 módulos)
 const CLASES_FULLSTACK = 30;
@@ -769,6 +778,124 @@ export const CURSOS_GRABADOS = {
       },
     ],
   },
+
+  // Master en Excel y Sheets con IA: curso grabado en preventa hasta el 1/01/2027 (ver EXCEL_ACCESO). Es para
+  // gente que no programa: por eso lleva requisitos propios y las secciones de BloquesCurso.jsx.
+  // Lo que dice sobre versiones y planes se revisó en las páginas de Microsoft y Google en noviembre de 2026.
+  excel: {
+    key: "excel",
+    itemId: "curso-excel-sheets", // mismo itemId que netlify/lib/cursos.js (content_ids de Meta)
+    ruta: "excel",
+    contentName: "Infoproducto Excel y Sheets con IA",
+    tituloInicio: "Master en",
+    tituloDestacado: "Excel y Sheets con IA",
+    tituloFin: "Desde Cero",
+    descripcion:
+      `Todo Excel y Google Sheets en un solo curso: ${CLASES_EXCEL} clases y más de 80 horas de video para ir de tu primera fórmula a Power Query, tablas dinámicas, tableros, macros, VBA y Google Apps Script, con IA para trabajar más rápido y casos reales de Argentina.`,
+    precio: EXCEL_EN_PREVENTA ? 59900 : 89900,
+    precioRegular: 89900,
+    preventa: { hasta: EXCEL_ACCESO, fechaTexto: EXCEL_FECHA_TEXTO, precio: 59900 },
+    clases: CLASES_EXCEL,
+    beneficios: [
+      "Acceso vitalicio al material en Google Drive",
+      `${CLASES_EXCEL} clases y más de 80 horas de video, de cero a nivel experto`,
+      "Excel, Google Sheets, Apps Script e IA en un solo curso",
+      "Archivos de práctica y 9 proyectos para mostrar",
+      "Casos argentinos: IVA con comprobantes de ARCA, sueldos, aguinaldo, bancos y Mercado Pago",
+      "Dos simulacros orientados al examen Microsoft MO-210 (el examen se paga aparte)",
+    ],
+    subTituloDesc:
+      "Nueve niveles en orden: cada uno se apoya en el anterior y podés saltear lo que ya sabés. Tocá un nivel para ver sus módulos.",
+    gancho: "De tu primera fórmula a automatizar tus planillas con Apps Script e IA.",
+    metaDescripcion:
+      `Master en Excel y Google Sheets con IA desde cero: ${CLASES_EXCEL} clases, más de 80 horas, Power Query, VBA y Apps Script. Preventa a $59.900 hasta el ${EXCEL_FECHA_TEXTO}.`,
+    nivel: "Desde cero · Hasta nivel experto",
+    requisitos:
+      "No. El curso arranca desde cero: ni siquiera hace falta haber abierto Excel. En VBA y Apps Script te enseñamos la lógica que necesitás. Para los primeros niveles alcanza con Excel para la web o Google Sheets, que son gratis; para Power Query, Power Pivot, macros y VBA necesitás Excel de escritorio. En esta página tenés el detalle por nivel.",
+    paraQuien: [
+      "Trabajás con planillas y perdés horas en tareas que deberían salir solas",
+      "Arrancás de cero o sabés lo básico y querés llegar a nivel avanzado sin comprar un curso por nivel",
+      "Buscás trabajo en administración, ventas, recursos humanos, finanzas o logística",
+      "Tenés una pyme y querés controlar ventas, stock, caja y cobranzas",
+      "Usás Google Sheets en tu trabajo y querés sacarle mucho más provecho",
+    ],
+    resultados: [
+      "Armar planillas prolijas y confiables, con fórmulas, tablas y validaciones",
+      "Cruzar bases con BUSCARX, resumir miles de filas con tablas dinámicas y presentar tableros",
+      "Limpiar datos de ARCA, bancos y Mercado Pago con Power Query y actualizarlos con un clic",
+      "Automatizar Excel con macros y VBA, y Google Sheets con Apps Script",
+      "Usar IA para escribir fórmulas y analizar datos, sabiendo verificar lo que responde",
+    ],
+    // Secciones propias de este curso: las dibuja src/components/Courses/BloquesCurso.jsx
+    cifras: [
+      { valor: String(CLASES_EXCEL), rotulo: "clases" },
+      { valor: "+80", rotulo: "horas de video" },
+      { valor: String(MODULOS_EXCEL.length), rotulo: "módulos" },
+      { valor: "9", rotulo: "proyectos" },
+    ],
+    dato: {
+      texto:
+        "Excel es la cuarta habilidad técnica más pedida en ZonaJobs: aparece en 3.565 de los 18.959 avisos relevados entre marzo y julio de 2026.",
+      fuente: "Informe de la Cámara Argentina para la Formación Profesional, en Forbes Argentina",
+      url: "https://www.forbesargentina.com/liderazgo/que-trabajos-buscan-hoy-empresas-argentinas-cuales-son-habilidades-mas-requeridas-n95419/amp",
+    },
+    pilares: [
+      { titulo: "Excel", texto: "Fórmulas, tablas dinámicas, gráficos, Power Query, Power Pivot, tableros, macros y VBA." },
+      { titulo: "Google Sheets", texto: "QUERY, IMPORTRANGE, trabajo en equipo, Looker Studio y una app sin código con AppSheet." },
+      { titulo: "Apps Script", texto: "Mails, presupuestos en PDF, avisos de vencimientos y cotización del dólar, todo desde tu planilla." },
+      { titulo: "IA", texto: "Pedir y explicar fórmulas con un chat gratis, y qué aportan Copilot y Gemini." },
+    ],
+    niveles: NIVELES_EXCEL,
+    novedades: {
+      titulo: "Actualizado a noviembre de 2026",
+      intro: "El temario ya incluye lo último que sumaron Microsoft y Google:",
+      items: [
+        { titulo: "Copilot en Excel", texto: "Agent Mode, la habilidad que encuentra y corrige datos sucios, y cómo crear habilidades propias." },
+        { titulo: "Gemini en Sheets", texto: "Armar o editar una planilla entera con un pedido en español, corregir fórmulas y completar columnas citando sus fuentes." },
+        { titulo: "Funciones modernas", texto: "BUSCARX, FILTRAR, LET, LAMBDA, AGRUPARPOR, PIVOTARPOR y las funciones REGEX." },
+        { titulo: "Apps Script", texto: "Conectar tus planillas con una IA desde el código, con las opciones que Google sumó en 2026." },
+      ],
+      nota:
+        "Copilot y Gemini necesitan planes pagos de Microsoft o Google, y cambian seguido. No hace falta pagarlos para hacer el curso: esas clases sirven como demostración y el resto de la IA se trabaja con un chat gratis.",
+    },
+    requisitosPorNivel: [
+      { nivel: "Niveles 1 y 2", necesitas: "Excel para la web, gratis con una cuenta de Microsoft, o Google Sheets: alcanzan para practicar casi todo." },
+      { nivel: "Nivel 3", necesitas: "BUSCARX y FILTRAR piden Excel 2021, 2024 o Microsoft 365. LAMBDA, Excel 2024 o Microsoft 365. AGRUPARPOR y PIVOTARPOR, Microsoft 365. También vemos cómo resolverlo en versiones anteriores." },
+      { nivel: "Nivel 4", necesitas: "Power Query viene en Excel para Windows desde 2016 y en Microsoft 365 para Mac, con menos orígenes de datos. Power Pivot y Power BI Desktop necesitan Windows." },
+      { nivel: "Nivel 5", necesitas: "Las macros y VBA necesitan Excel de escritorio: no corren en el navegador. Office Scripts y Python en Excel dependen del plan de Microsoft y se ven como demostración." },
+      { nivel: "Niveles 6 y 7", necesitas: "Una cuenta de Google gratis." },
+      { nivel: "Nivel 8", necesitas: "Un chat de IA gratis. Copilot y Gemini dentro de la planilla necesitan un plan pago y se ven como demostración." },
+    ],
+    siguientePaso: {
+      titulo: "Y cuando termines, seguí con Scripting",
+      texto:
+        "En este curso aprendés Apps Script con la lógica justa para automatizar tus planillas. Si después querés programar de verdad, el Curso de Scripting con IA sigue desde ahí: JavaScript, Python, APIs, bots y agentes con n8n.",
+      curso: "scripting",
+    },
+    preguntasExtra: [
+      {
+        q: "¿Qué incluye el curso y cuándo está?",
+        a: `El ${EXCEL_FECHA_TEXTO} se habilitan en tu carpeta de Google Drive las ${CLASES_EXCEL} clases, con más de 80 horas de video, los archivos de práctica y los 9 proyectos. Hasta ese día la carpeta está vacía, y es normal.`,
+      },
+      {
+        q: "¿Por qué Excel y Google Sheets en el mismo curso?",
+        a: "Porque los avisos piden Excel, pero en muchos trabajos se usa Sheets, y la mayoría de las funciones se usan igual. Aprendés cada tema en Excel, te mostramos las diferencias importantes con Sheets y hay un nivel entero con lo propio de Sheets.",
+      },
+      {
+        q: "¿Tengo que pagar Copilot o Gemini?",
+        a: "No. El curso se puede hacer completo sin esos planes: la IA se trabaja con un chat gratis, y las clases de Copilot y Gemini te muestran qué agregan para que decidas si te conviene pagarlos.",
+      },
+      {
+        q: "¿Qué diferencia hay con el Curso de Scripting con IA?",
+        a: "Este curso enseña planillas, y Apps Script aplicado a ellas. Scripting enseña a programar: JavaScript, Python, APIs, bots y agentes con n8n. Se complementan y podés llevarlos en combo.",
+      },
+      {
+        q: "¿El curso incluye una certificación de Microsoft?",
+        a: "No. Incluye dos simulacros orientados al examen Microsoft Office Specialist: Excel Associate (MO-210) y te explicamos cómo anotarte. El examen se paga aparte, su precio depende del país y se puede rendir en español. Microsoft recomienda llegar con unas 150 horas de formación y práctica. WEARESRV no es un centro oficial ni está afiliado a Microsoft ni a Google. Además, al terminar podés rendir nuestro examen final en vivo y obtener el certificado verificable de WEARESRV, sin costo extra.",
+      },
+    ],
+    modulos: MODULOS_EXCEL,
+  },
 };
 
 export const formatearPrecio = (valor) => `$${valor.toLocaleString("es-AR")}`;
@@ -822,6 +949,91 @@ CURSOS_GRABADOS["ruta-backend"] = {
   ],
 };
 
+// ---------- COMBO: Master en Excel y Sheets con IA + Curso de Scripting con IA ----------
+// Se elige con el selector de la página de Excel (/excel/inscripcion) y aparece también al sumar los dos cursos
+// desde cualquier otra página (normalizarSet en src/data/packs.js): así nunca salen más baratos como pack.
+// La página de Scripting no cambia: por eso selectorEn deja el selector solo en Excel.
+// El precio real vive en netlify/lib/cursos.js y el mínimo en appscript-cursos.gs: mantenerlos iguales.
+const EXCEL = CURSOS_GRABADOS.excel;
+const SCRIPTING = CURSOS_GRABADOS.scripting;
+const AHORRO_COMBO_EXCEL = 5000;
+
+CURSOS_GRABADOS["excel-scripting"] = {
+  key: "excel-scripting",
+  itemId: "combo-excel-scripting",
+  ruta: "excel",
+  contentName: "Combo Excel + Scripting",
+  tituloInicio: "Combo",
+  tituloDestacado: "Excel + Scripting",
+  tituloFin: "con IA",
+  combo: ["excel", "scripting"],
+  selectorEn: ["excel"],
+  nombreSelector: "Combo · Excel + Scripting",
+  bannerTitulo: "¿Querés automatizar de verdad? Llevá también Scripting.",
+  descripcion: `Los dos cursos en un solo pago: Master en Excel y Sheets con IA (${EXCEL.clases} clases) + Curso de Scripting con IA (${SCRIPTING.clases} clases). Primero dominás las planillas y después aprendés a programar para automatizar todo lo demás.`,
+  precio: EXCEL_EN_PREVENTA ? 69900 : 99900,
+  // En preventa, lo que costará desde el 1/01/2027; después, la suma de los dos cursos
+  precioRegular: EXCEL_EN_PREVENTA ? 99900 : EXCEL.precioRegular + SCRIPTING.precio,
+  preventa: {
+    hasta: EXCEL_ACCESO,
+    fechaTexto: EXCEL_FECHA_TEXTO,
+    precio: 69900,
+    // Textos propios: Scripting ya está disponible, solo Excel espera hasta la fecha
+    paso: {
+      titulo: "Te llegan hoy los dos accesos",
+      texto: `Apenas se aprueba el pago recibís un solo correo con los links a las dos carpetas. Scripting ya está completo: podés arrancar hoy. Las clases de Excel se habilitan el ${EXCEL_FECHA_TEXTO}.`,
+    },
+    faqPreventa: `Las clases de Excel se habilitan el ${EXCEL_FECHA_TEXTO}. Si comprás el combo antes, lo pagás $69.900 en lugar de $99.900. El Curso de Scripting con IA ya está completo y lo podés empezar hoy.`,
+    faqRecibo: `Apenas Mercado Pago aprueba el pago, te llega un correo con el acceso a las dos carpetas de Google Drive, al mail con el que pagaste. La de Scripting ya tiene todas las clases y la de Excel se completa el ${EXCEL_FECHA_TEXTO}.`,
+    textoFinal: `Desde el ${EXCEL_FECHA_TEXTO} el combo pasa a $99.900. Ese día se habilitan las clases de Excel; las de Scripting ya están.`,
+  },
+  faqCombo: [
+    {
+      q: "¿Cómo recibo los dos cursos?",
+      a: "En un solo mail, apenas se aprueba el pago, con los links a las dos carpetas de Google Drive. Recomendamos hacer primero Excel y después Scripting, pero podés empezar Scripting mientras esperás las clases de Excel.",
+    },
+    {
+      q: "¿Conviene el combo o comprarlos por separado?",
+      a: `El combo te ahorra ${formatearPrecio(AHORRO_COMBO_EXCEL)} frente a comprarlos por separado. Si solo querés aprender planillas, Excel solo ya incluye lo necesario de Apps Script para automatizarlas.`,
+    },
+  ],
+  clases: EXCEL.clases + SCRIPTING.clases,
+  beneficios: [
+    `Ahorrás ${formatearPrecio(AHORRO_COMBO_EXCEL)} frente a comprarlos por separado`,
+    "Acceso vitalicio a las dos carpetas en Google Drive",
+    `Excel: ${EXCEL.clases} clases y más de 80 horas de video, con archivos de práctica y 9 proyectos`,
+    `Scripting: ${SCRIPTING.clases} clases y más de 59 horas, ya disponibles para arrancar hoy`,
+    "Automatización con IA en los dos cursos",
+    "Dos simulacros orientados al examen Microsoft MO-210 (el examen se paga aparte)",
+  ],
+  subTituloDesc: "Dos cursos, un solo camino: primero dominás las planillas y después aprendés a programar para automatizar todo lo demás.",
+  gancho: "Dominá tus planillas y después aprendé a programar para automatizar todo lo demás.",
+  metaDescripcion: EXCEL.metaDescripcion,
+  nivel: "Desde cero · Hasta automatizar con programación",
+  requisitos: EXCEL.requisitos,
+  paraQuien: [
+    ...EXCEL.paraQuien.slice(0, 3),
+    "Querés dejar de hacer a mano tareas repetitivas y aprender a programarlas",
+    "Te interesa probar programación sin invertir en una carrera",
+  ],
+  resultados: [...EXCEL.resultados.slice(0, 4), ...SCRIPTING.resultados.slice(0, 2)],
+  cifras: [
+    { valor: String(EXCEL.clases + SCRIPTING.clases), rotulo: "clases" },
+    { valor: "2", rotulo: "cursos" },
+    { valor: "+139", rotulo: "horas de video" },
+    { valor: "1", rotulo: "solo pago" },
+  ],
+  dato: EXCEL.dato,
+  pilares: EXCEL.pilares,
+  novedades: EXCEL.novedades,
+  requisitosPorNivel: EXCEL.requisitosPorNivel,
+  preguntasExtra: EXCEL.preguntasExtra.filter((p) => !p.q.startsWith("¿Qué diferencia hay")),
+  modulos: [
+    { titulo: `${EXCEL.tituloInicio} ${EXCEL.tituloDestacado} · ${EXCEL.clases} clases`, temas: NIVELES_EXCEL.map((nivel) => nivel.titulo) },
+    { titulo: `${SCRIPTING.tituloInicio} ${SCRIPTING.tituloDestacado} · ${SCRIPTING.clases} clases`, temas: SCRIPTING.modulos.map((m) => m.titulo) },
+  ],
+};
+
 // CYBER SRV: durante la promo cada curso (y la Ruta Backend) vale la mitad de su precio de lista,
 // y ese precio queda tachado como precioRegular (es un precio real: el de antes y después de la promo,
 // publicada con fechas en src/data/legal.js). La preventa de Scratch no se suma: vale el menor de los dos.
@@ -842,8 +1054,9 @@ if (enCyber()) {
 export const precioSeparado = (combo) => (combo.combo || []).reduce((t, k) => t + CURSOS_GRABADOS[k].precio, 0);
 
 // Combo que incluye a un curso (habilita el selector "uno, el otro o los dos" en la página de la ruta)
+// selectorEn limita en qué cursos aparece ese selector: Scripting no lo muestra aunque entre en el combo con Excel
 export const comboQueIncluye = (key) =>
-  Object.values(CURSOS_GRABADOS).find((c) => Array.isArray(c.combo) && c.combo.includes(key)) || null;
+  Object.values(CURSOS_GRABADOS).find((c) => Array.isArray(c.combo) && (c.selectorEn || c.combo).includes(key)) || null;
 
 // Link de compra de un curso: si se vende dentro de un combo, va a la página del combo con la opción preseleccionada
 export const linkInscripcion = (curso) => {

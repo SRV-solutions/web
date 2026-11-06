@@ -1045,19 +1045,202 @@
   cursor: not-allowed;
 }
 
-.sumasTotal {
-  margin: 0.2rem 0 0;
-  padding: 0.6rem 0.75rem;
-  border-radius: 8px;
-  background: rgba(0, 191, 99, 0.1);
-  border: 1px solid rgba(0, 191, 99, 0.4);
-  font-size: 0.82rem;
-  color: #cccccc;
-  line-height: 1.5;
+/* Escalera de descuentos: cada escalón se enciende al llegar a esa cantidad de cursos */
+.escalera {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.35rem;
 }
 
-.sumasTotal strong {
+.escalera li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.45rem 0.25rem;
+  border: 1px solid #1f2937;
+  border-radius: 8px;
+  background: #0d0d0d;
+  text-align: center;
+  transition: border-color 0.25s ease, background 0.25s ease;
+}
+
+.escalera span {
+  font-size: 0.68rem;
+  color: #9ca3af;
+}
+
+.escalera strong {
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: #f6950a;
+}
+
+.escalera li:last-child strong {
+  color: #30a05a;
+}
+
+.escalera .escalonActivo {
+  border-color: #30a05a;
+  background: rgba(48, 160, 90, 0.16);
+}
+
+.escalera .escalonActivo span {
+  color: #e5e7eb;
+}
+
+/* Botón "Llevate todos" */
+.btnTodo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid #f6950a;
+  border-radius: 10px;
+  background: linear-gradient(90deg, rgba(246, 149, 10, 0.2), rgba(11, 120, 251, 0.14));
+  color: #d4d4d4;
+  font: inherit;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.btnTodo:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(246, 149, 10, 0.3);
+}
+
+.btnTodo strong {
+  font-size: 0.98rem;
+  font-weight: 900;
   color: #ffffff;
+}
+
+.btnTodo small {
+  font-size: 0.72rem;
+  color: #9ca3af;
+}
+
+.todoListo {
+  margin: 0;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid #30a05a;
+  border-radius: 10px;
+  background: rgba(48, 160, 90, 0.16);
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-align: center;
+}
+
+.sumaPrecios strong.sumaGratis {
+  color: #30a05a;
+}
+
+.notaTodo {
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid #1f2937;
+  border-radius: 8px;
+  background: #0d0d0d;
+  color: #c4c4c4;
+  font-size: 0.86rem;
+  line-height: 1.6;
+}
+
+.notaTodo a {
+  color: #9fc7ff;
+}
+
+/* Cuánto ahorra con lo que lleva tildado */
+.medidor {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid #30a05a;
+  border-radius: 10px;
+  background: rgba(48, 160, 90, 0.1);
+  font-size: 0.82rem;
+  color: #c4c4c4;
+}
+
+.medidorFila {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.medidorFila s {
+  color: #9ca3af;
+}
+
+.medidorFila strong {
+  font-size: 0.95rem;
+  color: #ffffff;
+}
+
+.medidorAhorro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2rem 0.55rem;
+  margin-top: 0.2rem;
+  padding-top: 0.45rem;
+  border-top: 1px dashed rgba(48, 160, 90, 0.5);
+}
+
+.medidorAhorro span {
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.medidorAhorro strong {
+  font-size: 1.5rem;
+  font-weight: 900;
+  line-height: 1.1;
+  color: #30a05a;
+}
+
+.medidorAhorro em {
+  margin-left: auto;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  background: #30a05a;
+  color: #000000;
+  font-size: 0.74rem;
+  font-style: normal;
+  font-weight: 900;
+}
+
+/* El próximo curso que más conviene sumar */
+.sugerencia {
+  padding: 0.6rem 0.75rem;
+  border: 1px dashed #f6950a;
+  border-radius: 8px;
+  background: rgba(246, 149, 10, 0.08);
+  color: #e5e7eb;
+  font: inherit;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.sugerencia:hover {
+  background: rgba(246, 149, 10, 0.18);
+}
+
+.sugerencia strong {
+  color: #f6950a;
 }
 
 /* Modulos "Proximamente" (en grabacion): misma tarjeta, pero marcada en naranja */
@@ -1083,4 +1266,310 @@
   color: #f6c27a;
   font-size: 0.9rem;
   line-height: 1.6;
+}
+
+/* ---------- Secciones opcionales de un curso (BloquesCurso.jsx) ---------- */
+.resumen {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.cifras {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.cifras li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 1rem 0.5rem;
+  border: 1px solid #1f2937;
+  border-radius: 10px;
+  background: #0d0d0d;
+  text-align: center;
+}
+
+.cifras strong {
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  font-weight: 900;
+  line-height: 1.1;
+  color: #f6950a;
+}
+
+.cifras span {
+  font-size: 0.78rem;
+  color: #a0a0a0;
+}
+
+.pilares {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.pilar {
+  padding: 1.1rem 1.2rem;
+  border: 1px solid #1f2937;
+  border-left: 3px solid #0b78fb;
+  border-radius: 10px;
+  background: #0d0d0d;
+}
+
+.pilar h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.pilar p {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: #c4c4c4;
+}
+
+.dato {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  border-left: 3px solid #30a05a;
+  background: rgba(48, 160, 90, 0.08);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #d4d4d4;
+}
+
+.dato a {
+  color: #9fc7ff;
+}
+
+/* Temario agrupado en niveles */
+.niveles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.nivel {
+  border: 1px solid #1f2937;
+  border-radius: 10px;
+  background: #090e17;
+}
+
+.nivel[open] {
+  border-color: #0b78fb;
+}
+
+.nivel summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 1rem 2.6rem 1rem 1.2rem;
+  position: relative;
+  cursor: pointer;
+  list-style: none;
+}
+
+.nivel summary::-webkit-details-marker {
+  display: none;
+}
+
+.nivel summary::after {
+  content: "+";
+  position: absolute;
+  top: 0.8rem;
+  right: 1.1rem;
+  color: #f6950a;
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.nivel[open] summary::after {
+  content: "−";
+}
+
+.nivelCabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.2rem 1rem;
+}
+
+.nivelTitulo {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.nivelCantidad {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #f6950a;
+}
+
+.nivelResumen {
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: #a8a8a8;
+}
+
+.nivel .modulesGrid {
+  padding: 0 1rem 1rem;
+}
+
+/* Novedades */
+.novedades,
+.requisitos {
+  margin: 1rem 0;
+}
+
+.novedadesGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.novedad {
+  padding: 1.1rem 1.2rem;
+  border: 1px solid #1f2937;
+  border-radius: 10px;
+  background: #0d0d0d;
+}
+
+.novedad h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+  color: #ffffff;
+}
+
+.novedad p {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: #c4c4c4;
+}
+
+.novedadesNota {
+  margin: 0.9rem 0 0;
+  padding: 0.85rem 1rem;
+  border: 1px dashed #f6950a;
+  border-radius: 8px;
+  background: rgba(246, 149, 10, 0.06);
+  color: #f6c27a;
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+/* Qué se necesita en cada nivel */
+.requisitosLista {
+  margin: 0;
+  border: 1px solid #1f2937;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.requisitoFila {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 1rem;
+  padding: 0.85rem 1.1rem;
+  background: #0d0d0d;
+}
+
+.requisitoFila + .requisitoFila {
+  border-top: 1px solid #1f2937;
+}
+
+.requisitoFila dt {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #9fc7ff;
+}
+
+.requisitoFila dd {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: #c4c4c4;
+}
+
+@media (max-width: 600px) {
+  .cifras {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pilares,
+  .novedadesGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .requisitoFila {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+}
+
+/* Curso que sigue después de este */
+.siguientePaso {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+  margin: 0.5rem 0 1.5rem;
+  padding: 1.4rem;
+  border: 1px solid #30a05a;
+  border-radius: 12px;
+  background: rgba(48, 160, 90, 0.08);
+}
+
+.siguientePaso > div:first-child {
+  flex: 1 1 340px;
+  min-width: 0;
+}
+
+.siguientePaso h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.siguientePaso p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #d4d4d4;
+}
+
+.siguientePasoAcciones {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  text-align: center;
+}
+
+.btnSiguiente {
+  padding: 0.75rem 1.1rem;
+  border-radius: 6px;
+  background: #30a05a;
+  color: #000000;
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform 0.15s ease;
+}
+
+.btnSiguiente:hover {
+  transform: translateY(-2px);
 }

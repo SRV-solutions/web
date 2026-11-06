@@ -3,8 +3,9 @@ import { Link, useSearchParams } from "react-router-dom";
 import styles from "./CursoGrabado.module.css";
 import Seo, { SITE_URL } from "../Seo";
 import { trackConversion, getMetaCookies } from "../../data/metaPixel";
-import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, comboQueIncluye, nombreCurso, enCyber, precioSeparado, CYBER_FECHAS } from "../../data/cursosGrabados";
-import { AHORRO_POR_CURSO, agregablesPara, infoPack, normalizarSet, setValido, pitchUnidad, unidadesDeParametro, enCampaniaRedes } from "../../data/packs";
+import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, comboQueIncluye, linkInscripcion, nombreCurso, enCyber, precioSeparado, CYBER_FECHAS } from "../../data/cursosGrabados";
+import { CURSOS_TODO, agregablesPara, infoPack, linkPackTodo, normalizarSet, packTodo, setValido, pitchUnidad, unidadesDeParametro, enCampaniaRedes } from "../../data/packs";
+import { ResumenCurso, DetallesCurso, EscaleraPack, MedidorAhorro, PrecioAnimado } from "./BloquesCurso";
 
 const DISCORD_URL = "https://discord.com/invite/QuAmDxrNMu";
 const WHATSAPP_URL = "https://wa.me/5491123869799?text=" + encodeURIComponent("Hola, tengo una consulta sobre los cursos");
@@ -13,7 +14,7 @@ function pasosCompra(curso, preventa) {
   return [
     { titulo: "Pagás con Mercado Pago", texto: "Tarjeta, débito o dinero en cuenta. El pago es seguro y lo procesa Mercado Pago." },
     preventa
-      ? {
+      ? curso.preventa.paso || {
           titulo: "Te llega hoy el link a tu carpeta",
           texto: `Apenas se aprueba el pago recibís el correo con el acceso a la carpeta del curso en Google Drive. Las clases se habilitan ahí el ${curso.preventa.fechaTexto}: no tenés que hacer nada más.`,
         }
@@ -30,7 +31,7 @@ function pasosCompra(curso, preventa) {
 function preguntasFrecuentes(curso, preventa) {
   return [
     ...(curso.combo
-      ? [
+      ? curso.faqCombo || [
           {
             q: "¿Cómo recibo los dos cursos?",
             a: "En un solo mail, apenas se aprueba el pago, con los links a las dos carpetas de Google Drive. Podés arrancar por el que quieras, aunque recomendamos seguir el orden: primero el Master en JavaScript y después Backend Avanzado.",
@@ -45,7 +46,7 @@ function preguntasFrecuentes(curso, preventa) {
       ? [
           {
             q: "¿Qué es la preventa y cuándo empieza el curso?",
-            a: `Las clases se habilitan el ${curso.preventa.fechaTexto}. ${
+            a: curso.preventa.faqPreventa || `Las clases se habilitan el ${curso.preventa.fechaTexto}. ${
               enCyber()
                 ? `Por el Cyber SRV, ${CYBER_FECHAS} lo pagás ${formatearPrecio(curso.precio)}; después vuelve al precio de preventa, ${formatearPrecio(curso.preventa.precio)}, hasta que se habilitan las clases, y desde ese día cuesta ${formatearPrecio(curso.precioRegular)}.`
                 : `Si lo comprás antes, lo pagás ${formatearPrecio(curso.precio)} en lugar de ${formatearPrecio(curso.precioRegular)}.`
@@ -66,7 +67,7 @@ function preguntasFrecuentes(curso, preventa) {
     {
       q: "¿Cómo y cuándo recibo el curso?",
       a: preventa
-        ? `Apenas Mercado Pago aprueba el pago, te llega un correo con el acceso a tu carpeta del curso en Google Drive, al mail con el que pagaste. La carpeta se completa con las clases el ${curso.preventa.fechaTexto}.`
+        ? curso.preventa.faqRecibo || `Apenas Mercado Pago aprueba el pago, te llega un correo con el acceso a tu carpeta del curso en Google Drive, al mail con el que pagaste. La carpeta se completa con las clases el ${curso.preventa.fechaTexto}.`
         : "Apenas Mercado Pago aprueba el pago, te llega un correo con el acceso a la carpeta del curso en Google Drive. Es automático, las 24 horas.",
     },
     {
@@ -107,7 +108,8 @@ export default function CursoGrabado({ cursoKey }) {
   // o los dos juntos con un selector; "producto" es lo que está elegido y lo que se muestra y se cobra.
   const curso = CURSOS_GRABADOS[cursoKey];
   const combo = curso.combo ? curso : comboQueIncluye(curso.key);
-  const opciones = combo ? [...combo.combo.map((k) => CURSOS_GRABADOS[k]), combo] : [];
+  // selectorEn: el selector ofrece solo esos cursos y el combo (en Excel: "Excel solo" o "Excel + Scripting")
+  const opciones = combo ? [...(combo.selectorEn || combo.combo).map((k) => CURSOS_GRABADOS[k]), combo] : [];
   const [searchParams] = useSearchParams();
   // ?elegir=clave preselecciona una opción (links de la home, menú y redirecciones de las URLs viejas)
   const elegirInicial = (() => {
@@ -209,6 +211,54 @@ export default function CursoGrabado({ cursoKey }) {
         clases: producto.clases,
         cantidadCursos: producto.combo ? producto.combo.length : 1,
       };
+
+  // Cursos de la compra que todavía esperan sus clases: el comprador tiene que saberlo también si compró
+  // desde otra página (por ejemplo, Python con Excel sumado mientras Excel está en preventa)
+  const cursosDeLaCompra = pack ? pack.cursos : incluye || [producto];
+  const enPreventaCompra = cursosDeLaCompra.filter(estaEnPreventa);
+  const variosCursos = cursosDeLaCompra.length > 1;
+  const avisoClases = enPreventaCompra.length
+    ? `${enPreventaCompra.map((c) => `Las clases de ${nombreCurso(c)} se habilitan el ${c.preventa.fechaTexto}`).join(". ")}${
+        cursosDeLaCompra.length > enPreventaCompra.length ? "; las de los demás cursos ya están." : "."
+      }`
+    : "";
+  // Excel + Scripting solos son el combo, no un pack: se aclara donde se pueden tildar esos dos
+  const avisoComboExcel =
+    !campaniaRedes &&
+    (producto.key === "excel"
+      ? agregables.includes("scripting")
+      : agregables.includes("excel") && (agregables.includes("scripting") || producto.key === "scripting"));
+
+  // El curso que más conviene sumar ahora: el que más ahorra, y a igual ahorro, el que menos suma al total.
+  // Solo cursos sueltos: un combo puede repetir lo que ya está tildado y su ahorro no sería real.
+  const sugerencia = agregables
+    .filter(
+      (k) =>
+        !CURSOS_GRABADOS[k].combo &&
+        !extrasValidos.includes(k) &&
+        puedeSumar(k) &&
+        !extrasValidos.some((x) => CURSOS_GRABADOS[x].combo?.includes(k)),
+    )
+    .map((k) => ({ curso: CURSOS_GRABADOS[k], extra: costoDeSumar(k) }))
+    .sort((a, b) => b.curso.precio - b.extra - (a.curso.precio - a.extra) || a.extra - b.extra)[0];
+
+  // "Llevate todos": se tildan acá si esta página puede sumarlos; si no (durante la campaña de Redes, solo su
+  // página puede), lleva a la página de Redes con todos tildados. Scratch y el código de alumnos no lo ofrecen.
+  const todo = producto.key === "scratch" || cuponAplicado ? null : packTodo();
+  const cursosElegidos = pack ? pack.cursos.map((c) => c.key) : producto.combo || [producto.key];
+  const faltanParaTodo = CURSOS_TODO.filter((k) => !cursosElegidos.includes(k));
+  const llevaTodo = Boolean(todo) && faltanParaTodo.length === 0;
+  const todoAca = faltanParaTodo.every((k) => agregables.includes(k));
+  const contenidoTodo = todo && (
+    <>
+      <strong>🚀 Llevate los {todo.cantidadCursos} cursos por {formatearPrecio(todo.precio)}</strong>
+      <span>
+        Uno por uno: <s>{formatearPrecio(todo.precioSeparado)}</s> · ahorrás {formatearPrecio(todo.ahorro)} (
+        {Math.round((todo.ahorro / todo.precioSeparado) * 100)}% OFF)
+      </span>
+      {!todoAca && <small>Se arma en la página de Redes, con su precio de campaña hasta el {CURSOS_GRABADOS.redes.preventa.fechaTexto}.</small>}
+    </>
+  );
 
   const pixelData = {
     content_name: curso.contentName,
@@ -349,6 +399,24 @@ export default function CursoGrabado({ cursoKey }) {
     },
   ];
 
+  const tarjetaModulo = (mod, numero) => (
+    <div key={mod.titulo} className={styles.moduleCard}>
+      <div className={styles.moduleCardHeader}>
+        <span className={styles.moduleNum}>{String(numero).padStart(2, "0")}</span>
+        <span className={styles.moduleTag}>
+          {producto.combo ? "Parte" : "Módulo"} {numero}
+          {mod.clases ? ` · ${mod.clases} clases` : ""}
+        </span>
+      </div>
+      <h3>{mod.titulo}</h3>
+      <ul className={styles.taskList}>
+        {mod.temas.map((tema) => (
+          <li key={tema}>{tema}</li>
+        ))}
+      </ul>
+    </div>
+  );
+
   const botonPago = (extraClass = "") => (
     <button
       type="button"
@@ -392,36 +460,64 @@ export default function CursoGrabado({ cursoKey }) {
         <div className={styles.stickyColumn}>
           <div className={styles.cardContainer}>
             <div className={styles.header}>
-              <div className={styles.badge}>
-                {preventa ? `🚀 Preventa · las clases se habilitan el ${fechaAcceso}` : "⚡ Acceso inmediato y de por vida"}
-              </div>
-              <h1 className={styles.title}>
-                {producto.tituloInicio} <span className={styles.orange}>{producto.tituloDestacado}</span>
-                {producto.tituloFin && ` ${producto.tituloFin}`}
-              </h1>
-              <p className={styles.hook}>{producto.gancho}</p>
-              <p className={styles.description}>{producto.descripcion}</p>
-              {incluye && (
+              {/* Con todos los cursos tildados, la tarjeta deja de hablar de un solo curso y muestra lo que se lleva */}
+              {llevaTodo ? (
+                <>
+                  <div className={styles.badge}>🏆 Todos los cursos en un solo pago</div>
+                  <h1 className={styles.title}>
+                    Llevate <span className={styles.orange}>los {pack.cantidadCursos} cursos</span>
+                  </h1>
+                  <p className={styles.hook}>
+                    {pack.clases} clases, acceso de por vida y un solo pago: ahorrás {formatearPrecio(pack.ahorro)}.
+                  </p>
+                  <ul className={styles.incluyeList}>
+                    {pack.cursos.map((c) => (
+                      <li key={c.key}>
+                        ✓ <strong>{nombreCorto(c)}</strong> · {c.clases} clases · {formatearPrecio(c.precio)}
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : (
+                <>
+                  <div className={styles.badge}>
+                    {preventa ? `🚀 Preventa · las clases se habilitan el ${fechaAcceso}` : "⚡ Acceso inmediato y de por vida"}
+                  </div>
+                  <h1 className={styles.title}>
+                    {producto.tituloInicio} <span className={styles.orange}>{producto.tituloDestacado}</span>
+                    {producto.tituloFin && ` ${producto.tituloFin}`}
+                  </h1>
+                  <p className={styles.hook}>{producto.gancho}</p>
+                  <p className={styles.description}>{producto.descripcion}</p>
+                </>
+              )}
+              {incluye && !llevaTodo && (
                 <ul className={styles.incluyeList}>
                   {incluye.map((c) => (
                     <li key={c.key}>
                       ✓{" "}
-                      <button type="button" className={styles.linkBtn} onClick={() => setSeleccion(c.key)}>
-                        {nombreCorto(c)}
-                      </button>{" "}
+                      {opciones.some((op) => op.key === c.key) ? (
+                        <button type="button" className={styles.linkBtn} onClick={() => setSeleccion(c.key)}>
+                          {nombreCorto(c)}
+                        </button>
+                      ) : (
+                        <Link to={`/${c.ruta}/inscripcion`}>{nombreCorto(c)}</Link>
+                      )}{" "}
                       · {c.clases} clases · por separado {formatearPrecio(c.precio)}
                     </li>
                   ))}
                 </ul>
               )}
-              <p className={styles.level}>🎯 {producto.nivel}</p>
+              {!llevaTodo && <p className={styles.level}>🎯 {producto.nivel}</p>}
 
               <div className={styles.promoCard}>
                 <div className={styles.promoHeader}>
                   {cuponAplicado ? (
                     <span className={styles.promoBadge}>🎓 Precio para alumnos de SRV</span>
                   ) : pack ? (
-                    <span className={styles.promoBadge}>🎁 {pack.cantidadCursos} cursos · ahorrás {formatearPrecio(pack.ahorro)}</span>
+                    <span className={styles.promoBadge}>
+                      🎁 {pack.cantidadCursos} cursos · {Math.round((pack.ahorro / pack.precioSeparado) * 100)}% OFF
+                    </span>
                   ) : (
                     descuento > 0 && (
                       <span className={styles.promoBadge}>
@@ -452,7 +548,7 @@ export default function CursoGrabado({ cursoKey }) {
                         >
                           <input type="radio" name="producto" value={op.key} checked={activa} onChange={() => setSeleccion(op.key)} />
                           <span className={styles.opcionNombre}>
-                            {op.combo ? "Los dos · Ruta Backend Completa" : nombreCorto(op)}
+                            {op.combo ? op.nombreSelector || "Los dos · Ruta Backend Completa" : nombreCorto(op)}
                             <small>
                               {op.combo
                                 ? `${op.clases} clases · ahorrás ${formatearPrecio(precioSeparado(op) - op.precio)}`
@@ -473,7 +569,7 @@ export default function CursoGrabado({ cursoKey }) {
                         {cuponAplicado
                           ? "Precio promocional"
                           : pack
-                            ? "Por separado"
+                            ? "Uno por uno"
                             : cyber
                               ? "Precio regular"
                               : preventa
@@ -498,7 +594,7 @@ export default function CursoGrabado({ cursoKey }) {
                             : "Pagás hoy"}
                     </span>
                     <div className={styles.mainPrice}>
-                      {formatearPrecio(compra.precio)} <span className={styles.currency}>ARS</span>
+                      <PrecioAnimado valor={compra.precio} /> <span className={styles.currency}>ARS</span>
                     </div>
                     {/* Ancla honesta en lugar del precio tachado: cuánto sale cada clase */}
                     <span className={styles.porClase}>
@@ -550,7 +646,7 @@ export default function CursoGrabado({ cursoKey }) {
             {/* El botón va pegado al precio; los cursos para sumar, debajo: al tildar uno, el botón de arriba
                 cambia al total del pack (y en celular la barra fija también) */}
             <div className={styles.actionContainer} ref={buyRef}>
-              {pack && (
+              {pack && !llevaTodo && (
                 <p className={styles.compraResumen}>
                   Tu compra: <strong>{compra.nombre}</strong> · {compra.clases} clases · un solo pago
                 </p>
@@ -558,10 +654,10 @@ export default function CursoGrabado({ cursoKey }) {
               {botonPago()}
               <p className={styles.secureText}>
                 🔒 Pago 100% seguro procesado por Mercado Pago.{" "}
-                {preventa
-                  ? pack
-                    ? `Las carpetas te llegan al mail al instante. Las clases de ${nombreCurso(producto)} se habilitan el ${fechaAcceso}; las de los demás cursos ya están.`
-                    : `Tu carpeta te llega al mail al instante. Las clases se habilitan el ${fechaAcceso}.`
+                {enPreventaCompra.length
+                  ? variosCursos
+                    ? `Las carpetas te llegan al mail al instante. ${avisoClases}`
+                    : `Tu carpeta te llega al mail al instante. Las clases se habilitan el ${enPreventaCompra[0].preventa.fechaTexto}.`
                   : "El acceso te llega al mail al instante."}
               </p>
               <p className={styles.legalText}>
@@ -576,22 +672,36 @@ export default function CursoGrabado({ cursoKey }) {
             {agregables.length > 0 && (
               <fieldset className={styles.sumas}>
                 <legend className={styles.sumasTitle}>
-                  {campaniaRedes
-                    ? "🎁 Sumá cursos a precio de campaña"
-                    : `🎁 Sumá cursos y ahorrá ${formatearPrecio(AHORRO_POR_CURSO)} por cada uno`}
+                  {campaniaRedes ? "🎁 Sumá cursos a precio de campaña" : "🎁 Cuantos más sumás, menos pagás"}
                 </legend>
                 <p className={styles.sumasIntro}>
                   {campaniaRedes
-                    ? "Solo durante la preventa. Tildá los que quieras: van en el mismo pago y te llegan al instante."
-                    : `Tildá los que quieras: van en el mismo pago y cada uno descuenta ${formatearPrecio(AHORRO_POR_CURSO)}. Si vale menos, va de regalo.`}
+                    ? "Solo durante la preventa. Tildá los que quieras: van en el mismo pago."
+                    : "Tildá los que quieras y van en un solo pago. El curso más caro va entero y cada uno que sumás sale más barato."}
+                  {avisoComboExcel && " Excel y Scripting solos van como combo."}
                 </p>
+                {!campaniaRedes && <EscaleraPack cantidadCursos={compra.cantidadCursos} />}
+                {llevaTodo && <p className={styles.todoListo}>🏆 ¡Máximo ahorro! Te llevás todos los cursos.</p>}
+                {todo &&
+                  !llevaTodo &&
+                  (todoAca ? (
+                    <button type="button" className={styles.btnTodo} onClick={() => setExtras(CURSOS_TODO.filter((k) => agregables.includes(k)))}>
+                      {contenidoTodo}
+                    </button>
+                  ) : (
+                    <Link className={styles.btnTodo} to={linkPackTodo()}>
+                      {contenidoTodo}
+                    </Link>
+                  ))}
                 <div className={styles.sumasLista}>
                   {agregables.map((k) => {
                     const unidad = CURSOS_GRABADOS[k];
                     const activa = extrasValidos.includes(k);
                     // Master en JavaScript o Backend Avanzado con la Ruta Backend ya tildada: vienen dentro de la ruta
                     const combo = activa ? null : extrasValidos.map((x) => CURSOS_GRABADOS[x]).find((c) => c.combo?.includes(k));
-                    const disponible = !combo && puedeSumar(k);
+                    // Y al revés: la Ruta Backend con sus dos cursos ya tildados no agrega nada
+                    const yaIncluida = !activa && unidad.combo?.every((x) => cursosElegidos.includes(x));
+                    const disponible = !combo && !yaIncluida && puedeSumar(k);
                     const extra = disponible ? costoDeSumar(k) : null;
                     return (
                       <label
@@ -611,12 +721,14 @@ export default function CursoGrabado({ cursoKey }) {
                           <span className={styles.sumaPrecios}>
                             {disponible ? (
                               <>
-                                <strong>{extra > 0 ? `+${formatearPrecio(extra)}` : "De regalo"}</strong>
+                                <strong className={extra > 0 ? "" : styles.sumaGratis}>{extra > 0 ? `+${formatearPrecio(extra)}` : "De regalo"}</strong>
                                 <s>{formatearPrecio(unidad.precio)}</s>
                                 <small>{unidad.clases} clases</small>
                               </>
                             ) : combo ? (
                               <small>Incluido en la {nombreCurso(combo)}</small>
+                            ) : yaIncluida ? (
+                              <small>Ya tenés sus dos cursos</small>
                             ) : (
                               <small>No se combina con lo que elegiste</small>
                             )}
@@ -626,11 +738,20 @@ export default function CursoGrabado({ cursoKey }) {
                     );
                   })}
                 </div>
-                {pack && (
-                  <p className={styles.sumasTotal}>
-                    Tu pack: <strong>{pack.cantidadCursos} cursos</strong> por <strong>{formatearPrecio(pack.precio)}</strong> · por separado{" "}
-                    {formatearPrecio(pack.precioSeparado)} · ahorrás <strong>{formatearPrecio(pack.ahorro)}</strong>
-                  </p>
+                {pack && <MedidorAhorro pack={pack} />}
+                {sugerencia && (
+                  <button type="button" className={styles.sugerencia} onClick={() => toggleExtra(sugerencia.curso.key)}>
+                    {sugerencia.extra > 0 ? (
+                      <>
+                        💥 Sumá {nombreCurso(sugerencia.curso)} por solo <strong>+{formatearPrecio(sugerencia.extra)}</strong>: vale{" "}
+                        {formatearPrecio(sugerencia.curso.precio)}
+                      </>
+                    ) : (
+                      <>
+                        🎁 {nombreCurso(sugerencia.curso)} te sale <strong>gratis</strong>: vale {formatearPrecio(sugerencia.curso.precio)}. Sumalo
+                      </>
+                    )}
+                  </button>
                 )}
               </fieldset>
             )}
@@ -670,7 +791,7 @@ export default function CursoGrabado({ cursoKey }) {
             >
               <span className={styles.comboIcon}>🎁</span>
               <span className={styles.comboText}>
-                <strong>¿Vas por backend? Llevá los dos cursos juntos.</strong>
+                <strong>{combo.bannerTitulo || "¿Vas por backend? Llevá los dos cursos juntos."}</strong>
                 <span>
                   {combo.combo.map((k) => nombreCorto(CURSOS_GRABADOS[k])).join(" + ")} por {formatearPrecio(combo.precio)}:
                   ahorrás {formatearPrecio(precioSeparado(combo) - combo.precio)} frente a comprarlos por separado.
@@ -679,6 +800,23 @@ export default function CursoGrabado({ cursoKey }) {
               <span className={styles.comboCta}>Elegir los dos →</span>
             </button>
           )}
+          {llevaTodo && (
+            <p className={styles.notaTodo}>
+              Abajo ves el detalle de {nombreCurso(producto)}. El de los demás cursos está en su página:{" "}
+              {pack.cursos
+                .filter((c) => c.key !== producto.key)
+                .map((c, i) => (
+                  <React.Fragment key={c.key}>
+                    {i > 0 && " · "}
+                    <a href={linkInscripcion(c)} target="_blank" rel="noopener noreferrer">
+                      {nombreCorto(c)}
+                    </a>
+                  </React.Fragment>
+                ))}
+              .
+            </p>
+          )}
+          <ResumenCurso curso={producto} />
           <div className={styles.twoCols}>
             <div className={styles.infoCard}>
               <h2 className={styles.infoTitle}>Ideal para vos si…</h2>
@@ -704,38 +842,51 @@ export default function CursoGrabado({ cursoKey }) {
             </h2>
             <p className={styles.subTitleDesc}>{producto.subTituloDesc}</p>
 
-            <div className={styles.modulesGrid}>
-              {producto.modulos.map((mod, index) => (
-                <div key={mod.titulo} className={styles.moduleCard}>
-                  <div className={styles.moduleCardHeader}>
-                    <span className={styles.moduleNum}>{String(index + 1).padStart(2, "0")}</span>
-                    <span className={styles.moduleTag}>{producto.combo ? "Parte" : "Módulo"} {index + 1}</span>
-                  </div>
-                  <h3>{mod.titulo}</h3>
-                  <ul className={styles.taskList}>
-                    {mod.temas.map((tema) => (
-                      <li key={tema}>{tema}</li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
+            {producto.niveles ? (
+              // Temario largo: agrupado en niveles que se abren de a uno, con el primero abierto
+              <div className={styles.niveles}>
+                {producto.niveles.map((nivel, i) => {
+                  const anteriores = producto.niveles.slice(0, i).reduce((total, n) => total + n.modulos.length, 0);
+                  const clases = nivel.modulos.reduce((total, m) => total + m.clases, 0);
+                  return (
+                    <details key={nivel.titulo} className={styles.nivel} open={i === 0}>
+                      <summary>
+                        <span className={styles.nivelCabecera}>
+                          <span className={styles.nivelTitulo}>{nivel.titulo}</span>
+                          <span className={styles.nivelCantidad}>
+                            {nivel.modulos.length} {nivel.modulos.length === 1 ? "módulo" : "módulos"} · {clases} clases
+                          </span>
+                        </span>
+                        <span className={styles.nivelResumen}>{nivel.resumen}</span>
+                      </summary>
+                      <div className={styles.modulesGrid}>
+                        {nivel.modulos.map((mod, j) => tarjetaModulo(mod, anteriores + j + 1))}
+                      </div>
+                    </details>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className={styles.modulesGrid}>
+                {producto.modulos.map((mod, index) => tarjetaModulo(mod, index + 1))}
 
-              {/* Módulos en grabación: se anuncian aparte para no venderlos como ya disponibles */}
-              {(producto.proximosModulos || []).map((mod) => (
-                <div key={mod.titulo} className={`${styles.moduleCard} ${styles.moduleCardProximo}`}>
-                  <div className={styles.moduleCardHeader}>
-                    <span className={styles.moduleNum}>🤖</span>
-                    <span className={styles.moduleTagProximo}>Próximamente · gratis con tu acceso</span>
+                {/* Módulos en grabación: se anuncian aparte para no venderlos como ya disponibles */}
+                {(producto.proximosModulos || []).map((mod) => (
+                  <div key={mod.titulo} className={`${styles.moduleCard} ${styles.moduleCardProximo}`}>
+                    <div className={styles.moduleCardHeader}>
+                      <span className={styles.moduleNum}>🤖</span>
+                      <span className={styles.moduleTagProximo}>Próximamente · gratis con tu acceso</span>
+                    </div>
+                    <h3>{mod.titulo}</h3>
+                    <ul className={styles.taskList}>
+                      {mod.temas.map((tema) => (
+                        <li key={tema}>{tema}</li>
+                      ))}
+                    </ul>
                   </div>
-                  <h3>{mod.titulo}</h3>
-                  <ul className={styles.taskList}>
-                    {mod.temas.map((tema) => (
-                      <li key={tema}>{tema}</li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
             {producto.proximosModulos && (
               <p className={styles.proximosNota}>
                 El módulo marcado como «Próximamente» está en grabación y todavía no está en la carpeta. Cuando se
@@ -744,6 +895,19 @@ export default function CursoGrabado({ cursoKey }) {
               </p>
             )}
           </div>
+
+          <DetallesCurso
+            curso={producto}
+            ahorroCombo={combo ? precioSeparado(combo) - combo.precio : 0}
+            onElegirCombo={
+              combo && producto.key !== combo.key
+                ? () => {
+                    setSeleccion(combo.key);
+                    buyRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+                  }
+                : null
+            }
+          />
 
           <div>
             <h2 className={styles.subTitle}>Cómo funciona</h2>
@@ -780,11 +944,11 @@ export default function CursoGrabado({ cursoKey }) {
             <h2>{preventa ? "Reservá tu lugar al precio de preventa." : "Hoy puede ser tu primera clase."}</h2>
             <p>
               {pack
-                ? `${compra.clases} clases en ${pack.cantidadCursos} cursos, acceso de por vida y un solo pago de ${formatearPrecio(compra.precio)}. Por separado pagarías ${formatearPrecio(pack.precioSeparado)}.`
+                ? `${compra.clases} clases en ${pack.cantidadCursos} cursos, acceso de por vida y un solo pago de ${formatearPrecio(compra.precio)}. Uno por uno pagarías ${formatearPrecio(pack.precioSeparado)}.${avisoClases ? ` ${avisoClases}` : ""}`
                 : preventa && cyber
                   ? `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(producto.precio)}: precio del Cyber SRV, solo ${CYBER_FECHAS}. Las clases se habilitan en tu carpeta el ${fechaAcceso}.`
                   : preventa
-                  ? `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(producto.precio)}. Desde el ${fechaAcceso} pasa a ${formatearPrecio(producto.precioRegular)}, y ese mismo día se habilitan las clases en tu carpeta.`
+                  ? `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(producto.precio)}. ${producto.preventa.textoFinal || `Desde el ${fechaAcceso} pasa a ${formatearPrecio(producto.precioRegular)}, y ese mismo día se habilitan las clases en tu carpeta.`}`
                   : `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(compra.precio)}${cuponAplicado ? " con tu código de alumno" : ""}. Empezá esta misma noche.`}
             </p>
             {botonPago(styles.btnFinal)}
@@ -795,8 +959,10 @@ export default function CursoGrabado({ cursoKey }) {
       {/* Barra fija de compra en celular */}
       <div className={`${styles.mobileBar} ${showBar ? styles.mobileBarVisible : ""}`} aria-hidden={!showBar}>
         <div className={styles.mobileBarPrice}>
-          <span>{compra.nombre}</span>
-          <strong>{formatearPrecio(compra.precio)}</strong>
+          <span>{pack ? `${pack.cantidadCursos} cursos · ahorrás ${formatearPrecio(pack.ahorro)}` : compra.nombre}</span>
+          <strong>
+            <PrecioAnimado valor={compra.precio} />
+          </strong>
         </div>
         <button type="button" onClick={handleMercadoPagoCheckout} disabled={loading} tabIndex={showBar ? 0 : -1}>
           {loading ? "Conectando..." : preventa ? "Reservar" : "Comprar"}

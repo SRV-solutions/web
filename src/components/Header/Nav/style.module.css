@@ -212,6 +212,7 @@
 
 .badge_new {
   position: relative;
+  flex-shrink: 0; /* con un nombre de dos renglones se achicaba y se cortaba la W */
   overflow: hidden;
   font-size: 0.65rem;
   font-weight: 700;

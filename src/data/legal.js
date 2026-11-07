@@ -18,7 +18,7 @@ export const LEGAL = {
   // logo oficial DATAWEB.jpg, guardado en public/.
   dataFiscalUrl: "http://qr.afip.gob.ar/?qr=2fo6inei48mGOnEZH3MeZg,,",
   dataFiscalImg: "/data-fiscal.jpg",
-  actualizacion: "6 de noviembre de 2026", // preventa y combo del Master en Excel y Sheets con IA
+  actualizacion: "7 de noviembre de 2026", // preventa, combo y temario del Master en Excel y Sheets con IA
   actualizacionPrivacidad: "1 de noviembre de 2026", // se sumó el newsletter de las guías gratis
 };
 
@@ -30,7 +30,7 @@ export const PROMOCIONES = [
   {
     nombre: "Preventa del Master en Excel y Sheets con IA",
     detalle:
-      "El curso cuesta $59.900 en lugar de $89.900, y el combo con el Curso de Scripting con IA, $69.900 en lugar de $99.900. La carpeta llega al instante y las 255 clases se habilitan el 01/01/2027. El Curso de Scripting con IA ya está disponible. El examen Microsoft MO-210 no está incluido y se paga aparte.",
+      "El curso cuesta $59.900 en lugar de $89.900, y el combo con el Curso de Scripting con IA, $69.900 en lugar de $99.900. La carpeta llega al instante y las 120 clases se habilitan el 01/01/2027. El Curso de Scripting con IA ya está disponible.",
     desde: "06/11/2026",
     hasta: "31/12/2026 a las 23:59",
   },

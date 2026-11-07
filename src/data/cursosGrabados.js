@@ -20,7 +20,7 @@ const SCRATCH_ACCESO = new Date("2026-11-18T00:00:00-03:00");
 const REDES_ACCESO = new Date("2027-01-27T00:00:00-03:00");
 
 // Preventa del Master en Excel y Sheets con IA: igual que Redes. Hasta esta fecha se vende a precio de preventa,
-// solo o en combo con Scripting, y ese día se habilitan las 255 clases. Decidido por Marcos el 6/11/2026.
+// solo o en combo con Scripting, y ese día se habilitan todas las clases. Decidido por Marcos el 6/11/2026.
 // La misma fecha vive en netlify/lib/cursos.js y en appscript-cursos.gs, y su texto en src/data/legal.js.
 const EXCEL_ACCESO = new Date("2027-01-01T00:00:00-03:00");
 const EXCEL_FECHA_TEXTO = "1 de enero de 2027";
@@ -779,8 +779,10 @@ export const CURSOS_GRABADOS = {
     ],
   },
 
-  // Master en Excel y Sheets con IA: curso grabado en preventa hasta el 1/01/2027 (ver EXCEL_ACCESO). Es para
-  // gente que no programa: por eso lleva requisitos propios y las secciones de BloquesCurso.jsx.
+  // Master en Excel y Sheets con IA: curso en preventa hasta el 1/01/2027 (ver EXCEL_ACCESO). Es para gente que
+  // no programa: por eso lleva requisitos propios y las secciones de BloquesCurso.jsx. Las clases son animadas y
+  // con voz generada con IA (decisión de Marcos del 7/11/2026), y la página lo aclara. Se promete "más de 12 horas":
+  // el formato apunta a 7 u 8 minutos por clase, y deja margen si alguna sale más corta.
   // Lo que dice sobre versiones y planes se revisó en las páginas de Microsoft y Google en noviembre de 2026.
   excel: {
     key: "excel",
@@ -791,27 +793,27 @@ export const CURSOS_GRABADOS = {
     tituloDestacado: "Excel y Sheets con IA",
     tituloFin: "Desde Cero",
     descripcion:
-      `Todo Excel y Google Sheets en un solo curso: ${CLASES_EXCEL} clases y más de 80 horas de video para ir de tu primera fórmula a Power Query, tablas dinámicas, tableros, macros, VBA y Google Apps Script, con IA para trabajar más rápido y casos reales de Argentina.`,
+      `Excel y Google Sheets en un solo curso: ${CLASES_EXCEL} clases animadas y cortas, con más de 12 horas de video, para ir de tu primera fórmula a Power Query, tablas dinámicas, tableros, macros y Google Apps Script, con IA para trabajar más rápido y casos reales de Argentina.`,
     precio: EXCEL_EN_PREVENTA ? 59900 : 89900,
     precioRegular: 89900,
     preventa: { hasta: EXCEL_ACCESO, fechaTexto: EXCEL_FECHA_TEXTO, precio: 59900 },
     clases: CLASES_EXCEL,
     beneficios: [
       "Acceso vitalicio al material en Google Drive",
-      `${CLASES_EXCEL} clases y más de 80 horas de video, de cero a nivel experto`,
+      `${CLASES_EXCEL} clases y más de 12 horas de video, de cero a nivel avanzado`,
+      "Clases animadas y cortas, con voz generada con IA",
       "Excel, Google Sheets, Apps Script e IA en un solo curso",
-      "Archivos de práctica y 9 proyectos para mostrar",
+      "Archivos de práctica y 8 proyectos para mostrar",
       "Casos argentinos: IVA con comprobantes de ARCA, sueldos, aguinaldo, bancos y Mercado Pago",
-      "Dos simulacros orientados al examen Microsoft MO-210 (el examen se paga aparte)",
     ],
     subTituloDesc:
-      "Nueve niveles en orden: cada uno se apoya en el anterior y podés saltear lo que ya sabés. Tocá un nivel para ver sus módulos.",
+      "Seis niveles en orden: cada uno se apoya en el anterior y podés saltear lo que ya sabés. Tocá un nivel para ver sus módulos.",
     gancho: "De tu primera fórmula a automatizar tus planillas con Apps Script e IA.",
     metaDescripcion:
-      `Master en Excel y Google Sheets con IA desde cero: ${CLASES_EXCEL} clases, más de 80 horas, Power Query, VBA y Apps Script. Preventa a $59.900 hasta el ${EXCEL_FECHA_TEXTO}.`,
-    nivel: "Desde cero · Hasta nivel experto",
+      `Master en Excel y Google Sheets con IA desde cero: ${CLASES_EXCEL} clases animadas, más de 12 horas, Power Query, VBA y Apps Script. Preventa a $59.900 hasta el ${EXCEL_FECHA_TEXTO}.`,
+    nivel: "Desde cero · Hasta nivel avanzado",
     requisitos:
-      "No. El curso arranca desde cero: ni siquiera hace falta haber abierto Excel. En VBA y Apps Script te enseñamos la lógica que necesitás. Para los primeros niveles alcanza con Excel para la web o Google Sheets, que son gratis; para Power Query, Power Pivot, macros y VBA necesitás Excel de escritorio. En esta página tenés el detalle por nivel.",
+      "No. El curso arranca desde cero: ni siquiera hace falta haber abierto Excel. En VBA y Apps Script te enseñamos la lógica que necesitás. Para los primeros niveles alcanza con Excel para la web o Google Sheets, que son gratis; para Power Query, macros y VBA necesitás Excel de escritorio. En esta página tenés el detalle por nivel.",
     paraQuien: [
       "Trabajás con planillas y perdés horas en tareas que deberían salir solas",
       "Arrancás de cero o sabés lo básico y querés llegar a nivel avanzado sin comprar un curso por nivel",
@@ -829,9 +831,9 @@ export const CURSOS_GRABADOS = {
     // Secciones propias de este curso: las dibuja src/components/Courses/BloquesCurso.jsx
     cifras: [
       { valor: String(CLASES_EXCEL), rotulo: "clases" },
-      { valor: "+80", rotulo: "horas de video" },
+      { valor: "+12", rotulo: "horas de video" },
       { valor: String(MODULOS_EXCEL.length), rotulo: "módulos" },
-      { valor: "9", rotulo: "proyectos" },
+      { valor: "8", rotulo: "proyectos" },
     ],
     dato: {
       texto:
@@ -840,31 +842,29 @@ export const CURSOS_GRABADOS = {
       url: "https://www.forbesargentina.com/liderazgo/que-trabajos-buscan-hoy-empresas-argentinas-cuales-son-habilidades-mas-requeridas-n95419/amp",
     },
     pilares: [
-      { titulo: "Excel", texto: "Fórmulas, tablas dinámicas, gráficos, Power Query, Power Pivot, tableros, macros y VBA." },
-      { titulo: "Google Sheets", texto: "QUERY, IMPORTRANGE, trabajo en equipo, Looker Studio y una app sin código con AppSheet." },
-      { titulo: "Apps Script", texto: "Mails, presupuestos en PDF, avisos de vencimientos y cotización del dólar, todo desde tu planilla." },
+      { titulo: "Excel", texto: "Fórmulas, tablas dinámicas, gráficos, Power Query, tableros, macros y VBA." },
+      { titulo: "Google Sheets", texto: "QUERY, IMPORTRANGE, trabajo en equipo y formularios que cargan tu planilla." },
+      { titulo: "Apps Script", texto: "Mails, avisos de vencimientos, menús y tareas automáticas, todo desde tu planilla." },
       { titulo: "IA", texto: "Pedir y explicar fórmulas con un chat gratis, y qué aportan Copilot y Gemini." },
     ],
     niveles: NIVELES_EXCEL,
     novedades: {
       titulo: "Actualizado a noviembre de 2026",
-      intro: "El temario ya incluye lo último que sumaron Microsoft y Google:",
+      intro: "El temario tiene en cuenta lo último que sumaron Microsoft y Google:",
       items: [
-        { titulo: "Copilot en Excel", texto: "Agent Mode, la habilidad que encuentra y corrige datos sucios, y cómo crear habilidades propias." },
-        { titulo: "Gemini en Sheets", texto: "Armar o editar una planilla entera con un pedido en español, corregir fórmulas y completar columnas citando sus fuentes." },
-        { titulo: "Funciones modernas", texto: "BUSCARX, FILTRAR, LET, LAMBDA, AGRUPARPOR, PIVOTARPOR y las funciones REGEX." },
-        { titulo: "Apps Script", texto: "Conectar tus planillas con una IA desde el código, con las opciones que Google sumó en 2026." },
+        { titulo: "Copilot en Excel", texto: "Qué agregan Agent Mode y la habilidad que encuentra y corrige datos sucios." },
+        { titulo: "Gemini en Sheets", texto: "Qué hace al armar una planilla con un pedido en español, corregir fórmulas y completar columnas." },
+        { titulo: "Funciones modernas", texto: "BUSCARX, FILTRAR, UNICOS y LET, y cómo resolverlo si tenés una versión anterior." },
+        { titulo: "Un chat de IA gratis", texto: "Cómo pedirle fórmulas sin pagar nada y verificar lo que responde." },
       ],
       nota:
-        "Copilot y Gemini necesitan planes pagos de Microsoft o Google, y cambian seguido. No hace falta pagarlos para hacer el curso: esas clases sirven como demostración y el resto de la IA se trabaja con un chat gratis.",
+        "Copilot y Gemini necesitan planes pagos de Microsoft o Google, y cambian seguido. No hace falta pagarlos: te contamos qué agregan para que decidas, y la IA del curso se trabaja con un chat gratis.",
     },
     requisitosPorNivel: [
       { nivel: "Niveles 1 y 2", necesitas: "Excel para la web, gratis con una cuenta de Microsoft, o Google Sheets: alcanzan para practicar casi todo." },
-      { nivel: "Nivel 3", necesitas: "BUSCARX y FILTRAR piden Excel 2021, 2024 o Microsoft 365. LAMBDA, Excel 2024 o Microsoft 365. AGRUPARPOR y PIVOTARPOR, Microsoft 365. También vemos cómo resolverlo en versiones anteriores." },
-      { nivel: "Nivel 4", necesitas: "Power Query viene en Excel para Windows desde 2016 y en Microsoft 365 para Mac, con menos orígenes de datos. Power Pivot y Power BI Desktop necesitan Windows." },
-      { nivel: "Nivel 5", necesitas: "Las macros y VBA necesitan Excel de escritorio: no corren en el navegador. Office Scripts y Python en Excel dependen del plan de Microsoft y se ven como demostración." },
-      { nivel: "Niveles 6 y 7", necesitas: "Una cuenta de Google gratis." },
-      { nivel: "Nivel 8", necesitas: "Un chat de IA gratis. Copilot y Gemini dentro de la planilla necesitan un plan pago y se ven como demostración." },
+      { nivel: "Nivel 3", necesitas: "FILTRAR, UNICOS y LET piden Excel 2021, 2024 o Microsoft 365. Power Query viene en Excel para Windows desde 2016 y en Microsoft 365 para Mac, con menos orígenes de datos." },
+      { nivel: "Nivel 4", necesitas: "Una cuenta de Google gratis." },
+      { nivel: "Nivel 5", necesitas: "Las macros y VBA necesitan Excel de escritorio: no corren en el navegador. Para Apps Script alcanza con una cuenta de Google gratis, y para la IA, con un chat gratis." },
     ],
     siguientePaso: {
       titulo: "Y cuando termines, seguí con Scripting",
@@ -875,7 +875,11 @@ export const CURSOS_GRABADOS = {
     preguntasExtra: [
       {
         q: "¿Qué incluye el curso y cuándo está?",
-        a: `El ${EXCEL_FECHA_TEXTO} se habilitan en tu carpeta de Google Drive las ${CLASES_EXCEL} clases, con más de 80 horas de video, los archivos de práctica y los 9 proyectos. Hasta ese día la carpeta está vacía, y es normal.`,
+        a: `El ${EXCEL_FECHA_TEXTO} se habilitan en tu carpeta de Google Drive las ${CLASES_EXCEL} clases, con más de 12 horas de video, los archivos de práctica y los 8 proyectos. Hasta ese día la carpeta está vacía, y es normal.`,
+      },
+      {
+        q: "¿Cómo son las clases?",
+        a: "Son videos animados y cortos que muestran la planilla paso a paso, con voz generada con IA. Mirás cada clase y practicás con su archivo, a tu ritmo.",
       },
       {
         q: "¿Por qué Excel y Google Sheets en el mismo curso?",
@@ -883,7 +887,7 @@ export const CURSOS_GRABADOS = {
       },
       {
         q: "¿Tengo que pagar Copilot o Gemini?",
-        a: "No. El curso se puede hacer completo sin esos planes: la IA se trabaja con un chat gratis, y las clases de Copilot y Gemini te muestran qué agregan para que decidas si te conviene pagarlos.",
+        a: "No. El curso se puede hacer completo sin esos planes: la IA se trabaja con un chat gratis, y te contamos qué agregan Copilot y Gemini para que decidas si te conviene pagarlos.",
       },
       {
         q: "¿Qué diferencia hay con el Curso de Scripting con IA?",
@@ -891,7 +895,7 @@ export const CURSOS_GRABADOS = {
       },
       {
         q: "¿El curso incluye una certificación de Microsoft?",
-        a: "No. Incluye dos simulacros orientados al examen Microsoft Office Specialist: Excel Associate (MO-210) y te explicamos cómo anotarte. El examen se paga aparte, su precio depende del país y se puede rendir en español. Microsoft recomienda llegar con unas 150 horas de formación y práctica. WEARESRV no es un centro oficial ni está afiliado a Microsoft ni a Google. Además, al terminar podés rendir nuestro examen final en vivo y obtener el certificado verificable de WEARESRV, sin costo extra.",
+        a: "No. WEARESRV no es un centro oficial ni está afiliado a Microsoft ni a Google. Al terminar podés rendir nuestro examen final en vivo y obtener el certificado verificable de WEARESRV, sin costo extra.",
       },
     ],
     modulos: MODULOS_EXCEL,
@@ -1001,10 +1005,9 @@ CURSOS_GRABADOS["excel-scripting"] = {
   beneficios: [
     `Ahorrás ${formatearPrecio(AHORRO_COMBO_EXCEL)} frente a comprarlos por separado`,
     "Acceso vitalicio a las dos carpetas en Google Drive",
-    `Excel: ${EXCEL.clases} clases y más de 80 horas de video, con archivos de práctica y 9 proyectos`,
+    `Excel: ${EXCEL.clases} clases animadas y más de 12 horas de video, con archivos de práctica y 8 proyectos`,
     `Scripting: ${SCRIPTING.clases} clases y más de 59 horas, ya disponibles para arrancar hoy`,
     "Automatización con IA en los dos cursos",
-    "Dos simulacros orientados al examen Microsoft MO-210 (el examen se paga aparte)",
   ],
   subTituloDesc: "Dos cursos, un solo camino: primero dominás las planillas y después aprendés a programar para automatizar todo lo demás.",
   gancho: "Dominá tus planillas y después aprendé a programar para automatizar todo lo demás.",
@@ -1020,7 +1023,7 @@ CURSOS_GRABADOS["excel-scripting"] = {
   cifras: [
     { valor: String(EXCEL.clases + SCRIPTING.clases), rotulo: "clases" },
     { valor: "2", rotulo: "cursos" },
-    { valor: "+139", rotulo: "horas de video" },
+    { valor: "+71", rotulo: "horas de video" },
     { valor: "1", rotulo: "solo pago" },
   ],
   dato: EXCEL.dato,

@@ -65,7 +65,7 @@ const PROXIMOS = [
     tag: "Preventa",
     salida: "Las clases se habilitan el 1 de enero de 2027",
     texto:
-      "Excel y Google Sheets desde cero hasta Power Query, tableros, VBA y Apps Script, con IA y casos reales de Argentina: 255 clases y más de 80 horas de video.",
+      "Excel y Google Sheets desde cero hasta Power Query, tableros, VBA y Apps Script, con IA y casos reales de Argentina: 120 clases animadas y más de 12 horas de video.",
     para: "Para quienes trabajan con planillas, buscan empleo en administración o tienen una pyme.",
     curso: "excel",
   },

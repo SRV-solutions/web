@@ -81,8 +81,9 @@ así que nada se sube ni se mergea sin el OK de Marcos.
       («Nueva versión»): con el script de compras viejo, un pago de Redes queda como SIN_CURSO sin avisar a nadie.
       Después corre `avisarPreventaRedes()` (script de Fundamentos) para avisarle a la lista de espera; el 27/01
       sube las clases y corre `avisarAperturaRedes()`, y el 3/02 sube los simulacros.
-- [ ] **Preventa del Master en Excel y Sheets con IA** (rama `curso-excel`, 6/11/2026): 255 clases en 32 módulos y
-      9 niveles (`src/data/temarioExcel.js`), más de 80 horas prometidas. Página `/excel/inscripcion`, preventa a
+- [ ] **Preventa del Master en Excel y Sheets con IA** (publicada el 6/11/2026 con 255 clases y achicada el 7/11, porque
+      Marcos no quiere grabar: todo con animación y voz de IA): 120 clases en 18 módulos y 6 niveles
+      (`src/data/temarioExcel.js`), más de 12 horas prometidas. Mismos precios. Página `/excel/inscripcion`, preventa a
       $59.900 hasta el 1/01/2027 (después $89.900), cuando se habilitan todas las clases. Combo con Scripting:
       $69.900 en preventa y $99.900 después; se elige con el selector de la página de Excel o sumando los dos desde
       cualquier página (`normalizarSet`). Entra en «Sumá a tu compra» de los demás cursos, menos Redes durante su

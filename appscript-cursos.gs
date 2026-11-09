@@ -152,7 +152,7 @@ var CURSOS = {
       hasta: new Date("2027-01-01T00:00:00-03:00"), // misma fecha que netlify/lib/cursos.js
       precioMinimo: 59900,
       fechaTexto: "1 de enero de 2027",
-      queEncontrara: "las 255 clases del curso"
+      queEncontrara: "las 120 clases del curso"
     },
     folderId: "1fjdRyi98q3bO3dQHJRGqju9Ar8hHfOQq" // "Master en Excel y Sheets con IA: EXCEL Y SHEETS"
   },
@@ -166,8 +166,8 @@ var CURSOS = {
       hasta: new Date("2027-01-01T00:00:00-03:00"), // misma fecha que netlify/lib/cursos.js
       precioMinimo: 69900,
       fechaTexto: "1 de enero de 2027",
-      queEncontrara: "en la carpeta de Master en Excel y Sheets con IA las 255 clases del curso (las de Scripting ya están en la suya)",
-      queEncontraraEnPack: "en la carpeta de Master en Excel y Sheets con IA las 255 clases del curso"
+      queEncontrara: "en la carpeta de Master en Excel y Sheets con IA las 120 clases del curso (las de Scripting ya están en la suya)",
+      queEncontraraEnPack: "en la carpeta de Master en Excel y Sheets con IA las 120 clases del curso"
     },
     incluye: ["excel", "scripting"]
   },

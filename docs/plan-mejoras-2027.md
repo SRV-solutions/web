@@ -88,7 +88,8 @@ así que nada se sube ni se mergea sin el OK de Marcos.
       $69.900 en preventa y $99.900 después; se elige con el selector de la página de Excel o sumando los dos desde
       cualquier página (`normalizarSet`). Entra en «Sumá a tu compra» de los demás cursos, menos Redes durante su
       campaña. Publicado el 6/11/2026, con el script y su carpeta de Drive cargados. El 1/01/2027 Marcos sube las
-      clases y corre `avisarAperturaExcel()`. La última clase recomienda Scripting.
+      clases y corre `avisarAperturaExcel()`. La última clase recomienda Scripting. El 9/11/2026 el mail de compra del
+      script pasó de «255 clases» a «120 clases» (curso solo y combo): Marcos pega la nueva versión.
 - [ ] **Escalera de «Sumá a tu compra» y «Llevate todos»** (rama `curso-excel`, 6/11/2026, pedido de Marcos: que
       sumar cursos se sienta muy conveniente): los cursos se ordenan de mayor a menor precio, el primero va entero, el
       2.º tiene $30.000 de descuento, el 3.º $50.000, el 4.º $70.000 y del 5.º en adelante van de regalo

@@ -347,7 +347,7 @@ export default function Home() {
             </span>
             <span className={styles.gameCta}>Jugar →</span>
           </Link>
-          <Link target="_blank" to="https://dev-clicker-jade.vercel.app/" className={styles.gameBanner}>
+          <Link target="_blank" to="https://dev-clicker.wearesrv.com/" className={styles.gameBanner}>
             <span className={styles.gameIcon}>{"🏢"}</span>
             <span className={styles.gameText}>
               <strong>Jugá gratis a Dev Clicker</strong>

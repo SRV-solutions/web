@@ -85,7 +85,7 @@ const menuData = [
     disabled: false,
     links: [
       { label: "El Develop", to: "/el-develop", isNew: true },
-      { label: "Dev Clicker", to: "https://dev-clicker-jade.vercel.app/", isNew: true },
+      { label: "Dev Clicker", to: "https://dev-clicker.wearesrv.com/", isNew: true },
     ],
   },
   {

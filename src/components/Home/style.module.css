@@ -291,8 +291,10 @@
 }
 
 .painEmoji {
+  flex-shrink: 0;
   font-size: 1.8rem;
   line-height: 1;
+  color: #f6950a;
 }
 
 .painAnswer {
@@ -468,6 +470,15 @@
   flex-shrink: 0;
   font-size: 1.4rem;
   line-height: 1;
+}
+
+/* Ícono del banner con el color de su borde: naranja en los combos, verde en los cursos nuevos */
+.comboBanner .kidsIcon {
+  color: #f6950a;
+}
+
+.kidsBanner .kidsIcon {
+  color: #30a05a;
 }
 
 .liveBanner strong {

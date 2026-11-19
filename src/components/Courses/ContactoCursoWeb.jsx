@@ -3,6 +3,8 @@ import styles from "./ContactoCursoWeb.module.css";
 import { trackConversion } from "../../data/metaPixel";
 import Seo from "../Seo";
 import { Link } from "react-router-dom";
+import Icono from "../Icono";
+import { LuCheck, LuFlame, LuLightbulb, LuLock } from "react-icons/lu";
 
 // Inscripción + pago: la función crea el link de Mercado Pago del alumno y carga la fila
 // en el Sheet "Curso FullStack" (ver netlify/functions/inscripcion-intensivo.js).
@@ -497,11 +499,14 @@ function ContactoCursoWeb() {
               {/* Tarjeta de precio según el plan */}
               <div className={styles.promoCard} aria-live="polite">
                 <div className={styles.promoBadge}>
-                  {esFull
-                    ? preventaActiva
-                      ? "🔥 Preventa Early Bird · hasta el 20/12"
-                      : "🔥 Pack Fullstack · Ahorrás $80.000"
-                    : oferta.nombre}
+                  {esFull ? (
+                    <>
+                      <Icono de={LuFlame} />{" "}
+                      {preventaActiva ? "Preventa Early Bird · hasta el 20/12" : "Pack Fullstack · Ahorrás $80.000"}
+                    </>
+                  ) : (
+                    oferta.nombre
+                  )}
                 </div>
 
                 <div className={styles.priceContainer}>
@@ -530,7 +535,9 @@ function ContactoCursoWeb() {
                   <Countdown hasta={EARLY_BIRD_HASTA} onExpire={terminarPreventa} />
                 )}
 
-                <div className={styles.monthlyPerk}>💡 {oferta.resumen}</div>
+                <div className={styles.monthlyPerk}>
+                  <Icono de={LuLightbulb} /> {oferta.resumen}
+                </div>
 
                 {!esFull && (
                   <button
@@ -709,7 +716,7 @@ function ContactoCursoWeb() {
                 )}
                 {formularioListo && !errorEnvio && (
                   <span className={styles.formHint}>
-                    🔒 Pagás en Mercado Pago (tarjeta, débito o dinero en cuenta). Si preferís
+                    <Icono de={LuLock} /> Pagás en Mercado Pago (tarjeta, débito o dinero en cuenta). Si preferís
                     transferencia, te enviamos los datos por mail.
                   </span>
                 )}
@@ -721,7 +728,9 @@ function ContactoCursoWeb() {
               </form>
             ) : (
               <div className={styles.successMessage}>
-                <div className={styles.successIcon}>✓</div>
+                <div className={styles.successIcon}>
+                  <Icono de={LuCheck} />
+                </div>
                 <h3>¡Inscripción recibida!</h3>
                 <p>
                   Te enviamos un mail con el link para pagar{" "}

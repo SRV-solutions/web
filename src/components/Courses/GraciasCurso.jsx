@@ -4,22 +4,24 @@ import { useSearchParams, Link } from "react-router-dom";
 import { trackEvent, setHashedUserData, getMetaCookies } from "../../data/metaPixel";
 import { CURSOS_GRABADOS, estaEnPreventa, nombreCurso } from "../../data/cursosGrabados";
 import { cursosDePack } from "../../data/packs";
+import Icono from "../Icono";
+import { LuCircleCheck, LuCircleX, LuHourglass, LuInfo, LuLoaderCircle } from "react-icons/lu";
 
 const MENSAJES = {
   approved: {
-    icono: "✓",
+    icono: LuCircleCheck,
     color: "#00bf63",
     titulo: "¡Pago Confirmado con Éxito!",
     texto: "Hemos recibido tu pago correctamente. En los próximos minutos recibirás el acceso al material en tu Email.",
   },
   pending: {
-    icono: "⏳",
+    icono: LuHourglass,
     color: "#f6950a",
     titulo: "Tu pago está pendiente",
     texto: "Apenas Mercado Pago lo acredite, te enviamos el acceso al material por Email automáticamente.",
   },
   rejected: {
-    icono: "✕",
+    icono: LuCircleX,
     color: "#ff4d4f",
     titulo: "El pago no se pudo completar",
     texto: "Mercado Pago rechazó la operación. Podés intentarlo de nuevo con otro medio de pago.",
@@ -99,7 +101,7 @@ export default function GraciasCurso({ cursoKey }) {
   }, [paymentId, cursoKey]);
 
   let mensaje = MENSAJES[estado] || {
-    icono: estado === "loading" ? "…" : "ℹ",
+    icono: estado === "loading" ? LuLoaderCircle : LuInfo,
     color: "#0b78fb",
     titulo: estado === "loading" ? "Verificando tu pago..." : "Estamos procesando tu compra",
     texto: estado === "loading"
@@ -119,7 +121,9 @@ export default function GraciasCurso({ cursoKey }) {
   return (
     <div style={{ padding: "4rem 2rem", textAlign: "center", color: "#fff", backgroundColor: "#000", minHeight: "70vh" }}>
       <Seo title="¡Gracias por tu compra! | WEARESRV" description="Confirmación de compra en WEARESRV." path={`/${curso.ruta}/gracias`} noindex />
-      <div style={{ fontSize: "3rem", color: mensaje.color }}>{mensaje.icono}</div>
+      <div style={{ fontSize: "3rem", lineHeight: 1, color: mensaje.color }}>
+        <Icono de={mensaje.icono} />
+      </div>
       <h1 style={{ fontSize: "2rem", marginTop: "1rem" }}>{mensaje.titulo}</h1>
       <p style={{ fontSize: "1.1rem", color: "#ccc", maxWidth: "600px", margin: "1rem auto" }}>
         {mensaje.texto}

@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import Seo from "../Seo";
 import styles from "./style.module.css";
 import { whatsappLink } from "../../data/legal";
+import Icono from "../Icono";
+import { LuCircleCheck, LuClapperboard } from "react-icons/lu";
 
 // Contenido gratuito para gente que empieza en el mundo de la IA (plan 2027).
 // El video y la guía de cada tema están en la carpeta de Drive «Fundamentos IA · WEARESRV», que llega por mail
@@ -103,10 +105,12 @@ export default function FundamentosIA() {
                   </a>
                 ) : t.enCarpeta ? (
                   <a className={styles.disponible} href="#registro">
-                    ✅ Video y guía disponibles
+                    <Icono de={LuCircleCheck} /> Video y guía disponibles
                   </a>
                 ) : (
-                  <span className={styles.enCamino}>🎬 En camino</span>
+                  <span className={styles.enCamino}>
+                    <Icono de={LuClapperboard} /> En camino
+                  </span>
                 )}
                 {t.guia && (
                   <a className={styles.btnGuia} href={t.guia} target="_blank" rel="noopener noreferrer">
@@ -126,7 +130,7 @@ export default function FundamentosIA() {
           </p>
           {envio === "listo" ? (
             <p className={styles.registroOk}>
-              ✅ ¡Listo! Te llega por correo el acceso a la carpeta con los videos y las guías (si no lo ves, revisá
+              <Icono de={LuCircleCheck} /> ¡Listo! Te llega por correo el acceso a la carpeta con los videos y las guías (si no lo ves, revisá
               el spam).
             </p>
           ) : (

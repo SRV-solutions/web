@@ -4,6 +4,8 @@ import Seo from "../Seo";
 import styles from "./style.module.css";
 import { whatsappLink } from "../../data/legal";
 import { CURSOS_GRABADOS, estaEnPreventa, formatearPrecio, enCyber, CYBER_FECHAS } from "../../data/cursosGrabados";
+import Icono from "../Icono";
+import { LuCalendar, LuCircleCheck } from "react-icons/lu";
 
 // Próximos cursos con lista de espera (plan 2027, Tanda 2). El formulario postea a
 // netlify/functions/lista-espera.js, que lo guarda en la pestaña "Lista de espera" del Apps Script
@@ -153,7 +155,9 @@ export default function ProximosCursos() {
               <article key={c.key} className={`${styles.card} ${destacado === c.key ? styles.cardDestacada : ""}`}>
                 <span className={styles.cardTag}>{c.tag}</span>
                 <h2>{c.nombre}</h2>
-                <p className={styles.salida}>📅 {c.salida}</p>
+                <p className={styles.salida}>
+                  <Icono de={LuCalendar} /> {c.salida}
+                </p>
                 <p>{c.texto}</p>
                 <p className={styles.para}>{c.para}</p>
                 {curso ? (
@@ -201,7 +205,7 @@ export default function ProximosCursos() {
           {envio === "listo" ? (
             <div className={styles.registroOk}>
               <p>
-                ✅ ¡Listo! Quedaste en la lista de espera de <strong>{anotadoEn}</strong>. Te llega un mail de
+                <Icono de={LuCircleCheck} /> ¡Listo! Quedaste en la lista de espera de <strong>{anotadoEn}</strong>. Te llega un mail de
                 confirmación.
               </p>
               <button

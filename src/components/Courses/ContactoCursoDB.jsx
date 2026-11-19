@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import styles from './ContactoCursoDB.module.css';
+import Icono from "../Icono";
+import { LuCheck } from "react-icons/lu";
 
 const GOOGLE_FORM_ACTION_URL =
   'https://docs.google.com/forms/d/1MLXh7nuJk4cNT4iT0jhOMOFq-sCXUTcegs85lbZgfWU/formResponse';
@@ -138,7 +140,9 @@ export default function ContactoCursoDB() {
               </>
             ) : (
               <div className={styles.successMessage}>
-                <div className={styles.successIcon}>✓</div>
+                <div className={styles.successIcon}>
+              <Icono de={LuCheck} />
+            </div>
                 <h3>¡Inscripción recibida!</h3>
                 <p>Nos pondremos en contacto contigo para coordinar el acceso a las clases.</p>
               </div>

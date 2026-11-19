@@ -127,6 +127,9 @@ así que nada se sube ni se mergea sin el OK de Marcos.
       cursos sin preventa (Scripting $60.000, Python $450.000, JavaScript $350.000, Backend Avanzado $420.000,
       C# $390.000), sabiendo el riesgo de publicidad engañosa (DNU 274/2019). Durante el Cyber el tachado es
       el precio de lista real, como dicen las bases.
+- [x] Precios tachados de referencia (19/11/2026, decisión de Marcos): se sacan otra vez, después de revisar
+      precios de mercado y ventas reales con el consejo. Solo quedan tachados los precios reales: el de después
+      de una preventa con fecha, la suma de las partes de un combo y, durante una promo con fecha, el de lista.
 - [x] Página de venta de `/sentryx` (5/11/2026, brief del equipo de Sentryx): hero, antes y después, seis bloques con
       capturas (`public/sentryx-landing/`), por qué ahora, roles, seguridad, planes con lo que hace la plataforma,
       cómo empezamos, preguntas frecuentes y cierre con QR. Objetivo único: pedir la demo por WhatsApp. Los textos

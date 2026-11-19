@@ -4,6 +4,8 @@ import Seo from "../Seo";
 import styles from "./style.module.css";
 import { CURSOS_GRABADOS, estaEnPreventa, textoPreventa } from "../../data/cursosGrabados";
 import { INTRO, VOCABULARIO, SECCIONES } from "./Guia";
+import Icono from "../Icono";
+import { LuCircleCheck, LuLock, LuLockOpen } from "react-icons/lu";
 
 // Guía gratis de los clips de Redes (Reels, Shorts y TikTok): las descripciones dicen «La guía gratis está en
 // wearesrv.com/redes». La introducción y la sección 1 se leen abiertas; el resto y el PDF se desbloquean con el
@@ -88,7 +90,7 @@ export default function GuiaRedes() {
           </a>
         ) : (
           <a className={styles.btnDescargar} href="#desbloquear">
-            🔓 Desbloquear la guía gratis
+            <Icono de={LuLockOpen} /> Desbloquear la guía gratis
           </a>
         )}
 
@@ -105,7 +107,13 @@ export default function GuiaRedes() {
               <div className={styles.cardCabecera}>
                 <span className={styles.palabra}>{s.palabra}</span>
                 <span className={styles.seccion}>
-                  {desbloqueada || s.num === 1 ? `Sección ${s.num}` : `🔒 Sección ${s.num}`}
+                  {desbloqueada || s.num === 1 ? (
+                    `Sección ${s.num}`
+                  ) : (
+                    <>
+                      <Icono de={LuLock} /> Sección {s.num}
+                    </>
+                  )}
                 </span>
               </div>
               <h3>{s.titulo}</h3>
@@ -120,7 +128,8 @@ export default function GuiaRedes() {
           {desbloqueada ? (
             <>
               <div className={styles.desbloqueada}>
-                <p>✅ ¡Listo! Ya tenés la guía completa. Seguí leyendo acá o bajala para tenerla siempre a mano.</p>
+                <p>
+                  <Icono de={LuCircleCheck} /> ¡Listo! Ya tenés la guía completa. Seguí leyendo acá o bajala para tenerla siempre a mano.</p>
                 <a className={styles.btnSecundario} href={GUIA_PDF} target="_blank" rel="noopener noreferrer">
                   ⤓ Descargar el PDF
                 </a>

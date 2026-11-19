@@ -3,6 +3,8 @@ import { useParams, Link } from 'react-router-dom';
 import styles from './style.module.css';
 import Seo from '../Seo';
 import logoSRV from '/SRV-LOGO.png'; // Ajusta la ruta a tu archivo logo.png
+import Icono from "../Icono";
+import { LuX } from "react-icons/lu";
 
 const GOOGLE_SHEET_CSV_URL =
   'https://docs.google.com/spreadsheets/d/e/2PACX-1vS24rJruNALBJYy9zfrp0x8jIPjilekUYscu3HNlRnh6Jwt2QzgyqFGiZFAgdlYrruCb_g3wulmHVm1/pub?output=csv';
@@ -76,7 +78,9 @@ export default function Certificates() {
 
       {error && !loading && (
         <div className={styles.errorCard}>
-          <div className={styles.errorIcon}>✕</div>
+          <div className={styles.errorIcon}>
+            <Icono de={LuX} />
+          </div>
           <h3>Certificado No Encontrado</h3>
           <p>{error}</p>
           <Link to="/" className={styles.btnBack}>

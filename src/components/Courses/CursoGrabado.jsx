@@ -6,6 +6,8 @@ import { trackConversion, getMetaCookies } from "../../data/metaPixel";
 import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, comboQueIncluye, linkInscripcion, nombreCurso, enCyber, precioSeparado, CYBER_FECHAS } from "../../data/cursosGrabados";
 import { CURSOS_TODO, agregablesPara, infoPack, linkPackTodo, normalizarSet, packTodo, setValido, pitchUnidad, unidadesDeParametro, enCampaniaRedes } from "../../data/packs";
 import { ResumenCurso, DetallesCurso, EscaleraPack, MedidorAhorro, PrecioAnimado } from "./BloquesCurso";
+import Icono from "../Icono";
+import { LuBot, LuCheck, LuFlame, LuGift, LuGraduationCap, LuLock, LuRocket, LuSparkles, LuTarget, LuTrophy, LuZap } from "react-icons/lu";
 
 const DISCORD_URL = "https://discord.com/invite/QuAmDxrNMu";
 const WHATSAPP_URL = "https://wa.me/5491123869799?text=" + encodeURIComponent("Hola, tengo una consulta sobre los cursos");
@@ -131,7 +133,7 @@ export default function CursoGrabado({ cursoKey }) {
   const producto = CURSOS_GRABADOS[seleccion] || curso;
   const tituloProducto = [producto.tituloInicio, producto.tituloDestacado, producto.tituloFin].filter(Boolean).join(" ");
   const buyRef = useRef(null);
-  // Descuento contra precioRegular (preventa, combo o precio de referencia): ver la nota de cursosGrabados.js
+  // Solo hay descuento si precioRegular es un precio real (preventa con fecha o combo): ver cursosGrabados.js
   const descuento = producto.precioRegular > producto.precio ? Math.round((1 - producto.precio / producto.precioRegular) * 100) : 0;
   const tituloCompleto = [curso.tituloInicio, curso.tituloDestacado, curso.tituloFin].filter(Boolean).join(" ");
   const preventa = estaEnPreventa(producto);
@@ -251,7 +253,7 @@ export default function CursoGrabado({ cursoKey }) {
   const todoAca = faltanParaTodo.every((k) => agregables.includes(k));
   const contenidoTodo = todo && (
     <>
-      <strong>🚀 Llevate los {todo.cantidadCursos} cursos por {formatearPrecio(todo.precio)}</strong>
+      <strong><Icono de={LuRocket} /> Llevate los {todo.cantidadCursos} cursos por {formatearPrecio(todo.precio)}</strong>
       <span>
         Uno por uno: <s>{formatearPrecio(todo.precioSeparado)}</s> · ahorrás {formatearPrecio(todo.ahorro)} (
         {Math.round((todo.ahorro / todo.precioSeparado) * 100)}% OFF)
@@ -463,7 +465,7 @@ export default function CursoGrabado({ cursoKey }) {
               {/* Con todos los cursos tildados, la tarjeta deja de hablar de un solo curso y muestra lo que se lleva */}
               {llevaTodo ? (
                 <>
-                  <div className={styles.badge}>🏆 Todos los cursos en un solo pago</div>
+                  <div className={styles.badge}><Icono de={LuTrophy} /> Todos los cursos en un solo pago</div>
                   <h1 className={styles.title}>
                     Llevate <span className={styles.orange}>los {pack.cantidadCursos} cursos</span>
                   </h1>
@@ -473,7 +475,7 @@ export default function CursoGrabado({ cursoKey }) {
                   <ul className={styles.incluyeList}>
                     {pack.cursos.map((c) => (
                       <li key={c.key}>
-                        ✓ <strong>{nombreCorto(c)}</strong> · {c.clases} clases · {formatearPrecio(c.precio)}
+                        <Icono de={LuCheck} /> <strong>{nombreCorto(c)}</strong> · {c.clases} clases · {formatearPrecio(c.precio)}
                       </li>
                     ))}
                   </ul>
@@ -481,7 +483,15 @@ export default function CursoGrabado({ cursoKey }) {
               ) : (
                 <>
                   <div className={styles.badge}>
-                    {preventa ? `🚀 Preventa · las clases se habilitan el ${fechaAcceso}` : "⚡ Acceso inmediato y de por vida"}
+                    {preventa ? (
+                      <>
+                        <Icono de={LuRocket} /> Preventa · las clases se habilitan el {fechaAcceso}
+                      </>
+                    ) : (
+                      <>
+                        <Icono de={LuZap} /> Acceso inmediato y de por vida
+                      </>
+                    )}
                   </div>
                   <h1 className={styles.title}>
                     {producto.tituloInicio} <span className={styles.orange}>{producto.tituloDestacado}</span>
@@ -495,7 +505,7 @@ export default function CursoGrabado({ cursoKey }) {
                 <ul className={styles.incluyeList}>
                   {incluye.map((c) => (
                     <li key={c.key}>
-                      ✓{" "}
+                      <Icono de={LuCheck} />{" "}
                       {opciones.some((op) => op.key === c.key) ? (
                         <button type="button" className={styles.linkBtn} onClick={() => setSeleccion(c.key)}>
                           {nombreCorto(c)}
@@ -508,26 +518,27 @@ export default function CursoGrabado({ cursoKey }) {
                   ))}
                 </ul>
               )}
-              {!llevaTodo && <p className={styles.level}>🎯 {producto.nivel}</p>}
+              {!llevaTodo && <p className={styles.level}><Icono de={LuTarget} /> {producto.nivel}</p>}
 
               <div className={styles.promoCard}>
                 <div className={styles.promoHeader}>
                   {cuponAplicado ? (
-                    <span className={styles.promoBadge}>🎓 Precio para alumnos de SRV</span>
+                    <span className={styles.promoBadge}><Icono de={LuGraduationCap} /> Precio para alumnos de SRV</span>
                   ) : pack ? (
                     <span className={styles.promoBadge}>
-                      🎁 {pack.cantidadCursos} cursos · {Math.round((pack.ahorro / pack.precioSeparado) * 100)}% OFF
+                      <Icono de={LuGift} /> {pack.cantidadCursos} cursos · {Math.round((pack.ahorro / pack.precioSeparado) * 100)}% OFF
                     </span>
                   ) : (
                     descuento > 0 && (
                       <span className={styles.promoBadge}>
+                        <Icono de={producto.combo && !cyber && !preventa ? LuGift : LuFlame} />{" "}
                         {cyber
-                          ? `🔥 Cyber SRV · ${descuento}% OFF`
+                          ? `Cyber SRV · ${descuento}% OFF`
                           : preventa
-                            ? `🔥 Precio de preventa · ${descuento}% OFF`
+                            ? `Precio de preventa · ${descuento}% OFF`
                             : producto.combo
-                              ? `🎁 Combo · ahorrás ${formatearPrecio(producto.precioRegular - producto.precio)}`
-                              : `🔥 ${descuento}% OFF · Precio promocional`}
+                              ? `Combo · ahorrás ${formatearPrecio(producto.precioRegular - producto.precio)}`
+                              : `${descuento}% OFF · Precio promocional`}
                       </span>
                     )
                   )}
@@ -607,7 +618,7 @@ export default function CursoGrabado({ cursoKey }) {
                 {producto.cuponAlumnos && (
                   <form className={styles.cuponBox} onSubmit={aplicarCupon}>
                     <label htmlFor="cupon-alumnos" className={styles.cuponTitle}>
-                      🎓 ¿Sos alumno de SRV? Ingresá tu código
+                      <Icono de={LuGraduationCap} /> ¿Sos alumno de SRV? Ingresá tu código
                     </label>
                     {cuponAplicado ? (
                       <p className={styles.cuponOk}>
@@ -653,7 +664,7 @@ export default function CursoGrabado({ cursoKey }) {
               )}
               {botonPago()}
               <p className={styles.secureText}>
-                🔒 Pago 100% seguro procesado por Mercado Pago.{" "}
+                <Icono de={LuLock} /> Pago 100% seguro procesado por Mercado Pago.{" "}
                 {enPreventaCompra.length
                   ? variosCursos
                     ? `Las carpetas te llegan al mail al instante. ${avisoClases}`
@@ -672,7 +683,7 @@ export default function CursoGrabado({ cursoKey }) {
             {agregables.length > 0 && (
               <fieldset className={styles.sumas}>
                 <legend className={styles.sumasTitle}>
-                  {campaniaRedes ? "🎁 Sumá cursos a precio de campaña" : "🎁 Cuantos más sumás, menos pagás"}
+                  <Icono de={LuGift} /> {campaniaRedes ? "Sumá cursos a precio de campaña" : "Cuantos más sumás, menos pagás"}
                 </legend>
                 <p className={styles.sumasIntro}>
                   {campaniaRedes
@@ -681,7 +692,7 @@ export default function CursoGrabado({ cursoKey }) {
                   {avisoComboExcel && " Excel y Scripting solos van como combo."}
                 </p>
                 {!campaniaRedes && <EscaleraPack cantidadCursos={compra.cantidadCursos} />}
-                {llevaTodo && <p className={styles.todoListo}>🏆 ¡Máximo ahorro! Te llevás todos los cursos.</p>}
+                {llevaTodo && <p className={styles.todoListo}><Icono de={LuTrophy} /> ¡Máximo ahorro! Te llevás todos los cursos.</p>}
                 {todo &&
                   !llevaTodo &&
                   (todoAca ? (
@@ -743,12 +754,12 @@ export default function CursoGrabado({ cursoKey }) {
                   <button type="button" className={styles.sugerencia} onClick={() => toggleExtra(sugerencia.curso.key)}>
                     {sugerencia.extra > 0 ? (
                       <>
-                        💥 Sumá {nombreCurso(sugerencia.curso)} por solo <strong>+{formatearPrecio(sugerencia.extra)}</strong>: vale{" "}
+                        <Icono de={LuSparkles} /> Sumá {nombreCurso(sugerencia.curso)} por solo <strong>+{formatearPrecio(sugerencia.extra)}</strong>: vale{" "}
                         {formatearPrecio(sugerencia.curso.precio)}
                       </>
                     ) : (
                       <>
-                        🎁 {nombreCurso(sugerencia.curso)} te sale <strong>gratis</strong>: vale {formatearPrecio(sugerencia.curso.precio)}. Sumalo
+                        <Icono de={LuGift} /> {nombreCurso(sugerencia.curso)} te sale <strong>gratis</strong>: vale {formatearPrecio(sugerencia.curso.precio)}. Sumalo
                       </>
                     )}
                   </button>
@@ -759,20 +770,20 @@ export default function CursoGrabado({ cursoKey }) {
             <ul className={styles.benefitsList}>
               {producto.beneficios.map((beneficio) => (
                 <li key={beneficio} className={styles.benefitItem}>
-                  ✓ {beneficio}
+                  <Icono de={LuCheck} /> {beneficio}
                 </li>
               ))}
               {producto.key !== "scratch" ? (
                 <li className={styles.benefitItem}>
-                  ✓ Certificado verificable con examen final en vivo, sin costo extra
+                  <Icono de={LuCheck} /> Certificado verificable con examen final en vivo, sin costo extra
                 </li>
               ) : (
                 <li className={styles.benefitItem}>
-                  ✓ Su propio certificado: evaluación para chicos con preguntas y un jueguito (muy pronto)
+                  <Icono de={LuCheck} /> Su propio certificado: evaluación para chicos con preguntas y un jueguito (muy pronto)
                 </li>
               )}
               <li className={styles.benefitItem}>
-                ✓ Acceso gratis a E-stellarium, nuestra plataforma educativa (desde el 20 de noviembre)
+                <Icono de={LuCheck} /> Acceso gratis a E-stellarium, nuestra plataforma educativa (desde el 20 de noviembre)
               </li>
             </ul>
           </div>
@@ -789,7 +800,9 @@ export default function CursoGrabado({ cursoKey }) {
                 buyRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
               }}
             >
-              <span className={styles.comboIcon}>🎁</span>
+              <span className={styles.comboIcon}>
+                <Icono de={LuGift} />
+              </span>
               <span className={styles.comboText}>
                 <strong>{combo.bannerTitulo || "¿Vas por backend? Llevá los dos cursos juntos."}</strong>
                 <span>
@@ -874,7 +887,9 @@ export default function CursoGrabado({ cursoKey }) {
                 {(producto.proximosModulos || []).map((mod) => (
                   <div key={mod.titulo} className={`${styles.moduleCard} ${styles.moduleCardProximo}`}>
                     <div className={styles.moduleCardHeader}>
-                      <span className={styles.moduleNum}>🤖</span>
+                      <span className={styles.moduleNum}>
+                        <Icono de={LuBot} style={{ fontSize: "1.1rem" }} />
+                      </span>
                       <span className={styles.moduleTagProximo}>Próximamente · gratis con tu acceso</span>
                     </div>
                     <h3>{mod.titulo}</h3>

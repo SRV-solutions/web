@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import styles from './ContactoCursoProgramacion.module.css';
+import Icono from "../Icono";
+import { LuCheck, LuFlame, LuLightbulb } from "react-icons/lu";
 
 const GOOGLE_FORM_ACTION_URL =
   'https://docs.google.com/forms/d/e/1FAIpQLSeoNWLxV0qFulyLj18W3Iqo4dCCgiccIy_Nw_xkMLtyR_fVLA/formResponse';
@@ -79,7 +81,7 @@ export default function ContactoCursoProgramacion() {
 
               {/* BANNER DE PRECIO CON ANIMACIÓN MARKETINERA */}
               <div className={styles.promoCard}>
-                <div className={styles.promoBadge}>🔥 74% OFF - BECA DERECHO DE EXAMEN</div>
+                <div className={styles.promoBadge}><Icono de={LuFlame} /> 74% OFF - BECA DERECHO DE EXAMEN</div>
                 <div className={styles.priceContainer}>
                   <div className={styles.oldPriceBox}>
                     <span className={styles.oldPriceLabel}>Precio Regular</span>
@@ -93,7 +95,7 @@ export default function ContactoCursoProgramacion() {
                   </div>
                 </div>
                 <div className={styles.monthlyPerk}>
-                  💡 Equivale a solo <strong>$22.500 / mes</strong> durante los 4 meses del curso.
+                  <Icono de={LuLightbulb} /> Equivale a solo <strong>$22.500 / mes</strong> durante los 4 meses del curso.
                 </div>
               </div>
 
@@ -177,7 +179,9 @@ export default function ContactoCursoProgramacion() {
               </>
             ) : (
               <div className={styles.successMessage}>
-                <div className={styles.successIcon}>✓</div>
+                <div className={styles.successIcon}>
+              <Icono de={LuCheck} />
+            </div>
                 <h3>¡Inscripción recibida!</h3>
                 <p>Nos pondremos en contacto contigo para congelar tu precio promocional.</p>
               </div>

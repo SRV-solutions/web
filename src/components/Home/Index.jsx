@@ -5,7 +5,8 @@ import Seo, { SITE_URL } from "../Seo";
 import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, textoPreventa, linkInscripcion } from "../../data/cursosGrabados";
 import { linkPackTodo, packTodo } from "../../data/packs";
 import { TESTIMONIOS, ENCUESTA, promedioEncuesta } from "../../data/testimonios";
-import { LuQuote, LuStar } from "react-icons/lu";
+import { LuBanknote, LuBuilding2, LuChartColumn, LuClapperboard, LuCloud, LuCompass, LuGift, LuHourglass, LuPuzzle, LuQuote, LuRocket, LuStar, LuTarget } from "react-icons/lu";
+import Icono from "../Icono";
 
 const WHATSAPP_URL = `https://wa.me/5491123869799?text=${encodeURIComponent("Hola, quiero cotizar un software")}`;
 
@@ -27,9 +28,9 @@ const TOTAL_CLASES = RUTA.reduce((total, key) => total + CURSOS_GRABADOS[key].cl
 const PRECIO_DESDE = Math.min(...RUTA.map((key) => CURSOS_GRABADOS[key].precio));
 
 const DOLORES = [
-  { emoji: "🌀", texto: "Viste mil tutoriales sueltos y todavía no sabés por dónde empezar." },
-  { emoji: "💸", texto: "Querés cambiar de laburo, pero los cursos cuestan una fortuna." },
-  { emoji: "⏳", texto: "Hacés a mano tareas que una computadora resolvería en segundos." },
+  { icono: LuCompass, texto: "Viste mil tutoriales sueltos y todavía no sabés por dónde empezar." },
+  { icono: LuBanknote, texto: "Querés cambiar de laburo, pero los cursos cuestan una fortuna." },
+  { icono: LuHourglass, texto: "Hacés a mano tareas que una computadora resolvería en segundos." },
 ];
 
 const PASOS = [
@@ -179,7 +180,9 @@ export default function Home() {
         <div className={styles.painGrid}>
           {DOLORES.map((d) => (
             <div key={d.texto} className={styles.painCard}>
-              <span className={styles.painEmoji}>{d.emoji}</span>
+              <span className={styles.painEmoji}>
+                <Icono de={d.icono} />
+              </span>
               <p>{d.texto}</p>
             </div>
           ))}
@@ -211,11 +214,15 @@ export default function Home() {
                 </h3>
                 <p className={styles.courseHook}>{c.gancho}</p>
                 <ul className={styles.courseMeta}>
-                  <li>🎬 {c.clases} clases grabadas</li>
-                  <li>🎯 {c.nivel.split(" · ")[0]}</li>
+                  <li>
+                    <Icono de={LuClapperboard} /> {c.clases} clases grabadas
+                  </li>
+                  <li>
+                    <Icono de={LuTarget} /> {c.nivel.split(" · ")[0]}
+                  </li>
                 </ul>
                 <div className={styles.coursePrice}>
-                  {/* Tachado: precioRegular de cursosGrabados.js (ver la nota de arriba de ese archivo) */}
+                  {/* Tachado solo si es un precio real (preventa con fecha): nada de "precios regulares" que nunca se cobraron */}
                   {c.precioRegular > c.precio && <span className={styles.oldPrice}>{formatearPrecio(c.precioRegular)}</span>}
                   <strong>{formatearPrecio(c.precio)}</strong>
                 </div>
@@ -228,7 +235,9 @@ export default function Home() {
         </div>
 
         <Link to={`/${COMBO.ruta}/inscripcion`} className={styles.comboBanner}>
-          <span className={styles.kidsIcon}>🎁</span>
+          <span className={styles.kidsIcon}>
+            <Icono de={LuGift} />
+          </span>
           <span>
             <strong>Combo Ruta Backend Completa:</strong> Master en JavaScript + Backend Avanzado por{" "}
             {formatearPrecio(COMBO.precio)}. Ahorrás {formatearPrecio(COMBO.precioRegular - COMBO.precio)} →
@@ -237,7 +246,9 @@ export default function Home() {
 
         {TODO && (
           <Link to={linkPackTodo()} className={styles.comboBanner}>
-            <span className={styles.kidsIcon}>🚀</span>
+            <span className={styles.kidsIcon}>
+              <Icono de={LuRocket} />
+            </span>
             <span>
               <strong>Cuantos más cursos sumás, menos pagás.</strong> Llevate los {TODO.cantidadCursos} cursos ({TODO.clases} clases) por{" "}
               {formatearPrecio(TODO.precio)}: uno por uno saldrían {formatearPrecio(TODO.precioSeparado)}. Ahorrás{" "}
@@ -247,7 +258,9 @@ export default function Home() {
         )}
 
         <Link to="/scratch/inscripcion" className={styles.kidsBanner}>
-          <span className={styles.kidsIcon}>🧩</span>
+          <span className={styles.kidsIcon}>
+            <Icono de={LuPuzzle} />
+          </span>
           <span>
             <strong>Nuevo: Scratch para Chicos (8 a 13 años).</strong>{" "}
             {estaEnPreventa(CURSOS_GRABADOS.scratch)
@@ -257,7 +270,9 @@ export default function Home() {
         </Link>
 
         <Link to="/redes/inscripcion" className={styles.kidsBanner}>
-          <span className={styles.kidsIcon}>☁️</span>
+          <span className={styles.kidsIcon}>
+            <Icono de={LuCloud} />
+          </span>
           <span>
             <strong>Nuevo: Redes, Linux y AWS.</strong> Preparate para rendir la certificación AWS Cloud Practitioner.{" "}
             {estaEnPreventa(CURSOS_GRABADOS.redes)
@@ -267,7 +282,9 @@ export default function Home() {
         </Link>
 
         <Link to="/excel/inscripcion" className={styles.kidsBanner}>
-          <span className={styles.kidsIcon}>📊</span>
+          <span className={styles.kidsIcon}>
+            <Icono de={LuChartColumn} />
+          </span>
           <span>
             <strong>Nuevo: Master en Excel y Sheets con IA.</strong> De tu primera fórmula a Power Query, VBA y Apps Script.{" "}
             {estaEnPreventa(CURSOS_GRABADOS.excel)
@@ -348,7 +365,9 @@ export default function Home() {
             <span className={styles.gameCta}>Jugar →</span>
           </Link>
           <Link target="_blank" to="https://dev-clicker.wearesrv.com/" className={styles.gameBanner}>
-            <span className={styles.gameIcon}>{"🏢"}</span>
+            <span className={styles.gameIcon}>
+              <Icono de={LuBuilding2} style={{ fontSize: "1.6rem" }} />
+            </span>
             <span className={styles.gameText}>
               <strong>Jugá gratis a Dev Clicker</strong>
               <span>Empezá programando desde tu casa, completá contratos, contratá

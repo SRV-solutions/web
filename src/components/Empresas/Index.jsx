@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import Seo from "../Seo";
 import styles from "./style.module.css";
 import { whatsappLink } from "../../data/legal";
+import Icono from "../Icono";
+import { LuCheck, LuLightbulb } from "react-icons/lu";
 
 // Capacitación in-company y paquete para colegios (plan 2027, Tanda 2).
 // ⚠ Antes de publicar: confirmar el estado del alta como Unidad Capacitadora (UCAP) en DNA2
@@ -67,7 +69,9 @@ export default function Empresas() {
               <p>{t.texto}</p>
               <ul>
                 {t.temas.map((tema) => (
-                  <li key={tema}>✓ {tema}</li>
+                  <li key={tema}>
+                <Icono de={LuCheck} /> {tema}
+              </li>
                 ))}
               </ul>
             </article>
@@ -85,7 +89,9 @@ export default function Empresas() {
         </div>
 
         <div className={styles.creditoFiscal}>
-          <h2>💡 Capacitación con crédito fiscal</h2>
+          <h2>
+            <Icono de={LuLightbulb} /> Capacitación con crédito fiscal
+          </h2>
           <p>
             Si tu empresa es PyME, podés recuperar parte de lo que invertís en capacitación a través del programa de
             Crédito Fiscal para Capacitación. Escribinos y vemos juntos si tu empresa califica y cómo aprovecharlo.

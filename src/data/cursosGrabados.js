@@ -74,7 +74,7 @@ export const CURSOS_GRABADOS = {
     subTituloDesc:
       "Dos módulos cortos y prácticos: cada clase termina con algo que se ve y se puede jugar.",
     gancho: "Que deje de ser solo jugador: que cree sus propios juegos.",
-    metaDescripcion: "Curso de Scratch para chicos de 8 a 13 años: 14 clases grabadas para crear una historia animada y su primer videojuego. Preventa a $10.000 hasta el 18 de noviembre.",
+    metaDescripcion: "Curso de Scratch para chicos de 8 a 13 años: 14 clases grabadas para crear una historia animada y su primer videojuego. Acceso de por vida por $18.000.",
     nivel: "Desde cero · Para chicos de 8 a 13 años, sin experiencia previa",
     paraQuien: [
       "Tu hijo o hija pasa horas con videojuegos y querés que también aprenda a crearlos",

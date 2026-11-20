@@ -36,7 +36,7 @@ const menuData = [
       {
         label: "Scripting con IA",
         to: "/scripting/inscripcion",
-        isNew: true
+        isNew: false
       },
       {
         label: "Master en Python con IA",

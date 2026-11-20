@@ -880,3 +880,9 @@
     width: 100%;
   }
 }
+
+/* Tarjeta de curso: el curso ya está en E-stellarium */
+.courseMeta .enEstellarium {
+  color: #9fc7ff;
+  font-weight: 700;
+}

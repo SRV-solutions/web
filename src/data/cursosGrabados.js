@@ -1,4 +1,6 @@
 import { NIVELES_EXCEL, MODULOS_EXCEL, CLASES_EXCEL } from "./temarioExcel.js";
+import { PROMO } from "./promo.js";
+import { promoAplicaA, precioConPromo } from "../../netlify/lib/promo.js";
 
 // Datos visuales de los cursos grabados con pago por Mercado Pago.
 // El precio que se cobra realmente se define en netlify/lib/cursos.js
@@ -41,18 +43,29 @@ export const enCyber = () => {
   return ahora >= CYBER_DESDE && ahora < CYBER_HASTA;
 };
 
+// Promo con fecha que bajó el precio de este curso: el Cyber SRV (2 al 4/11/2026) o la de la variable PROMO de
+// Netlify (src/data/promo.js). Devuelve { nombre, fechasTexto } o null, para los textos de la página.
+export const promoDe = (curso) =>
+  enCyber() ? { nombre: "Cyber SRV", fechasTexto: CYBER_FECHAS } : curso?.conPromo ? PROMO : null;
+
 export const estaEnPreventa = (curso) => Boolean(curso?.preventa) && Date.now() < curso.preventa.hasta.getTime();
+
+// E-stellarium (la plataforma propia, abre el 20/11/2026): enEstellarium marca los cursos que ya están ahí.
+// Al 19/11/2026 faltan Excel y Redes (y el intensivo en vivo). Un combo está si están todos sus cursos.
+export const estaEnEstellarium = (curso) =>
+  Array.isArray(curso?.combo) ? curso.combo.every((k) => CURSOS_GRABADOS[k]?.enEstellarium) : Boolean(curso?.enEstellarium);
 
 // Precio de una preventa en una línea (banners y tarjetas). Durante el Cyber el precio del Cyber vale solo
 // esos días: no se puede decir que dura hasta el fin de la preventa.
 export const textoPreventa = (curso) =>
-  enCyber()
-    ? `Cyber SRV: ${formatearPrecio(curso.precio)} solo ${CYBER_FECHAS}`
+  promoDe(curso)
+    ? `${promoDe(curso).nombre}: ${formatearPrecio(curso.precio)} solo ${promoDe(curso).fechasTexto}`
     : `En preventa a ${formatearPrecio(curso.precio)} hasta el ${curso.preventa.fechaTexto}`;
 
 export const CURSOS_GRABADOS = {
   scratch: {
     key: "scratch",
+    enEstellarium: true,
     itemId: "curso-scratch-chicos", // mismo itemId que netlify/lib/cursos.js (content_ids de Meta)
     ruta: "scratch",
     contentName: "Infoproducto Scratch",
@@ -119,6 +132,7 @@ export const CURSOS_GRABADOS = {
 
   scripting: {
     key: "scripting",
+    enEstellarium: true,
     itemId: "curso-scripting",
     ruta: "scripting",
     contentName: "Infoproducto Scripting",
@@ -234,6 +248,7 @@ export const CURSOS_GRABADOS = {
 
   python: {
     key: "python",
+    enEstellarium: true,
     itemId: "curso-python-infoproducto",
     ruta: "python",
     contentName: "Infoproducto Python Completo",
@@ -340,6 +355,7 @@ export const CURSOS_GRABADOS = {
   // identifica el curso por el external_reference "fundamentos-backend:..." de cada pago.
   "fundamentos-backend": {
     key: "fundamentos-backend",
+    enEstellarium: true,
     itemId: "curso-fundamentos-backend",
     ruta: "ruta-backend", // se vende en la página única de la ruta backend (selector)
     contentName: "Infoproducto Master en JavaScript",
@@ -489,6 +505,7 @@ export const CURSOS_GRABADOS = {
 
   "backend-avanzado": {
     key: "backend-avanzado",
+    enEstellarium: true,
     itemId: "curso-backend-avanzado",
     ruta: "ruta-backend", // se vende en la página única de la ruta backend (selector)
     contentName: "Infoproducto Backend Avanzado",
@@ -594,6 +611,7 @@ export const CURSOS_GRABADOS = {
   // Acá solo se marca que el curso acepta código (bloque "¿Sos alumno de SRV?" en la página).
   "fullstack-csharp": {
     key: "fullstack-csharp",
+    enEstellarium: true,
     itemId: "curso-fullstack-csharp",
     ruta: "fullstack-csharp",
     contentName: "Infoproducto Fullstack C#",
@@ -1047,6 +1065,24 @@ if (enCyber()) {
   }
   const ruta = CURSOS_GRABADOS["ruta-backend"];
   ruta.beneficios[0] = `Ahorrás ${formatearPrecio(JS.precio + BACK.precio - ruta.precio)} frente a comprarlos por separado`;
+}
+
+// PROMO CON FECHA (variable PROMO de Netlify, ver netlify/lib/promo.js): como el Cyber, con su porcentaje sobre el
+// precio de lista, que queda tachado (es real: el de antes y después de la promo, publicada en /terminos). Si el
+// curso está en preventa, vale el menor de los dos. La misma cuenta cobra netlify/lib/cursos.js y acepta el Apps Script.
+if (PROMO) {
+  for (const curso of Object.values(CURSOS_GRABADOS)) {
+    if (!promoAplicaA(PROMO, curso.key)) continue;
+    const lista = estaEnPreventa(curso) ? curso.precioRegular : curso.precio;
+    const conPromo = precioConPromo(lista, PROMO.porcentaje);
+    if (conPromo < curso.precio) {
+      curso.precioRegular = lista;
+      curso.precio = conPromo;
+      curso.conPromo = true;
+    }
+  }
+  const ruta = CURSOS_GRABADOS["ruta-backend"];
+  if (ruta.conPromo) ruta.beneficios[0] = `Ahorrás ${formatearPrecio(JS.precio + BACK.precio - ruta.precio)} frente a comprarlos por separado`;
 }
 
 // Lo que cuestan por separado los cursos de un combo, a los precios vigentes (durante el Cyber, los del Cyber)

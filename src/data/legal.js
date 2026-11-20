@@ -5,6 +5,8 @@
 // Para vender online hay que mostrar quién vende: razón social, CUIT, domicilio y un contacto
 // (Ley 24.240, Res. 271/2020, Mercosur GMC 37/19 y Disp. 954/2025), y el QR de Data Fiscal (ARCA).
 // Los campos en null se ven como "⚠ completar" en desarrollo y NO se muestran en producción.
+import { PROMO_PUBLICADA, cursosDePromo } from "./promo.js";
+
 export const LEGAL = {
   marca: "WEARESRV",
   razonSocial: "Marcos Roberto Costa Schmite",
@@ -24,9 +26,22 @@ export const LEGAL = {
 
 export const whatsappLink = (texto) => `https://wa.me/${LEGAL.whatsappNumero}?text=${encodeURIComponent(texto)}`;
 
+// Promo con fecha de la variable PROMO de Netlify (src/data/promo.js): se publica sola acá, con sus fechas,
+// desde que se carga la variable hasta que termina.
+const basesPromo = (p) => {
+  const cursos = cursosDePromo(p) || "Todos los cursos grabados (incluidos los combos)";
+  return {
+    nombre: p.nombre,
+    detalle: `${cursos} con un ${p.porcentaje}% de descuento sobre su precio de lista. Si un curso está en preventa, vale el menor de los dos precios. Los packs "Sumá a tu compra" se calculan sobre los precios de la promo, con su regla de siempre. No participa el Intensivo Full Stack en vivo y no se suma al código de alumnos.`,
+    desde: `${p.desdeCorto} a las 00:00`,
+    hasta: `${p.hastaCorto} a las 23:59`,
+  };
+};
+
 // Promociones con fecha: la Ley 24.240 (art. 7) y la Res. 271/2020 piden publicar cuándo empiezan,
 // cuándo terminan y sus condiciones. Se listan en /terminos: mantener al día cuando cambie una promo.
 export const PROMOCIONES = [
+  ...(PROMO_PUBLICADA ? [basesPromo(PROMO_PUBLICADA)] : []),
   {
     nombre: "Preventa del Master en Excel y Sheets con IA",
     detalle:

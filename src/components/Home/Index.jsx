@@ -2,10 +2,10 @@ import React, { useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import styles from "./style.module.css";
 import Seo, { SITE_URL } from "../Seo";
-import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, textoPreventa, linkInscripcion } from "../../data/cursosGrabados";
+import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, estaEnEstellarium, textoPreventa, linkInscripcion } from "../../data/cursosGrabados";
 import { linkPackTodo, packTodo } from "../../data/packs";
 import { TESTIMONIOS, ENCUESTA, promedioEncuesta } from "../../data/testimonios";
-import { LuBanknote, LuBuilding2, LuChartColumn, LuClapperboard, LuCloud, LuCompass, LuGift, LuHourglass, LuPuzzle, LuQuote, LuRocket, LuStar, LuTarget } from "react-icons/lu";
+import { LuBanknote, LuBuilding2, LuChartColumn, LuClapperboard, LuCloud, LuCompass, LuGift, LuHourglass, LuOrbit, LuPuzzle, LuQuote, LuRocket, LuStar, LuTarget } from "react-icons/lu";
 import Icono from "../Icono";
 
 const WHATSAPP_URL = `https://wa.me/5491123869799?text=${encodeURIComponent("Hola, quiero cotizar un software")}`;
@@ -47,7 +47,7 @@ const FAQ = [
   { q: "¿Tienen un curso de Excel?", a: `Sí: el Master en Excel y Sheets con IA, ${CURSOS_GRABADOS.excel.clases} clases grabadas para ir de cero a tablas dinámicas, Power Query, VBA y Google Apps Script, sin saber programar.${estaEnPreventa(CURSOS_GRABADOS.excel) ? ` Está en preventa hasta el ${CURSOS_GRABADOS.excel.preventa.fechaTexto}, cuando se habilitan las clases.` : ""} También se vende en combo con el Curso de Scripting con IA.` },
   { q: "¿Tienen algo para chicos?", a: `Sí: Scratch para Chicos, un curso grabado de 14 clases para que chicos de 8 a 13 años creen una historia animada y su primer videojuego. Ya está disponible por ${formatearPrecio(CURSOS_GRABADOS.scratch.precio)}, con acceso de por vida al material en Google Drive.` },
   { q: "¿Cómo recibo el curso después de pagar?", a: "Automáticamente: apenas Mercado Pago aprueba el pago, te llega un mail con el acceso a la carpeta del curso en Google Drive." },
-  { q: "¿Qué es E-stellarium?", a: "Es nuestra plataforma educativa. Está disponible desde el 20 de noviembre de 2026 y el acceso es inmediato y gratis para todos los que ya compraron un curso, sin pagar nada extra; los cursos que se compren de ahora en más también lo incluyen. Cómo entrar lo avisamos por mail y en nuestras redes." },
+  { q: "¿Qué es E-stellarium?", a: "Es nuestra plataforma educativa. Está disponible desde el 20 de noviembre de 2026 y el acceso es inmediato y gratis para todos los que ya compraron un curso, sin pagar nada extra; los cursos que se compren de ahora en más también lo incluyen (Excel y Redes, Linux y AWS se suman más adelante). Cómo entrar lo avisamos por mail y en nuestras redes." },
   { q: "¿Hacen software para empresas?", a: "Sí. Además de la escuela, desarrollamos backend, APIs, plataformas web y automatizaciones a medida. Escribinos por WhatsApp y lo cotizamos." },
   { q: "¿Tienen productos propios?", a: "Sí, dos plataformas por suscripción mensual: Sentryx, para colegios (comunicados, boletines, asistencia y aulas virtuales), y Event Box, para empresas de eventos (stock, contenedores y órdenes de servicio). Los planes están en la página de cada una." },
 ];
@@ -154,8 +154,8 @@ export default function Home() {
           </h2>
           <p>
             Desde el 20 de noviembre vas a poder entrar a E-stellarium. <strong>Si ya compraste un curso, tu acceso es
-            inmediato y gratis</strong>: no pagás nada extra. Y todos los cursos que compres de ahora en más también lo
-            incluyen.
+            inmediato y gratis</strong>: no pagás nada extra. Y los cursos que compres de ahora en más también lo incluyen
+            (Excel y Redes, Linux y AWS se suman más adelante).
           </p>
           <p className={styles.estellariumAviso}>Estate atento a nuestras redes y a tu mail: por ahí te avisamos cómo entrar.</p>
           <div className={styles.estellariumRedes}>
@@ -220,6 +220,11 @@ export default function Home() {
                   <li>
                     <Icono de={LuTarget} /> {c.nivel.split(" · ")[0]}
                   </li>
+                  {estaEnEstellarium(c) && (
+                    <li className={styles.enEstellarium}>
+                      <Icono de={LuOrbit} /> En E-stellarium
+                    </li>
+                  )}
                 </ul>
                 <div className={styles.coursePrice}>
                   {/* Tachado solo si es un precio real (preventa con fecha): nada de "precios regulares" que nunca se cobraron */}

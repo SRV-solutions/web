@@ -5,6 +5,8 @@
 //   - CURSOS en appscript-cursos.gs (misma clave, itemId y precioMinimo)
 //   - src/data/cursosGrabados.js (precio que se muestra en la web)
 // ==========================================
+import { promoVigente, promoAplicaA, precioConPromo } from "./promo.js";
+
 // Preventa de Scratch: antes de esta fecha se cobra precioPreventa; desde ese día, precio.
 // Misma fecha que en src/data/cursosGrabados.js y en appscript-cursos.gs. La carpeta de Drive se
 // comparte al instante (vacía) y las clases se suben ese día.
@@ -277,6 +279,10 @@ export function getCurso(key) {
   if (curso.preventaHasta && Date.now() < curso.preventaHasta) precio = curso.precioPreventa;
   // Durante el Cyber vale la mitad del precio de lista; si hay preventa, el menor de los dos
   if (enCyber()) precio = Math.min(precio, Math.round(curso.precio / 2));
+  // Promo con fecha de la variable PROMO de Netlify (netlify/lib/promo.js): como el Cyber, con su porcentaje
+  // sobre el precio de lista; si hay preventa, el menor de los dos
+  const promo = promoVigente(process.env.PROMO);
+  if (promoAplicaA(promo, key)) precio = Math.min(precio, precioConPromo(curso.precio, promo.porcentaje));
   return precio === curso.precio ? curso : { ...curso, precio };
 }
 

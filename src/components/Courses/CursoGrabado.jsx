@@ -3,11 +3,11 @@ import { Link, useSearchParams } from "react-router-dom";
 import styles from "./CursoGrabado.module.css";
 import Seo, { SITE_URL } from "../Seo";
 import { trackConversion, getMetaCookies } from "../../data/metaPixel";
-import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, comboQueIncluye, linkInscripcion, nombreCurso, enCyber, precioSeparado, CYBER_FECHAS } from "../../data/cursosGrabados";
+import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, estaEnEstellarium, comboQueIncluye, linkInscripcion, nombreCurso, promoDe, precioSeparado } from "../../data/cursosGrabados";
 import { CURSOS_TODO, agregablesPara, infoPack, linkPackTodo, normalizarSet, packTodo, setValido, pitchUnidad, unidadesDeParametro, enCampaniaRedes } from "../../data/packs";
 import { ResumenCurso, DetallesCurso, EscaleraPack, MedidorAhorro, PrecioAnimado } from "./BloquesCurso";
 import Icono from "../Icono";
-import { LuBot, LuCheck, LuFlame, LuGift, LuGraduationCap, LuLock, LuRocket, LuSparkles, LuTarget, LuTrophy, LuZap } from "react-icons/lu";
+import { LuBot, LuCheck, LuClock, LuFlame, LuGift, LuGraduationCap, LuLock, LuOrbit, LuRocket, LuSparkles, LuTarget, LuTrophy, LuZap } from "react-icons/lu";
 
 const DISCORD_URL = "https://discord.com/invite/QuAmDxrNMu";
 const WHATSAPP_URL = "https://wa.me/5491123869799?text=" + encodeURIComponent("Hola, tengo una consulta sobre los cursos");
@@ -49,8 +49,8 @@ function preguntasFrecuentes(curso, preventa) {
           {
             q: "¿Qué es la preventa y cuándo empieza el curso?",
             a: curso.preventa.faqPreventa || `Las clases se habilitan el ${curso.preventa.fechaTexto}. ${
-              enCyber()
-                ? `Por el Cyber SRV, ${CYBER_FECHAS} lo pagás ${formatearPrecio(curso.precio)}; después vuelve al precio de preventa, ${formatearPrecio(curso.preventa.precio)}, hasta que se habilitan las clases, y desde ese día cuesta ${formatearPrecio(curso.precioRegular)}.`
+              promoDe(curso)
+                ? `Por la promo ${promoDe(curso).nombre}, ${promoDe(curso).fechasTexto} lo pagás ${formatearPrecio(curso.precio)}; después vuelve al precio de preventa, ${formatearPrecio(curso.preventa.precio)}, hasta que se habilitan las clases, y desde ese día cuesta ${formatearPrecio(curso.precioRegular)}.`
                 : `Si lo comprás antes, lo pagás ${formatearPrecio(curso.precio)} en lugar de ${formatearPrecio(curso.precioRegular)}.`
             } El acceso a tu carpeta de Google Drive te llega al mail apenas pagás, y ese día aparecen ahí las clases.`,
           },
@@ -137,7 +137,8 @@ export default function CursoGrabado({ cursoKey }) {
   const descuento = producto.precioRegular > producto.precio ? Math.round((1 - producto.precio / producto.precioRegular) * 100) : 0;
   const tituloCompleto = [curso.tituloInicio, curso.tituloDestacado, curso.tituloFin].filter(Boolean).join(" ");
   const preventa = estaEnPreventa(producto);
-  const cyber = enCyber();
+  // Promo con fecha que bajó el precio de este producto (Cyber SRV o la variable PROMO de Netlify)
+  const promo = promoDe(producto);
   const fechaAcceso = preventa ? producto.preventa.fechaTexto : null;
   const faq = preguntasFrecuentes(producto, preventa);
   const pasos = pasosCompra(producto, preventa);
@@ -519,6 +520,11 @@ export default function CursoGrabado({ cursoKey }) {
                 </ul>
               )}
               {!llevaTodo && <p className={styles.level}><Icono de={LuTarget} /> {producto.nivel}</p>}
+              {!llevaTodo && estaEnEstellarium(producto) && (
+                <p className={styles.estellariumTag}>
+                  <Icono de={LuOrbit} /> Disponible en E-stellarium, nuestra plataforma
+                </p>
+              )}
 
               <div className={styles.promoCard}>
                 <div className={styles.promoHeader}>
@@ -531,9 +537,9 @@ export default function CursoGrabado({ cursoKey }) {
                   ) : (
                     descuento > 0 && (
                       <span className={styles.promoBadge}>
-                        <Icono de={producto.combo && !cyber && !preventa ? LuGift : LuFlame} />{" "}
-                        {cyber
-                          ? `Cyber SRV · ${descuento}% OFF`
+                        <Icono de={producto.combo && !promo && !preventa ? LuGift : LuFlame} />{" "}
+                        {promo
+                          ? `${promo.nombre} · ${descuento}% OFF`
                           : preventa
                             ? `Precio de preventa · ${descuento}% OFF`
                             : producto.combo
@@ -543,7 +549,7 @@ export default function CursoGrabado({ cursoKey }) {
                     )
                   )}
                   <span className={styles.timerTag}>
-                    {cyber ? `Solo ${CYBER_FECHAS}` : preventa ? `Solo hasta el ${fechaAcceso}` : "Pago único, sin suscripción"}
+                    {promo ? `Solo ${promo.fechasTexto}` : preventa ? `Solo hasta el ${fechaAcceso}` : "Pago único, sin suscripción"}
                   </span>
                 </div>
 
@@ -581,7 +587,7 @@ export default function CursoGrabado({ cursoKey }) {
                           ? "Precio promocional"
                           : pack
                             ? "Uno por uno"
-                            : cyber
+                            : promo
                               ? "Precio regular"
                               : preventa
                                 ? `Desde el ${fechaAcceso}`
@@ -783,7 +789,15 @@ export default function CursoGrabado({ cursoKey }) {
                 </li>
               )}
               <li className={styles.benefitItem}>
-                <Icono de={LuCheck} /> Acceso gratis a E-stellarium, nuestra plataforma educativa (desde el 20 de noviembre)
+                {estaEnEstellarium(producto) ? (
+                  <>
+                    <Icono de={LuCheck} /> Acceso gratis a E-stellarium, nuestra plataforma educativa (desde el 20 de noviembre)
+                  </>
+                ) : (
+                  <>
+                    <Icono de={LuClock} /> E-stellarium, nuestra plataforma educativa: este curso se suma más adelante
+                  </>
+                )}
               </li>
             </ul>
           </div>
@@ -960,10 +974,12 @@ export default function CursoGrabado({ cursoKey }) {
             <p>
               {pack
                 ? `${compra.clases} clases en ${pack.cantidadCursos} cursos, acceso de por vida y un solo pago de ${formatearPrecio(compra.precio)}. Uno por uno pagarías ${formatearPrecio(pack.precioSeparado)}.${avisoClases ? ` ${avisoClases}` : ""}`
-                : preventa && cyber
-                  ? `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(producto.precio)}: precio del Cyber SRV, solo ${CYBER_FECHAS}. Las clases se habilitan en tu carpeta el ${fechaAcceso}.`
+                : preventa && promo
+                  ? `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(producto.precio)}: precio de ${promo.nombre}, solo ${promo.fechasTexto}. Las clases se habilitan en tu carpeta el ${fechaAcceso}.`
                   : preventa
                   ? `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(producto.precio)}. ${producto.preventa.textoFinal || `Desde el ${fechaAcceso} pasa a ${formatearPrecio(producto.precioRegular)}, y ese mismo día se habilitan las clases en tu carpeta.`}`
+                  : promo && !cuponAplicado
+                  ? `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(compra.precio)}: precio de ${promo.nombre}, solo ${promo.fechasTexto}. Empezá esta misma noche.`
                   : `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(compra.precio)}${cuponAplicado ? " con tu código de alumno" : ""}. Empezá esta misma noche.`}
             </p>
             {botonPago(styles.btnFinal)}

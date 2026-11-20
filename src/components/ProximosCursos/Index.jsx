@@ -3,7 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import Seo from "../Seo";
 import styles from "./style.module.css";
 import { whatsappLink } from "../../data/legal";
-import { CURSOS_GRABADOS, estaEnPreventa, formatearPrecio, enCyber, CYBER_FECHAS } from "../../data/cursosGrabados";
+import { CURSOS_GRABADOS, estaEnPreventa, formatearPrecio, promoDe } from "../../data/cursosGrabados";
 import Icono from "../Icono";
 import { LuCalendar, LuCircleCheck } from "react-icons/lu";
 
@@ -164,8 +164,8 @@ export default function ProximosCursos() {
                   <>
                     {preventa && (
                       <p className={styles.lanzamiento}>
-                        {enCyber()
-                          ? `Cyber SRV: ${formatearPrecio(curso.precio)} solo ${CYBER_FECHAS}. Después, preventa a ${formatearPrecio(curso.preventa.precio)} hasta el ${curso.preventa.fechaTexto} (luego, ${formatearPrecio(curso.precioRegular)}).`
+                        {promoDe(curso)
+                          ? `${promoDe(curso).nombre}: ${formatearPrecio(curso.precio)} solo ${promoDe(curso).fechasTexto}. Después, preventa a ${formatearPrecio(curso.preventa.precio)} hasta el ${curso.preventa.fechaTexto} (luego, ${formatearPrecio(curso.precioRegular)}).`
                           : `Preventa: ${formatearPrecio(curso.precio)} hasta el ${curso.preventa.fechaTexto} (después, ${formatearPrecio(curso.precioRegular)}).`}
                       </p>
                     )}

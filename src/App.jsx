@@ -10,6 +10,7 @@ import { initMetaPixel, trackPageView, generateEventId } from "./data/metaPixel.
 
 // Layout estático
 import Header from "./components/Header/Index";
+import BannerPromo from "./components/BannerPromo/Index";
 import Footer from "./components/Footer/Index";
 
 // Code Splitting de páginas
@@ -242,6 +243,7 @@ function Layout({ children }) {
   return (
     <>
       <Header />
+      <BannerPromo />
       <main>{children}</main>
       <Footer />
     </>

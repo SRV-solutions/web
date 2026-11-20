@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import { MercadoPagoConfig, Preference } from "mercadopago";
 import { getCurso, webhookCursosUrl, cursosQueEntrega } from "../lib/cursos.js";
 import { aplicarCupon } from "../lib/cupones.js";
+import { promoVigente } from "../lib/promo.js";
 import { SITE_URL, json, isAllowedOrigin, parseBody } from "../lib/http.js";
 
 export async function handler(event) {
@@ -32,6 +33,7 @@ export async function handler(event) {
   // Queda marcado en el metadata del pago para que el Apps Script acepte ese monto.
   const cupon = typeof bodyData.cupon === "string" ? aplicarCupon(cursoKey, bodyData.cupon) : null;
   const precio = cupon ? cupon.precio : curso.precio;
+  const promo = promoVigente(process.env.PROMO);
   const titulo = cupon ? `${curso.titulo} (precio alumnos)` : curso.titulo;
 
   // Datos del navegador para el Purchase por CAPI (confirmar-compra y el webhook los leen del pago)
@@ -67,6 +69,16 @@ export async function handler(event) {
           curso: cursoKey,
           desde: vuelve === curso ? undefined : desdeKey,
           cupon: cupon ? cupon.tipo : undefined,
+          // Promo con fecha (variable PROMO): el Apps Script acepta el descuento solo si el pago viene marcado
+          // acá, que es el servidor; el navegador no puede ponerlo. Ver netlify/lib/promo.js.
+          ...(promo && !cupon
+            ? {
+                promo: promo.nombre,
+                promo_porcentaje: promo.porcentaje,
+                promo_hasta: new Date(promo.hasta).toISOString(),
+                promo_cursos: promo.cursos ? promo.cursos.join(",") : "",
+              }
+            : {}),
           ...metaData,
         },
         statement_descriptor: "WEARESRV",

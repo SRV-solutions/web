@@ -345,28 +345,28 @@ function redondear900_(n) {
 
 // Mínimo aceptado para un pack: aplica la regla sobre el mínimo de cada unidad a la fecha del pago
 // (así la preventa de Scratch también vale dentro de un pack)
-function precioPack_(keys, fechaPago) {
+function precioPack_(keys, fechaPago, promo) {
   if (keys.indexOf("redes") !== -1 && enPreventa_(CURSOS["redes"], fechaPago)) {
     var total = 0;
     for (var j = 0; j < keys.length; j++) {
-      total += keys[j] === "redes" ? precioMinimoUnidad_(CURSOS["redes"], fechaPago) : SUMA_CON_REDES[keys[j]];
+      total += keys[j] === "redes" ? precioMinimoUnidad_(CURSOS["redes"], fechaPago, promo) : SUMA_CON_REDES[keys[j]];
     }
     return total;
   }
-  var minimo = precioEscalera_(keys, fechaPago);
+  var minimo = precioEscalera_(keys, fechaPago, promo);
   var fecha = fechaPago instanceof Date && !isNaN(fechaPago.getTime()) ? fechaPago : new Date();
   if (fecha.getTime() < PACKS_REGLA_ANTERIOR_HASTA.getTime()) {
-    minimo = Math.min(minimo, precioReglaAnterior_(keys, fechaPago));
+    minimo = Math.min(minimo, precioReglaAnterior_(keys, fechaPago, promo));
   }
   return minimo;
 }
 
 // La escalera se calcula sobre los cursos sueltos: la Ruta Backend y el combo de Excel se abren en sus dos cursos
-function precioEscalera_(keys, fechaPago) {
+function precioEscalera_(keys, fechaPago, promo) {
   var precios = [];
   keys.forEach(function (k) {
     (CURSOS[k].incluye || [k]).forEach(function (c) {
-      precios.push(precioMinimoUnidad_(CURSOS[c], fechaPago));
+      precios.push(precioMinimoUnidad_(CURSOS[c], fechaPago, promo));
     });
   });
   precios.sort(function (a, b) { return b - a; });
@@ -378,8 +378,8 @@ function precioEscalera_(keys, fechaPago) {
   return Math.max(precios[0], redondear900_(total));
 }
 
-function precioReglaAnterior_(keys, fechaPago) {
-  var precios = keys.map(function (k) { return precioMinimoUnidad_(CURSOS[k], fechaPago); });
+function precioReglaAnterior_(keys, fechaPago, promo) {
+  var precios = keys.map(function (k) { return precioMinimoUnidad_(CURSOS[k], fechaPago, promo); });
   precios.sort(function (a, b) { return b - a; });
   var total = precios[0];
   for (var i = 1; i < precios.length; i++) total += precios[i] - AHORRO_REGLA_ANTERIOR;
@@ -801,19 +801,66 @@ function esCuponAlumnos_(curso, payment) {
 }
 
 // Mínimo de una unidad (curso o combo fijo) a la fecha del pago: preventa si corresponde, si no el
-// regular; durante el Cyber, la mitad del precio de lista (o la preventa, si es menor)
-function precioMinimoUnidad_(curso, fechaPago) {
+// regular; durante el Cyber, la mitad del precio de lista (o la preventa, si es menor); con una promo
+// marcada en el pago, su descuento sobre el precio de lista (o la preventa, si es menor)
+function precioMinimoUnidad_(curso, fechaPago, promo) {
   var minimo = enPreventa_(curso, fechaPago) ? curso.preventa.precioMinimo : curso.precioMinimo;
   if (enCyber_(fechaPago)) minimo = Math.min(minimo, Math.round(curso.precioMinimo / 2));
+  if (promo && promoAplicaA_(promo, claveDeCurso_(curso))) {
+    minimo = Math.min(minimo, precioConPromo_(curso.precioMinimo, promo.porcentaje));
+  }
   return minimo;
+}
+
+// PROMO CON FECHA (variable PROMO de Netlify, ver netlify/lib/promo.js en la web): crear-preferencia marca
+// el pago con promo_porcentaje, promo_hasta y promo_cursos en el metadata (el navegador no puede ponerlo).
+// Acá se acepta ese descuento sobre el precio de lista, hasta un 50 %, si el pago se hizo antes de
+// promo_hasta (con un día de margen para los que se acreditan después). Con esto, para una promo nueva
+// no hace falta volver a pegar este script: alcanza con la variable de Netlify.
+var PROMO_PORCENTAJE_MAXIMO = 50;
+var PROMO_PARTES_COMBO = {
+  "ruta-backend": ["fundamentos-backend", "backend-avanzado"],
+  "excel-scripting": ["excel", "scripting"]
+};
+
+function promoDelPago_(payment, fechaPago) {
+  var meta = (payment && payment.metadata) || {};
+  var porcentaje = Number(meta.promo_porcentaje);
+  if (!porcentaje || porcentaje < 0 || porcentaje > PROMO_PORCENTAJE_MAXIMO || Math.floor(porcentaje) !== porcentaje) return null;
+  var hasta = new Date(meta.promo_hasta);
+  var fecha = fechaPago instanceof Date && !isNaN(fechaPago.getTime()) ? fechaPago : new Date();
+  if (isNaN(hasta.getTime()) || fecha.getTime() > hasta.getTime() + 24 * 3600 * 1000) return null;
+  var cursos = String(meta.promo_cursos || "").split(",")
+    .map(function (c) { return c.trim(); })
+    .filter(function (c) { return c; });
+  return { porcentaje: porcentaje, cursos: cursos.length ? cursos : null };
+}
+
+function promoAplicaA_(promo, key) {
+  if (!promo) return false;
+  if (!promo.cursos) return true;
+  if (promo.cursos.indexOf(key) !== -1) return true;
+  var partes = PROMO_PARTES_COMBO[key];
+  return !!partes && partes.every(function (k) { return promo.cursos.indexOf(k) !== -1; });
+}
+
+// La misma cuenta que precioConPromo de netlify/lib/promo.js: el descuento, redondeado hacia abajo a una centena
+function precioConPromo_(precioLista, porcentaje) {
+  return Math.floor((precioLista * (100 - porcentaje)) / 10000) * 100;
+}
+
+function claveDeCurso_(curso) {
+  for (var k in CURSOS) if (CURSOS[k] === curso) return k;
+  return "";
 }
 
 // Precio mínimo aceptado para un pago: el de alumnos si vino con código, el de la regla de packs si es
 // un pack armado en la web, el de preventa si corresponde, si no el regular
 function precioMinimo_(curso, fechaPago, payment) {
   if (esCuponAlumnos_(curso, payment)) return curso.cuponAlumnos.precioMinimo;
-  if (curso.pack) return precioPack_(curso.incluye, fechaPago);
-  return precioMinimoUnidad_(curso, fechaPago);
+  var promo = promoDelPago_(payment, fechaPago);
+  if (curso.pack) return precioPack_(curso.incluye, fechaPago, promo);
+  return precioMinimoUnidad_(curso, fechaPago, promo);
 }
 
 function yaProcesado_(paymentId) {

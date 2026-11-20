@@ -10,11 +10,7 @@ import { LEGAL, PROMOCIONES, PRECIOS_ESPECIALES } from "../../data/legal";
 export default function Terminos() {
   return (
     <section className={styles.page}>
-      <Seo
-        title="Términos y condiciones | WEARESRV"
-        description="Condiciones de venta de los cursos de WEARESRV: precios, pagos, promociones con sus fechas, acceso, arrepentimiento y certificados."
-        path="/terminos"
-      />
+      <Seo pagina="/terminos" />
       <div className={styles.inner}>
         {import.meta.env.DEV && (
           <p className={styles.devNote}>

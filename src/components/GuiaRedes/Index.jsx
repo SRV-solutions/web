@@ -70,11 +70,7 @@ export default function GuiaRedes() {
 
   return (
     <section className={styles.page}>
-      <Seo
-        title="Guía gratis: Redes y nube desde cero | WEARESRV"
-        description="La guía de los clips de WEARESRV, gratis: la nube, el usuario root de AWS, cómo viaja un mensaje, el cable de red, las 7 capas del modelo OSI, el switch, las IPs y los comandos de Cisco. Para leer en la web o descargar en PDF."
-        path="/redes"
-      />
+      <Seo pagina="/redes" />
       <div className={styles.inner}>
         <p className={styles.kicker}>100% gratis · Para leer acá o descargar en PDF</p>
         <h1 className={styles.title}>

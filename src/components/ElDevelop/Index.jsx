@@ -155,11 +155,7 @@ export default function ElDevelop() {
 
   return (
     <section className={`${styles.page} ${inApp ? styles.pageApp : ""}`}>
-      <Seo
-        title="El Develop: juego gratis de carrera IT | WEARESRV"
-        description="Juego gratis de carrera IT bien argentino: sobreviví a la inflación, los paros y los errores de Capa 8 hasta llegar a una Big Tech o vender tu propia startup."
-        path="/el-develop"
-      />
+      <Seo pagina="/el-develop" />
 
       <header className={styles.hud}>
         <div className={styles.brand}>

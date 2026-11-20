@@ -9,11 +9,7 @@ import { LEGAL } from "../../data/legal";
 export default function Privacidad() {
   return (
     <section className={styles.page}>
-      <Seo
-        title="Política de privacidad | WEARESRV"
-        description="Qué datos personales junta WEARESRV, para qué los usa, con quién los comparte y cómo ejercer tus derechos."
-        path="/privacidad"
-      />
+      <Seo pagina="/privacidad" />
       <div className={styles.inner}>
         {import.meta.env.DEV && (
           <p className={styles.devNote}>

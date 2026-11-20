@@ -4,6 +4,7 @@ import styles from "./CursoGrabado.module.css";
 import Seo, { SITE_URL } from "../Seo";
 import { trackConversion, getMetaCookies } from "../../data/metaPixel";
 import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, estaEnEstellarium, comboQueIncluye, linkInscripcion, nombreCurso, promoDe, precioSeparado } from "../../data/cursosGrabados";
+import { seoCurso } from "../../data/seoCursos";
 import { CURSOS_TODO, agregablesPara, infoPack, linkPackTodo, normalizarSet, packTodo, setValido, pitchUnidad, unidadesDeParametro, enCampaniaRedes } from "../../data/packs";
 import { ResumenCurso, DetallesCurso, EscaleraPack, MedidorAhorro, PrecioAnimado } from "./BloquesCurso";
 import Icono from "../Icono";
@@ -461,17 +462,7 @@ export default function CursoGrabado({ cursoKey }) {
 
   return (
     <section id={`curso-${curso.key}`} className={styles.section}>
-      <Seo
-        title={
-          preventa
-            ? `${tituloCompleto}: ${curso.preventa?.seoTitulo || `preventa, acceso el ${fechaAcceso}`} | WEARESRV`
-            : `${tituloCompleto}: curso online con acceso de por vida | WEARESRV`
-        }
-        description={curso.metaDescripcion}
-        path={path}
-        type="product"
-        jsonLd={jsonLd}
-      />
+      <Seo {...seoCurso(cursoKey)} jsonLd={jsonLd} />
 
       <div className={styles.fullLayout}>
         {/* Columna Izquierda: Tarjeta de Compra */}

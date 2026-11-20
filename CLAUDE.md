@@ -18,5 +18,9 @@ Netlify publica `master`. Nada se sube ni se mergea sin el OK de Marcos.
 - Promo con fecha: variable `PROMO` de Netlify (`nombre;desde;hasta;porcentaje[;cursos]`, reglas en
   `netlify/lib/promo.js`); se carga y se vuelve a publicar. El webhook la acepta solo con el `appscript-cursos.gs`
   del 20/11/2026 pegado en Apps Script.
+- Título, descripción y vista previa de cada página: `src/data/seo.js` (y `src/data/seoCursos.js` para el inicio
+  y los cursos, con `tituloBusqueda` en `cursosGrabados.js`). Al compilar, `scripts/seo-html.mjs` escribe un HTML
+  por ruta con esos tags. Una ruta nueva en `App.jsx` necesita su entrada ahí o una regla en `public/_redirects`,
+  y las indexables van también en `public/sitemap.xml`: si falta, el build se corta.
 - Plan de mejoras en curso: `docs/plan-mejoras-2027.md`, en la rama `mejoras-plan-2027`.
 - Estilo: fondo negro, azul `#0b78fb`, naranja `#f6950a`, verde `#30a05a`. Textos en español rioplatense con voseo.

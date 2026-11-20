@@ -153,6 +153,31 @@ así que nada se sube ni se mergea sin el OK de Marcos.
       recibido») y `PROMOCIONES` en `src/data/legal.js`. Pendiente a mano: pegar el Apps Script e implementar
       «Nueva versión», y mergear a `master` antes del 2/11 con el OK de Marcos.
 
+## SEO (consejo del 20/11/2026)
+
+Punto de partida, Search Console del 19/8 al 18/11/2026: 67 clics y 523 impresiones, 17 consultas y casi todas
+de marca, 5 enlaces externos. El consejo concluyó que el SEO no reemplaza a Meta en el corto plazo: arreglo
+técnico acotado, títulos con las palabras de quien busca, YouTube y mail. Sin blog en escala, sin migrar a Next
+y sin pelear «curso de python». Criterio de corte: si a 90 días de publicado los clics sin marca no pasan de 30
+por mes, no se invierte más.
+
+- [ ] **HTML por ruta** (rama `seo-head-por-ruta`, sin publicar): `scripts/seo-html.mjs` escribe al compilar un
+      HTML por página con su título, descripción, canonical y vista previa (solo el `<head>`; el cuerpo y los
+      precios los sigue poniendo React). Resuelve también el pendiente de la vista previa de `/sentryx`. Los
+      textos están en `src/data/seo.js` y `src/data/seoCursos.js`.
+- [ ] **404 real**: `public/_redirects` ya no manda todo a `index.html`; lo que no existe devuelve 404 con la
+      misma app. `/excel`, `/sql`, `/base-de-datos` y `/potrero-it` pasan a ser redirecciones 301.
+- [ ] **Sitemap** con `/empresas`, `/proximos-cursos` y `/fundamentos-ia`.
+- [ ] **Títulos nuevos** de los cursos (`tituloBusqueda`) y del inicio.
+- [ ] Después de publicar: revisar con `curl` el estado y el título de cada ruta en wearesrv.com (que
+      `/sql/inscripcion` dé 200 con su título y una URL inventada dé 404), probar una vuelta de Mercado Pago a
+      `/…/gracias` y reenviar el sitemap en Search Console.
+- [ ] Marcos: link con UTM a la página del curso en la descripción de cada video de YouTube
+      (`docs/seo-links-y-mail.md`).
+- [ ] Marcos: mail a los registrados de `/redes` y `/fundamentos-ia` (borrador en `docs/seo-links-y-mail.md`;
+      depende del pendiente del newsletter: Brevo o MailerLite).
+- [ ] Marcos: crear o reclamar el perfil de Google Business.
+
 ## Tanda 3: producto
 
 - [ ] Área de alumnos: va con **Estellarium**, la plataforma propia (MVP y demo gratuita previstos para

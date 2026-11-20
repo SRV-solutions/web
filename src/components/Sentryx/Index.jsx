@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./style.module.css";
-import Seo, { SITE_URL } from "../Seo";
+import Seo from "../Seo";
 import { whatsappLink } from "../../data/legal";
 import { trackEvent } from "../../data/metaPixel";
 import {
@@ -16,7 +16,6 @@ import {
   KYDO_MUESTRA_URL,
   KYDO_PARA,
   KYDO_URL,
-  OG_IMAGEN,
   OG_IMAGEN_ALT,
   PASOS,
   QR_IMAGEN,
@@ -31,9 +30,6 @@ const WHATSAPP_KYDO = whatsappLink("Hola, quiero Sentryx con Kydo para mi colegi
 // En el plan Ampliado se elige con o sin Kydo; los planes Profesional e Integral ya lo incluyen
 const AMPLIADO = { conKydo: 999, sinKydo: 720 };
 const KYDO_EXTRA = AMPLIADO.conKydo - AMPLIADO.sinKydo;
-
-const DESCRIPCION =
-  "Comunicados con confirmación de lectura, notas, boletines, asistencia, aulas y convivencia en un solo lugar. Para colegios con Inicial, Primario y Secundario. Pedí tu demo.";
 
 const JSON_LD = [
   {
@@ -104,13 +100,7 @@ export default function Sentryx() {
 
   return (
     <div className={styles.sentryxContainer}>
-      <Seo
-        title="Sentryx - Plataforma escolar digital | WEARESRV"
-        description={DESCRIPCION}
-        path="/sentryx"
-        image={`${SITE_URL}${OG_IMAGEN}`}
-        jsonLd={JSON_LD}
-      />
+      <Seo pagina="/sentryx" jsonLd={JSON_LD} />
 
       {/* Hero */}
       <section className={styles.hero}>

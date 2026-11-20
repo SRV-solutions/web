@@ -131,11 +131,7 @@ export default function ProximosCursos() {
 
   return (
     <section className={styles.page}>
-      <Seo
-        title="Próximos cursos: IA para el trabajo, IA para docentes, SQL, AWS y Excel | WEARESRV"
-        description="Anotate en la lista de espera de los próximos cursos de WEARESRV: IA para el trabajo e IA para docentes. Y reservá en preventa SQL y Bases de Datos, Redes, Linux y AWS, y el Master en Excel y Sheets con IA."
-        path="/proximos-cursos"
-      />
+      <Seo pagina="/proximos-cursos" />
       <div className={styles.inner}>
         <p className={styles.kicker}>Próximos cursos</p>
         <h1 className={styles.title}>

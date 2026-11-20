@@ -69,12 +69,7 @@ const PLANES = [
 export default function EventBox() {
   return (
     <div className={styles.container}>
-      <Seo
-        title="Event Box - Stock y órdenes de servicio para empresas de eventos | WEARESRV"
-        description="Event Box ordena el stock, los contenedores y las órdenes de servicio de tu empresa de eventos. Cada orden con su recorrido, su responsable por etapa y su PDF. Por SRV."
-        path="/eventbox"
-        jsonLd={JSON_LD}
-      />
+      <Seo pagina="/eventbox" jsonLd={JSON_LD} />
 
       <section className={styles.hero}>
         <div className={styles.logo}>

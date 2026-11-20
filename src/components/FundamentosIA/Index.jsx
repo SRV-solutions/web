@@ -76,11 +76,7 @@ export default function FundamentosIA() {
 
   return (
     <section className={styles.page}>
-      <Seo
-        title="Fundamentos de IA: videos y guías gratis para empezar | WEARESRV"
-        description="Material gratuito para entender la IA y empezar a usarla hoy, sin saber programar: qué es la IA generativa, prompts que funcionan, IA en el trabajo diario y tu primer script con IA."
-        path="/fundamentos-ia"
-      />
+      <Seo pagina="/fundamentos-ia" />
       <div className={styles.inner}>
         <p className={styles.kicker}>100% gratis · 4 videos y sus guías · Acceso por mail</p>
         <h1 className={styles.title}>

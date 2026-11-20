@@ -3,6 +3,7 @@ import { useLocation, Link } from "react-router-dom";
 import styles from "./style.module.css";
 import Seo, { SITE_URL } from "../Seo";
 import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, estaEnEstellarium, textoPreventa, linkInscripcion } from "../../data/cursosGrabados";
+import { seoInicio } from "../../data/seoCursos";
 import { linkPackTodo, packTodo } from "../../data/packs";
 import { TESTIMONIOS, ENCUESTA, promedioEncuesta } from "../../data/testimonios";
 import { LuBanknote, LuBuilding2, LuChartColumn, LuClapperboard, LuCloud, LuCompass, LuDatabase, LuGift, LuHourglass, LuOrbit, LuPuzzle, LuQuote, LuRocket, LuStar, LuTarget } from "react-icons/lu";
@@ -100,12 +101,7 @@ export default function Home() {
 
   return (
     <div className={styles.homeContainer}>
-      <Seo
-        title="Aprendé a programar con IA y automatizá tu trabajo | Cursos de Scripting y Python con IA, JavaScript y Backend | WEARESRV"
-        description={`Cursos grabados de programación con acceso de por vida: Scripting y Python con IA, JavaScript, Backend con Node.js y Fullstack con C#. ${TOTAL_CLASES} clases grabadas y guías de estudio. Desde ${formatearPrecio(PRECIO_DESDE)}.`}
-        path="/"
-        jsonLd={jsonLd}
-      />
+      <Seo {...seoInicio()} jsonLd={jsonLd} />
 
       {/* ---------- Hero ---------- */}
       <section className={styles.hero}>

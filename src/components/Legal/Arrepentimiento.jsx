@@ -19,8 +19,6 @@ const MODOS = {
     path: "/arrepentimiento",
     prefijo: "ARR",
     titulo: "arrepentimiento",
-    seoTitulo: "Botón de arrepentimiento | WEARESRV",
-    seoDescripcion: "Arrepentite de tu compra dentro de los 10 días corridos, sin registrarte y sin costo.",
     intro:
       "Si compraste un curso o una cursada hace 10 días corridos o menos, podés arrepentirte sin dar explicaciones y sin costo (art. 34 de la Ley 24.240 y art. 1110 del Código Civil y Comercial). No necesitás registrarte.",
     etiquetaProducto: "Curso o cursada que compraste",
@@ -33,8 +31,6 @@ const MODOS = {
     path: "/baja",
     prefijo: "BAJ",
     titulo: "baja de servicio",
-    seoTitulo: "Botón de baja de servicio | WEARESRV",
-    seoDescripcion: "Dá de baja un servicio de WEARESRV sin registrarte.",
     intro:
       "Si contrataste un servicio con pago periódico (por ejemplo Sentryx o Event Box), podés darlo de baja desde acá, sin registrarte.",
     etiquetaProducto: "Servicio que querés dar de baja",
@@ -99,7 +95,7 @@ export default function Arrepentimiento({ modo = "arrepentimiento" }) {
 
   return (
     <section className={styles.page}>
-      <Seo title={m.seoTitulo} description={m.seoDescripcion} path={m.path} />
+      <Seo pagina={m.path} />
       <div className={styles.inner}>
         <p className={styles.kicker}>Disposición 954/2025 · Defensa del Consumidor</p>
         <h1 className={styles.title}>

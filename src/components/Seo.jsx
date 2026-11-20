@@ -1,12 +1,16 @@
 import React from "react";
 import { Helmet } from "react-helmet";
+import { SITE_URL, IMAGEN_POR_DEFECTO, SEO_PAGINAS } from "../data/seo";
 
-export const SITE_URL = "https://wearesrv.com";
-const DEFAULT_IMAGE = `${SITE_URL}/og-image.jpg`;
+export { SITE_URL };
 
 // Título, descripción, canonical, Open Graph, Twitter y datos estructurados de cada página.
 // Reemplaza a los tags por defecto de index.html (marcados con data-react-helmet).
-export default function Seo({ title, description, path = "/", image = DEFAULT_IMAGE, type = "website", noindex = false, jsonLd }) {
+// Con pagina="/ruta" toma el título, la descripción y la imagen de src/data/seo.js, que es de donde también
+// los lee el build para escribir el HTML de esa ruta: así lo que ve Google sin JavaScript es lo mismo.
+export default function Seo({ pagina, jsonLd, ...propios }) {
+  const datos = { ...(pagina ? { path: pagina, ...SEO_PAGINAS[pagina] } : {}), ...propios };
+  const { title, description, path = "/", image = IMAGEN_POR_DEFECTO, type = "website", noindex = false } = datos;
   const url = `${SITE_URL}${path}`;
   const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 

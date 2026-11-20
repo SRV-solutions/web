@@ -80,6 +80,8 @@ export const CURSOS_GRABADOS = {
     tituloInicio: "Scratch para",
     tituloDestacado: "Chicos",
     tituloFin: "Desde Cero",
+    // Título de la pestaña y de Google, con las palabras de quien busca (ver src/data/seoCursos.js)
+    tituloBusqueda: "Curso de Scratch para chicos de 8 a 13 años: crear videojuegos desde cero",
     descripcion:
       "14 clases grabadas para que chicos de 8 a 13 años aprendan a programar jugando con Scratch: en el primer módulo arman una historia animada y en el segundo, su primer videojuego con puntaje, vidas y niveles. Sin instalar nada.",
     precio: Date.now() < SCRATCH_ACCESO.getTime() ? 10000 : 18000,
@@ -149,6 +151,7 @@ export const CURSOS_GRABADOS = {
     tituloInicio: "Curso de",
     tituloDestacado: "Scripting con IA",
     tituloFin: "Desde Cero",
+    tituloBusqueda: "Curso de Scripting con IA: aprendé a programar desde cero y automatizá tareas",
     descripcion:
       "Aprendé a programar desde cero con JavaScript, Python y Google Apps Script, y poné a la IA a trabajar en tus automatizaciones: 40 clases grabadas y más de 59 horas para automatizar planillas, mails, documentos y tareas repetitivas, consumir APIs y armar tus propios bots.",
     precio: 15000,
@@ -263,6 +266,7 @@ export const CURSOS_GRABADOS = {
     tituloInicio: "Master en",
     tituloDestacado: "Python con IA",
     tituloFin: "Desde Cero",
+    tituloBusqueda: "Curso de Python desde cero con IA: clases grabadas y acceso de por vida",
     descripcion:
       "106 clases grabadas para aprender Python desde cero y usarlo con IA: lógica de programación, programación orientada a objetos, archivos, consumo de APIs, asincronismo, aplicaciones con interfaz gráfica (GUI) y automatizaciones con IA, de las salidas estructuradas a los agentes y el RAG.",
     precio: 80000,
@@ -626,6 +630,7 @@ export const CURSOS_GRABADOS = {
     tituloInicio: "Curso",
     tituloDestacado: "Fullstack",
     tituloFin: "con C# y React",
+    tituloBusqueda: "Curso de C# desde cero: Fullstack con .NET, PostgreSQL y React",
     descripcion:
       "30 clases grabadas para construir una aplicación completa de punta a punta: una API en .NET con C#, una base de datos PostgreSQL y un front en React con Vite. 12 módulos con teoría paso a paso, 21 ejercicios resueltos y un proyecto final tipo Instagram, más una guía de estudio con 80 preguntas para ponerte a prueba.",
     precio: 87900,
@@ -688,6 +693,7 @@ export const CURSOS_GRABADOS = {
     tituloInicio: "Redes, Linux y",
     tituloDestacado: "AWS",
     tituloFin: "",
+    tituloBusqueda: "Curso para rendir AWS Cloud Practitioner: Redes, Linux y AWS desde cero",
     descripcion:
       "Preparate para rendir la certificación AWS Certified Cloud Practitioner (CLF-C02) con las bases que pide el trabajo en cloud y DevOps: redes desde cero con Cisco Packet Tracer, Linux con Ubuntu Server y AWS con práctica real. 32 clases, la guía de cada una en PDF y dos simulacros del examen.",
     precio: Date.now() < REDES_ACCESO.getTime() ? 62900 : 89900,
@@ -816,6 +822,7 @@ export const CURSOS_GRABADOS = {
     tituloInicio: "SQL y",
     tituloDestacado: "Bases de Datos",
     tituloFin: "Desde Cero",
+    tituloBusqueda: "Curso de SQL y bases de datos desde cero con PostgreSQL",
     descripcion:
       "Aprendé SQL y bases de datos relacionales desde cero con PostgreSQL: diseñar una base, crear sus tablas, consultarla con SELECT y JOIN, armar reportes y programarla con vistas, funciones y triggers. 16 clases grabadas con su video resumen, guías de estudio, diapositivas y scripts. Empezás hoy: más de la mitad de las clases ya está en la carpeta.",
     precio: SQL_EN_PREVENTA ? 34900 : 49900,
@@ -827,7 +834,6 @@ export const CURSOS_GRABADOS = {
       // Textos propios: la carpeta no está vacía, el curso se completa el día en que termina la preventa
       yaHayClases: true,
       etiqueta: "Preventa · empezás hoy",
-      seoTitulo: "preventa con acceso inmediato",
       pagoSeguro: `Tu carpeta te llega al mail al instante, con las clases que ya están. El curso queda completo el ${SQL_FECHA_TEXTO}.`,
       paso: {
         titulo: "Te llega hoy el link a tu carpeta",
@@ -932,6 +938,7 @@ export const CURSOS_GRABADOS = {
     tituloInicio: "Master en",
     tituloDestacado: "Excel y Sheets con IA",
     tituloFin: "Desde Cero",
+    tituloBusqueda: "Curso de Excel y Google Sheets con IA desde cero: de fórmulas a macros",
     descripcion:
       `Excel y Google Sheets en un solo curso: ${CLASES_EXCEL} clases animadas y cortas, con más de 12 horas de video, para ir de tu primera fórmula a Power Query, tablas dinámicas, tableros, macros y Google Apps Script, con IA para trabajar más rápido y casos reales de Argentina.`,
     precio: EXCEL_EN_PREVENTA ? 59900 : 89900,
@@ -1062,6 +1069,7 @@ CURSOS_GRABADOS["ruta-backend"] = {
   tituloInicio: "Ruta",
   tituloDestacado: "Backend",
   tituloFin: "Completa",
+  tituloBusqueda: "Curso de JavaScript y Backend con Node.js desde cero: Ruta Backend",
   // Cursos que incluye: alimenta el bloque "Incluye" y el banner "llevalos juntos" de cada curso
   combo: ["fundamentos-backend", "backend-avanzado"],
   descripcion: `Los dos cursos de la ruta backend en un solo pago: Master en JavaScript (${JS.clases} clases) + Backend Avanzado (${BACK.clases} clases). De tu primer 'Hola mundo' a crear tus propios servidores y APIs REST con Node.js, Express, sockets, testing y Docker.`,

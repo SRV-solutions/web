@@ -452,11 +452,7 @@ function ContactoCursoWeb() {
 
   return (
     <section id="cursos-verano" className={styles.section}>
-      <Seo
-        title="Intensivo Full Stack 2027 en vivo: Frontend, Backend o Full Stack | WEARESRV"
-        description="Cursada intensiva en vivo de enero a marzo: Frontend con React y Backend con Node.js y bases de datos, con código real y mentoría. Reservá tu lugar."
-        path="/full-stack/inscripcion"
-      />
+      <Seo pagina="/full-stack/inscripcion" />
       <div className={styles.fullLayout}>
         {/* ===== Columna izquierda: oferta + formulario ===== */}
         <div className={styles.stickyColumn}>

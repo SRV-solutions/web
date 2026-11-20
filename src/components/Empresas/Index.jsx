@@ -45,11 +45,7 @@ const WA_COLEGIOS = whatsappLink("Hola, soy de un colegio y quiero saber más de
 export default function Empresas() {
   return (
     <section className={styles.page}>
-      <Seo
-        title="Capacitación para empresas e instituciones | IA, automatización y AWS | WEARESRV"
-        description="Talleres de IA, automatización con Python y Apps Script, y AWS para equipos. En vivo, a medida y con certificado verificable. Paquete especial para colegios con IA para docentes, Scratch y Sentryx."
-        path="/empresas"
-      />
+      <Seo pagina="/empresas" />
       <div className={styles.inner}>
         <p className={styles.kicker}>Empresas e instituciones</p>
         <h1 className={styles.title}>

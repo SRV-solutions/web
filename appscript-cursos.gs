@@ -542,6 +542,7 @@ function doGet() {
 function procesarPago_(paymentId, accessToken, forzar) {
   // ANTIDUPLICADOS: solo si ya quedó en un estado final (un "pending" previo NO bloquea)
   if (!forzar && yaProcesado_(paymentId)) {
+    revisarReembolsoEstellarium_(paymentId, accessToken);
     return responder_("already_processed");
   }
 
@@ -679,6 +680,9 @@ function procesarPago_(paymentId, accessToken, forzar) {
     }
     accesos.push({ nombre: carpeta.nombre, link: linkDrive, compartida: compartida });
   }
+
+  var altaEs = altaEstellarium_(payment, cursoKey, nombre, email);
+  if (altaEs.nota) notas.push(altaEs.nota);
 
   var asunto = preventa
     ? "¡Lugar reservado! - " + curso.nombre + " (las clases se habilitan el " + curso.preventa.fechaTexto + ")"

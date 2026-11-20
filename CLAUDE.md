@@ -11,6 +11,10 @@ Netlify publica `master`. Nada se sube ni se mergea sin el OK de Marcos.
   (Apps Script de Google, se implementa a mano). Un cambio de precio toca los tres.
 - Datos legales (razón social, CUIT, domicilio, Data Fiscal) y promociones con sus fechas: `src/data/legal.js`.
   Páginas legales: `src/components/Legal/`.
+- Apps Script de compras (proyecto «Cursos» de la cuenta de SRV): `appscript-cursos.gs` es su `Código.gs` y
+  `appscript-estellarium.gs`, su `estellarium.gs` (alta de alumnos en E-stellarium). Iguales a Google al
+  20/11/2026. Antes de subir cambios, comparar con lo que hay en Google y aplicar solo las diferencias: allá
+  también se edita a mano.
 - Promo con fecha: variable `PROMO` de Netlify (`nombre;desde;hasta;porcentaje[;cursos]`, reglas en
   `netlify/lib/promo.js`); se carga y se vuelve a publicar. El webhook la acepta solo con el `appscript-cursos.gs`
   del 20/11/2026 pegado en Apps Script.

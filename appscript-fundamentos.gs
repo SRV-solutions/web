@@ -357,6 +357,30 @@ function avisarPreventaRedes() {
   });
 }
 
+// Preventa de SQL y Bases de Datos: correrlo apenas se publica la página del curso (abre el 20/11/2026).
+// En la lista de espera el curso figura como "SQL desde cero". El precio es el de lanzamiento que se les
+// había prometido ($34.900) y la fecha es la de netlify/lib/cursos.js: si cambian, cambiarlos también acá.
+function avisarPreventaSQL() {
+  avisarAperturaLista_({
+    curso: "SQL desde cero", // tal cual figura en la columna Curso
+    asunto: "Abrió la preventa de SQL y Bases de Datos - WEARESRV",
+    etiqueta: "LISTA DE ESPERA • ABRIÓ LA PREVENTA",
+    tituloHtml: 'SQL Y <span style="color:#f6950a;">BASES DE DATOS</span> · PREVENTA',
+    cuerpoHtml:
+      "Abrió la preventa de <strong>SQL y Bases de Datos</strong>, el curso que en la lista de espera figuraba como " +
+      "SQL desde cero. Como estás anotado, te avisamos antes que a nadie.<br><br>" +
+      "Hasta el 19 de diciembre de 2026 inclusive lo reservás al precio de lanzamiento: " +
+      "<strong style=\"color:#f6950a;\">$34.900</strong> (después cuesta $49.900). " +
+      "Y no tenés que esperar: apenas pagás te llega el acceso a tu carpeta de Google Drive, donde ya está más de la " +
+      "mitad de las clases. Cada semana se suma una nueva y el <strong>20 de diciembre de 2026</strong> el curso queda " +
+      "completo: 16 clases grabadas, cada una con su video resumen, las guías de estudio y los scripts SQL.<br><br>" +
+      "Vas de cero a diseñar una base, consultarla con SELECT y JOIN y programarla con vistas, funciones y triggers, " +
+      "con PostgreSQL.",
+    boton: "Quiero empezar hoy",
+    link: "https://wearesrv.com/sql/inscripcion"
+  });
+}
+
 function avisarAperturaLista_(aviso) {
   var hoja = getHojaLista_();
   var lastRow = hoja.getLastRow();

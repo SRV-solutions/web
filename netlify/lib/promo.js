@@ -10,7 +10,7 @@
 // - desde y hasta son días de Argentina: empieza a las 00:00 del primero y termina a las 23:59 del último.
 // - porcentaje: de 5 a 50 (el Apps Script no acepta más del 50 %).
 // - cursos (opcional): separados por coma; sin esto, todos los cursos grabados. Valen scratch, scripting,
-//   python, javascript, backend, csharp, redes, excel, ruta y excel-scripting. El intensivo en vivo nunca entra.
+//   python, javascript, backend, csharp, redes, excel, sql, ruta y excel-scripting. El intensivo en vivo nunca entra.
 // - Si la variable está mal escrita, la publicación falla (vite.config.js) y sigue en línea la versión anterior.
 // - Para sacarla: borrar la variable (o dejarla vacía) y volver a publicar. Fuera de sus fechas no hace nada.
 // ==========================================
@@ -31,6 +31,7 @@ const ALIAS = {
   "fullstack-csharp": "fullstack-csharp",
   redes: "redes",
   excel: "excel",
+  sql: "sql",
   ruta: "ruta-backend",
   "ruta-backend": "ruta-backend",
   "excel-scripting": "excel-scripting",

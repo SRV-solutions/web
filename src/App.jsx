@@ -222,6 +222,11 @@ function AppContent() {
           <Route path="/excel/inscripcion" element={<CursoGrabado cursoKey="excel" />} />
           <Route path="/excel/gracias" element={<GraciasCurso cursoKey="excel" />} />
           <Route path="/excel" element={<Navigate to="/excel/inscripcion" replace />} />
+          {/* SQL y Bases de Datos en preventa (hasta el 20/12/2026) */}
+          <Route path="/sql/inscripcion" element={<CursoGrabado cursoKey="sql" />} />
+          <Route path="/sql/gracias" element={<GraciasCurso cursoKey="sql" />} />
+          <Route path="/sql" element={<Navigate to="/sql/inscripcion" replace />} />
+          <Route path="/base-de-datos" element={<Navigate to="/sql/inscripcion" replace />} />
           <Route path="/el-develop" element={<ElDevelop />} />
           <Route path="/sentryx" element={<Sentryx />} />
           <Route path="/eventbox" element={<EventBox />} />

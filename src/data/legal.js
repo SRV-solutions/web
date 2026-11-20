@@ -20,7 +20,7 @@ export const LEGAL = {
   // logo oficial DATAWEB.jpg, guardado en public/.
   dataFiscalUrl: "http://qr.afip.gob.ar/?qr=2fo6inei48mGOnEZH3MeZg,,",
   dataFiscalImg: "/data-fiscal.jpg",
-  actualizacion: "7 de noviembre de 2026", // preventa, combo y temario del Master en Excel y Sheets con IA
+  actualizacion: "20 de noviembre de 2026", // preventa de SQL y Bases de Datos
   actualizacionPrivacidad: "1 de noviembre de 2026", // se sumó el newsletter de las guías gratis
 };
 
@@ -42,6 +42,13 @@ const basesPromo = (p) => {
 // cuándo terminan y sus condiciones. Se listan en /terminos: mantener al día cuando cambie una promo.
 export const PROMOCIONES = [
   ...(PROMO_PUBLICADA ? [basesPromo(PROMO_PUBLICADA)] : []),
+  {
+    nombre: "Preventa de SQL y Bases de Datos",
+    detalle:
+      "El curso cuesta $34.900 en lugar de $49.900. La carpeta llega al instante con las clases ya dadas de la cursada; cada semana se suma una y el curso queda completo, con sus 16 clases, el 20/12/2026. No se combina con los packs \"Sumá a tu compra\".",
+    desde: "20/11/2026",
+    hasta: "19/12/2026 a las 23:59",
+  },
   {
     nombre: "Preventa del Master en Excel y Sheets con IA",
     detalle:

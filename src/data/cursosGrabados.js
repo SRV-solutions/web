@@ -29,6 +29,14 @@ const EXCEL_ACCESO = new Date("2027-01-01T00:00:00-03:00");
 const EXCEL_FECHA_TEXTO = "1 de enero de 2027";
 const EXCEL_EN_PREVENTA = Date.now() < EXCEL_ACCESO.getTime();
 
+// Preventa de SQL y Bases de Datos: igual que Redes. Abrió el 20/11/2026 (venía de la lista de espera como
+// "SQL desde cero", con $34.900 de lanzamiento y $49.900 después, publicados el 31/10/2026). El 20/12/2026 se
+// habilitan las 16 clases: la cursada en vivo termina el 16/12 y Marcos edita los resúmenes esos días.
+// La misma fecha vive en netlify/lib/cursos.js y en appscript-cursos.gs, y su texto en src/data/legal.js.
+const SQL_ACCESO = new Date("2026-12-20T00:00:00-03:00");
+const SQL_FECHA_TEXTO = "20 de diciembre de 2026";
+const SQL_EN_PREVENTA = Date.now() < SQL_ACCESO.getTime();
+
 // Clases grabadas del Curso Fullstack con C# (12 módulos)
 const CLASES_FULLSTACK = 30;
 
@@ -788,6 +796,124 @@ export const CURSOS_GRABADOS = {
           "Marketplace, migración y servicios de IA como Amazon Q",
           "Los cuatro dominios del CLF-C02 y en qué clase se ve cada uno",
           "Dos simulacros del examen y cómo anotarte: se suman el 3 de febrero de 2027",
+        ],
+      },
+    ],
+  },
+
+  // SQL y Bases de Datos: curso grabado en preventa hasta el 20/12/2026 (ver SQL_ACCESO). Son las 16 clases de la
+  // cursada en vivo «Bases de Datos Intensivo» (septiembre a diciembre de 2026, con PostgreSQL), con sus videos
+  // resumen, guías, diapositivas y scripts. Temario: los nombres de las clases y de las guías que están en la
+  // carpeta «Base de datos» del Drive de SRV al 20/11/2026 (no el cronograma viejo de ContactoCursoDB.jsx).
+  // ACCESO DESDE EL PRIMER DÍA (decisión de Marcos, 20/11/2026): se comparte esa misma carpeta, que ya tiene las
+  // clases dadas; cada semana se suma una y el 20/12 queda completo. Por eso lleva textos propios en "preventa".
+  // Se vende solo: todavía no entra en los packs «Sumá a tu compra» (no es unidad en src/data/packs.js).
+  sql: {
+    key: "sql",
+    itemId: "curso-sql-bases-de-datos", // mismo itemId que netlify/lib/cursos.js (content_ids de Meta)
+    ruta: "sql",
+    contentName: "Infoproducto SQL y Bases de Datos",
+    tituloInicio: "SQL y",
+    tituloDestacado: "Bases de Datos",
+    tituloFin: "Desde Cero",
+    descripcion:
+      "Aprendé SQL y bases de datos relacionales desde cero con PostgreSQL: diseñar una base, crear sus tablas, consultarla con SELECT y JOIN, armar reportes y programarla con vistas, funciones y triggers. 16 clases grabadas con su video resumen, guías de estudio, diapositivas y scripts. Empezás hoy: más de la mitad de las clases ya está en la carpeta.",
+    precio: SQL_EN_PREVENTA ? 34900 : 49900,
+    precioRegular: 49900,
+    preventa: {
+      hasta: SQL_ACCESO,
+      fechaTexto: SQL_FECHA_TEXTO,
+      precio: 34900,
+      // Textos propios: la carpeta no está vacía, el curso se completa el día en que termina la preventa
+      yaHayClases: true,
+      etiqueta: "Preventa · empezás hoy",
+      seoTitulo: "preventa con acceso inmediato",
+      pagoSeguro: `Tu carpeta te llega al mail al instante, con las clases que ya están. El curso queda completo el ${SQL_FECHA_TEXTO}.`,
+      paso: {
+        titulo: "Te llega hoy el link a tu carpeta",
+        texto: `Apenas se aprueba el pago recibís el correo con el acceso a la carpeta del curso en Google Drive. Ahí ya están las clases dadas hasta hoy: empezás en el momento. Cada semana se suma una clase nueva y el ${SQL_FECHA_TEXTO} el curso queda completo.`,
+      },
+      faqPreventa: `El curso se está terminando de grabar: son las clases de nuestra cursada en vivo, que termina en diciembre. Si lo comprás ahora, lo pagás $34.900 en lugar de $49.900 y no tenés que esperar: en tu carpeta ya está más de la mitad de las clases, cada semana se suma una nueva y el ${SQL_FECHA_TEXTO} queda completo, con las 16 clases y sus videos resumen. Desde ese día cuesta $49.900.`,
+      faqRecibo: `Apenas Mercado Pago aprueba el pago, te llega un correo con el acceso a tu carpeta del curso en Google Drive, al mail con el que pagaste. Ya vas a encontrar las clases dadas hasta hoy, con sus guías y scripts. El curso queda completo el ${SQL_FECHA_TEXTO}.`,
+      textoFinal: `Empezás hoy con las clases que ya están en tu carpeta. El ${SQL_FECHA_TEXTO} el curso queda completo y pasa a $49.900.`,
+    },
+    clases: 16,
+    beneficios: [
+      "Acceso vitalicio al material en Google Drive",
+      "Empezás hoy: más de la mitad de las clases ya está en la carpeta",
+      "16 clases grabadas en vivo, con su video resumen para repasar",
+      "La guía de estudio de cada clase, en PDF",
+      "Diapositivas y scripts SQL para practicar en tu computadora",
+    ],
+    subTituloDesc:
+      "Cuatro módulos en orden: primero diseñás la base, después aprendés a consultarla, la programás y al final la administrás y la protegés.",
+    gancho: "La herramienta que piden en casi todos los trabajos con datos.",
+    metaDescripcion: `Curso de SQL y bases de datos desde cero con PostgreSQL: 16 clases grabadas con video resumen, guías y scripts. Preventa a $34.900 hasta el ${SQL_FECHA_TEXTO}, con acceso inmediato a las clases que ya están.`,
+    nivel: "Desde cero · Hasta programar y administrar la base",
+    requisitos:
+      "No. El curso arranca desde cero y no hace falta saber programar. Necesitás una computadora donde instalar PostgreSQL, que es gratuito.",
+    paraQuien: [
+      "Trabajás con datos o reportes y querés consultarlos vos, sin depender de nadie",
+      "Estás aprendiendo a programar y te falta la parte de bases de datos",
+      "Buscás trabajo en análisis de datos, backend, QA o soporte, donde SQL aparece en casi todos los avisos",
+      "Usás Excel todos los días y querés dar el salto a una base de datos de verdad",
+    ],
+    resultados: [
+      "Pasar de un diagrama a una base de datos en PostgreSQL, con sus tablas, claves y restricciones",
+      "Consultar datos con SELECT, filtrar, ordenar, agrupar y paginar resultados",
+      "Combinar tablas con JOIN y resolver consultas difíciles con subconsultas",
+      "Acelerar y simplificar consultas con índices y vistas",
+      "Programar la base con funciones en PL/pgSQL, transacciones y triggers",
+      "Administrarla: roles y permisos, respaldos, migración y seguridad",
+    ],
+    preguntasExtra: [
+      {
+        q: "¿Qué incluye el curso y cuándo está cada cosa?",
+        a: `Hoy ya están en la carpeta las clases dadas hasta ahora, con sus guías de estudio, diapositivas y scripts SQL. Cada semana se suma la clase nueva, y el ${SQL_FECHA_TEXTO} el curso queda completo: las 16 clases, cada una con su video resumen.`,
+      },
+      {
+        q: "¿Cómo son las clases?",
+        a: "Son las clases de nuestra cursada en vivo de Bases de Datos, grabadas de principio a fin, con teoría y práctica. Cada una tiene además un video resumen para repasar el tema en pocos minutos y su guía de estudio en PDF.",
+      },
+      {
+        q: "¿Con qué base de datos se trabaja?",
+        a: "Con PostgreSQL, que es gratuito y uno de los motores más usados. El SQL que aprendés te sirve también en MySQL, SQL Server y cualquier otra base de datos relacional.",
+      },
+    ],
+    modulos: [
+      {
+        titulo: "Diseñar y crear la base",
+        temas: [
+          "Del dato a la tabla: cómo se piensa una base de datos relacional",
+          "Del diagrama a PostgreSQL: crear la base y sus tablas",
+          "De la estructura a las consultas: restricciones, relaciones y carga de datos",
+        ],
+      },
+      {
+        titulo: "Consultar los datos",
+        temas: [
+          "JOIN y subconsultas",
+          "Subconsultas y paginación",
+          "Agrupar, filtrar y ordenar",
+          "Vistas e índices",
+        ],
+      },
+      {
+        titulo: "Programar la base",
+        temas: [
+          "Funciones en PL/pgSQL",
+          "Transacciones",
+          "Triggers",
+        ],
+      },
+      {
+        titulo: "Administrar y proteger",
+        temas: [
+          "Roles y permisos",
+          "Respaldos y migración",
+          "Bases de datos en la nube",
+          "Seguridad y buenas prácticas",
+          "Repaso general",
         ],
       },
     ],

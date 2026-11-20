@@ -13,9 +13,10 @@ import { limpiar, emailValido, celularValido, enviarAlAppsScript } from "../lib/
 // La fecha va en el mail de confirmación: la pone el servidor, nunca el formulario.
 const CURSOS = {
   "ia-trabajo": { nombre: "IA para el trabajo", salida: "sale en diciembre" },
-  sql: { nombre: "SQL desde cero", salida: "sale el 20 de diciembre" },
   "ia-docentes": { nombre: "IA para docentes", salida: "sale en diciembre" },
-  // Redes ya se vende en preventa y no figura en el formulario; queda por si alguien envía desde una página vieja
+  // SQL y Redes ya se venden en preventa y no figuran en el formulario; quedan por si alguien envía desde una
+  // página vieja. El nombre de SQL no se cambia: es el que figura en la columna Curso de la lista de espera.
+  sql: { nombre: "SQL desde cero", salida: "sale el 20 de diciembre" },
   redes: { nombre: "Redes, Linux y AWS", salida: "sale el 27 de enero de 2027" },
 };
 

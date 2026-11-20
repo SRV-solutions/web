@@ -40,13 +40,11 @@ const menuData = [
       },
       {
         label: "Master en Python con IA",
-        to: "/python/inscripcion",
-        isNew: true
+        to: "/python/inscripcion"
       },
       {
         label: "Ruta Backend: JavaScript + Node",
-        to: "/ruta-backend/inscripcion",
-        isNew: true
+        to: "/ruta-backend/inscripcion"
       },
       {
         label: "Fullstack con C# y React",
@@ -55,12 +53,16 @@ const menuData = [
       },
       {
         label: "Redes, Linux y AWS · Preventa",
-        to: "/redes/inscripcion",
-        isNew: true
+        to: "/redes/inscripcion"
       },
       {
         label: "Excel y Sheets con IA · Preventa",
         to: "/excel/inscripcion",
+        isNew: true
+      },
+      {
+        label: "SQL y Bases de Datos · Preventa",
+        to: "/sql/inscripcion",
         isNew: true
       },
       {

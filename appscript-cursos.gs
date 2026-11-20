@@ -10,11 +10,11 @@
  *  COMBOS: un curso con la clave "incluye" (ej. "ruta-backend") no tiene carpeta propia:
  *  comparte las carpetas de los cursos que incluye y manda un solo mail con todos los links.
  *
- *  PREVENTA (Scratch, Redes, Linux y AWS, y Excel): hasta la fecha "hasta" se acepta el precio de preventa.
+ *  PREVENTA (Scratch, Redes, Linux y AWS, Excel y SQL): hasta la fecha "hasta" se acepta el precio de preventa.
  *  El comprador recibe AL INSTANTE el acceso a la carpeta (vacía hasta el lanzamiento) con un mail que
  *  se lo aclara. El día del lanzamiento subís las clases a esa carpeta y listo: todos las ven. Si querés
- *  avisarles, ese día ejecutás avisarAperturaScratch(), avisarAperturaRedes() o avisarAperturaExcel()
- *  desde el editor.
+ *  avisarles, ese día ejecutás avisarAperturaScratch(), avisarAperturaRedes(), avisarAperturaExcel() o
+ *  avisarAperturaSQL() desde el editor.
  *
  *  Las donaciones del juego El Develop ("donacion:uuid") NO dan acceso a nada:
  *  solo se registran y te avisan por mail.
@@ -140,6 +140,23 @@ var CURSOS = {
       queEncontrara: "las 32 clases del curso, y el 3 de febrero de 2027, los dos simulacros del examen"
     },
     folderId: "12Iye_viv4sZy9SEKLj-fUENRW1h7-UNa" // "AWS Y REDES - Preventa", en Mi unidad > CURSOS
+  },
+  // PREVENTA hasta el 20/12/2026: ese día el curso queda completo y corrés avisarAperturaSQL(). Se vende solo:
+  // no entra en los packs. La carpeta es "Base de datos" (Mi unidad > CURSOS), la de la cursada en vivo, elegida
+  // por Marcos el 20/11/2026: NO está vacía, el comprador ve desde el primer día lo que ya esté subido.
+  "sql": {
+    itemId: "curso-sql-bases-de-datos",
+    nombre: "SQL y Bases de Datos",
+    tituloHtml: 'SQL Y <span style="color:#f6950a;">BASES DE DATOS</span> DESDE CERO',
+    precioMinimo: 49900,
+    preventa: {
+      hasta: new Date("2026-12-20T00:00:00-03:00"), // misma fecha que netlify/lib/cursos.js
+      precioMinimo: 34900,
+      fechaTexto: "20 de diciembre de 2026",
+      queEncontrara: "el curso completo: las 16 clases, cada una con su video resumen, las guías de estudio y los scripts SQL",
+      yaHayClases: true // el mail avisa que ya puede empezar (ver construirEmailHtml_)
+    },
+    folderId: "1HiJ2PYR-Bf3VXpPAyRtogEbHz9J_LyWU" // "Base de datos", en Mi unidad > CURSOS
   },
   // PREVENTA como Redes: la carpeta se comparte al instante (vacía) y las clases se habilitan el 1/01/2027.
   // Ese día: subís las clases y corrés avisarAperturaExcel(). Durante la campaña de Redes no se combina con Redes.
@@ -1090,6 +1107,13 @@ function construirEmailHtml_(curso, nombre, email, monto, accesos, preventa) {
       "Tu lugar quedó reservado al <strong>precio de preventa</strong>. Ya tenés acceso a tus <strong>" + accesos.length + " carpetas</strong> privadas de Google Drive (asociadas a este correo): " +
       "<strong style=\"color:#f6950a;\">el " + escaparHtml_(curso.preventa.fechaTexto) + " vas a encontrar " + escaparHtml_(curso.preventa.queEncontrara || "las clases") + "</strong>. " +
       "El resto del material ya está disponible. Guardá este mail con los links: no tenés que hacer nada más.";
+  } else if (preventa && curso.preventa.yaHayClases) {
+    // Preventa con la carpeta ya cargada (SQL): el comprador empieza hoy y el curso se completa en la fecha
+    textoAcceso =
+      "Tu compra quedó al <strong>precio de preventa</strong>. Ya tenés acceso a tu carpeta privada de Google Drive (asociada a este correo), " +
+      "con las clases dadas hasta hoy: podés empezar ahora. Cada semana se suma una clase nueva y " +
+      "<strong style=\"color:#f6950a;\">el " + escaparHtml_(curso.preventa.fechaTexto) + " vas a encontrar ahí " + escaparHtml_(curso.preventa.queEncontrara || "las clases") + "</strong>. " +
+      "Guardá este mail con el link: no tenés que hacer nada más.";
   } else if (preventa) {
     textoAcceso =
       "Tu lugar quedó reservado al <strong>precio de preventa</strong>. Ya tenés acceso a tu carpeta privada de Google Drive (asociada a este correo): " +
@@ -1266,6 +1290,11 @@ function avisarAperturaRedes() {
 
 function avisarAperturaExcel() {
   avisarApertura_("excel");
+}
+
+// SQL y Bases de Datos: correrlo el 20/12/2026, después de subir las clases a su carpeta
+function avisarAperturaSQL() {
+  avisarApertura_("sql");
 }
 
 function avisarApertura_(cursoKey) {

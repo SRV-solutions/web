@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creativos Preventa SQL</title>
+<!--
+  Creativos de la preventa de SQL y Bases de Datos (20/11 al 19/12/2026). El comprador entra a la carpeta el mismo día,
+  con las clases ya dadas de la cursada; el curso queda completo el 20/12/2026.
+  Instagram: post 1080x1350 (4:5), carrusel de 5 placas 1080x1350 e historias 1080x1920.
+  WhatsApp: placa cuadrada 1080x1080 para chats y grupos; para los estados sirven las historias.
+  Al final están los textos para copiar (descripción de Instagram y mensajes de WhatsApp).
+  Se abre por el dev server de Vite (npx vite --port 3480 -> http://localhost:3480/docs/creativos/sql-preventa-2026.html)
+  porque usa el isotipo de /public. "Descargar PNG" baja cada placa a tamaño real (html2canvas).
+  Precios, fechas y contenido: los de src/data/cursosGrabados.js (curso "sql") y PROMOCIONES de src/data/legal.js
+  al 20/11/2026. Si cambia un precio o una fecha, cambiarlo también acá.
+  El tachado ($49.900) es el precio real desde el 20/12/2026. Cada placa con precio lleva fechas y bases.
+  Historias: lo importante queda entre los 220 px de arriba y los 300 px de abajo.
+-->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;600;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root {
+    --negro: #000000;
+    --linea: #1f2430;
+    --azul: #0b78fb;
+    --naranja: #f6950a;
+    --verde: #30a05a;
+    --verdeClaro: #4cc27a;
+    --blanco: #ffffff;
+    --gris: #9ca3af;
+    --grisOscuro: #6b7280;
+    --display: "Anton", "Arial Narrow", sans-serif;
+    --texto: "Archivo", Arial, sans-serif;
+    --mono: "JetBrains Mono", Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #111318;
+    color: var(--blanco);
+    font-family: var(--texto);
+    padding: 32px max(16px, env(safe-area-inset-left, 0px)) 80px max(16px, env(safe-area-inset-right, 0px));
+  }
+  h1 { font-family: var(--display); font-weight: 400; letter-spacing: 1px; font-size: 2rem; margin: 0 0 4px; }
+  h1 .srv, .seccion h2 .srv { color: var(--naranja); }
+  .sub { color: var(--gris); margin: 0 0 20px; max-width: 75ch; line-height: 1.5; }
+  .acciones { margin: 0 0 32px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  button {
+    font-family: var(--texto); font-weight: 600; font-size: 0.95rem;
+    background: var(--azul); color: #fff; border: 0; border-radius: 8px;
+    padding: 10px 18px; cursor: pointer;
+  }
+  button.secundario { background: #232838; }
+  button:hover { filter: brightness(1.15); }
+  button:focus-visible { outline: 3px solid var(--naranja); outline-offset: 2px; }
+  .estado { color: var(--verdeClaro); font-weight: 600; }
+  .seccion { margin: 0 0 48px; }
+  .seccion h2 { font-family: var(--display); font-weight: 400; font-size: 1.6rem; letter-spacing: 1px; margin: 0 0 6px; }
+  .seccion .sub { margin-bottom: 14px; }
+  .galeria { display: flex; flex-wrap: wrap; gap: 24px; }
+  .pieza { display: flex; flex-direction: column; gap: 10px; width: 300px; }
+  .pieza h3 { font-size: 0.85rem; font-weight: 600; color: var(--gris); margin: 0; min-height: 2.4em; }
+  .marco { width: 300px; height: 375px; overflow: hidden; border-radius: 10px; border: 1px solid #2a2f3a; background: var(--negro); }
+  .marco.vertical { height: 533px; }
+  .marco.cuadrada { height: 300px; }
+  .marco > .placa { transform: scale(0.277778); transform-origin: top left; }
+
+  /* Textos para copiar */
+  .textos { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+  .texto { background: #171a22; border: 1px solid #2a2f3a; border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .texto h3 { margin: 0; font-size: 1rem; }
+  .texto p.uso { margin: 0; color: var(--gris); font-size: 0.85rem; line-height: 1.4; }
+  .texto pre { margin: 0; white-space: pre-wrap; font-family: var(--texto); font-size: 0.92rem; line-height: 1.5; color: #e5e7eb; background: #0d0f14; border-radius: 8px; padding: 12px; flex: 1; }
+  .texto button { align-self: flex-start; }
+
+  /* ---------- Las placas (tamaño real) ---------- */
+  .placa {
+    width: 1080px; height: 1350px; background: var(--negro); color: var(--blanco);
+    font-family: var(--texto); position: relative; overflow: hidden;
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 64px 80px 56px;
+  }
+  .placa.story { height: 1920px; padding: 220px 84px 300px; }
+  .placa.cuadrado { height: 1080px; padding: 52px 72px 44px; }
+  .placa::before, .placa::after { content: ""; position: absolute; border-radius: 50%; pointer-events: none; }
+  .placa::before { width: 1000px; height: 1000px; right: -460px; top: -420px; background: radial-gradient(circle, rgba(11,120,251,0.24), transparent 65%); }
+  .placa::after { width: 900px; height: 900px; left: -420px; bottom: -380px; background: radial-gradient(circle, rgba(246,149,10,0.17), transparent 65%); }
+  .placa > * { position: relative; z-index: 1; }
+
+  /* Franja de marca azul / naranja / verde */
+  .franja { position: absolute; left: 0; right: 0; top: 0; height: 14px; display: flex; z-index: 2; }
+  .franja span { flex: 1; }
+  .franja span:nth-child(1) { background: var(--azul); }
+  .franja span:nth-child(2) { background: var(--naranja); }
+  .franja span:nth-child(3) { background: var(--verde); }
+  .story .franja { top: auto; bottom: 0; }
+
+  .cabecera { display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+  .marca { display: flex; align-items: center; gap: 16px; }
+  .marca img { width: 76px; height: 76px; }
+  .logo { font-family: var(--display); font-size: 52px; letter-spacing: 2px; line-height: 1; }
+  .srv { color: var(--naranja); }
+  .azul { color: var(--azul); }
+  .pill {
+    border: 3px solid var(--azul); color: var(--azul); border-radius: 999px;
+    font-weight: 800; font-size: 26px; letter-spacing: 2px; padding: 12px 26px;
+    text-transform: uppercase; white-space: nowrap;
+  }
+  .pill.naranja { border-color: var(--naranja); color: var(--naranja); }
+
+  .cuerpo { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 26px; padding: 28px 0; }
+  .story .cuerpo { gap: 36px; }
+  .cuadrado .cuerpo { gap: 18px; padding: 18px 0; }
+
+  .etiqueta {
+    align-self: flex-start; background: var(--naranja); color: #000;
+    font-weight: 800; font-size: 32px; letter-spacing: 3px; text-transform: uppercase;
+    border-radius: 8px; padding: 10px 22px;
+  }
+  .etiqueta.fondoAzul { background: var(--azul); color: #fff; }
+  .cuadrado .etiqueta { font-size: 26px; padding: 8px 18px; }
+  .titulo { font-family: var(--display); font-weight: 400; font-size: 124px; line-height: 1; margin: 0; text-transform: uppercase; }
+  .story .titulo { font-size: 142px; }
+  .cuadrado .titulo { font-size: 100px; }
+  .titulo.medio { font-size: 96px; }
+  .story .titulo.medio { font-size: 112px; }
+  .bajada { font-size: 38px; font-weight: 600; color: #d1d5db; margin: 0; line-height: 1.3; }
+  .bajada b { color: var(--blanco); }
+  .story .bajada { font-size: 42px; }
+  .cuadrado .bajada { font-size: 32px; }
+
+  .puntos { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+  .puntos li { font-size: 34px; font-weight: 600; line-height: 1.25; color: #e5e7eb; display: flex; gap: 20px; align-items: baseline; }
+  .puntos li::before { content: ""; flex: 0 0 18px; height: 18px; border-radius: 4px; background: var(--naranja); transform: translateY(-4px); }
+  .story .puntos { gap: 22px; }
+  .story .puntos li { font-size: 40px; }
+  .cuadrado .puntos { gap: 10px; }
+  .cuadrado .puntos li { font-size: 29px; }
+  .puntos.grandes { gap: 26px; }
+  .puntos.grandes li { font-size: 42px; }
+
+  .precios { display: flex; align-items: flex-end; gap: 44px; flex-wrap: wrap; }
+  .antes { display: flex; flex-direction: column; gap: 4px; }
+  .rotulo { font-size: 26px; font-weight: 800; color: var(--gris); text-transform: uppercase; letter-spacing: 2px; }
+  .tachado { font-size: 60px; font-weight: 600; color: var(--gris); text-decoration: line-through; text-decoration-thickness: 4px; text-decoration-color: var(--naranja); }
+  .ahora { display: flex; flex-direction: column; gap: 6px; }
+  .ahora .monto { font-family: var(--display); font-size: 150px; line-height: 0.9; color: var(--verdeClaro); }
+  .story .ahora .monto { font-size: 190px; }
+  .cuadrado .ahora .monto { font-size: 118px; }
+  .cuadrado .tachado { font-size: 48px; }
+  .cuadrado .rotulo { font-size: 22px; }
+  .ahora small { font-size: 28px; font-weight: 600; color: var(--gris); }
+  .cuadrado .ahora small { font-size: 24px; }
+  .nota {
+    margin: 0; font-size: 28px; font-weight: 600; color: #e5e7eb; line-height: 1.35;
+    border-left: 6px solid var(--azul); padding: 6px 0 6px 22px;
+  }
+  .nota b { color: var(--naranja); }
+  .story .nota { font-size: 34px; }
+  .cuadrado .nota { font-size: 25px; }
+
+  .pie { display: flex; flex-direction: column; gap: 16px; border-top: 3px solid var(--linea); padding-top: 26px; }
+  .cuadrado .pie { gap: 10px; padding-top: 18px; }
+  .pieFila { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+  .web { font-size: 40px; font-weight: 800; color: var(--azul); letter-spacing: 1px; }
+  .claim { font-size: 28px; font-weight: 600; color: var(--gris); }
+  .cuadrado .web { font-size: 34px; }
+  .cuadrado .claim { font-size: 24px; }
+  .legal { font-size: 20px; color: var(--grisOscuro); line-height: 1.4; margin: 0; }
+  .cuadrado .legal { font-size: 18px; }
+
+  /* Bloque de código: la consulta que se aprende a escribir */
+  .codigo {
+    font-family: var(--mono); font-weight: 500; font-size: 32px; line-height: 1.55; margin: 0;
+    background: #070b14; border: 2px solid #1c2740; border-radius: 18px; padding: 28px 32px;
+    color: #cbd5e1; white-space: pre; overflow: hidden;
+  }
+  .story .codigo { font-size: 36px; padding: 34px 36px; }
+  .codigo .k { color: var(--azul); font-weight: 700; }
+  .codigo .t { color: var(--naranja); }
+  .codigo .c { color: var(--grisOscuro); }
+
+  /* Temario: módulos numerados */
+  .modulos { display: flex; flex-direction: column; }
+  .modulo { display: flex; gap: 28px; align-items: center; padding: 22px 0; border-bottom: 2px solid var(--linea); }
+  .modulo:last-child { border-bottom: 0; }
+  .modulo .num { font-family: var(--display); font-size: 84px; line-height: 1; color: var(--azul); flex: 0 0 110px; }
+  .modulo b { display: block; font-size: 38px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.15; }
+  .modulo small { display: block; font-size: 28px; font-weight: 600; color: var(--gris); line-height: 1.3; margin-top: 6px; }
+  .story .modulo { padding: 30px 0; }
+  .story .modulo b { font-size: 42px; }
+  .story .modulo small { font-size: 32px; }
+
+  /* Placas con mucho texto: todo un poco más compacto para que el pie no se salga */
+  .denso .cuerpo { gap: 18px; padding: 14px 0; }
+  .story.denso .cuerpo { gap: 26px; }
+  .denso .titulo { font-size: 108px; }
+  .story.denso .titulo { font-size: 122px; }
+  .story.denso .titulo.medio { font-size: 100px; }
+  .denso .bajada { font-size: 33px; }
+  .story.denso .bajada { font-size: 37px; }
+  .denso .puntos { gap: 10px; }
+  .denso .puntos li { font-size: 31px; }
+  .story.denso .puntos { gap: 14px; }
+  .story.denso .puntos li { font-size: 35px; }
+  .denso .ahora .monto { font-size: 132px; }
+  .story.denso .ahora .monto { font-size: 156px; }
+  .denso .nota { font-size: 26px; }
+  .story.denso .nota { font-size: 30px; }
+  .story.denso .modulo { padding: 20px 0; }
+  .story.denso .modulo b { font-size: 38px; }
+  .story.denso .modulo small { font-size: 29px; }
+
+  .desliza { font-size: 34px; font-weight: 800; color: var(--naranja); text-transform: uppercase; letter-spacing: 2px; }
+  .paso { font-size: 28px; font-weight: 800; color: var(--gris); letter-spacing: 2px; }
+  .cta {
+    align-self: flex-start; background: var(--azul); color: #fff; border-radius: 14px;
+    font-weight: 800; font-size: 40px; padding: 20px 34px; letter-spacing: 0.5px;
+  }
+  .story .cta { font-size: 46px; padding: 24px 40px; }
+  .cuadrado .cta { font-size: 32px; padding: 14px 26px; }
+</style>
+</head>
+<body>
+<h1>CREATIVOS · PREVENTA DE SQL Y <span class="srv">BASES DE DATOS</span></h1>
+<p class="sub">Preventa a $34.900 del 20/11 al 19/12/2026, con acceso inmediato a las clases ya dadas; el curso queda completo el 20/12/2026 y desde ese día cuesta $49.900.
+Link para poner en la bio y en los mensajes: <b>wearesrv.com/sql</b>. Cada placa con precio lleva su letra chica (fechas y bases).</p>
+<div class="acciones">
+  <button id="todos" type="button">Descargar todos</button>
+  <span class="estado" id="estado" role="status"></span>
+</div>
+<div id="secciones"></div>
+
+<section class="seccion">
+  <h2>Textos para <span class="srv">copiar</span></h2>
+  <p class="sub">La descripción para Instagram y los mensajes de WhatsApp. Cambiá lo que quieras antes de mandarlos.</p>
+  <div class="textos" id="textos"></div>
+</section>
+
+<script>
+// Datos del curso al 20/11/2026 (src/data/cursosGrabados.js, curso "sql")
+const PRECIO = "$34.900";
+const PRECIO_DESPUES = "$49.900";
+const LINK = "wearesrv.com/sql";
+const LEGAL = "Preventa del 20/11/2026 al 19/12/2026 23:59 (hora de Argentina). La carpeta llega al instante con las clases ya dadas; el curso queda completo, con sus 16 clases, el 20/12/2026, y desde ese día cuesta $49.900. Bases: wearesrv.com/terminos.";
+
+const franja = `<div class="franja"><span></span><span></span><span></span></div>`;
+const cabecera = (pill, color = "naranja") => `
+  <div class="cabecera">
+    <div class="marca"><img src="/SRV-LOGO.png" alt=""><span class="logo">WEARE<span class="srv">SRV</span></span></div>
+    <div class="pill ${color}">${pill}</div>
+  </div>`;
+const pie = (legal, claim = "Pago único · Acceso de por vida") => `
+  <div class="pie">
+    <div class="pieFila"><span class="web">${LINK}</span><span class="claim">${claim}</span></div>
+    ${legal ? `<p class="legal">${legal}</p>` : ""}
+  </div>`;
+const placa = (id, formato, contenido, extra = "") => `<div class="placa ${formato} ${extra}" id="${id}">${franja}${contenido}</div>`;
+
+const precios = `
+  <div class="precios">
+    <span class="antes"><span class="rotulo">Desde el 20/12</span><span class="tachado">${PRECIO_DESPUES}</span></span>
+    <span class="ahora"><span class="monto">${PRECIO}</span><small>precio de preventa</small></span>
+  </div>`;
+
+const consulta = `<pre class="codigo"><span class="k">SELECT</span> cliente, <span class="k">SUM</span>(total) <span class="k">AS</span> ventas
+<span class="k">FROM</span> <span class="t">pedidos</span>
+<span class="k">JOIN</span> <span class="t">clientes</span> <span class="k">USING</span> (cliente_id)
+<span class="k">GROUP BY</span> cliente
+<span class="k">ORDER BY</span> ventas <span class="k">DESC</span>;</pre>`;
+
+// ---------- Anuncio de la preventa (post, historia y cuadrada) ----------
+const anuncio = (formato) => placa(`sql-anuncio-${formato}`, formato, `
+  ${cabecera("Preventa · hasta el 19/12")}
+  <div class="cuerpo">
+    <span class="etiqueta fondoAzul">Nuevo curso · empezás hoy</span>
+    <p class="titulo">SQL y Bases<br>de <span class="srv">Datos</span></p>
+    <p class="bajada">De tu primer SELECT a programar la base, con <b>PostgreSQL</b>.</p>
+    <ul class="puntos">
+      <li>16 clases grabadas, cada una con su video resumen</li>
+      <li>Consultas, JOIN, reportes, vistas, funciones y triggers</li>
+      ${formato === "cuadrado" ? "" : "<li>Guías de estudio y los scripts de cada clase</li>"}
+      <li>Desde cero: no hace falta saber programar</li>
+    </ul>
+    ${precios}
+    ${formato === "cuadrado" ? "" : `<p class="nota">Pagás hoy y <b>empezás hoy</b>: más de la mitad de las clases ya está en tu carpeta. El 20/12 queda completo.</p>`}
+  </div>
+  ${pie(LEGAL)}`, formato === "cuadrado" ? "" : "denso");
+
+// ---------- Historias ----------
+const historiaTemario = () => placa("sql-temario-story", "story", `
+  ${cabecera("Preventa · hasta el 19/12")}
+  <div class="cuerpo">
+    <p class="titulo medio">Qué vas a<br><span class="srv">aprender</span></p>
+    ${modulosHtml}
+    <p class="nota">16 clases grabadas con PostgreSQL. Preventa a <b>${PRECIO}</b>; desde el 20/12, ${PRECIO_DESPUES}.</p>
+  </div>
+  ${pie(LEGAL)}`, "denso");
+
+const historiaRecordatorio = () => placa("sql-recordatorio-story", "story", `
+  ${cabecera("Termina el 19/12")}
+  <div class="cuerpo">
+    <span class="etiqueta">Últimos días de preventa</span>
+    <p class="titulo">SQL y Bases<br>de <span class="srv">Datos</span></p>
+    <p class="bajada">El <b>20 de diciembre</b> el curso queda completo y pasa a ${PRECIO_DESPUES}.</p>
+    ${precios}
+    <span class="cta">Reservá en ${LINK}</span>
+  </div>
+  ${pie(LEGAL)}`);
+
+// ---------- Carrusel (5 placas 1080x1350) ----------
+const MODULOS = [
+  ["Diseñar y crear la base", "Del dato a la tabla, del diagrama a PostgreSQL, restricciones y relaciones"],
+  ["Consultar los datos", "SELECT, JOIN, subconsultas, agrupar y ordenar, vistas e índices"],
+  ["Programar la base", "Funciones en PL/pgSQL, transacciones y triggers"],
+  ["Administrar y proteger", "Roles y permisos, respaldos, migración, nube y seguridad"],
+];
+const modulosHtml = `<div class="modulos">${MODULOS.map(([titulo, temas], i) => `
+  <div class="modulo"><span class="num">0${i + 1}</span><span><b>${titulo}</b><small>${temas}</small></span></div>`).join("")}</div>`;
+
+const carrusel = [
+  placa("sql-carrusel-1", "post", `
+    ${cabecera("Nuevo curso", "")}
+    <div class="cuerpo">
+      <p class="titulo">Aprendé SQL<br>desde <span class="srv">cero</span></p>
+      <p class="bajada">La herramienta que piden en casi todos los trabajos con datos.</p>
+      ${consulta}
+      <p class="bajada">Al terminar el curso, <b>esta consulta la escribís vos</b>.</p>
+    </div>
+    <div class="pie"><div class="pieFila"><span class="desliza">Deslizá para ver el curso</span><span class="paso">1 / 5</span></div></div>`),
+  placa("sql-carrusel-2", "post", `
+    ${cabecera("SQL y Bases de Datos", "")}
+    <div class="cuerpo">
+      <p class="titulo medio">Al terminar<br>vas a <span class="srv">poder</span></p>
+      <ul class="puntos grandes">
+        <li>Pasar de un diagrama a una base de datos en PostgreSQL</li>
+        <li>Crear tablas con sus claves, restricciones y relaciones</li>
+        <li>Consultar y resumir datos con SELECT, filtros y GROUP BY</li>
+        <li>Combinar tablas con JOIN y subconsultas</li>
+        <li>Programar la base con funciones, transacciones y triggers</li>
+      </ul>
+    </div>
+    <div class="pie"><div class="pieFila"><span class="web">${LINK}</span><span class="paso">2 / 5</span></div></div>`),
+  placa("sql-carrusel-3", "post", `
+    ${cabecera("SQL y Bases de Datos", "")}
+    <div class="cuerpo">
+      <p class="titulo medio">El temario:<br><span class="srv">4 módulos</span></p>
+      ${modulosHtml}
+    </div>
+    <div class="pie"><div class="pieFila"><span class="web">${LINK}</span><span class="paso">3 / 5</span></div></div>`),
+  placa("sql-carrusel-4", "post", `
+    ${cabecera("SQL y Bases de Datos", "")}
+    <div class="cuerpo">
+      <p class="titulo medio">Qué <span class="srv">incluye</span></p>
+      <ul class="puntos grandes">
+        <li>16 clases grabadas en vivo, con teoría y práctica</li>
+        <li>Un video resumen de cada clase, para repasar</li>
+        <li>La guía de estudio de cada clase, en PDF</li>
+        <li>Diapositivas y scripts SQL para practicar</li>
+        <li>Empezás hoy: más de la mitad ya está en la carpeta</li>
+        <li>Certificado verificable, con examen final en vivo</li>
+      </ul>
+    </div>
+    <div class="pie"><div class="pieFila"><span class="web">${LINK}</span><span class="paso">4 / 5</span></div></div>`),
+  placa("sql-carrusel-5", "post", `
+    ${cabecera("Preventa · hasta el 19/12")}
+    <div class="cuerpo">
+      <span class="etiqueta">Precio de preventa</span>
+      <p class="titulo">SQL y Bases<br>de <span class="srv">Datos</span></p>
+      ${precios}
+      <p class="nota">Pagás hoy y <b>empezás hoy</b>: más de la mitad de las clases ya está en tu carpeta. El 20/12 queda completo.</p>
+      <span class="cta">Reservá en ${LINK}</span>
+    </div>
+    ${pie(LEGAL)}`),
+];
+
+// ---------- WhatsApp: placa cuadrada de recordatorio ----------
+const cuadradaRecordatorio = () => placa("sql-recordatorio-cuadrado", "cuadrado", `
+  ${cabecera("Termina el 19/12")}
+  <div class="cuerpo">
+    <span class="etiqueta">Últimos días de preventa</span>
+    <p class="titulo">SQL y Bases<br>de <span class="srv">Datos</span></p>
+    <p class="bajada">El <b>20 de diciembre</b> el curso queda completo y pasa a ${PRECIO_DESPUES}.</p>
+    ${precios}
+  </div>
+  ${pie(LEGAL)}`);
+
+// ---------- Armado de la galería ----------
+const pieza = (id, archivo, titulo, html, forma = "") => ({ id, archivo, titulo, html, forma });
+
+const SECCIONES = [
+  {
+    titulo: 'Instagram · <span class="srv">post</span> de anuncio',
+    texto: "Una sola placa 1080×1350 (4:5) para el feed o para un anuncio.",
+    piezas: [pieza("sql-anuncio-post", "sql-anuncio-post", "Anuncio · Post 1080×1350", anuncio("post"))],
+  },
+  {
+    titulo: 'Instagram · <span class="srv">carrusel</span> de 5 placas',
+    texto: "Subilas en este orden. La última lleva el precio y las fechas.",
+    piezas: carrusel.map((html, i) => pieza(`sql-carrusel-${i + 1}`, `sql-carrusel-${i + 1}`, `Carrusel ${i + 1} de 5 · 1080×1350`, html)),
+  },
+  {
+    titulo: 'Instagram y WhatsApp · <span class="srv">historias</span> y estados',
+    texto: "1080×1920: sirven para las historias de Instagram y para los estados de WhatsApp. En Instagram sumale el sticker de enlace a wearesrv.com/sql. La de «Últimos días» es para la semana del 13/12.",
+    piezas: [
+      pieza("sql-anuncio-story", "sql-anuncio-historia", "Anuncio · Historia 1080×1920", anuncio("story"), "vertical"),
+      pieza("sql-temario-story", "sql-temario-historia", "Temario · Historia 1080×1920", historiaTemario(), "vertical"),
+      pieza("sql-recordatorio-story", "sql-recordatorio-historia", "Últimos días · Historia 1080×1920", historiaRecordatorio(), "vertical"),
+    ],
+  },
+  {
+    titulo: 'WhatsApp · placas <span class="srv">cuadradas</span>',
+    texto: "1080×1080 para mandar en chats, grupos y listas de difusión, junto con uno de los mensajes de abajo.",
+    piezas: [
+      pieza("sql-anuncio-cuadrado", "sql-anuncio-whatsapp", "Anuncio · Cuadrada 1080×1080", anuncio("cuadrado"), "cuadrada"),
+      pieza("sql-recordatorio-cuadrado", "sql-recordatorio-whatsapp", "Últimos días · Cuadrada 1080×1080", cuadradaRecordatorio(), "cuadrada"),
+    ],
+  },
+];
+
+const TODAS = SECCIONES.flatMap((s) => s.piezas);
+document.getElementById("todos").textContent = `Descargar todos (${TODAS.length} PNG)`;
+
+document.getElementById("secciones").innerHTML = SECCIONES.map((s, i) => `
+  <section class="seccion">
+    <h2>${s.titulo}</h2>
+    <p class="sub">${s.texto}</p>
+    <div class="acciones"><button type="button" class="secundario" data-seccion="${i}">Descargar esta sección (${s.piezas.length} PNG)</button></div>
+    <div class="galeria">${s.piezas.map((p) => `
+      <div class="pieza">
+        <h3>${p.titulo}</h3>
+        <div class="marco ${p.forma}">${p.html}</div>
+        <button type="button" data-id="${p.id}" data-archivo="${p.archivo}">Descargar PNG</button>
+      </div>`).join("")}
+    </div>
+  </section>`).join("");
+
+// ---------- Textos para copiar ----------
+const TEXTOS = [
+  {
+    titulo: "Instagram · descripción del post o del carrusel",
+    uso: "Va con el post de anuncio o con el carrusel. El link no se puede tocar en la descripción: por eso manda a la bio.",
+    texto: `Abrió la preventa de SQL y Bases de Datos.
+
+SQL es la herramienta que piden en casi todos los trabajos con datos, y se aprende desde cero: no hace falta saber programar.
+
+Qué trae el curso:
+- 16 clases grabadas, cada una con su video resumen
+- De tu primer SELECT a JOIN, subconsultas, vistas, funciones y triggers, con PostgreSQL
+- Guías de estudio, diapositivas y scripts de cada clase
+- Empezás hoy: más de la mitad de las clases ya está en la carpeta
+- Certificado verificable con examen final en vivo
+
+Preventa a ${PRECIO} hasta el 19/12. El 20/12 el curso queda completo y pasa a ${PRECIO_DESPUES}.
+
+Link en la bio: ${LINK}
+Bases: wearesrv.com/terminos
+
+#sql #basesdedatos #postgresql #mysql #aprenderaprogramar #analisisdedatos #cursosonline #wearesrv`,
+  },
+  {
+    titulo: "WhatsApp · mensaje para grupos y listas de difusión",
+    uso: "Mandalo con la placa cuadrada de anuncio.",
+    texto: `Hola. Te cuento que abrimos la preventa de *SQL y Bases de Datos*, el curso grabado para aprender desde cero con PostgreSQL.
+
+Son 16 clases, cada una con su video resumen, más guías de estudio y los scripts para practicar. Vas de tu primer SELECT a JOIN, reportes, vistas, funciones y triggers.
+
+Hasta el 19/12 está a *${PRECIO}* (después ${PRECIO_DESPUES}). Pagás una sola vez y empezás hoy: la carpeta te llega al instante con más de la mitad de las clases, y el 20/12 queda completo.
+
+Acá tenés el temario y el link para reservar:
+https://${LINK}`,
+  },
+  {
+    titulo: "WhatsApp · mensaje para quien ya preguntó",
+    uso: "Para las personas que consultaron por el curso o están en la lista de espera. Cambiá el nombre.",
+    texto: `Hola, [nombre]. Me habías consultado por el curso de bases de datos: ya abrió la preventa.
+
+Es *SQL y Bases de Datos*, 16 clases grabadas con PostgreSQL, desde cero. Hasta el 19/12 está a *${PRECIO}*, que es el precio de lanzamiento; después queda en ${PRECIO_DESPUES}. Podés empezar hoy: más de la mitad de las clases ya está en la carpeta y el 20/12 queda completo.
+
+Te dejo el link con el temario completo: https://${LINK}
+
+Cualquier duda me escribís por acá.`,
+  },
+  {
+    titulo: "WhatsApp · recordatorio de últimos días",
+    uso: "Para la semana del 13/12, con la placa de «Últimos días».",
+    texto: `Hola. El 19/12 termina la preventa de *SQL y Bases de Datos*.
+
+Hasta ese día el curso está a *${PRECIO}*. El 20/12 queda completo, con sus 16 clases, y pasa a ${PRECIO_DESPUES}.
+
+Si lo querías, este es el link: https://${LINK}`,
+  },
+];
+
+document.getElementById("textos").innerHTML = TEXTOS.map((t, i) => `
+  <div class="texto">
+    <h3>${t.titulo}</h3>
+    <p class="uso">${t.uso}</p>
+    <pre id="texto-${i}"></pre>
+    <button type="button" class="secundario" data-copiar="${i}">Copiar</button>
+  </div>`).join("");
+TEXTOS.forEach((t, i) => { document.getElementById(`texto-${i}`).textContent = t.texto; });
+
+const estado = document.getElementById("estado");
+
+async function descargar(id, archivo) {
+  await document.fonts.ready;
+  const original = document.getElementById(id);
+  // Se captura un clon a tamaño real, fuera del marco escalado
+  const refugio = document.createElement("div");
+  refugio.style.cssText = "position:fixed;left:-20000px;top:0;";
+  const clon = original.cloneNode(true);
+  refugio.appendChild(clon);
+  document.body.appendChild(refugio);
+  try {
+    const canvas = await html2canvas(clon, { backgroundColor: "#000000", scale: 1, logging: false, useCORS: true });
+    const a = document.createElement("a");
+    a.href = canvas.toDataURL("image/png");
+    a.download = archivo + ".png";
+    a.click();
+  } finally {
+    refugio.remove();
+  }
+}
+
+async function descargarVarias(piezas) {
+  for (let i = 0; i < piezas.length; i++) {
+    estado.textContent = `Generando ${i + 1} de ${piezas.length}: ${piezas[i].archivo}.png…`;
+    await descargar(piezas[i].id, piezas[i].archivo);
+    await new Promise((r) => setTimeout(r, 400));
+  }
+  estado.textContent = `Listo: se descargaron ${piezas.length} placas.`;
+}
+
+document.body.addEventListener("click", async (e) => {
+  const una = e.target.closest("button[data-id]");
+  const seccion = e.target.closest("button[data-seccion]");
+  const copiar = e.target.closest("button[data-copiar]");
+  if (una) {
+    estado.textContent = "Generando " + una.dataset.archivo + ".png…";
+    await descargar(una.dataset.id, una.dataset.archivo);
+    estado.textContent = "Listo: " + una.dataset.archivo + ".png";
+  } else if (seccion) {
+    await descargarVarias(SECCIONES[Number(seccion.dataset.seccion)].piezas);
+  } else if (copiar) {
+    const texto = TEXTOS[Number(copiar.dataset.copiar)].texto;
+    try {
+      await navigator.clipboard.writeText(texto);
+      copiar.textContent = "Copiado";
+    } catch {
+      // Sin permiso para el portapapeles: se deja el texto seleccionado para copiarlo a mano
+      const rango = document.createRange();
+      rango.selectNodeContents(document.getElementById(`texto-${copiar.dataset.copiar}`));
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(rango);
+      copiar.textContent = "Seleccionado: Ctrl+C";
+    }
+    setTimeout(() => { copiar.textContent = "Copiar"; }, 2500);
+  } else if (e.target.id === "todos") {
+    await descargarVarias(TODAS);
+  }
+});
+</script>
+</body>
+</html>

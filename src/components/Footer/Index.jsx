@@ -157,6 +157,9 @@ export default function Footer() {
           <Link className={styles.footer_link} to="/excel/inscripcion">
             Excel y Sheets con IA
           </Link>
+          <Link className={styles.footer_link} to="/sql/inscripcion">
+            SQL y Bases de Datos
+          </Link>
           <Link className={styles.footer_link} to="/full-stack/inscripcion">
             Intensivo Full Stack
           </Link>

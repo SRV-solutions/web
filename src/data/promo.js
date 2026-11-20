@@ -28,6 +28,7 @@ const NOMBRES = {
   "fullstack-csharp": "Curso Fullstack con C#",
   redes: "Redes, Linux y AWS",
   excel: "Master en Excel y Sheets con IA",
+  sql: "SQL y Bases de Datos",
   "ruta-backend": "Ruta Backend Completa",
   "excel-scripting": "Combo Excel + Scripting",
 };

@@ -30,14 +30,14 @@ const PROXIMOS = [
   },
   {
     key: "sql",
-    nombre: "SQL desde cero",
-    tag: "Muy pronto",
-    salida: "Sale el 20 de diciembre",
+    nombre: "SQL y Bases de Datos",
+    tag: "Preventa",
+    salida: "Empezás hoy · completo el 20 de diciembre de 2026",
     texto:
-      "Las bases de datos desde cero: consultas, filtros, JOIN y reportes. Las clases ya están grabadas, con resúmenes animados de cada tema, y vienen con guías de apoyo gratuitas. Certificado verificable con examen final en vivo.",
+      "Las bases de datos desde cero con PostgreSQL: consultas, filtros, JOIN, reportes, vistas, funciones y triggers. 16 clases grabadas, cada una con su video resumen, guías de estudio y scripts. Más de la mitad de las clases ya está disponible.",
     para: "Para sumar la herramienta que piden en casi todos los trabajos con datos.",
-    precio: 49900,
-    precioLanzamiento: 34900,
+    // Abrió la preventa el 20/11/2026 con el precio de lanzamiento que se había publicado ($34.900)
+    curso: "sql",
   },
   {
     key: "ia-docentes",
@@ -132,8 +132,8 @@ export default function ProximosCursos() {
   return (
     <section className={styles.page}>
       <Seo
-        title="Próximos cursos: IA para el trabajo, SQL, IA para docentes, AWS y Excel | WEARESRV"
-        description="Anotate en la lista de espera de los próximos cursos de WEARESRV: IA para el trabajo, SQL desde cero e IA para docentes. Y reservá en preventa Redes, Linux y AWS, y el Master en Excel y Sheets con IA."
+        title="Próximos cursos: IA para el trabajo, IA para docentes, SQL, AWS y Excel | WEARESRV"
+        description="Anotate en la lista de espera de los próximos cursos de WEARESRV: IA para el trabajo e IA para docentes. Y reservá en preventa SQL y Bases de Datos, Redes, Linux y AWS, y el Master en Excel y Sheets con IA."
         path="/proximos-cursos"
       />
       <div className={styles.inner}>
@@ -170,7 +170,7 @@ export default function ProximosCursos() {
                       </p>
                     )}
                     <Link className={styles.btnLista} to={`/${curso.ruta}/inscripcion`}>
-                      {preventa ? "Reservar en preventa" : "Ver el curso"}
+                      {preventa ? (curso.preventa.yaHayClases ? "Comprar en preventa" : "Reservar en preventa") : "Ver el curso"}
                     </Link>
                   </>
                 ) : (

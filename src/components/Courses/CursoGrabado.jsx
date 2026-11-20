@@ -7,7 +7,7 @@ import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, estaEnEstellarium, co
 import { CURSOS_TODO, agregablesPara, infoPack, linkPackTodo, normalizarSet, packTodo, setValido, pitchUnidad, unidadesDeParametro, enCampaniaRedes } from "../../data/packs";
 import { ResumenCurso, DetallesCurso, EscaleraPack, MedidorAhorro, PrecioAnimado } from "./BloquesCurso";
 import Icono from "../Icono";
-import { LuBot, LuCheck, LuClock, LuFlame, LuGift, LuGraduationCap, LuLock, LuOrbit, LuRocket, LuSparkles, LuTarget, LuTrophy, LuZap } from "react-icons/lu";
+import { LuAward, LuBot, LuCheck, LuClock, LuFlame, LuGift, LuGraduationCap, LuLock, LuOrbit, LuPuzzle, LuRocket, LuSparkles, LuTarget, LuTrophy, LuZap } from "react-icons/lu";
 
 const DISCORD_URL = "https://discord.com/invite/QuAmDxrNMu";
 const WHATSAPP_URL = "https://wa.me/5491123869799?text=" + encodeURIComponent("Hola, tengo una consulta sobre los cursos");
@@ -140,6 +140,19 @@ export default function CursoGrabado({ cursoKey }) {
   // Promo con fecha que bajó el precio de este producto (Cyber SRV o la variable PROMO de Netlify)
   const promo = promoDe(producto);
   const fechaAcceso = preventa ? producto.preventa.fechaTexto : null;
+  // "Reservar" solo si hay que esperar las clases: en una preventa cuya carpeta ya tiene clases (SQL) se compra y se empieza
+  const reserva = preventa && !producto.preventa.yaHayClases;
+  // Tarjeta de precio sin nada tachado (ni código, ni pack, ni descuento; ver sinTachado): se completa con lo
+  // que incluye el curso
+  const incluyePrecio = [
+    preventa
+      ? { icono: LuRocket, texto: `Clases desde el ${fechaAcceso}` }
+      : { icono: LuZap, texto: "Acceso inmediato y de por vida" },
+    producto.key === "scratch"
+      ? { icono: LuPuzzle, texto: "Para chicos de 8 a 13 años" }
+      : { icono: LuAward, texto: "Certificado con examen final" },
+    estaEnEstellarium(producto) && { icono: LuOrbit, texto: "También en E-stellarium" },
+  ].filter(Boolean);
   const faq = preguntasFrecuentes(producto, preventa);
   const pasos = pasosCompra(producto, preventa);
   const path = `/${curso.ruta}/inscripcion`;
@@ -187,6 +200,8 @@ export default function CursoGrabado({ cursoKey }) {
     };
   };
   const pack = extrasValidos.length > 0 ? infoDeSet([producto.key, ...extrasValidos]) : null;
+  // Sin precio tachado a la izquierda: la tarjeta de precio muestra incluyePrecio
+  const sinTachado = !cuponAplicado && !pack && descuento === 0;
   // Lo que se paga "de más" por sumar un curso al resto de lo elegido
   const costoDeSumar = (k) => {
     const resto = extrasValidos.filter((x) => x !== k);
@@ -433,7 +448,7 @@ export default function CursoGrabado({ cursoKey }) {
       {loading
         ? "Conectando con Mercado Pago..."
         : `${
-            preventa
+            reserva
               ? "Reservar mi acceso"
               : pack
                 ? `Quiero los ${pack.cantidadCursos} cursos`
@@ -449,7 +464,7 @@ export default function CursoGrabado({ cursoKey }) {
       <Seo
         title={
           preventa
-            ? `${tituloCompleto}: preventa, acceso el ${fechaAcceso} | WEARESRV`
+            ? `${tituloCompleto}: ${curso.preventa?.seoTitulo || `preventa, acceso el ${fechaAcceso}`} | WEARESRV`
             : `${tituloCompleto}: curso online con acceso de por vida | WEARESRV`
         }
         description={curso.metaDescripcion}
@@ -486,7 +501,8 @@ export default function CursoGrabado({ cursoKey }) {
                   <div className={styles.badge}>
                     {preventa ? (
                       <>
-                        <Icono de={LuRocket} /> Preventa · las clases se habilitan el {fechaAcceso}
+                        {/* etiqueta: para una preventa cuya carpeta ya tiene clases (SQL) */}
+                        <Icono de={LuRocket} /> {producto.preventa.etiqueta || `Preventa · las clases se habilitan el ${fechaAcceso}`}
                       </>
                     ) : (
                       <>
@@ -553,34 +569,19 @@ export default function CursoGrabado({ cursoKey }) {
                   </span>
                 </div>
 
-                {opciones.length > 0 && (
-                  <fieldset className={styles.selector}>
-                    <legend className={styles.selectorTitle}>¿Qué querés llevar?</legend>
-                    {opciones.map((op) => {
-                      const activa = op.key === producto.key;
-                      return (
-                        <label
-                          key={op.key}
-                          className={`${styles.opcion} ${activa ? styles.opcionActiva : ""} ${op.combo ? styles.opcionCombo : ""}`}
-                        >
-                          <input type="radio" name="producto" value={op.key} checked={activa} onChange={() => setSeleccion(op.key)} />
-                          <span className={styles.opcionNombre}>
-                            {op.combo ? op.nombreSelector || "Los dos · Ruta Backend Completa" : nombreCorto(op)}
-                            <small>
-                              {op.combo
-                                ? `${op.clases} clases · ahorrás ${formatearPrecio(precioSeparado(op) - op.precio)}`
-                                : `${op.clases} clases`}
-                            </small>
-                          </span>
-                          <span className={styles.opcionPrecio}>{formatearPrecio(op.precio)}</span>
-                        </label>
-                      );
-                    })}
-                  </fieldset>
-                )}
-
-                <div className={styles.priceContainer}>
-                  {(cuponAplicado || pack || descuento > 0) && (
+                {/* El precio va arriba, como en los cursos sin selector; las opciones, debajo */}
+                <div className={`${styles.priceContainer} ${sinTachado ? styles.priceContainerIncluye : ""}`}>
+                  {/* Sin precio tachado, a la izquierda va lo que incluye (datos reales del curso, no un precio de referencia) */}
+                  {sinTachado && (
+                    <ul className={styles.incluyePrecio}>
+                      {incluyePrecio.map(({ icono, texto }) => (
+                        <li key={texto}>
+                          <Icono de={icono} /> {texto}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {!sinTachado && (
                     <div className={styles.oldPriceBox}>
                       <span className={styles.oldPriceLabel}>
                         {cuponAplicado
@@ -606,7 +607,7 @@ export default function CursoGrabado({ cursoKey }) {
                         ? "Pagás hoy como alumno"
                         : pack
                           ? `Pagás hoy por los ${pack.cantidadCursos} cursos`
-                          : preventa
+                          : reserva
                             ? "Reservás hoy por"
                             : "Pagás hoy"}
                     </span>
@@ -619,6 +620,32 @@ export default function CursoGrabado({ cursoKey }) {
                     </span>
                   </div>
                 </div>
+
+                {opciones.length > 0 && (
+                  <fieldset className={styles.selector}>
+                    <legend className={styles.selectorTitle}>¿Qué querés llevar?</legend>
+                    {opciones.map((op) => {
+                      const activa = op.key === producto.key;
+                      return (
+                        <label
+                          key={op.key}
+                          className={`${styles.opcion} ${activa ? styles.opcionActiva : ""} ${op.combo ? styles.opcionCombo : ""}`}
+                        >
+                          <input type="radio" name="producto" value={op.key} checked={activa} onChange={() => setSeleccion(op.key)} />
+                          <span className={styles.opcionNombre}>
+                            {op.combo ? op.nombreSelector || "Los dos · Ruta Backend Completa" : nombreCorto(op)}
+                            <small>
+                              {op.combo
+                                ? `${op.clases} clases · ahorrás ${formatearPrecio(precioSeparado(op) - op.precio)}`
+                                : `${op.clases} clases`}
+                            </small>
+                          </span>
+                          <span className={styles.opcionPrecio}>{formatearPrecio(op.precio)}</span>
+                        </label>
+                      );
+                    })}
+                  </fieldset>
+                )}
 
                 {/* Código de alumnos de SRV: el servidor valida el código y define el precio especial */}
                 {producto.cuponAlumnos && (
@@ -674,7 +701,8 @@ export default function CursoGrabado({ cursoKey }) {
                 {enPreventaCompra.length
                   ? variosCursos
                     ? `Las carpetas te llegan al mail al instante. ${avisoClases}`
-                    : `Tu carpeta te llega al mail al instante. Las clases se habilitan el ${enPreventaCompra[0].preventa.fechaTexto}.`
+                    : enPreventaCompra[0].preventa.pagoSeguro ||
+                      `Tu carpeta te llega al mail al instante. Las clases se habilitan el ${enPreventaCompra[0].preventa.fechaTexto}.`
                   : "El acceso te llega al mail al instante."}
               </p>
               <p className={styles.legalText}>
@@ -996,7 +1024,7 @@ export default function CursoGrabado({ cursoKey }) {
           </strong>
         </div>
         <button type="button" onClick={handleMercadoPagoCheckout} disabled={loading} tabIndex={showBar ? 0 : -1}>
-          {loading ? "Conectando..." : preventa ? "Reservar" : "Comprar"}
+          {loading ? "Conectando..." : reserva ? "Reservar" : "Comprar"}
         </button>
       </div>
     </section>

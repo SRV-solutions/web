@@ -20,6 +20,10 @@ const REDES_PREVENTA_HASTA = Date.parse("2027-01-27T00:00:00-03:00");
 // clases). Misma fecha que en src/data/cursosGrabados.js y en appscript-cursos.gs.
 const EXCEL_PREVENTA_HASTA = Date.parse("2027-01-01T00:00:00-03:00");
 
+// Preventa de SQL y Bases de Datos: igual que Redes, hasta el 20/12/2026 (ese día se habilitan las clases).
+// Misma fecha que en src/data/cursosGrabados.js y en appscript-cursos.gs.
+const SQL_PREVENTA_HASTA = Date.parse("2026-12-20T00:00:00-03:00");
+
 // CYBER SRV: del 2 al 4 de noviembre de 2026 todo al 50% de su precio de lista (el Intensivo Full
 // Stack en vivo no participa). Mismas fechas en src/data/cursosGrabados.js (precio que se muestra),
 // appscript-cursos.gs (mínimo que acepta el webhook) y PROMOCIONES en src/data/legal.js.
@@ -94,6 +98,16 @@ export const CURSOS = {
     precioPreventa: 62900,
     preventaHasta: REDES_PREVENTA_HASTA,
     ruta: "redes",
+  },
+  // Curso grabado en preventa. Se vende solo: no es unidad de los packs (UNIDADES_PACK).
+  sql: {
+    itemId: "curso-sql-bases-de-datos",
+    titulo: "SQL y Bases de Datos Desde Cero - WEARESRV",
+    contentName: "Infoproducto SQL y Bases de Datos",
+    precio: 49900,
+    precioPreventa: 34900,
+    preventaHasta: SQL_PREVENTA_HASTA,
+    ruta: "sql",
   },
   // Curso grabado en preventa. Durante la campaña de Redes no se combina con Redes (ver setValido).
   excel: {

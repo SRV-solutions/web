@@ -37,7 +37,12 @@ const TEXTOS_INTENSIVO = {
 };
 
 // Cursos en preventa: el acceso a la carpeta de Drive llega al instante y las clases se suben en la fecha de lanzamiento
-const textosPreventa = (fecha) => ({
+// yaHayClases: la carpeta ya tiene clases y se completa en esa fecha (SQL y Bases de Datos)
+const textosPreventa = (fecha, yaHayClases) => yaHayClases ? ({
+  approved: `Tu compra quedó al precio de preventa. En los próximos minutos te llega al Email el acceso a tu carpeta de Google Drive: ya vas a encontrar las clases dadas hasta hoy, y el ${fecha} el curso queda completo. Guardá ese mail.`,
+  pending: `Apenas Mercado Pago lo acredite, te enviamos por Email el acceso a tu carpeta de Google Drive, con las clases que ya están. El curso queda completo el ${fecha}.`,
+  unknown: `Si ya pagaste, en los próximos minutos recibirás en tu Email el acceso a tu carpeta de Google Drive, con las clases que ya están. El curso queda completo el ${fecha}.`,
+}) : ({
   approved: `Tu lugar quedó reservado al precio de preventa. En los próximos minutos te llega al Email el acceso a tu carpeta de Google Drive, y el ${fecha} vas a encontrar ahí las clases. Guardá ese mail.`,
   pending: `Apenas Mercado Pago lo acredite, te enviamos por Email el acceso a tu carpeta de Google Drive. Las clases se habilitan ahí el ${fecha}.`,
   unknown: `Si ya pagaste, en los próximos minutos recibirás en tu Email el acceso a tu carpeta de Google Drive. Las clases se habilitan ahí el ${fecha}.`,
@@ -112,9 +117,10 @@ export default function GraciasCurso({ cursoKey }) {
     mensaje = { ...mensaje, texto: TEXTOS_INTENSIVO[estado] };
   }
   if (preventa) {
-    const textos = textosPreventa(curso.preventa.fechaTexto);
+    const yaHayClases = Boolean(curso.preventa.yaHayClases);
+    const textos = textosPreventa(curso.preventa.fechaTexto, yaHayClases);
     if (textos[estado]) {
-      mensaje = { ...mensaje, titulo: estado === "approved" ? "¡Lugar reservado!" : mensaje.titulo, texto: textos[estado] };
+      mensaje = { ...mensaje, titulo: estado === "approved" && !yaHayClases ? "¡Lugar reservado!" : mensaje.titulo, texto: textos[estado] };
     }
   }
 

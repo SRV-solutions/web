@@ -602,12 +602,13 @@ function procesarPago_(paymentId, accessToken, forzar) {
   var carpetas = carpetasDeCurso_(curso);
   var preventa = enPreventa_(curso, fechaPago);
   var conCupon = esCuponAlumnos_(curso, payment);
+  var cuponEs = cuponEstellariumDelPago_(curso, payment); // { codigo, porcentaje } o null (ver estellarium.gs)
   var minimo = precioMinimo_(curso, fechaPago, payment);
 
   // VALIDACIONES ANTES DE DAR ACCESO
   var problemas = [];
   if (moneda !== CONFIG.MONEDA) problemas.push("Moneda inválida: " + moneda);
-  if (monto < minimo) problemas.push("Monto bajo: $" + monto + " (mínimo $" + minimo + (preventa ? " en preventa" : "") + (conCupon ? " con código de alumnos" : "") + ")");
+  if (monto < minimo) problemas.push("Monto bajo: $" + monto + " (mínimo $" + minimo + (preventa ? " en preventa" : "") + (conCupon ? " con código de alumnos" : "") + (cuponEs ? " con cupón de E-stellarium " + cuponEs.codigo : "") + ")");
   if (!emailValido_(email)) problemas.push("Email inválido: " + email);
   for (var v = 0; v < carpetas.length; v++) {
     if (!carpetaConfigurada_(carpetas[v].folderId)) {
@@ -649,6 +650,7 @@ function procesarPago_(paymentId, accessToken, forzar) {
   fila.estado = ESTADO_APROBADO;
   if (preventa) fila.detalle = "Preventa: clases el " + curso.preventa.fechaTexto;
   if (conCupon) fila.detalle = (fila.detalle ? fila.detalle + " | " : "") + "Código de alumnos";
+  if (cuponEs) fila.detalle = (fila.detalle ? fila.detalle + " | " : "") + "Cupón E-stellarium " + cuponEs.codigo + " (" + cuponEs.porcentaje + "%)";
   var numFila = registrar_(fila);
 
   // Purchase por CAPI aunque el comprador no vuelva a la página de gracias.
@@ -684,6 +686,13 @@ function procesarPago_(paymentId, accessToken, forzar) {
   var altaEs = altaEstellarium_(payment, cursoKey, nombre, email);
   if (altaEs.nota) notas.push(altaEs.nota);
 
+  // El cupón de E-stellarium se consume recién ahora, con el pago aprobado y registrado. Si falla, el curso se
+  // entrega igual y la nota llega en el mail de avisos.
+  if (cuponEs) {
+    var canje = canjearCuponDelPago_(cuponEs, paymentId);
+    if (canje.nota) notas.push(canje.nota);
+  }
+
   var asunto = preventa
     ? "¡Lugar reservado! - " + curso.nombre + " (las clases se habilitan el " + curso.preventa.fechaTexto + ")"
     : "¡Pago Aprobado! - Acceso a " + curso.nombre;
@@ -710,6 +719,7 @@ function procesarPago_(paymentId, accessToken, forzar) {
       "Carpetas compartidas: " + accesos.map(function (a) { return a.nombre; }).join(", ") +
       (preventa ? "\nPreventa: sí (las clases se habilitan el " + curso.preventa.fechaTexto + ")" : "") +
       (conCupon ? "\nCódigo de alumnos: sí (precio especial)" : "") +
+      (cuponEs ? "\nCupón de E-stellarium: " + cuponEs.codigo + " (" + cuponEs.porcentaje + "% de descuento)" : "") +
       (notas.length ? "\n\n⚠️ Avisos: " + notas.join(" | ") : "")
   });
 
@@ -875,10 +885,13 @@ function claveDeCurso_(curso) {
   return "";
 }
 
-// Precio mínimo aceptado para un pago: el de alumnos si vino con código, el de la regla de packs si es
+// Precio mínimo aceptado para un pago: el de alumnos si vino con código, el del cupón de E-stellarium (su
+// porcentaje sobre el precio de lista, con la misma cuenta que la promo), el de la regla de packs si es
 // un pack armado en la web, el de preventa si corresponde, si no el regular
 function precioMinimo_(curso, fechaPago, payment) {
   if (esCuponAlumnos_(curso, payment)) return curso.cuponAlumnos.precioMinimo;
+  var cuponEs = cuponEstellariumDelPago_(curso, payment);
+  if (cuponEs) return Math.min(precioMinimoUnidad_(curso, fechaPago, null), precioConPromo_(curso.precioMinimo, cuponEs.porcentaje));
   var promo = promoDelPago_(payment, fechaPago);
   if (curso.pack) return precioPack_(curso.incluye, fechaPago, promo);
   return precioMinimoUnidad_(curso, fechaPago, promo);

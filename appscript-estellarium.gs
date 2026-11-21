@@ -40,7 +40,8 @@
  *     Si la API falla, la nota llega en el mail de avisos y queda en "Detalle". Para repetir el alta de un pago:
  *     reintentarAltaEstellarium().
  *
- *  C) (Más adelante, con el cupón de E-Stellarium en el checkout. Falta la parte de Netlify: ver abajo.)
+ *  C) Cupones de E-Stellarium en el checkout (en procesarPago_): cuponEstellariumDelPago_ al calcular el mínimo y
+ *     canjearCuponDelPago_ después del alta. Ver "CUPONES de E-Stellarium" abajo.
  * ============================================================
  */
 
@@ -263,9 +264,47 @@ function sincronizarCompradoresAnteriores() {
 
 // ------------------------------------------------------------
 //  CUPONES de E-Stellarium (los de constelación, tienda, regalo y demo)
-//  Las dos funciones de abajo ya están listas, pero se usan recién cuando el checkout de la web acepte el
-//  cupón (ver el plan al final). La API los trata igual: un código válido, sin usar, sin anular y sin vencer.
+//  La web (netlify/lib/cupones.js) valida el código, controla las reglas de la compra (solo cursos sueltos y a
+//  precio de lista: ni combos, ni packs, ni preventa, ni Cyber, ni promo) y marca el pago con
+//  metadata.cupon = "estellarium", cupon_codigo y cupon_porcentaje. Acá:
+//    - precioMinimo_ acepta el precio con ese porcentaje (sin volver a consultar la API: el cupón pudo vencer
+//      entre el pago y la notificación, y el comprador ya pagó)
+//    - con el pago aprobado y registrado, canjearCuponDelPago_ lo consume. Si falla (409: lo usaron en otra
+//      compra en el medio), el curso se entrega igual y se le avisa a Marcos.
+//  El canje NO depende de ESTELLARIUM_ENABLED: si la web aceptó el cupón, hay que consumirlo aunque el alta de
+//  alumnos siga apagada. Solo necesita ESTELLARIUM_URL y ESTELLARIUM_KEY.
 // ------------------------------------------------------------
+
+// El tope de los cupones en E-stellarium (no se toca). La web tiene el mismo número.
+var CUPON_ESTELLARIUM_MAXIMO = 60;
+
+// { codigo, porcentaje } si el pago viene con un cupón de E-stellarium bien formado para este curso, o null.
+// Lo marca crear-preferencia, que es el servidor: el navegador no puede poner el metadata.
+function cuponEstellariumDelPago_(curso, payment) {
+  var meta = (payment && payment.metadata) || {};
+  if (!curso || curso.incluye || curso.pack || meta.cupon !== "estellarium") return null;
+  var codigo = String(meta.cupon_codigo || "");
+  var porcentaje = Number(meta.cupon_porcentaje);
+  if (!/^ESTL-[A-Z0-9]{2}-[A-Z0-9]{6}$/.test(codigo)) return null;
+  if (!porcentaje || porcentaje < 1 || porcentaje > CUPON_ESTELLARIUM_MAXIMO || Math.floor(porcentaje) !== porcentaje) return null;
+  return { codigo: codigo, porcentaje: porcentaje };
+}
+
+// Consume el cupón de un pago aprobado. Devuelve { nota }: un texto para el mail de avisos, o null si salió bien.
+function canjearCuponDelPago_(cuponEs, paymentId) {
+  try {
+    var canje = canjearCuponEstellarium_(cuponEs.codigo);
+    if (canje.canjeado) return { nota: null };
+    var motivo = (canje.respuesta && canje.respuesta.reason) || "sin respuesta";
+    return {
+      nota: "Cupón de E-stellarium " + cuponEs.codigo + " NO se pudo consumir (" + motivo + "). El curso se entregó igual; " +
+        (motivo === "used" ? "ya lo habían usado en otra compra." : "revisalo a mano. Pago " + paymentId + ".")
+    };
+  } catch (err) {
+    return { nota: "Cupón de E-stellarium " + cuponEs.codigo + " NO se pudo consumir (error: " + err + "). Pago " + paymentId + "." };
+  }
+}
+
 function validarCuponEstellarium_(codigo) {
   var r = llamarEstellarium_("/coupons/validate", { code: codigo });
   return r.json || { valid: false, reason: "error" };
@@ -296,23 +335,6 @@ function probarEstellarium() {
     Logger.log(CURSOS[k].nombre + " -> " + (clavesEstellarium_(k).join(", ") || "(ninguno)"));
   });
 }
-
-/**
- * ============================================================
- *  PLAN DEL CUPÓN EN EL CHECKOUT (para después; necesita cambios en Netlify)
- * ============================================================
- *  1. crear-preferencia (Netlify) recibe el código, llama a /coupons/validate y, si es válido, baja el precio de
- *     la preferencia y deja el código en el metadata del pago (metadata.cupon_estellarium). Solo el servidor
- *     puede poner ese metadata (como pasa con el código de alumnos).
- *  2. Acá, "precioMinimo_" tiene que aceptar el precio con descuento: hoy un pago por debajo del mínimo se
- *     RECHAZA como "Monto bajo". Con cupón, el mínimo es floor(mínimoNormal * (100 - percent) / 100), con el
- *     percent que devuelve validarCuponEstellarium_ en ese momento.
- *  3. Después de registrar el pago como APROBADO, canjearCuponEstellarium_(codigo). Si el canje falla (409:
- *     lo usaron en el medio), no se corta la entrega: se avisa a Marcos en las notas.
- *  4. Reglas que la API NO controla (el cupón de la demo dice "no aplica en preventas, combos ni packs, ni se
- *     suma a otros cupones"): las tiene que hacer cumplir el checkout.
- * ============================================================
- */
 
 // Prueba sin riesgo: simula un pago y muestra qué se mandaría (con ESTELLARIUM_ENABLED apagado no llama a la API)
 function probarAltaEstellarium() {

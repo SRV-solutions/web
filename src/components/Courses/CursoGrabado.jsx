@@ -10,6 +10,16 @@ import { ResumenCurso, DetallesCurso, EscaleraPack, MedidorAhorro, PrecioAnimado
 import Icono from "../Icono";
 import { LuAward, LuBot, LuCheck, LuClock, LuFlame, LuGift, LuGraduationCap, LuLock, LuOrbit, LuPuzzle, LuRocket, LuSparkles, LuTarget, LuTrophy, LuZap } from "react-icons/lu";
 
+// Por qué no se aplicó un código: el "motivo" que devuelven validar-cupon y crear-preferencia (netlify/lib/cupones.js)
+const MENSAJES_CUPON = {
+  invalido: "Ese código no es válido. Revisalo o escribinos por WhatsApp.",
+  usado: "Ese cupón ya se usó en otra compra.",
+  vencido: "Ese cupón ya venció.",
+  combo: "Los cupones de E-stellarium valen para cursos sueltos, no para combos ni packs.",
+  con_descuento: "Este curso ya tiene un precio con descuento: el cupón se puede usar cuando vuelva a su precio de lista.",
+  error: "No pudimos verificar el código. Probá de nuevo en unos segundos.",
+};
+
 const DISCORD_URL = "https://discord.com/invite/QuAmDxrNMu";
 const WHATSAPP_URL = "https://wa.me/5491123869799?text=" + encodeURIComponent("Hola, tengo una consulta sobre los cursos");
 
@@ -126,10 +136,10 @@ export default function CursoGrabado({ cursoKey }) {
   // ?sumar=python,csharp los deja preseleccionados (banners de la home); los que no aplican se ignoran.
   const sumarInicial = unidadesDeParametro(searchParams.get("sumar"));
   const [extras, setExtras] = useState(sumarInicial);
-  // Código de alumnos de SRV: lo valida el servidor comparando su hash, y es el servidor quien fija
-  // el precio especial. Acá solo se guarda el código aceptado para mandarlo al crear el pago.
+  // Código de alumnos de SRV o cupón de E-stellarium: lo valida el servidor y es el servidor quien fija
+  // el precio. Acá solo se guarda el código aceptado para mandarlo al crear el pago.
   const [cuponTexto, setCuponTexto] = useState("");
-  const [cupon, setCupon] = useState(null); // { curso, codigo, precio }
+  const [cupon, setCupon] = useState(null); // { curso, codigo, precio, tipo: "alumnos" | "estellarium", porcentaje }
   const [cuponEstado, setCuponEstado] = useState({ cargando: false, error: "" });
   const producto = CURSOS_GRABADOS[seleccion] || curso;
   const tituloProducto = [producto.tituloInicio, producto.tituloDestacado, producto.tituloFin].filter(Boolean).join(" ");
@@ -160,8 +170,12 @@ export default function CursoGrabado({ cursoKey }) {
   const incluye = producto.combo ? producto.combo.map((k) => CURSOS_GRABADOS[k]) : null;
   const nombreCorto = (c) => `${c.tituloInicio} ${c.tituloDestacado}`;
 
-  // Código de alumnos aplicado a ESTE producto (si cambia el producto, deja de aplicar solo)
-  const cuponAplicado = producto.cuponAlumnos && cupon && cupon.curso === producto.key ? cupon : null;
+  // Código aplicado a ESTE producto (si cambia el producto, deja de aplicar solo)
+  const cuponAplicado = cupon && cupon.curso === producto.key ? cupon : null;
+  const cuponEs = cuponAplicado?.tipo === "estellarium" ? cuponAplicado : null;
+  // La caja del código: en los cursos con código de alumnos, y en los cursos sueltos a precio de lista, donde
+  // valen los cupones de E-stellarium (no en combos, packs, preventa, Cyber ni promo: lo controla el servidor)
+  const aceptaCupon = Boolean(producto.cuponAlumnos) || (!producto.combo && !preventa && !promo && descuento === 0);
 
   // Cursos que se pueden sumar al producto elegido (con código de alumnos no se ofrecen packs).
   // Un conjunto es combinable si forma un pack válido o si se convierte en un combo existente
@@ -236,6 +250,8 @@ export default function CursoGrabado({ cursoKey }) {
   const cursosDeLaCompra = pack ? pack.cursos : incluye || [producto];
   const enPreventaCompra = cursosDeLaCompra.filter(estaEnPreventa);
   const variosCursos = cursosDeLaCompra.length > 1;
+  // Los cursos de la compra que dan cuenta en E-stellarium (el Apps Script da el alta al aprobarse el pago)
+  const cursosEstellarium = cursosDeLaCompra.filter(estaEnEstellarium);
   const avisoClases = enPreventaCompra.length
     ? `${enPreventaCompra.map((c) => `Las clases de ${nombreCurso(c)} se habilitan el ${c.preventa.fechaTexto}`).join(". ")}${
         cursosDeLaCompra.length > enPreventaCompra.length ? "; las de los demás cursos ya están." : "."
@@ -306,7 +322,7 @@ export default function CursoGrabado({ cursoKey }) {
     return () => observer.disconnect();
   }, []);
 
-  // Valida el código de alumnos contra el servidor (nunca se compara en el navegador)
+  // Valida el código (de alumnos o de E-stellarium) contra el servidor: nunca se compara en el navegador
   const aplicarCupon = async (e) => {
     e.preventDefault();
     const codigo = cuponTexto.trim();
@@ -320,16 +336,14 @@ export default function CursoGrabado({ cursoKey }) {
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok && data.valido && Number.isFinite(data.precio)) {
-        setCupon({ curso: producto.key, codigo, precio: data.precio });
+        setCupon({ curso: producto.key, codigo, precio: data.precio, tipo: data.tipo, porcentaje: data.porcentaje });
         setExtras([]);
         setCuponEstado({ cargando: false, error: "" });
-      } else if (res.ok) {
-        setCuponEstado({ cargando: false, error: "Ese código no es válido para este curso. Revisalo o escribinos por WhatsApp." });
       } else {
-        setCuponEstado({ cargando: false, error: "No pudimos verificar el código. Probá de nuevo en unos segundos." });
+        setCuponEstado({ cargando: false, error: res.ok ? MENSAJES_CUPON[data.motivo] || MENSAJES_CUPON.invalido : MENSAJES_CUPON.error });
       }
     } catch {
-      setCuponEstado({ cargando: false, error: "No pudimos verificar el código. Probá de nuevo en unos segundos." });
+      setCuponEstado({ cargando: false, error: MENSAJES_CUPON.error });
     }
   };
 
@@ -362,6 +376,15 @@ export default function CursoGrabado({ cursoKey }) {
       });
 
       const data = await response.json();
+
+      // El cupón dejó de valer entre que se aplicó y el pago (por ejemplo, lo usaron en otra compra): se saca
+      // y se avisa, en vez de cobrar el precio completo sin decir nada
+      if (response.status === 409 && data.motivo) {
+        setCupon(null);
+        setCuponEstado({ cargando: false, error: MENSAJES_CUPON[data.motivo] || MENSAJES_CUPON.invalido });
+        setLoading(false);
+        return;
+      }
 
       if (response.ok && data.init_point) {
         window.location.href = data.init_point; // Redirige al checkout oficial de MP
@@ -529,13 +552,15 @@ export default function CursoGrabado({ cursoKey }) {
               {!llevaTodo && <p className={styles.level}><Icono de={LuTarget} /> {producto.nivel}</p>}
               {!llevaTodo && estaEnEstellarium(producto) && (
                 <p className={styles.estellariumTag}>
-                  <Icono de={LuOrbit} /> Disponible en E-stellarium, nuestra plataforma
+                  <Icono de={LuOrbit} /> Incluye tu cuenta en E-stellarium, nuestra plataforma
                 </p>
               )}
 
               <div className={styles.promoCard}>
                 <div className={styles.promoHeader}>
-                  {cuponAplicado ? (
+                  {cuponEs ? (
+                    <span className={styles.promoBadge}><Icono de={LuOrbit} /> Cupón de E-stellarium · {cuponEs.porcentaje}% OFF</span>
+                  ) : cuponAplicado ? (
                     <span className={styles.promoBadge}><Icono de={LuGraduationCap} /> Precio para alumnos de SRV</span>
                   ) : pack ? (
                     <span className={styles.promoBadge}>
@@ -575,7 +600,9 @@ export default function CursoGrabado({ cursoKey }) {
                   {!sinTachado && (
                     <div className={styles.oldPriceBox}>
                       <span className={styles.oldPriceLabel}>
-                        {cuponAplicado
+                        {cuponEs
+                          ? "Precio de lista"
+                          : cuponAplicado
                           ? "Precio promocional"
                           : pack
                             ? "Uno por uno"
@@ -594,7 +621,9 @@ export default function CursoGrabado({ cursoKey }) {
                   )}
                   <div className={styles.currentPriceBox}>
                     <span className={styles.priceTag}>
-                      {cuponAplicado
+                      {cuponEs
+                        ? "Pagás hoy con tu cupón"
+                        : cuponAplicado
                         ? "Pagás hoy como alumno"
                         : pack
                           ? `Pagás hoy por los ${pack.cantidadCursos} cursos`
@@ -638,15 +667,20 @@ export default function CursoGrabado({ cursoKey }) {
                   </fieldset>
                 )}
 
-                {/* Código de alumnos de SRV: el servidor valida el código y define el precio especial */}
-                {producto.cuponAlumnos && (
+                {/* Código de alumnos de SRV o cupón de E-stellarium: el servidor valida el código y define el precio */}
+                {aceptaCupon && (
                   <form className={styles.cuponBox} onSubmit={aplicarCupon}>
                     <label htmlFor="cupon-alumnos" className={styles.cuponTitle}>
-                      <Icono de={LuGraduationCap} /> ¿Sos alumno de SRV? Ingresá tu código
+                      {producto.cuponAlumnos ? (
+                        <><Icono de={LuGraduationCap} /> ¿Sos alumno de SRV o tenés un cupón? Ingresá tu código</>
+                      ) : (
+                        <><Icono de={LuOrbit} /> ¿Tenés un cupón de E-stellarium?</>
+                      )}
                     </label>
                     {cuponAplicado ? (
                       <p className={styles.cuponOk}>
-                        Código aplicado: pagás {formatearPrecio(cuponAplicado.precio)} en lugar de {formatearPrecio(producto.precio)}.
+                        {cuponEs ? `Cupón ${cuponEs.codigo} aplicado (${cuponEs.porcentaje}% OFF)` : "Código aplicado"}: pagás{" "}
+                        {formatearPrecio(cuponAplicado.precio)} en lugar de {formatearPrecio(producto.precio)}.
                         <button type="button" className={styles.cuponQuitar} onClick={quitarCupon}>
                           Quitar
                         </button>
@@ -657,7 +691,7 @@ export default function CursoGrabado({ cursoKey }) {
                           id="cupon-alumnos"
                           value={cuponTexto}
                           onChange={(e) => setCuponTexto(e.target.value)}
-                          placeholder="Código de alumno"
+                          placeholder={producto.cuponAlumnos ? "Código de alumno o ESTL-..." : "ESTL-PY-7K3QM2"}
                           autoComplete="off"
                           spellCheck={false}
                           maxLength={40}
@@ -670,7 +704,9 @@ export default function CursoGrabado({ cursoKey }) {
                     {cuponEstado.error && <p className={styles.cuponError}>{cuponEstado.error}</p>}
                     {!cuponAplicado && (
                       <small className={styles.cuponNota}>
-                        El código es para quienes ya cursaron con nosotros. Al aplicarlo, el precio se actualiza antes de pagar.
+                        {producto.cuponAlumnos ? "El código de alumno es para quienes ya cursaron con nosotros. " : ""}
+                        Los cupones de E-stellarium se ganan jugando en la plataforma y valen en cursos sueltos a precio de
+                        lista. Al aplicarlo, el precio se actualiza antes de pagar.
                       </small>
                     )}
                   </form>
@@ -696,6 +732,22 @@ export default function CursoGrabado({ cursoKey }) {
                       `Tu carpeta te llega al mail al instante. Las clases se habilitan el ${enPreventaCompra[0].preventa.fechaTexto}.`
                   : "El acceso te llega al mail al instante."}
               </p>
+              {cursosEstellarium.length > 0 && (
+                <div className={styles.estellariumAlta}>
+                  <span className={styles.estellariumIcono} aria-hidden="true">
+                    <Icono de={LuOrbit} />
+                  </span>
+                  <p>
+                    <strong>Incluye tu cuenta en E-stellarium</strong>
+                    Con tu compra te damos de alta en nuestra plataforma con el mail del pago
+                    {cursosEstellarium.length < cursosDeLaCompra.length
+                      ? ` (${cursosEstellarium.map(nombreCurso).join(", ")})`
+                      : ""}
+                    . Te llega un mail para crear tu contraseña: repasás el curso con juegos, sumás experiencia y ganás
+                    cupones de descuento para tus próximos cursos.
+                  </p>
+                </div>
+              )}
               <p className={styles.legalText}>
                 Al pagar aceptás los <Link to="/terminos">términos y condiciones</Link> y la{" "}
                 <Link to="/privacidad">política de privacidad</Link>. Tenés 10 días para arrepentirte desde el{" "}
@@ -810,7 +862,7 @@ export default function CursoGrabado({ cursoKey }) {
               <li className={styles.benefitItem}>
                 {estaEnEstellarium(producto) ? (
                   <>
-                    <Icono de={LuCheck} /> Acceso gratis a E-stellarium, nuestra plataforma educativa (desde el 20 de noviembre)
+                    <Icono de={LuCheck} /> Tu cuenta en E-stellarium, nuestra plataforma educativa: te damos de alta al comprar, sin costo extra
                   </>
                 ) : (
                   <>
@@ -999,7 +1051,7 @@ export default function CursoGrabado({ cursoKey }) {
                   ? `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(producto.precio)}. ${producto.preventa.textoFinal || `Desde el ${fechaAcceso} pasa a ${formatearPrecio(producto.precioRegular)}, y ese mismo día se habilitan las clases en tu carpeta.`}`
                   : promo && !cuponAplicado
                   ? `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(compra.precio)}: precio de ${promo.nombre}, solo ${promo.fechasTexto}. Empezá esta misma noche.`
-                  : `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(compra.precio)}${cuponAplicado ? " con tu código de alumno" : ""}. Empezá esta misma noche.`}
+                  : `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(compra.precio)}${cuponEs ? " con tu cupón de E-stellarium" : cuponAplicado ? " con tu código de alumno" : ""}. Empezá esta misma noche.`}
             </p>
             {botonPago(styles.btnFinal)}
           </div>

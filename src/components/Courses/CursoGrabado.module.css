@@ -1618,6 +1618,45 @@
   transform: translateY(-2px);
 }
 
+/* Debajo del botón de pago: la compra da cuenta en E-stellarium (el Apps Script hace el alta) */
+.estellariumAlta {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin: 0.9rem 0 0.2rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid rgba(11, 120, 251, 0.45);
+  border-radius: 10px;
+  background: rgba(11, 120, 251, 0.08);
+  text-align: left;
+}
+
+.estellariumIcono {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  background: rgba(11, 120, 251, 0.18);
+  color: #9fc7ff;
+  font-size: 1.15rem;
+}
+
+.estellariumAlta p {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: #b8b8b8;
+}
+
+.estellariumAlta strong {
+  display: block;
+  margin-bottom: 0.15rem;
+  font-size: 0.88rem;
+  color: #ffffff;
+}
+
 /* Etiqueta de los cursos que ya están en E-stellarium (ver estaEnEstellarium en cursosGrabados.js) */
 .estellariumTag {
   display: inline-flex;

@@ -6,7 +6,7 @@ import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, estaEnEstellarium, te
 import { seoInicio } from "../../data/seoCursos";
 import { linkPackTodo, packTodo } from "../../data/packs";
 import { TESTIMONIOS, ENCUESTA, promedioEncuesta } from "../../data/testimonios";
-import { LuBanknote, LuBuilding2, LuChartColumn, LuClapperboard, LuCloud, LuCompass, LuDatabase, LuGift, LuHourglass, LuOrbit, LuPuzzle, LuQuote, LuRocket, LuStar, LuTarget } from "react-icons/lu";
+import { LuBanknote, LuBuilding2, LuChartColumn, LuClapperboard, LuCloud, LuCompass, LuDatabase, LuGift, LuHourglass, LuOrbit, LuPuzzle, LuQuote, LuRocket, LuStar, LuTarget, LuTrophy } from "react-icons/lu";
 import Icono from "../Icono";
 
 const WHATSAPP_URL = `https://wa.me/5491123869799?text=${encodeURIComponent("Hola, quiero cotizar un software")}`;
@@ -28,6 +28,33 @@ const TODO = packTodo();
 const TOTAL_CLASES = RUTA.reduce((total, key) => total + CURSOS_GRABADOS[key].clases, 0);
 const PRECIO_DESDE = Math.min(...RUTA.map((key) => CURSOS_GRABADOS[key].precio));
 
+// E-stellarium, la plataforma de práctica (otro proyecto: e-stellarium.wearesrv.com)
+const ESTELLARIUM_URL = "https://e-stellarium.wearesrv.com";
+const ESTELLARIUM_PUNTOS = [
+  { icono: LuOrbit, titulo: "Una constelación por curso.", texto: "Cuatro tipos de juegos para fijar cada tema." },
+  { icono: LuTrophy, titulo: "Desafíos y ranking.", texto: "Sumás experiencia, mantenés tu racha y competís con otros alumnos." },
+  { icono: LuGift, titulo: "Cupones de descuento.", texto: "Aprobás tu constelación y te llevás un cupón para tu próximo curso." },
+];
+
+// Una constelación decorativa al lado del anuncio: estrellas unidas por líneas, la última en naranja (la que
+// estás por completar). Las estrellas titilan con un desfase cada una; sin animación si se pidió menos movimiento.
+const ESTRELLAS = [
+  [40, 190, 5], [95, 120, 4], [150, 150, 6], [205, 70, 4], [255, 110, 5], [300, 40, 7],
+];
+function Constelacion() {
+  return (
+    <svg className={styles.constelacion} viewBox="0 0 340 230" aria-hidden="true">
+      <polyline points={ESTRELLAS.map(([x, y]) => `${x},${y}`).join(" ")} className={styles.constelacionLinea} />
+      {ESTRELLAS.map(([x, y, r], i) => (
+        <g key={i} className={styles.constelacionEstrella} style={{ animationDelay: `${i * 0.45}s` }}>
+          <circle cx={x} cy={y} r={r * 2.6} className={i === ESTRELLAS.length - 1 ? styles.haloNaranja : styles.halo} />
+          <circle cx={x} cy={y} r={r} className={i === ESTRELLAS.length - 1 ? styles.estrellaNaranja : styles.estrella} />
+        </g>
+      ))}
+    </svg>
+  );
+}
+
 const DOLORES = [
   { icono: LuCompass, texto: "Viste mil tutoriales sueltos y todavía no sabés por dónde empezar." },
   { icono: LuBanknote, texto: "Querés cambiar de laburo, pero los cursos cuestan una fortuna." },
@@ -48,7 +75,7 @@ const FAQ = [
   { q: "¿Tienen un curso de Excel?", a: `Sí: el Master en Excel y Sheets con IA, ${CURSOS_GRABADOS.excel.clases} clases grabadas para ir de cero a tablas dinámicas, Power Query, VBA y Google Apps Script, sin saber programar.${estaEnPreventa(CURSOS_GRABADOS.excel) ? ` Está en preventa hasta el ${CURSOS_GRABADOS.excel.preventa.fechaTexto}, cuando se habilitan las clases.` : ""} También se vende en combo con el Curso de Scripting con IA.` },
   { q: "¿Tienen algo para chicos?", a: `Sí: Scratch para Chicos, un curso grabado de 14 clases para que chicos de 8 a 13 años creen una historia animada y su primer videojuego. Ya está disponible por ${formatearPrecio(CURSOS_GRABADOS.scratch.precio)}, con acceso de por vida al material en Google Drive.` },
   { q: "¿Cómo recibo el curso después de pagar?", a: "Automáticamente: apenas Mercado Pago aprueba el pago, te llega un mail con el acceso a la carpeta del curso en Google Drive." },
-  { q: "¿Qué es E-stellarium?", a: "Es nuestra plataforma educativa. Está disponible desde el 20 de noviembre de 2026 y el acceso es inmediato y gratis para todos los que ya compraron un curso, sin pagar nada extra; los cursos que se compren de ahora en más también lo incluyen (Excel, SQL y Redes, Linux y AWS se suman más adelante). Cómo entrar lo avisamos por mail y en nuestras redes." },
+  { q: "¿Qué es E-stellarium?", a: "Es nuestra plataforma para repasar cada curso jugando: una constelación por curso, desafíos semanales con ranking y cupones de descuento para tus próximos cursos. Ya está abierta y está incluida en los cursos, sin pagar nada extra: al comprar te llega un mail para crear tu contraseña (Excel, SQL y Redes, Linux y AWS se suman más adelante). También podés probar la demo sin cuenta en e-stellarium.wearesrv.com/demo." },
   { q: "¿Hacen software para empresas?", a: "Sí. Además de la escuela, desarrollamos backend, APIs, plataformas web y automatizaciones a medida. Escribinos por WhatsApp y lo cotizamos." },
   { q: "¿Tienen productos propios?", a: "Sí, dos plataformas por suscripción mensual: Sentryx, para colegios (comunicados, boletines, asistencia y aulas virtuales), y Event Box, para empresas de eventos (stock, contenedores y órdenes de servicio). Los planes están en la página de cada una." },
 ];
@@ -141,30 +168,46 @@ export default function Home() {
         </ul>
       </section>
 
-      {/* ---------- Anuncio E-stellarium: cuando esté en uso, cambiar por el link para entrar ---------- */}
+      {/* ---------- E-stellarium: la plataforma ya está abierta ---------- */}
       <section className={`${styles.section} ${styles.sectionAnuncio}`}>
         <div className={styles.estellarium}>
-          <span className={styles.estellariumTag}>Nuevo · 20 de noviembre</span>
-          <h2 className={styles.estellariumTitle}>
-            Llega <span className={styles.blue}>E-stellarium</span>, nuestra plataforma educativa
-          </h2>
-          <p>
-            Desde el 20 de noviembre vas a poder entrar a E-stellarium. <strong>Si ya compraste un curso, tu acceso es
-            inmediato y gratis</strong>: no pagás nada extra. Y los cursos que compres de ahora en más también lo incluyen
-            (Excel, SQL y Redes, Linux y AWS se suman más adelante).
-          </p>
-          <p className={styles.estellariumAviso}>Estate atento a nuestras redes y a tu mail: por ahí te avisamos cómo entrar.</p>
-          <div className={styles.estellariumRedes}>
-            <a href="https://www.instagram.com/wearesrv/" target="_blank" rel="noopener noreferrer">
-              Instagram
-            </a>
-            <a href="https://www.youtube.com/@weareSRV" target="_blank" rel="noopener noreferrer">
-              YouTube
-            </a>
-            <a href="https://discord.com/invite/QuAmDxrNMu" target="_blank" rel="noopener noreferrer">
-              Discord
-            </a>
+          <div className={styles.estellariumTexto}>
+            <span className={styles.estellariumTag}>
+              <i className={styles.estellariumPulso} aria-hidden="true" /> Ya está abierta
+            </span>
+            <h2 className={styles.estellariumTitle}>
+              Ya llegó <span className={styles.blue}>E-stellarium</span>
+            </h2>
+            <p className={styles.estellariumBajada}>
+              Nuestra plataforma para repasar cada curso jugando. Cada módulo es una estrella de tu constelación: la
+              completás con desafíos de código, sin instalar ni ejecutar nada.
+            </p>
+            <ul className={styles.estellariumLista}>
+              {ESTELLARIUM_PUNTOS.map(({ icono, titulo, texto }) => (
+                <li key={titulo}>
+                  <span className={styles.estellariumIcono}>
+                    <Icono de={icono} />
+                  </span>
+                  <span>
+                    <strong>{titulo}</strong> {texto}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <div className={styles.estellariumBotones}>
+              <a href={ESTELLARIUM_URL} className={styles.estellariumEntrar}>
+                Entrar a E-stellarium
+              </a>
+              <a href={`${ESTELLARIUM_URL}/demo`} className={styles.estellariumDemo}>
+                Probar la demo
+              </a>
+            </div>
+            <p className={styles.estellariumNota}>
+              La demo no necesita cuenta y te regala un cupón del 25&nbsp;% para tu primer curso. ¿Ya compraste? Tu cuenta
+              está incluida: te llega un mail para crear tu contraseña.
+            </p>
           </div>
+          <Constelacion />
         </div>
       </section>
 

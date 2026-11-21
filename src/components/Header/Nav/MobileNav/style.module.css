@@ -160,3 +160,26 @@
     display: none;
   }
 }
+/* E-stellarium: la órbita al lado de los cursos que dan cuenta en la plataforma (estellarium en menuData.js) */
+.badgeEstellarium {
+  display: inline-grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  border: 1px solid rgba(11, 120, 251, 0.6);
+  border-radius: 50%;
+  background: rgba(11, 120, 251, 0.15);
+  color: #9fc7ff;
+  font-size: 0.8rem;
+}
+
+.leyendaEstellarium {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.6rem 0 0.2rem;
+  color: #9fc7ff;
+  font-size: 0.8rem;
+}

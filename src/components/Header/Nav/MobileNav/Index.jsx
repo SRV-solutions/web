@@ -11,6 +11,7 @@ import FaTiktok from 'react-icons/fa/FaTiktok';
 import FaYoutube from 'react-icons/fa/FaYoutube';
 import FaDiscord from 'react-icons/fa/FaDiscord';
 
+import { LuOrbit } from 'react-icons/lu';
 import styles from './style.module.css';
 import menuData from '../../../../data/menuData';
 
@@ -87,9 +88,19 @@ const MobileNav = () => {
                           onClick={closeMenu}
                         >
                           {link.label.toUpperCase()}
+                          {link.estellarium && (
+                            <span className={styles.badgeEstellarium} role="img" aria-label="Incluye E-stellarium" title="Incluye tu cuenta en E-stellarium">
+                              <LuOrbit aria-hidden="true" />
+                            </span>
+                          )}
                         </Link>
                       </li>
                     ))}
+                    {menu.links.some((link) => link.estellarium) && (
+                      <li className={styles.leyendaEstellarium}>
+                        <LuOrbit aria-hidden="true" /> Incluye tu cuenta en E-stellarium
+                      </li>
+                    )}
                   </ul>
                 </li>
               );

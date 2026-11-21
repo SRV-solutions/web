@@ -110,7 +110,8 @@
   position: absolute;
   top: calc(100% + 0.25rem);
   left: 0;
-  min-width: 200px;
+  /* 280 y no 200: con la órbita de E-stellarium y el NEW, los nombres se partían en tres renglones */
+  min-width: 280px;
   background-color: #2b2b2b;
   list-style: none;
   margin: 0;
@@ -320,4 +321,35 @@
     visibility: visible;
     transform: translateY(0);
   }
+}
+/* E-stellarium: la órbita al lado de los cursos que dan cuenta en la plataforma (estellarium en menuData.js) */
+.marcas {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.badge_estellarium {
+  display: grid;
+  place-items: center;
+  width: 1.45rem;
+  height: 1.45rem;
+  border: 1px solid rgba(11, 120, 251, 0.6);
+  border-radius: 50%;
+  background: rgba(11, 120, 251, 0.15);
+  color: #9fc7ff;
+  font-size: 0.85rem;
+}
+
+.leyenda_estellarium {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.3rem;
+  padding: 0.65rem 1.2rem 0.4rem;
+  border-top: 1px solid #3a3a3a;
+  color: #9fc7ff;
+  font-size: 0.72rem;
+  font-weight: 600;
 }

@@ -10,8 +10,24 @@ import {
   FaBars,
   FaTimes,
 } from "react-icons/fa";
+import { LuOrbit } from "react-icons/lu";
 import menuData from "../../../data/menuData";
 import styles from "./style.module.css";
+
+// A la derecha de cada opción: la órbita si el curso da cuenta en E-stellarium y la etiqueta NEW
+function MarcasLink({ link }) {
+  if (!link.estellarium && !link.isNew) return null;
+  return (
+    <span className={styles.marcas}>
+      {link.estellarium && (
+        <span className={styles.badge_estellarium} role="img" aria-label="Incluye E-stellarium" title="Incluye tu cuenta en E-stellarium">
+          <LuOrbit aria-hidden="true" />
+        </span>
+      )}
+      {link.isNew && <span className={styles.badge_new}>NEW</span>}
+    </span>
+  );
+}
 
 const Nav = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -153,9 +169,7 @@ const Nav = () => {
                                   className={styles.dropdown_link}
                                 >
                                   <span>{link.label.toUpperCase()}</span>
-                                  {link.isNew && (
-                                    <span className={styles.badge_new}>NEW</span>
-                                  )}
+                                  <MarcasLink link={link} />
                                 </a>
                               ) : (
                                 <a
@@ -164,14 +178,17 @@ const Nav = () => {
                                   onClick={(e) => handleNavClick(e, link.to)}
                                 >
                                   <span>{link.label.toUpperCase()}</span>
-                                  {link.isNew && (
-                                    <span className={styles.badge_new}>NEW</span>
-                                  )}
+                                  <MarcasLink link={link} />
                                 </a>
                               )}
                             </li>
                           );
                         })}
+                        {menu.links.some((link) => link.estellarium) && (
+                          <li className={styles.leyenda_estellarium}>
+                            <LuOrbit aria-hidden="true" /> Incluye tu cuenta en E-stellarium
+                          </li>
+                        )}
                       </ul>
                     )}
                   </li>

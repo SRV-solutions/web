@@ -23,6 +23,8 @@ const menuData = [
   },
   {
     title: "FORMACIONES",
+    // estellarium: true marca los cursos que dan cuenta en E-stellarium (ícono de órbita en el menú). Mismos cursos
+    // que enEstellarium en src/data/cursosGrabados.js
     disabled: false,
     isExternal: false,
     hasNotification: true,
@@ -31,24 +33,29 @@ const menuData = [
       {
         label: "Scratch para Chicos",
         to: "/scratch/inscripcion",
+        estellarium: true,
         isNew: true
       },
       {
         label: "Scripting con IA",
         to: "/scripting/inscripcion",
+        estellarium: true,
         isNew: false
       },
       {
         label: "Master en Python con IA",
-        to: "/python/inscripcion"
+        to: "/python/inscripcion",
+        estellarium: true
       },
       {
         label: "Ruta Backend: JavaScript + Node",
-        to: "/ruta-backend/inscripcion"
+        to: "/ruta-backend/inscripcion",
+        estellarium: true
       },
       {
         label: "Fullstack con C# y React",
         to: "/fullstack-csharp/inscripcion",
+        estellarium: true,
         isNew: true
       },
       {

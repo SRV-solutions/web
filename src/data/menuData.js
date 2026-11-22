@@ -69,6 +69,7 @@ const menuData = [
       },
       {
         label: "SQL y Bases de Datos · Preventa",
+        estellarium: true,
         to: "/sql/inscripcion",
         isNew: true
       },

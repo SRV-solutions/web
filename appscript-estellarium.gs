@@ -47,7 +47,7 @@
 
 // Claves de los cursos que existen en E-Stellarium (su tabla products). Los demás (redes, excel) todavía no
 // tienen constelación: se ignoran, y un pago que traiga solo de esos no llama a la API.
-var ESTELLARIUM_CURSOS = ["scratch", "scripting", "python", "fundamentos-backend", "backend-avanzado", "fullstack-csharp"];
+var ESTELLARIUM_CURSOS = ["scratch", "scripting", "python", "fundamentos-backend", "backend-avanzado", "fullstack-csharp", "sql"];
 
 var MARCA_ESTELLARIUM_OK = "ESTELLARIUM_OK";
 

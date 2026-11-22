@@ -816,6 +816,7 @@ export const CURSOS_GRABADOS = {
   // Se vende solo: todavía no entra en los packs «Sumá a tu compra» (no es unidad en src/data/packs.js).
   sql: {
     key: "sql",
+    enEstellarium: true,
     itemId: "curso-sql-bases-de-datos", // mismo itemId que netlify/lib/cursos.js (content_ids de Meta)
     ruta: "sql",
     contentName: "Infoproducto SQL y Bases de Datos",

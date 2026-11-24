@@ -23,3 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# Historias de WhatsApp: imágenes exportadas que se publican a mano, no van al repo
+docs/creativos/historias-whatsapp/

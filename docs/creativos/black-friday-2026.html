@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creativos Black Friday SRV</title>
+<!--
+  Creativos para redes del Black Friday SRV: del viernes 27 al lunes 30 de noviembre de 2026, 50% sobre el precio de
+  lista de todos los cursos grabados (el Intensivo Full Stack en vivo no participa).
+  Post 1080x1350 (4:5, feed y anuncios) e historia 1080x1920.
+  Se abre por el dev server de Vite (npx vite --port 3480 -> http://localhost:3480/docs/creativos/black-friday-2026.html)
+  porque usa el isotipo de /public. "Descargar PNG" baja cada placa a tamaño real (html2canvas).
+
+  Precios: los que cobra la web con la variable de Netlify  PROMO=Black Friday SRV;2026-11-27;2026-11-30;50
+  (netlify/lib/promo.js: la mitad del precio de lista, redondeada hacia abajo a una centena). Si cambia el porcentaje,
+  una fecha o un precio de lista, cambiarlo también acá.
+
+  Tachados: solo precios que se cobran. En los cursos de siempre, el precio habitual; en los que están en preventa
+  (SQL, Excel y Redes), el precio de preventa de hoy, y la placa aclara que el Black Friday es la mitad del de lista.
+  Historias: lo importante queda entre los 220 px de arriba y los 300 px de abajo.
+-->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;600;800&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root {
+    --negro: #000000;
+    --carbon: #0d0d0d;
+    --linea: #1f2430;
+    --azul: #0b78fb;
+    --naranja: #f6950a;
+    --verde: #30a05a;
+    --verdeClaro: #4cc27a;
+    --blanco: #ffffff;
+    --gris: #9ca3af;
+    --grisOscuro: #6b7280;
+    --display: "Anton", "Arial Narrow", sans-serif;
+    --texto: "Archivo", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #111318;
+    color: var(--blanco);
+    font-family: var(--texto);
+    padding: 32px max(16px, env(safe-area-inset-left, 0px)) 80px max(16px, env(safe-area-inset-right, 0px));
+  }
+  h1 { font-family: var(--display); font-weight: 400; letter-spacing: 1px; font-size: 2rem; margin: 0 0 4px; }
+  h1 .srv, .seccion h2 .srv { color: var(--naranja); }
+  .sub { color: var(--gris); margin: 0 0 20px; max-width: 75ch; line-height: 1.5; }
+  .acciones { margin: 0 0 32px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  button {
+    font-family: var(--texto); font-weight: 600; font-size: 0.95rem;
+    background: var(--azul); color: #fff; border: 0; border-radius: 8px;
+    padding: 10px 18px; cursor: pointer;
+  }
+  button.secundario { background: #232838; }
+  button:hover { filter: brightness(1.15); }
+  button:focus-visible { outline: 3px solid var(--naranja); outline-offset: 2px; }
+  .estado { color: var(--verdeClaro); font-weight: 600; }
+  .seccion { margin: 0 0 48px; }
+  .seccion h2 { font-family: var(--display); font-weight: 400; font-size: 1.6rem; letter-spacing: 1px; margin: 0 0 6px; }
+  .seccion .sub { margin-bottom: 14px; }
+  .galeria { display: flex; flex-wrap: wrap; gap: 24px; }
+  .pieza { display: flex; flex-direction: column; gap: 10px; width: 300px; }
+  .pieza h3 { font-size: 0.85rem; font-weight: 600; color: var(--gris); margin: 0; min-height: 2.4em; }
+  .marco { width: 300px; height: 375px; overflow: hidden; border-radius: 10px; border: 1px solid #2a2f3a; background: var(--negro); }
+  .marco.vertical { height: 533px; }
+  .marco > .placa { transform: scale(0.277778); transform-origin: top left; }
+  .textos { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+  .textoPieza { background: #171a22; border: 1px solid #2a2f3a; border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .textoPieza h3 { margin: 0; font-size: 0.95rem; }
+  .textoPieza pre { margin: 0; white-space: pre-wrap; font-family: var(--texto); font-size: 0.9rem; line-height: 1.5; color: #d1d5db; flex: 1; }
+  .textoPieza button { align-self: flex-start; }
+
+  /* ---------- Las placas (tamaño real) ---------- */
+  .placa {
+    width: 1080px; height: 1350px; background: var(--negro); color: var(--blanco);
+    font-family: var(--texto); position: relative; overflow: hidden;
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 64px 80px 56px;
+  }
+  .placa.story { height: 1920px; padding: 220px 84px 300px; }
+  .placa::before, .placa::after { content: ""; position: absolute; border-radius: 50%; pointer-events: none; }
+  .placa::before { width: 1000px; height: 1000px; right: -460px; top: -420px; background: radial-gradient(circle, rgba(11,120,251,0.24), transparent 65%); }
+  .placa::after { width: 900px; height: 900px; left: -420px; bottom: -380px; background: radial-gradient(circle, rgba(246,149,10,0.17), transparent 65%); }
+  .placa > * { position: relative; z-index: 1; }
+
+  /* Franja de marca azul / naranja / verde */
+  .franja { position: absolute; left: 0; right: 0; top: 0; height: 14px; display: flex; z-index: 2; }
+  .franja span { flex: 1; }
+  .franja span:nth-child(1) { background: var(--azul); }
+  .franja span:nth-child(2) { background: var(--naranja); }
+  .franja span:nth-child(3) { background: var(--verde); }
+  .story .franja { top: auto; bottom: 0; }
+
+  .cabecera { display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+  .marca { display: flex; align-items: center; gap: 16px; }
+  .marca img { width: 76px; height: 76px; }
+  .logo { font-family: var(--display); font-size: 52px; letter-spacing: 2px; line-height: 1; }
+  .srv { color: var(--naranja); }
+  .pill {
+    border: 3px solid var(--azul); color: var(--azul); border-radius: 999px;
+    font-weight: 800; font-size: 26px; letter-spacing: 2px; padding: 12px 26px;
+    text-transform: uppercase; white-space: nowrap;
+  }
+  .pill.naranja { border-color: var(--naranja); color: var(--naranja); }
+
+  .cuerpo { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 26px; padding: 28px 0; }
+  .story .cuerpo { gap: 34px; }
+
+  .etiqueta {
+    align-self: flex-start; background: var(--naranja); color: #000;
+    font-weight: 800; font-size: 32px; letter-spacing: 3px; text-transform: uppercase;
+    border-radius: 8px; padding: 10px 22px;
+  }
+  .etiqueta.azul { background: var(--azul); color: #fff; }
+  .titulo { font-family: var(--display); font-weight: 400; font-size: 128px; line-height: 1; margin: 0; text-transform: uppercase; }
+  .story .titulo { font-size: 150px; }
+  .titulo .ia { color: var(--azul); white-space: nowrap; }
+  .detalle { font-size: 38px; font-weight: 800; color: var(--azul); margin: 0; text-transform: uppercase; letter-spacing: 1px; }
+  .bajada { font-size: 38px; font-weight: 600; color: #d1d5db; margin: 0; line-height: 1.3; }
+  .bajada b { color: var(--blanco); }
+
+  .puntos { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+  .puntos li { font-size: 34px; font-weight: 600; line-height: 1.25; color: #e5e7eb; display: flex; gap: 20px; align-items: baseline; }
+  .puntos li::before { content: ""; flex: 0 0 18px; height: 18px; border-radius: 4px; background: var(--naranja); transform: translateY(-4px); }
+  .story .puntos li { font-size: 38px; }
+
+  .precios { display: flex; align-items: flex-end; gap: 44px; flex-wrap: wrap; }
+  .antes { display: flex; flex-direction: column; gap: 4px; }
+  .rotulo { font-size: 26px; font-weight: 800; color: var(--gris); text-transform: uppercase; letter-spacing: 2px; }
+  .tachado { font-size: 60px; font-weight: 600; color: var(--gris); text-decoration: line-through; text-decoration-thickness: 4px; text-decoration-color: var(--naranja); }
+  .ahora { display: flex; flex-direction: column; gap: 6px; }
+  .ahora .monto { font-family: var(--display); font-size: 156px; line-height: 0.9; color: var(--verdeClaro); }
+  .story .ahora .monto { font-size: 180px; }
+  .ahora small { font-size: 28px; font-weight: 600; color: var(--gris); }
+  .nota {
+    margin: 0; font-size: 28px; font-weight: 600; color: #e5e7eb; line-height: 1.35;
+    border-left: 6px solid var(--azul); padding: 6px 0 6px 22px;
+  }
+  .nota b { color: var(--naranja); }
+  .story .nota { font-size: 32px; }
+
+  .pie { display: flex; flex-direction: column; gap: 16px; border-top: 3px solid var(--linea); padding-top: 26px; }
+  .pieFila { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+  .web { font-size: 40px; font-weight: 800; color: var(--azul); letter-spacing: 1px; }
+  .claim { font-size: 28px; font-weight: 600; color: var(--gris); }
+  .legal { font-size: 20px; color: var(--grisOscuro); line-height: 1.4; margin: 0; }
+
+  /* Anuncio general */
+  .granTitulo { font-family: var(--display); font-size: 122px; line-height: 0.95; margin: 0; text-transform: uppercase; white-space: nowrap; }
+  .off { font-family: var(--display); font-size: 330px; line-height: 0.85; color: var(--naranja); margin: 0; }
+  .off small { font-size: 130px; color: var(--blanco); }
+  .story .off { font-size: 360px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 12px; }
+  .chips span {
+    font-size: 26px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+    border: 2px solid #2d3445; background: rgba(13,13,13,0.9); border-radius: 999px; padding: 10px 20px;
+  }
+  .story .chips span { font-size: 30px; }
+
+  /* Listas de precios */
+  .lista { display: flex; flex-direction: column; }
+  .lista .fila { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 14px 0; border-bottom: 2px solid var(--linea); }
+  .lista .fila:last-child { border-bottom: 0; }
+  .lista .curso { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .lista .curso b { font-size: 34px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+  .lista .curso small { font-size: 22px; font-weight: 600; color: var(--gris); }
+  .lista .valores { display: flex; align-items: baseline; gap: 18px; white-space: nowrap; }
+  .lista .viejo { color: var(--gris); text-decoration: line-through; text-decoration-color: var(--naranja); text-decoration-thickness: 3px; font-size: 28px; font-weight: 600; }
+  .lista .nuevo { color: var(--verdeClaro); font-family: var(--display); font-size: 50px; }
+  .story .lista .fila { padding: 15px 0; }
+  .story .lista .curso b { font-size: 38px; }
+  .story .lista .curso small { font-size: 26px; }
+  .story .lista .viejo { font-size: 32px; }
+  .story .lista .nuevo { font-size: 58px; }
+
+  /* Placas con mucho texto: todo un poco más compacto para que el pie no se salga */
+  .denso .cuerpo { gap: 18px; padding: 16px 0; }
+  .denso .titulo { font-size: 108px; }
+  .story.denso .titulo { font-size: 124px; }
+  .denso .puntos { gap: 10px; }
+  .denso .puntos li { font-size: 31px; }
+  .story.denso .puntos li { font-size: 34px; }
+  .denso .ahora .monto { font-size: 136px; }
+  .story.denso .ahora .monto { font-size: 156px; }
+  .denso .nota { font-size: 26px; }
+  .story.denso .nota { font-size: 30px; }
+</style>
+</head>
+<body>
+<h1>CREATIVOS · BLACK FRIDAY <span class="srv">SRV</span></h1>
+<p class="sub">Del viernes 27 al lunes 30 de noviembre de 2026. Post 1080×1350 (4:5, sirve para el feed y para anuncios) e historia 1080×1920.
+Los precios son los que cobra la web con la promo: la mitad del precio de lista. Solo se tachan precios que se cobran: el habitual o,
+en SQL, Excel y Redes, el de preventa de hoy. Cada placa lleva su letra chica (fechas y bases).</p>
+<div class="acciones">
+  <button id="todos" type="button">Descargar todos</button>
+  <span class="estado" id="estado" role="status"></span>
+</div>
+<div id="secciones"></div>
+
+<script>
+const $ = (v) => "$" + v.toLocaleString("es-AR");
+const porClase = (monto, clases) => $(Math.round(monto / clases)) + " por clase";
+
+// Cursos grabados al 24/11/2026 (src/data/cursosGrabados.js). lista = precio de lista; hoy = lo que se cobra sin la
+// promo (el de preventa, si está en preventa); bf = lo que cobra la web del 27 al 30/11 (netlify/lib/promo.js).
+const CURSOS = [
+  { key: "scripting", grupo: "programacion", nombre: "Curso de<br>Scripting <span class=\"ia\">con IA</span>", corto: "Curso de Scripting con IA", chip: "Scripting con IA", clases: 40, detalle: "40 clases · más de 59 horas",
+    puntos: ["JavaScript, Python y Google Apps Script desde cero", "Automatizá planillas, mails y documentos", "Módulo de 8 clases para automatizar con IA"],
+    lista: 15000, hoy: 15000, bf: 7500, denso: true },
+  { key: "python", grupo: "programacion", nombre: "Master en<br>Python <span class=\"ia\">con IA</span>", corto: "Master en Python con IA", chip: "Python con IA", clases: 106, detalle: "106 clases · desde cero",
+    puntos: ["De la lógica a la POO, APIs y apps con interfaz", "Módulo de 8 clases de automatizaciones con IA", "Proyectos reales para tu portfolio"],
+    lista: 80000, hoy: 80000, bf: 40000 },
+  { key: "javascript", grupo: "programacion", nombre: "Master en<br>JavaScript", corto: "Master en JavaScript", clases: 90, detalle: "90 clases · con Node.js",
+    puntos: ["JavaScript desde cero: el lenguaje de la web", "POO, promesas, APIs reales, bots y testing", "Guía de estudio con 109 preguntas"],
+    lista: 84900, hoy: 84900, bf: 42400 },
+  { key: "backend-avanzado", grupo: "programacion", nombre: "Backend<br>Avanzado", corto: "Backend Avanzado", clases: 73, detalle: "73 clases · Node.js y Express",
+    puntos: ["Servidores y APIs REST como en una empresa", "Middlewares, sockets, testing y Docker", "5 proyectos prácticos de servidores"],
+    lista: 99900, hoy: 99900, bf: 49900 },
+  { key: "ruta-backend", grupo: "programacion", nombre: "Ruta Backend<br>Completa", corto: "Ruta Backend Completa", clases: 163, detalle: "163 clases · JavaScript + Backend Avanzado",
+    puntos: ["Los dos cursos de la ruta backend en un solo pago", "De tu primer «Hola mundo» a tus propias APIs", "Dos guías de estudio: 109 + 62 preguntas"],
+    lista: 149900, hoy: 149900, bf: 74900 },
+  { key: "fullstack-csharp", grupo: "programacion", nombre: "Fullstack con<br>C# y React", corto: "Fullstack C# y React", clases: 30, detalle: "30 clases · .NET, PostgreSQL y React",
+    puntos: ["Una API en .NET con C# y PostgreSQL", "El front en React con Vite, de punta a punta", "Proyecto final: tu propia app tipo Instagram"],
+    lista: 87900, hoy: 87900, bf: 43900 },
+  { key: "excel", grupo: "mas", nombre: "Excel y Sheets<br><span class=\"ia\">con IA</span>", corto: "Excel y Sheets con IA", clases: 120, detalle: "120 clases · más de 12 horas",
+    puntos: ["Excel, Google Sheets, Apps Script e IA en un solo curso", "De tu primera fórmula a Power Query, tableros y macros", "Casos argentinos: ARCA, sueldos, bancos y Mercado Pago"],
+    lista: 89900, hoy: 59900, bf: 44900,
+    preventa: { fila: "en preventa · clases el 1/01", nota: "Es la <b>mitad del precio de lista</b> ($89.900). Las clases se habilitan el <b>1/01/2027</b>.",
+      legal: " Excel: preventa hasta el 31/12/2026; la carpeta llega al instante y las clases se habilitan el 1/01/2027." } },
+  { key: "sql", grupo: "mas", nombre: "SQL y Bases<br>de Datos", corto: "SQL y Bases de Datos", clases: 16, detalle: "16 clases · con PostgreSQL",
+    puntos: ["De tu primer SELECT a JOIN, reportes, vistas y triggers", "16 clases grabadas, cada una con su video resumen", "Empezás hoy: más de la mitad ya está en tu carpeta"],
+    lista: 49900, hoy: 34900, bf: 24900,
+    preventa: { fila: "en preventa · empezás hoy", nota: "Es la <b>mitad del precio de lista</b> ($49.900). Empezás hoy y el curso queda completo el <b>20/12</b>.",
+      legal: " SQL: preventa hasta el 19/12/2026; la carpeta llega al instante con las clases ya dadas y el curso queda completo, con sus 16 clases, el 20/12/2026." } },
+  { key: "redes", grupo: "mas", nombre: "Redes, Linux<br>y <span class=\"srv\">AWS</span>", corto: "Redes, Linux y AWS", clases: 32, detalle: "32 clases · rumbo a AWS CLF-C02",
+    puntos: ["Redes con Cisco, Linux con Ubuntu Server y AWS", "Preparación para el examen CLF-C02", "2 simulacros del examen (se suman el 3/02)"],
+    lista: 89900, hoy: 62900, bf: 44900,
+    preventa: { fila: "en preventa · clases el 27/01", nota: "Es la <b>mitad del precio de lista</b> ($89.900). Las clases se habilitan el <b>27/01/2027</b>.",
+      legal: " Redes: preventa hasta el 26/01/2027; las clases se habilitan el 27/01/2027 y los simulacros, el 3/02/2027. El examen de AWS no está incluido: lo toma y lo cobra AWS. WEARESRV no es un centro oficial de AWS." } },
+  { key: "scratch", grupo: "mas", nombre: "Scratch para<br>Chicos", corto: "Scratch para Chicos", clases: 14, detalle: "14 clases · para chicos de 8 a 13 años",
+    puntos: ["Aprenden a programar jugando, sin experiencia previa", "Crean una historia animada y su primer videojuego", "Sin instalar nada: Scratch va en el navegador"],
+    lista: 18000, hoy: 18000, bf: 9000 },
+];
+
+const FECHAS = "27 al 30 de noviembre";
+const LEGAL = "Black Friday SRV: del 27/11/2026 00:00 al 30/11/2026 23:59 (hora de Argentina). 50% sobre el precio de lista de los cursos grabados; en los cursos en preventa vale el menor de los dos precios. No participa el Intensivo Full Stack en vivo. Bases: wearesrv.com/terminos.";
+const LEGAL_PREVENTAS = LEGAL + " Excel, SQL y Redes están en preventa: su precio de lista es $89.900, $49.900 y $89.900. Las clases de Excel se habilitan el 1/01/2027 y las de Redes, el 27/01/2027; SQL queda completo el 20/12/2026. El examen de AWS no está incluido.";
+
+const franja = `<div class="franja"><span></span><span></span><span></span></div>`;
+const cabecera = (pill, color = "") => `
+  <div class="cabecera">
+    <div class="marca"><img src="/SRV-LOGO.png" alt=""><span class="logo">WEARE<span class="srv">SRV</span></span></div>
+    <div class="pill ${color}">${pill}</div>
+  </div>`;
+const pie = (legal, claim = "Pago único · Acceso de por vida") => `
+  <div class="pie">
+    <div class="pieFila"><span class="web">wearesrv.com</span><span class="claim">${claim}</span></div>
+    <p class="legal">${legal}</p>
+  </div>`;
+const placa = (id, formato, contenido, extra = "") => `<div class="placa ${formato} ${extra}" id="${id}">${franja}${contenido}</div>`;
+const chips = `<div class="chips">${CURSOS.map((c) => `<span>${c.chip || c.corto}</span>`).join("")}</div>`;
+const tituloBF = `<p class="granTitulo">BLACK FRIDAY <span class="srv">SRV</span></p>`;
+
+// ---------- Anuncios generales ----------
+const general = (formato) => placa(`bf-general-${formato}`, formato, `
+  ${cabecera(FECHAS)}
+  <div class="cuerpo">
+    ${tituloBF}
+    <p class="off">50<small>% OFF</small></p>
+    <p class="bajada">En <b>todos los cursos grabados</b>. Pago único, sin suscripción.</p>
+    ${chips}
+  </div>
+  ${pie(LEGAL)}`);
+
+const anticipo = (formato) => placa(`bf-anticipo-${formato}`, formato, `
+  ${cabecera(FECHAS)}
+  <div class="cuerpo">
+    <span class="etiqueta azul">Desde este viernes</span>
+    ${tituloBF}
+    <p class="off">50<small>% OFF</small></p>
+    <p class="bajada">Cuatro días con <b>todos los cursos grabados</b> a mitad de precio: del viernes 27 al lunes 30.</p>
+  </div>
+  ${pie(LEGAL)}`);
+
+const ultimoDia = (formato) => placa(`bf-ultimo-dia-${formato}`, formato, `
+  ${cabecera("Lunes 30 de noviembre", "naranja")}
+  <div class="cuerpo">
+    <span class="etiqueta">Último día</span>
+    ${tituloBF}
+    <p class="off">50<small>% OFF</small></p>
+    <p class="bajada">Termina <b>hoy a las 23:59</b>. Desde mañana, cada curso vuelve a su precio.</p>
+  </div>
+  ${pie(LEGAL)}`);
+
+// ---------- Listas de precios ----------
+const fila = (c) => `
+  <div class="fila">
+    <span class="curso"><b>${c.corto}</b><small>${c.clases} clases${c.preventa ? " · " + c.preventa.fila : ""}</small></span>
+    <span class="valores"><span class="viejo">${$(c.hoy)}</span><span class="nuevo">${$(c.bf)}</span></span>
+  </div>`;
+const lista = (grupo, titulo, legal) => (formato) => placa(`bf-lista-${grupo}-${formato}`, formato, `
+  ${cabecera(FECHAS)}
+  <div class="cuerpo">
+    <span class="etiqueta">Black Friday · 50% OFF</span>
+    <p class="titulo" style="font-size:${formato === "story" ? 104 : 96}px;">${titulo}</p>
+    <div class="lista">${CURSOS.filter((c) => c.grupo === grupo).map(fila).join("")}</div>
+  </div>
+  ${pie(legal)}`);
+
+// ---------- Una placa por curso ----------
+const curso = (c, formato) => placa(`bf-${c.key}-${formato}`, formato, `
+  ${cabecera("Black Friday · 27 al 30/11")}
+  <div class="cuerpo">
+    <span class="etiqueta">${c.preventa ? "Precio Black Friday" : "50% OFF"}</span>
+    <p class="titulo">${c.nombre}</p>
+    <p class="detalle">${c.detalle}</p>
+    <ul class="puntos">${c.puntos.map((p) => `<li>${p}</li>`).join("")}</ul>
+    <div class="precios">
+      <span class="antes"><span class="rotulo">${c.preventa ? "En preventa" : "Precio habitual"}</span><span class="tachado">${$(c.hoy)}</span></span>
+      <span class="ahora"><span class="monto">${$(c.bf)}</span><small>${porClase(c.bf, c.clases)}</small></span>
+    </div>
+    ${c.preventa ? `<p class="nota">${c.preventa.nota}</p>` : ""}
+  </div>
+  ${pie(LEGAL + (c.preventa ? c.preventa.legal : ""))}`, c.preventa || c.denso ? "denso" : "");
+
+// ---------- Textos para acompañar ----------
+const TEXTOS = [
+  { titulo: "Texto del post (Instagram y Facebook)", texto: `Black Friday SRV: 50% OFF en todos los cursos grabados.
+
+Del viernes 27 al lunes 30 de noviembre. Pago único, sin suscripción y con acceso de por vida.
+
+- Scripting con IA: $7.500
+- Master en Python con IA: $40.000
+- Master en JavaScript: $42.400
+- Backend Avanzado: $49.900
+- Ruta Backend Completa: $74.900
+- Fullstack con C# y React: $43.900
+- Excel y Sheets con IA: $44.900
+- SQL y Bases de Datos: $24.900
+- Redes, Linux y AWS: $44.900
+- Scratch para Chicos: $9.000
+
+Entrá a wearesrv.com y elegí el tuyo.
+
+Promo válida del 27/11/2026 al 30/11/2026 a las 23:59 (hora de Argentina). 50% sobre el precio de lista; no participa el Intensivo Full Stack en vivo. Excel, SQL y Redes están en preventa. Bases: wearesrv.com/terminos` },
+  { titulo: "Mensaje de WhatsApp", texto: `Hola. Te aviso que del viernes 27 al lunes 30 de noviembre tenemos el *Black Friday SRV*: todos los cursos grabados al *50%*.
+
+Por ejemplo, el Master en Python con IA queda en *$40.000* y el de Scripting con IA en *$7.500*. Es un solo pago y el acceso es de por vida.
+
+Los precios de todos los cursos están en wearesrv.com
+
+La promo termina el lunes 30/11 a las 23:59. Bases: wearesrv.com/terminos` },
+  { titulo: "Último día (lunes 30/11)", texto: `Hoy termina el Black Friday SRV.
+
+Hasta las 23:59 todos los cursos grabados están al 50%. Desde mañana, cada curso vuelve a su precio.
+
+wearesrv.com
+
+Promo válida hasta el 30/11/2026 a las 23:59 (hora de Argentina). No participa el Intensivo Full Stack en vivo. Bases: wearesrv.com/terminos` },
+];
+
+// ---------- Armado de la galería ----------
+const FORMATOS = [["post", "Post 1080×1350"], ["story", "Historia 1080×1920"]];
+const ambos = (prefijo, titulo, fn) => FORMATOS.map(([f, nombreFormato]) => ({
+  id: `${prefijo}-${f}`, archivo: `${prefijo}-${f === "post" ? "post" : "historia"}`,
+  titulo: `${titulo} · ${nombreFormato}`, vertical: f === "story", html: fn(f),
+}));
+
+const SECCIONES = [
+  {
+    titulo: 'Anuncios <span class="srv">generales</span>',
+    texto: "El anticipo va el miércoles y el jueves; el general, del viernes al domingo; el de último día, el lunes 30.",
+    piezas: [
+      ...ambos("bf-anticipo", "Anticipo (antes del viernes)", anticipo),
+      ...ambos("bf-general", "Anuncio general", general),
+      ...ambos("bf-ultimo-dia", "Último día", ultimoDia),
+    ],
+  },
+  {
+    titulo: 'Listas de <span class="srv">precios</span>',
+    texto: "Tachado va el precio que se cobra hoy. En Excel, SQL y Redes es el de preventa, por eso el descuento que se ve es menor al 50%: la letra chica lo explica.",
+    piezas: [
+      ...ambos("bf-lista-programacion", "Programación", lista("programacion", "Cursos de<br><span class=\"srv\">programación</span>", LEGAL)),
+      ...ambos("bf-lista-mas", "Datos, nube y chicos", lista("mas", "Datos, nube<br>y <span class=\"srv\">chicos</span>", LEGAL_PREVENTAS)),
+    ],
+  },
+  {
+    titulo: 'Una placa por <span class="srv">curso</span>',
+    texto: "Para anuncios segmentados y para responder consultas por un curso puntual.",
+    piezas: CURSOS.flatMap((c) => ambos(`bf-${c.key}`, c.corto, (f) => curso(c, f))),
+  },
+];
+
+const TODAS = SECCIONES.flatMap((s) => s.piezas);
+document.getElementById("todos").textContent = `Descargar todos (${TODAS.length} PNG)`;
+
+document.getElementById("secciones").innerHTML = SECCIONES.map((s, i) => `
+  <section class="seccion">
+    <h2>${s.titulo}</h2>
+    <p class="sub">${s.texto}</p>
+    <div class="acciones"><button type="button" class="secundario" data-seccion="${i}">Descargar esta sección (${s.piezas.length} PNG)</button></div>
+    <div class="galeria">${s.piezas.map((p) => `
+      <div class="pieza">
+        <h3>${p.titulo}</h3>
+        <div class="marco${p.vertical ? " vertical" : ""}">${p.html}</div>
+        <button type="button" data-id="${p.id}" data-archivo="${p.archivo}">Descargar PNG</button>
+      </div>`).join("")}
+    </div>
+  </section>`).join("") + `
+  <section class="seccion">
+    <h2>Textos para <span class="srv">acompañar</span></h2>
+    <p class="sub">Para pegar en la descripción del post o mandar por WhatsApp. Llevan las fechas y las bases.</p>
+    <div class="textos">${TEXTOS.map((t, i) => `
+      <div class="textoPieza">
+        <h3>${t.titulo}</h3>
+        <pre id="texto-${i}"></pre>
+        <button type="button" class="secundario" data-texto="${i}">Copiar texto</button>
+      </div>`).join("")}
+    </div>
+  </section>`;
+TEXTOS.forEach((t, i) => { document.getElementById(`texto-${i}`).textContent = t.texto; });
+
+const estado = document.getElementById("estado");
+
+async function descargar(id, archivo) {
+  await document.fonts.ready;
+  const original = document.getElementById(id);
+  // Se captura un clon a tamaño real, fuera del marco escalado
+  const refugio = document.createElement("div");
+  refugio.style.cssText = "position:fixed;left:-20000px;top:0;";
+  const clon = original.cloneNode(true);
+  refugio.appendChild(clon);
+  document.body.appendChild(refugio);
+  try {
+    const canvas = await html2canvas(clon, { backgroundColor: "#000000", scale: 1, logging: false, useCORS: true });
+    const a = document.createElement("a");
+    a.href = canvas.toDataURL("image/png");
+    a.download = archivo + ".png";
+    a.click();
+  } finally {
+    refugio.remove();
+  }
+}
+
+async function descargarVarias(piezas) {
+  for (let i = 0; i < piezas.length; i++) {
+    estado.textContent = `Generando ${i + 1} de ${piezas.length}: ${piezas[i].archivo}.png…`;
+    await descargar(piezas[i].id, piezas[i].archivo);
+    await new Promise((r) => setTimeout(r, 400));
+  }
+  estado.textContent = `Listo: se descargaron ${piezas.length} placas.`;
+}
+
+document.body.addEventListener("click", async (e) => {
+  const una = e.target.closest("button[data-id]");
+  const seccion = e.target.closest("button[data-seccion]");
+  const texto = e.target.closest("button[data-texto]");
+  if (una) {
+    estado.textContent = "Generando " + una.dataset.archivo + ".png…";
+    await descargar(una.dataset.id, una.dataset.archivo);
+    estado.textContent = "Listo: " + una.dataset.archivo + ".png";
+  } else if (seccion) {
+    await descargarVarias(SECCIONES[Number(seccion.dataset.seccion)].piezas);
+  } else if (texto) {
+    const contenido = TEXTOS[Number(texto.dataset.texto)].texto;
+    try {
+      await navigator.clipboard.writeText(contenido);
+      texto.textContent = "Copiado";
+    } catch {
+      // Sin permiso de portapapeles: se selecciona el texto para copiarlo a mano
+      const rango = document.createRange();
+      rango.selectNodeContents(document.getElementById(`texto-${texto.dataset.texto}`));
+      const seleccion = getSelection();
+      seleccion.removeAllRanges();
+      seleccion.addRange(rango);
+      texto.textContent = "Seleccionado: Ctrl+C";
+    }
+    setTimeout(() => { texto.textContent = "Copiar texto"; }, 2500);
+  } else if (e.target.id === "todos") {
+    await descargarVarias(TODAS);
+  }
+});
+</script>
+</body>
+</html>

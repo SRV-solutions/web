@@ -59,7 +59,13 @@ function preguntasFrecuentes(curso, preventa) {
       ? [
           {
             q: "¿Qué es la preventa y cuándo empieza el curso?",
-            a: curso.preventa.faqPreventa || `Las clases se habilitan el ${curso.preventa.fechaTexto}. ${
+            // Con texto propio (SQL), el precio que nombra es el de preventa: durante una promo se aclara el de la promo
+            a: curso.preventa.faqPreventa
+              ? curso.preventa.faqPreventa +
+                (promoDe(curso)
+                  ? ` Por la promo ${promoDe(curso).nombre}, ${promoDe(curso).fechasTexto} lo pagás ${formatearPrecio(curso.precio)}; después vuelve al precio de preventa.`
+                  : "")
+              : `Las clases se habilitan el ${curso.preventa.fechaTexto}. ${
               promoDe(curso)
                 ? `Por la promo ${promoDe(curso).nombre}, ${promoDe(curso).fechasTexto} lo pagás ${formatearPrecio(curso.precio)}; después vuelve al precio de preventa, ${formatearPrecio(curso.preventa.precio)}, hasta que se habilitan las clases, y desde ese día cuesta ${formatearPrecio(curso.precioRegular)}.`
                 : `Si lo comprás antes, lo pagás ${formatearPrecio(curso.precio)} en lugar de ${formatearPrecio(curso.precioRegular)}.`
@@ -1046,7 +1052,7 @@ export default function CursoGrabado({ cursoKey }) {
               {pack
                 ? `${compra.clases} clases en ${pack.cantidadCursos} cursos, acceso de por vida y un solo pago de ${formatearPrecio(compra.precio)}. Uno por uno pagarías ${formatearPrecio(pack.precioSeparado)}.${avisoClases ? ` ${avisoClases}` : ""}`
                 : preventa && promo
-                  ? `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(producto.precio)}: precio de ${promo.nombre}, solo ${promo.fechasTexto}. Las clases se habilitan en tu carpeta el ${fechaAcceso}.`
+                  ? `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(producto.precio)}: precio de ${promo.nombre}, solo ${promo.fechasTexto}. ${reserva ? `Las clases se habilitan en tu carpeta el ${fechaAcceso}.` : `Empezás hoy con las clases que ya están en tu carpeta, y el ${fechaAcceso} el curso queda completo.`}`
                   : preventa
                   ? `${producto.clases} clases, acceso de por vida y un pago único de ${formatearPrecio(producto.precio)}. ${producto.preventa.textoFinal || `Desde el ${fechaAcceso} pasa a ${formatearPrecio(producto.precioRegular)}, y ese mismo día se habilitan las clases en tu carpeta.`}`
                   : promo && !cuponAplicado

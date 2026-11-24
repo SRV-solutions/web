@@ -458,6 +458,201 @@
   background-color: rgba(48, 160, 90, 0.15);
 }
 
+/* ---------- Calculadora de costo ---------- */
+.calculadora {
+  display: grid;
+  gap: 1.5rem;
+  margin-bottom: 56px;
+  padding: 28px 18px;
+  border: 1px solid rgba(11, 120, 251, 0.45);
+  border-radius: 14px;
+  background: rgba(15, 15, 15, 0.6);
+  scroll-margin-top: 90px;
+}
+
+.calculadoraEncabezado {
+  min-width: 0;
+}
+
+.calculadoraTitulo {
+  margin: 0 0 0.5rem;
+  color: #ffffff;
+  font-size: clamp(1.3rem, 3vw, 1.7rem);
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.calculadoraBajada {
+  max-width: 65ch;
+  margin: 0;
+  color: #bdbdbd;
+  font-size: 0.97rem;
+  line-height: 1.6;
+}
+
+.calculadoraCampos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1.1rem 1rem;
+  min-width: 0;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.campo label,
+.campo > span:first-child {
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.campo input,
+.campo select {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  background: #0f0f0f;
+  color: #ffffff;
+  color-scheme: dark;
+  font: inherit;
+  font-size: 1rem;
+}
+
+.campo input:focus-visible,
+.campo select:focus-visible {
+  border-color: #0b78fb;
+  outline: 2px solid #0b78fb;
+  outline-offset: 1px;
+}
+
+.campo .campoAyuda {
+  color: #9a9a9a;
+  font-size: 0.8rem;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.calculadoraSelector {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  background: #0f0f0f;
+}
+
+.calculadoraOpcion,
+.calculadoraOpcionActiva {
+  flex: 1;
+  padding: 0.5rem 0.4rem;
+  border: none;
+  border-radius: 6px;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.calculadoraOpcion {
+  background: transparent;
+  color: #cfcfcf;
+}
+
+.calculadoraOpcion:hover {
+  color: #ffffff;
+}
+
+.calculadoraOpcionActiva {
+  background: #0b78fb;
+  color: #ffffff;
+}
+
+.calculadoraOpcion:focus-visible,
+.calculadoraOpcionActiva:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.calculadoraResultado {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+  padding: 1.25rem;
+  border: 1px solid rgba(11, 120, 251, 0.35);
+  border-radius: 12px;
+  background: rgba(11, 120, 251, 0.1);
+}
+
+.calculadoraResultado p {
+  margin: 0;
+}
+
+.calculadoraRotulo {
+  color: #cfcfcf;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.calculadoraTotal {
+  color: #f6950a;
+  font-size: clamp(2rem, 7vw, 2.8rem);
+  font-weight: 900;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+}
+
+.calculadoraPorAlumno {
+  color: #ffffff;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.calculadoraPorAlumno strong {
+  color: #7fd09c;
+}
+
+.calculadoraDetalle {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.75rem 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  list-style: none;
+}
+
+.calculadoraDetalle li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  color: #cfcfcf;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.calculadoraDetalle strong {
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+}
+
+.calculadoraNota {
+  color: #9a9a9a;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
 /* ---------- Kydo ---------- */
 .kydo {
   padding: 28px 18px;
@@ -755,6 +950,10 @@
     padding: 40px 32px;
   }
 
+  .calculadora {
+    padding: 40px 32px;
+  }
+
   .seccion {
     padding: 72px 20px;
   }
@@ -791,6 +990,16 @@
 
   .pasos {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Campos a la izquierda y resultado a la derecha */
+  .calculadora {
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .calculadoraEncabezado {
+    grid-column: 1 / -1;
   }
 
   .cierre {

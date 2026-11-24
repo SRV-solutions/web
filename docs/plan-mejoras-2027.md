@@ -161,17 +161,20 @@ técnico acotado, títulos con las palabras de quien busca, YouTube y mail. Sin 
 y sin pelear «curso de python». Criterio de corte: si a 90 días de publicado los clics sin marca no pasan de 30
 por mes, no se invierte más.
 
-- [ ] **HTML por ruta** (rama `seo-head-por-ruta`, sin publicar): `scripts/seo-html.mjs` escribe al compilar un
-      HTML por página con su título, descripción, canonical y vista previa (solo el `<head>`; el cuerpo y los
+- [x] **HTML por ruta** (publicado el 20/11/2026, commit `3b9b808`): `scripts/seo-html.mjs` escribe al compilar
+      un HTML por página con su título, descripción, canonical y vista previa (solo el `<head>`; el cuerpo y los
       precios los sigue poniendo React). Resuelve también el pendiente de la vista previa de `/sentryx`. Los
       textos están en `src/data/seo.js` y `src/data/seoCursos.js`.
-- [ ] **404 real**: `public/_redirects` ya no manda todo a `index.html`; lo que no existe devuelve 404 con la
+- [x] **404 real**: `public/_redirects` ya no manda todo a `index.html`; lo que no existe devuelve 404 con la
       misma app. `/excel`, `/sql`, `/base-de-datos` y `/potrero-it` pasan a ser redirecciones 301.
-- [ ] **Sitemap** con `/empresas`, `/proximos-cursos` y `/fundamentos-ia`.
-- [ ] **Títulos nuevos** de los cursos (`tituloBusqueda`) y del inicio.
-- [ ] Después de publicar: revisar con `curl` el estado y el título de cada ruta en wearesrv.com (que
-      `/sql/inscripcion` dé 200 con su título y una URL inventada dé 404), probar una vuelta de Mercado Pago a
-      `/…/gracias` y reenviar el sitemap en Search Console.
+- [x] **Sitemap** con `/empresas`, `/proximos-cursos` y `/fundamentos-ia`, reenviado en Search Console el
+      20/11/2026 (17 páginas).
+- [x] **Títulos nuevos** de los cursos (`tituloBusqueda`) y del inicio.
+- [x] Verificado en wearesrv.com el 20/11/2026: cada ruta devuelve 200 con su título y su canonical, una URL
+      inventada da 404, las redirecciones conservan lo que viene después del `?` y las funciones responden.
+- [ ] Probar una compra real de punta a punta (la vuelta de Mercado Pago a `/…/gracias` responde 200, pero no
+      se hizo un pago de prueba).
+- [ ] Revisar Search Console hacia el 20/02/2027 contra el punto de partida (criterio de corte).
 - [ ] Marcos: link con UTM a la página del curso en la descripción de cada video de YouTube
       (`docs/seo-links-y-mail.md`).
 - [ ] Marcos: mail a los registrados de `/redes` y `/fundamentos-ia` (borrador en `docs/seo-links-y-mail.md`;

@@ -4,6 +4,7 @@ import styles from "./style.module.css";
 import Seo from "../Seo";
 import { whatsappLink } from "../../data/legal";
 import { trackEvent } from "../../data/metaPixel";
+import Calculadora from "./Calculadora";
 import {
   ANTES_DESPUES,
   BLOQUES,
@@ -18,6 +19,7 @@ import {
   KYDO_URL,
   OG_IMAGEN_ALT,
   PASOS,
+  PRECIOS,
   QR_IMAGEN,
   ROLES,
   SEGURIDAD,
@@ -28,8 +30,9 @@ const WHATSAPP_DEMO = whatsappLink("Hola, quiero una demo de Sentryx para mi col
 const WHATSAPP_KYDO = whatsappLink("Hola, quiero Sentryx con Kydo para mi colegio");
 
 // En el plan Ampliado se elige con o sin Kydo; los planes Profesional e Integral ya lo incluyen
-const AMPLIADO = { conKydo: 999, sinKydo: 720 };
+const AMPLIADO = { conKydo: PRECIOS.ampliadoConKydo, sinKydo: PRECIOS.ampliadoSinKydo };
 const KYDO_EXTRA = AMPLIADO.conKydo - AMPLIADO.sinKydo;
+const pesos = (n) => `$${n.toLocaleString("es-AR")}`;
 
 const JSON_LD = [
   {
@@ -45,7 +48,7 @@ const JSON_LD = [
     publisher: { "@id": "https://wearesrv.com/#organization" },
     offers: {
       "@type": "Offer",
-      price: "660",
+      price: String(PRECIOS.basico),
       priceCurrency: "ARS",
       description: "Plan Básico, por persona activa por mes",
     },
@@ -120,7 +123,7 @@ export default function Sentryx() {
             <BotonDemo />
             <BotonIngresar />
           </div>
-          <p className={styles.heroDesde}>Desde $660 por persona, por mes.</p>
+          <p className={styles.heroDesde}>Desde {pesos(PRECIOS.basico)} por persona, por mes.</p>
         </div>
         <img
           className={styles.heroImagen}
@@ -232,13 +235,14 @@ export default function Sentryx() {
       <section className={styles.seccion} id="planes">
         <h2 className={styles.titulo}>Planes disponibles</h2>
         <p className={styles.bajada}>
-          Precios en pesos argentinos, por persona por mes. Se cobra por cada persona con acceso en el mes: personal,
-          familias y estudiantes con cuenta. Cada persona puede tener su plan: no hace falta el mismo para todos.
+          Precios en pesos argentinos, con IVA incluido, por persona por mes. Se cobra por cada persona con acceso en
+          el mes: personal, familias y estudiantes con cuenta. Cada persona puede tener su plan: no hace falta el mismo
+          para todos.
         </p>
         <div className={styles.plansGrid}>
           <div className={styles.planCard}>
             <h3>Plan Básico</h3>
-            <p className={styles.price}>$660/mes</p>
+            <p className={styles.price}>{pesos(PRECIOS.basico)}/mes</p>
             <p className={styles.storage}>5 GB</p>
             <ul className={styles.features}>
               <li>Comunicados con confirmación de lectura</li>
@@ -300,7 +304,7 @@ export default function Sentryx() {
 
           <div className={styles.planCard}>
             <h3>Plan Profesional</h3>
-            <p className={styles.price}>$2.450/mes</p>
+            <p className={styles.price}>{pesos(PRECIOS.profesional)}/mes</p>
             <p className={styles.storage}>30 GB</p>
             <ul className={styles.features}>
               <li>Todo lo del Ampliado</li>
@@ -314,7 +318,7 @@ export default function Sentryx() {
 
           <div className={styles.planCard}>
             <h3>Plan Integral</h3>
-            <p className={styles.price}>$3.300/mes</p>
+            <p className={styles.price}>{pesos(PRECIOS.integral)}/mes</p>
             <p className={styles.storage}>50 GB</p>
             <ul className={styles.features}>
               <li>Todo lo del Profesional</li>
@@ -328,6 +332,9 @@ export default function Sentryx() {
             </ul>
           </div>
         </div>
+
+        {/* Calculadora de costo: usa los mismos precios que las tarjetas (PRECIOS, en contenido.js) */}
+        <Calculadora onContacto={() => medirContacto("sentryx_demo")} />
 
         {/* Kydo */}
         <div className={styles.kydo} id="kydo">

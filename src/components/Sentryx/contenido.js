@@ -3,6 +3,16 @@
 
 const IMG = "/sentryx-landing";
 
+// Precio de cada plan, en pesos, por usuario por mes y con IVA incluido. Lo usan las tarjetas de planes y la
+// calculadora (Calculadora.jsx): un cambio de precio se hace solo acá.
+export const PRECIOS = {
+  basico: 660,
+  ampliadoSinKydo: 720,
+  ampliadoConKydo: 999,
+  profesional: 2450,
+  integral: 3300,
+};
+
 // ⚠ Vence en marzo de 2027: cambiar acá el texto del ciclo (sección «Por qué ahora» y cierre de la página).
 export const CICLO = {
   titulo: "Marzo es tarde. El ciclo 2027 se ordena ahora.",
@@ -216,7 +226,7 @@ export const FAQ = [
   },
   {
     q: "¿Cómo se cobra?",
-    a: "Por cada persona con acceso en el mes: personal, familias y estudiantes con cuenta. Cada persona puede tener su plan. Si en un mes alguien tuvo dos planes, se cobra el más alto.",
+    a: "Por cada persona con acceso en el mes: personal, familias y estudiantes con cuenta. En cada familia entran los adultos que la familia quiera, y cada uno cuenta como una persona. Cada persona puede tener su plan. Si en un mes alguien tuvo dos planes, se cobra el más alto. Los precios ya incluyen IVA.",
   },
   {
     q: "¿Puedo verlo antes de decidir?",

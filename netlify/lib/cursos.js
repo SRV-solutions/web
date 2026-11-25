@@ -5,7 +5,7 @@
 //   - CURSOS en appscript-cursos.gs (misma clave, itemId y precioMinimo)
 //   - src/data/cursosGrabados.js (precio que se muestra en la web)
 // ==========================================
-import { promoVigente, promoAplicaA, precioConPromo } from "./promo.js";
+import { promoVigente, promoAplicaA, precioConPromo, escaleraConPromo } from "./promo.js";
 
 // Preventa de Scratch: antes de esta fecha se cobra precioPreventa; desde ese día, precio.
 // Misma fecha que en src/data/cursosGrabados.js y en appscript-cursos.gs. La carpeta de Drive se
@@ -306,6 +306,8 @@ export function getCurso(key) {
 //   la escalera: los cursos sueltos se ordenan de mayor a menor precio, el primero va entero, cada uno de los
 //   siguientes tiene más descuento (ESCALERA_PACK) y del 5.º en adelante van de regalo. Si un curso vale menos
 //   que su descuento, también va de regalo. Redondeado a un número terminado en 900.
+//   Durante una promo de la variable PROMO, esos descuentos bajan en el mismo porcentaje (escaleraConPromo en
+//   netlify/lib/promo.js). El Apps Script calcula su mínimo con la escalera entera: acepta igual el precio más alto.
 // Clave: "pack-" + nombres cortos ordenados alfabéticamente (ej. "pack-csharp-python").
 // ==========================================
 export const ESCALERA_PACK = [30000, 50000, 70000];
@@ -386,11 +388,11 @@ export function precioPack(keys) {
     return set.reduce((t, k) => t + (k === "redes" ? getCurso("redes").precio : SUMA_CON_REDES[k]), 0);
   }
   // Cursos sueltos: la Ruta Backend y el combo de Excel se abren en sus dos cursos
-  const [maximo, ...resto] = set
-    .flatMap((k) => CURSOS[k].incluye || [k])
-    .map((k) => getCurso(k).precio)
-    .sort((a, b) => b - a);
-  const total = resto.reduce((t, p, i) => t + (i < ESCALERA_PACK.length ? Math.max(p - ESCALERA_PACK[i], 0) : 0), maximo);
+  const sueltos = set.flatMap((k) => CURSOS[k].incluye || [k]);
+  // Durante una promo, los descuentos bajan en su mismo porcentaje (netlify/lib/promo.js)
+  const escalera = escaleraConPromo(ESCALERA_PACK, promoVigente(process.env.PROMO), sueltos);
+  const [maximo, ...resto] = sueltos.map((k) => getCurso(k).precio).sort((a, b) => b - a);
+  const total = resto.reduce((t, p, i) => t + (i < escalera.length ? Math.max(p - escalera[i], 0) : 0), maximo);
   return Math.max(maximo, redondear900(total));
 }
 

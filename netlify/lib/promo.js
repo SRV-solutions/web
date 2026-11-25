@@ -127,3 +127,14 @@ export function promoAplicaA(promo, key) {
 
 // Precio con el descuento, redondeado hacia abajo a una centena (el Apps Script usa la misma cuenta)
 export const precioConPromo = (precioLista, porcentaje) => Math.floor((precioLista * (100 - porcentaje)) / 10000) * 100;
+
+// PACKS DURANTE UNA PROMO: los descuentos fijos de la escalera ($30.000, $50.000, $70.000) bajan en el mismo
+// porcentaje que los precios (con 50 %, a la mitad), redondeados a mil. Sin esto, sobre cursos ya rebajados se
+// comen el 2.º curso casi entero y un pack puede costar menos que uno de sus cursos solo (Ruta + Scripting
+// por debajo de la Ruta). Vale si la promo alcanza a alguno de los cursos del pack (keys: cursos sueltos).
+// El Apps Script no la necesita: su mínimo sigue siendo el de la escalera entera, más bajo, y un pago mayor pasa.
+export const escaleraReducida = (escalera, porcentaje) =>
+  escalera.map((d) => Math.round((d * (100 - porcentaje)) / 100 / 1000) * 1000);
+
+export const escaleraConPromo = (escalera, promo, keys) =>
+  keys.some((k) => promoAplicaA(promo, k)) ? escaleraReducida(escalera, promo.porcentaje) : escalera;

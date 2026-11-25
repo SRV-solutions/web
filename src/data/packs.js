@@ -24,10 +24,19 @@
 //
 // EXCEL + SCRIPTING: tienen su propio combo (excel-scripting). Si alguien elige solo esos dos, se cobran como
 // el combo, igual que Master en JavaScript + Backend Avanzado con la ruta.
+//
+// PROMO CON FECHA (variable PROMO): los descuentos de la escalera bajan en el mismo porcentaje que la promo
+// (escaleraConPromo en netlify/lib/promo.js, la misma cuenta que netlify/lib/cursos.js). El Apps Script no cambia:
+// su mínimo es el de la escalera entera, más bajo, y acepta el pago.
 import { CURSOS_GRABADOS, estaEnPreventa } from "./cursosGrabados.js";
+import { PROMO } from "./promo.js";
+import { escaleraConPromo } from "../../netlify/lib/promo.js";
 
 // Descuento del 2.º, 3.º y 4.º curso de un pack, de mayor a menor precio. Del 5.º en adelante, de regalo.
 export const ESCALERA_PACK = [30000, 50000, 70000];
+
+// La escalera que vale hoy para un conjunto de unidades: la de siempre, o la reducida si hay promo
+export const escaleraPara = (keys) => escaleraConPromo(ESCALERA_PACK, PROMO, cursosDeSet(keys).map((c) => c.key));
 
 export const SUMA_CON_REDES = {
   scripting: 0,
@@ -110,8 +119,9 @@ export function precioPack(keys) {
   if (set.includes("redes") && enCampaniaRedes()) {
     return set.reduce((t, k) => t + (k === "redes" ? CURSOS_GRABADOS.redes.precio : SUMA_CON_REDES[k]), 0);
   }
+  const escalera = escaleraPara(set);
   const [maximo, ...resto] = cursosDeSet(set).map((c) => c.precio).sort((a, b) => b - a);
-  const total = resto.reduce((t, p, i) => t + (i < ESCALERA_PACK.length ? Math.max(p - ESCALERA_PACK[i], 0) : 0), maximo);
+  const total = resto.reduce((t, p, i) => t + (i < escalera.length ? Math.max(p - escalera[i], 0) : 0), maximo);
   return Math.max(maximo, redondear900(total));
 }
 

@@ -5,7 +5,7 @@ import Seo, { SITE_URL } from "../Seo";
 import { trackConversion, getMetaCookies } from "../../data/metaPixel";
 import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, estaEnEstellarium, comboQueIncluye, linkInscripcion, nombreCurso, promoDe, precioSeparado } from "../../data/cursosGrabados";
 import { seoCurso } from "../../data/seoCursos";
-import { CURSOS_TODO, agregablesPara, infoPack, linkPackTodo, normalizarSet, packTodo, setValido, pitchUnidad, unidadesDeParametro, enCampaniaRedes } from "../../data/packs";
+import { CURSOS_TODO, agregablesPara, escaleraPara, infoPack, linkPackTodo, normalizarSet, packTodo, setValido, pitchUnidad, unidadesDeParametro, enCampaniaRedes } from "../../data/packs";
 import { ResumenCurso, DetallesCurso, EscaleraPack, MedidorAhorro, PrecioAnimado } from "./BloquesCurso";
 import Icono from "../Icono";
 import { LuAward, LuBot, LuCheck, LuClock, LuFlame, LuGift, LuGraduationCap, LuLock, LuOrbit, LuPuzzle, LuRocket, LuSparkles, LuTarget, LuTrophy, LuZap } from "react-icons/lu";
@@ -774,7 +774,9 @@ export default function CursoGrabado({ cursoKey }) {
                     : "Tildá los que quieras y van en un solo pago. El curso más caro va entero y cada uno que sumás sale más barato."}
                   {avisoComboExcel && " Excel y Scripting solos van como combo."}
                 </p>
-                {!campaniaRedes && <EscaleraPack cantidadCursos={compra.cantidadCursos} />}
+                {!campaniaRedes && (
+                  <EscaleraPack cantidadCursos={compra.cantidadCursos} escalera={escaleraPara([producto.key, ...extrasValidos])} />
+                )}
                 {llevaTodo && <p className={styles.todoListo}><Icono de={LuTrophy} /> ¡Máximo ahorro! Te llevás todos los cursos.</p>}
                 {todo &&
                   !llevaTodo &&

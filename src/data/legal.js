@@ -6,6 +6,7 @@
 // (Ley 24.240, Res. 271/2020, Mercosur GMC 37/19 y Disp. 954/2025), y el QR de Data Fiscal (ARCA).
 // Los campos en null se ven como "⚠ completar" en desarrollo y NO se muestran en producción.
 import { PROMO_PUBLICADA, cursosDePromo } from "./promo.js";
+import { escaleraReducida } from "../../netlify/lib/promo.js";
 
 export const LEGAL = {
   marca: "WEARESRV",
@@ -30,9 +31,12 @@ export const whatsappLink = (texto) => `https://wa.me/${LEGAL.whatsappNumero}?te
 // desde que se carga la variable hasta que termina.
 const basesPromo = (p) => {
   const cursos = cursosDePromo(p) || "Todos los cursos grabados (incluidos los combos)";
+  // Misma escalera que ESCALERA_PACK de src/data/packs.js (no se importa: arrastraría cursosGrabados.js)
+  const [d2, d3, d4] = escaleraReducida([30000, 50000, 70000], p.porcentaje).map((d) => `$${d.toLocaleString("es-AR")}`);
+  const packs = p.cursos ? 'Los packs "Sumá a tu compra" con alguno de esos cursos' : 'Los packs "Sumá a tu compra"';
   return {
     nombre: p.nombre,
-    detalle: `${cursos} con un ${p.porcentaje}% de descuento sobre su precio de lista. Si un curso está en preventa, vale el menor de los dos precios. Los packs "Sumá a tu compra" se calculan sobre los precios de la promo, con su regla de siempre. No participa el Intensivo Full Stack en vivo y no se suma al código de alumnos.`,
+    detalle: `${cursos} con un ${p.porcentaje}% de descuento sobre su precio de lista. Si un curso está en preventa, vale el menor de los dos precios. ${packs} se calculan sobre los precios de la promo y sus descuentos bajan en el mismo porcentaje: el 2.º curso cuesta ${d2} menos, el 3.º ${d3} menos, el 4.º ${d4} menos y del 5.º en adelante siguen de regalo. Mientras dura la preventa de Redes, Linux y AWS, los packs con ese curso mantienen los precios de su campaña. No participa el Intensivo Full Stack en vivo y no se suma al código de alumnos.`,
     desde: `${p.desdeCorto} a las 00:00`,
     hasta: `${p.hastaCorto} a las 23:59`,
   };

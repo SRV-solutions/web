@@ -38,11 +38,11 @@ export function PrecioAnimado({ valor }) {
   return formatearPrecio(useNumeroAnimado(valor));
 }
 
-// Los escalones de descuento, encendidos a medida que el pack crece
-export function EscaleraPack({ cantidadCursos }) {
+// Los escalones de descuento, encendidos a medida que el pack crece (durante una promo, los reducidos: escaleraPara)
+export function EscaleraPack({ cantidadCursos, escalera = ESCALERA_PACK }) {
   const escalones = [
-    ...ESCALERA_PACK.map((descuento, i) => ({ rotulo: `${i + 2}.º curso`, valor: `−${formatearPrecio(descuento)}` })),
-    { rotulo: `${ESCALERA_PACK.length + 2}.º o más`, valor: "GRATIS" },
+    ...escalera.map((descuento, i) => ({ rotulo: `${i + 2}.º curso`, valor: `−${formatearPrecio(descuento)}` })),
+    { rotulo: `${escalera.length + 2}.º o más`, valor: "GRATIS" },
   ];
   return (
     <ol className={styles.escalera}>

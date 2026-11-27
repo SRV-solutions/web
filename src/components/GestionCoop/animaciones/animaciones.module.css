@@ -1187,12 +1187,37 @@
 .mapaLienzo {
   position: relative;
   aspect-ratio: 2 / 1;
+  /* El color del terreno, por si el mapa todavía se está calculando */
+  background: #e2eaf0;
 }
 
-.mapaSvg {
+/* El mapa va en capas apiladas (ver Mapa.jsx): el suelo, el velo de la noche, las luces y los techos */
+.mapaCapa {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
+}
+
+/* La noche: el velo y las luces cambian solo de opacidad, así el navegador no vuelve a dibujar el mapa */
+.mapaVelo,
+.mapaLuces {
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  will-change: opacity;
+  pointer-events: none;
+}
+
+.mapaVelo {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(3, 8, 20, 0.86), rgba(5, 11, 24, 0.76));
+}
+
+.mapaNoche .mapaVelo,
+.mapaNoche .mapaLuces {
+  opacity: 1;
 }
 
 .zonaCorte {
@@ -1212,14 +1237,16 @@
   }
 }
 
-.casa {
-  stroke: #ffffff;
-  stroke-width: 1.3;
-  transition: fill 0.6s ease, stroke 0.8s ease;
+/* Techo de cada casa: su color es la situación de la conexión */
+.techo {
+  stroke: rgba(255, 255, 255, 0.85);
+  stroke-width: 0.8;
+  stroke-linejoin: round;
+  transition: fill 0.6s ease;
 }
 
-.mapaNoche .casa {
-  stroke: #05080d;
+.mapaNoche .techo {
+  stroke: rgba(255, 255, 255, 0.35);
 }
 
 .pulso {

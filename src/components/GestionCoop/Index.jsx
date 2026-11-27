@@ -16,9 +16,8 @@ import Tablero from "./animaciones/Tablero";
 import Mapa from "./animaciones/Mapa";
 
 // Página de producto de GestiónCoop. Las animaciones están en ./animaciones (framer-motion con LazyMotion para que
-// pese poco) y muestran datos inventados de «Cooperativa Arroyo del Monte». El pedido de demo arma un mensaje de
-// WhatsApp: netlify/functions/lead.js no guarda contactos (solo avisa la conversión a Meta), así que los datos del
-// formulario viajan únicamente en ese mensaje.
+// pese poco) y muestran datos inventados de «Cooperativa Arroyo del Monte». El pedido de demo llega por mail
+// (netlify/functions/gestioncoop.js, con Resend); si no sale, la página ofrece mandarlo por WhatsApp.
 const WHATSAPP_DEMO = whatsappLink("Hola, quiero una demo de GestiónCoop para mi cooperativa");
 const SALTO = String.fromCharCode(10);
 
@@ -91,43 +90,91 @@ const enLista = (items) =>
 // «Energía eléctrica» pasa a «energía eléctrica», pero «TV» queda igual
 const enMinuscula = (s) => (s === s.toUpperCase() ? s : s.charAt(0).toLowerCase() + s.slice(1));
 
+const MENSAJE_CAMPO = {
+  nombre: "Revisá tu nombre.",
+  cooperativa: "Revisá el nombre de la cooperativa.",
+  celular: "Revisá el celular: con característica, por ejemplo 11 2345-6789.",
+  email: "Revisá el email.",
+};
+
 function FormularioDemo() {
   const [nombre, setNombre] = useState("");
   const [cooperativa, setCooperativa] = useState("");
+  const [celular, setCelular] = useState("");
+  const [email, setEmail] = useState("");
   const [localidad, setLocalidad] = useState("");
   const [servicios, setServicios] = useState([]);
   const [pedido, setPedido] = useState("demo");
-  const [enviado, setEnviado] = useState(null);
+  const [empresa, setEmpresa] = useState("");
+  // null | "enviando" | "listo" | { error, whatsapp }
+  const [estado, setEstado] = useState(null);
 
   const alternarServicio = (servicio) =>
     setServicios((actuales) =>
       actuales.includes(servicio) ? actuales.filter((s) => s !== servicio) : [...actuales, servicio]
     );
 
-  const enviar = (e) => {
-    e.preventDefault();
+  // Los servicios van en el orden de la lista, no en el que se tildaron
+  const elegidos = () => SERVICIOS.map((s) => s.nombre).filter((s) => servicios.includes(s));
+
+  // Si el mail no sale, el mismo pedido queda listo para mandarlo por WhatsApp
+  const linkWhatsapp = () => {
     const frase = PEDIDOS.find((p) => p.id === pedido).frase;
-    // Los servicios van en el orden de la lista, no en el que se tildaron
-    const elegidos = SERVICIOS.map((s) => s.nombre).filter((s) => servicios.includes(s));
+    const lista = elegidos();
     const lineas = [
       `Hola, soy ${nombre.trim()}, de ${cooperativa.trim()}${localidad.trim() ? ` (${localidad.trim()})` : ""}.`,
       `Quiero ${frase} de GestiónCoop.`,
-      elegidos.length ? `Servicios que presta la cooperativa: ${enLista(elegidos.map(enMinuscula))}.` : "",
+      lista.length ? `Servicios que presta la cooperativa: ${enLista(lista.map(enMinuscula))}.` : "",
     ].filter(Boolean);
-    const link = whatsappLink(lineas.join(SALTO));
-
-    // Conversión para Meta, sin datos personales (en local y en los deploy previews no manda nada)
-    trackConversion("Lead", { content_name: "GestiónCoop" });
-    window.dataLayer?.push({ event: "gestioncoop_demo_submit" });
-
-    const ventana = window.open(link, "_blank");
-    if (ventana) ventana.opener = null;
-    else window.location.href = link;
-    setEnviado(link);
+    return whatsappLink(lineas.join(SALTO));
   };
+
+  const enviar = async (e) => {
+    e.preventDefault();
+    if (estado === "enviando") return;
+    setEstado("enviando");
+    try {
+      const res = await fetch("/api/gestioncoop", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nombre, cooperativa, celular, email, localidad, servicios: elegidos(), pedido, empresa }),
+      });
+      if (res.ok) {
+        // Conversión para Meta, sin datos personales (en local y en los deploy previews no manda nada)
+        trackConversion("Lead", { content_name: "GestiónCoop" });
+        window.dataLayer?.push({ event: "gestioncoop_demo_submit" });
+        setEstado("listo");
+        return;
+      }
+      const datos = await res.json().catch(() => ({}));
+      setEstado({ error: MENSAJE_CAMPO[datos.campo] ?? null, whatsapp: linkWhatsapp() });
+    } catch {
+      setEstado({ error: null, whatsapp: linkWhatsapp() });
+    }
+  };
+
+  if (estado === "listo") {
+    return (
+      <div className={styles.formulario}>
+        <p className={styles.formListo} role="status">
+          ¡Listo, {nombre.trim().split(" ")[0]}! Recibimos tu pedido: te escribimos en menos de un día hábil. ¿Preferís hablar
+          ya?{" "}
+          <a href={linkWhatsapp()} target="_blank" rel="noopener noreferrer" onClick={medirContacto}>
+            Escribinos por WhatsApp
+          </a>
+          .
+        </p>
+      </div>
+    );
+  }
 
   return (
     <form className={styles.formulario} onSubmit={enviar}>
+      {/* Trampa para bots: una persona no ve ni completa este campo */}
+      <label className={styles.trampa} aria-hidden="true">
+        Empresa
+        <input type="text" tabIndex={-1} autoComplete="off" value={empresa} onChange={(e) => setEmpresa(e.target.value)} />
+      </label>
       <div className={styles.campos}>
         <label className={styles.campo}>
           <span>Tu nombre</span>
@@ -150,6 +197,24 @@ function FormularioDemo() {
             maxLength={120}
             required
           />
+        </label>
+        <label className={styles.campo}>
+          <span>Celular o WhatsApp</span>
+          <input
+            type="tel"
+            value={celular}
+            onChange={(e) => setCelular(e.target.value)}
+            autoComplete="tel"
+            inputMode="tel"
+            maxLength={25}
+            required
+          />
+        </label>
+        <label className={styles.campo}>
+          <span>
+            Email <small>(opcional)</small>
+          </span>
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" maxLength={120} />
         </label>
         <label className={`${styles.campo} ${styles.campoAncho}`}>
           <span>
@@ -191,19 +256,24 @@ function FormularioDemo() {
         </div>
       </fieldset>
 
-      <button type="submit" className={styles.btnPrimary}>
-        Enviar por WhatsApp →
+      <button type="submit" className={styles.btnPrimary} disabled={estado === "enviando"}>
+        {estado === "enviando" ? "Enviando…" : "Enviar pedido →"}
       </button>
       <p className={styles.formNota}>
-        Se abre WhatsApp con tu mensaje listo para mandar. Los datos van solo en ese mensaje: la web no los guarda.
+        Te escribimos en menos de un día hábil. Usamos tus datos solo para responderte.
       </p>
-      {enviado && (
-        <p className={styles.formListo} role="status">
-          Listo: se abrió WhatsApp con tu mensaje. Si no se abrió,{" "}
-          <a href={enviado} target="_blank" rel="noopener noreferrer">
-            tocá acá
-          </a>
-          .
+      {estado?.whatsapp && (
+        <p className={styles.formError} role="alert">
+          {estado.error ?? "No pudimos enviar el pedido."}{" "}
+          {!estado.error && (
+            <>
+              Mandalo por{" "}
+              <a href={estado.whatsapp} target="_blank" rel="noopener noreferrer" onClick={medirContacto}>
+                WhatsApp
+              </a>{" "}
+              y te respondemos por ahí.
+            </>
+          )}
         </p>
       )}
     </form>
@@ -405,7 +475,7 @@ export default function GestionCoop() {
                   Pedí una demo <span className={styles.orange}>o una cotización.</span>
                 </h2>
                 <p className={styles.bajada}>
-                  Contanos de tu cooperativa y te mostramos GestiónCoop funcionando. Te respondemos por WhatsApp.
+                  Contanos de tu cooperativa y te mostramos GestiónCoop funcionando. Te respondemos en menos de un día hábil.
                 </p>
                 <p className={styles.contacto}>
                   WhatsApp {LEGAL.whatsapp} · <a href={`mailto:${LEGAL.email}`}>{LEGAL.email}</a>

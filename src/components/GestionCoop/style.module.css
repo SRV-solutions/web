@@ -622,9 +622,28 @@
   font-size: 0.92rem;
 }
 
-.formListo a {
+.formListo a,
+.formError a {
   color: #ffffff;
   font-weight: 700;
+}
+
+.formError {
+  margin: 0;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  background: rgba(246, 149, 10, 0.14);
+  color: #f9c06a;
+  font-size: 0.92rem;
+}
+
+/* Campo trampa para bots: fuera de la pantalla, no se ve ni se tabula */
+.trampa {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
 }
 
 /* ---------- Volver ---------- */

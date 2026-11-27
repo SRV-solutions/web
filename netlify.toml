@@ -7,3 +7,8 @@
   from = "/api/lead"
   to = "/.netlify/functions/lead"
   status = 200
+
+[[redirects]]
+  from = "/api/gestioncoop"
+  to = "/.netlify/functions/gestioncoop"
+  status = 200

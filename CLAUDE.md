@@ -20,6 +20,11 @@ Netlify publica `master`. Nada se sube ni se mergea sin el OK de Marcos.
   (`AMIGO_WEBHOOK_URL` y `AMIGO_WEBHOOK_SECRET`; con esas dos en `.env` también anda con `npm run dev`). Las reglas
   (5 pistas, 3 intentos) están en el `CONFIG` del script y repetidas en `src/components/AmigoInvisible/reglas.js`.
   No se borra ningún mail: todo queda en la planilla como registro de quienes lo usaron.
+- GestiónCoop (`/gestioncoop`): el pedido de demo o cotización llega por mail con Resend
+  (`netlify/functions/gestioncoop.js`, ruta `/api/gestioncoop`). Variables de Netlify: `RESEND_API_KEY` (la misma de
+  GestiónCoop en Railway) y, opcionales, `LEADS_DESTINO` (por defecto info@wearesrv.com) y `LEADS_REMITENTE`. No se
+  guarda nada; sin la clave, la página ofrece mandar el pedido por WhatsApp. Datos de ejemplo: «Cooperativa Arroyo
+  del Monte» (inventada); nunca una cooperativa real.
 - Promo con fecha: variable `PROMO` de Netlify (`nombre;desde;hasta;porcentaje[;cursos]`, reglas en
   `netlify/lib/promo.js`); se carga y se vuelve a publicar. El webhook la acepta solo con el `appscript-cursos.gs`
   del 20/11/2026 pegado en Apps Script.

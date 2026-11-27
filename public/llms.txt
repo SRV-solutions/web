@@ -18,10 +18,11 @@
 
 - [Intensivo Full Stack](https://wearesrv.com/full-stack/inscripcion): cursada en vivo de Frontend, Backend o Full Stack.
 
-## Productos propios (SaaS por suscripción mensual)
+## Productos propios
 
 - [Sentryx](https://wearesrv.com/sentryx): plataforma escolar para colegios de Inicial, Primario y Secundario. Comunicados con confirmación de lectura, calificaciones, boletines, asistencia, aulas virtuales y administración. Se cobra por persona activa; plan Básico desde $660 por mes. El plan Ampliado vale $720 por mes, o $999 con Kydo, juegos de 1.º a 7.º grado sobre los NAP y el Diseño Curricular de la Ciudad de Buenos Aires. Los planes Profesional ($2.450) e Integral ($3.300) incluyen Kydo.
 - [Event Box](https://wearesrv.com/eventbox): stock, contenedores y órdenes de servicio para empresas de eventos, con recorrido por etapas y responsables. Abono mensual por empresa en dólares, desde USD 520.
+- [GestiónCoop](https://wearesrv.com/gestioncoop): plataforma para cooperativas de servicios (energía eléctrica, agua potable, internet, TV y sepelio). Portal del socio para ver la deuda, entender la boleta y pagar desde el celular, sin usuario ni contraseña; lecturas de medidores desde el celular, aun sin señal; facturación electrónica integrada con ARCA (CAE y QR); caja con lector de código de barras y arqueo; reclamos y cortes programados con aviso a los socios; tablero, informes en Excel y mapa de conexiones. Se cotiza para cada cooperativa.
 
 ## Otros
 

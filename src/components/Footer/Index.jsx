@@ -126,6 +126,9 @@ export default function Footer() {
           <Link className={styles.footer_link} to="/eventbox">
             Event Box · Empresas de eventos
           </Link>
+          <Link className={styles.footer_link} to="/gestioncoop">
+            GestiónCoop · Cooperativas
+          </Link>
           <Link className={styles.footer_link} to="/el-develop">
             El Develop · Juego gratis
           </Link>

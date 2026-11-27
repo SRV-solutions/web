@@ -5,6 +5,7 @@ import {
   Route,
   Navigate,
   useLocation,
+  useNavigationType,
 } from "react-router-dom";
 import { initMetaPixel, trackPageView, generateEventId } from "./data/metaPixel.js";
 // Saca de la URL el código de los links del amigo invisible antes de que el píxel cuente la visita
@@ -35,6 +36,7 @@ const GuiaRedes = lazy(() => import("./components/GuiaRedes/Index.jsx"));
 const ElDevelop = lazy(() => import("./components/ElDevelop/Index.jsx"));
 const Sentryx = lazy(() => import("./components/Sentryx/Index.jsx"));
 const EventBox = lazy(() => import("./components/EventBox/Index.jsx"));
+const GestionCoop = lazy(() => import("./components/GestionCoop/Index.jsx"));
 const AmigoInvisible = lazy(() => import("./components/AmigoInvisible/Index.jsx"));
 // Páginas legales para vender online (Ley 24.240, Disp. 954/2025 y Ley 25.326)
 const Terminos = lazy(() => import("./components/Legal/Terminos.jsx"));
@@ -167,6 +169,13 @@ export default function App() {
 
 function AppContent() {
   const location = useLocation();
+  const tipoDeNavegacion = useNavigationType();
+
+  // Cada página nueva arranca desde arriba (si no, se abre con el scroll de la anterior, por la mitad).
+  // Salvo que el link traiga un #ancla, o que se vuelva con «atrás»: ahí el navegador deja donde estaba.
+  useEffect(() => {
+    if (tipoDeNavegacion !== "POP" && !location.hash) window.scrollTo(0, 0);
+  }, [location.pathname, location.hash, tipoDeNavegacion]);
 
   // Inicializa el Pixel al cargar la app
   useEffect(() => {
@@ -233,6 +242,7 @@ function AppContent() {
           <Route path="/el-develop" element={<ElDevelop />} />
           <Route path="/sentryx" element={<Sentryx />} />
           <Route path="/eventbox" element={<EventBox />} />
+          <Route path="/gestioncoop" element={<GestionCoop />} />
           {/* Amigo invisible gratis: una sola ruta para armar el grupo, el panel del organizador (#admin=...)
               y la página de cada participante (#c=...) */}
           <Route path="/amigo-invisible" element={<AmigoInvisible />} />

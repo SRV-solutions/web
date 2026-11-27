@@ -52,6 +52,11 @@ export const SEO_PAGINAS = {
     description:
       "Event Box ordena el stock, los contenedores y las órdenes de servicio de tu empresa de eventos. Cada orden con su recorrido, su responsable por etapa y su PDF. Por SRV.",
   },
+  "/gestioncoop": {
+    title: "GestiónCoop: sistema para cooperativas de servicios (energía, agua e internet) | WEARESRV",
+    description:
+      "Lecturas desde el celular, facturación electrónica integrada con ARCA, caja, reclamos y un portal para que cada socio entienda su boleta y la pague en el momento. Pedí una demo.",
+  },
   "/amigo-invisible": {
     title: "Amigo invisible online gratis, con sorteo por mail y pistas anónimas | WEARESRV",
     description:

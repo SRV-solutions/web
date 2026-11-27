@@ -137,7 +137,7 @@ const FAQ = [
   { q: "¿Cómo recibo el curso después de pagar?", a: "Automáticamente: apenas Mercado Pago aprueba el pago, te llega un mail con el acceso a la carpeta del curso en Google Drive." },
   { q: "¿Qué es E-stellarium?", a: "Es nuestra plataforma para repasar cada curso jugando: una constelación por curso, desafíos semanales con ranking y cupones de descuento para tus próximos cursos. Ya está abierta y está incluida en los cursos, sin pagar nada extra: al comprar te llega un mail para crear tu contraseña (Excel, SQL y Redes, Linux y AWS se suman más adelante). También podés probar la demo sin cuenta en e-stellarium.wearesrv.com/demo." },
   { q: "¿Hacen software para empresas?", a: "Sí. Además de la escuela, desarrollamos backend, APIs, plataformas web y automatizaciones a medida. Escribinos por WhatsApp y lo cotizamos." },
-  { q: "¿Tienen productos propios?", a: "Sí, dos plataformas por suscripción mensual: Sentryx, para colegios (comunicados, boletines, asistencia y aulas virtuales), y Event Box, para empresas de eventos (stock, contenedores y órdenes de servicio). Los planes están en la página de cada una." },
+  { q: "¿Tienen productos propios?", a: "Sí, tres. Sentryx, para colegios (comunicados, boletines, asistencia y aulas virtuales), y Event Box, para empresas de eventos (stock, contenedores y órdenes de servicio), son por suscripción mensual y tienen sus planes en su página. GestiónCoop, para cooperativas de servicios (lecturas, facturación electrónica integrada con ARCA, caja y el portal del socio), se cotiza para cada cooperativa." },
 ];
 
 const PRODUCTOS = [
@@ -154,6 +154,13 @@ const PRODUCTOS = [
     ruta: "/eventbox",
     icono: "/eventbox-icon.svg",
     texto: "Stock, contenedores y órdenes de servicio con recorrido y responsable por etapa, para que cada evento salga sin sorpresas. Planes desde USD 520 por empresa al mes.",
+  },
+  {
+    nombre: "GestiónCoop",
+    tag: "Para cooperativas de servicios",
+    ruta: "/gestioncoop",
+    icono: "/gestioncoop-icon.svg",
+    texto: "Lecturas desde el celular, facturación electrónica integrada con ARCA, caja y un portal para que cada socio entienda su boleta y la pague en el momento. Energía, agua, internet, TV y sepelio.",
   },
 ];
 

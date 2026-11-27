@@ -1,0 +1,756 @@
+/* Página de GestiónCoop. La base es el celular; las pantallas anchas se suman abajo. Mismo lenguaje que Sentryx. */
+.page {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #000000;
+  color: #ffffff;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow-x: clip;
+}
+
+.blue { color: #0b78fb; }
+.orange { color: #f6950a; }
+.green { color: #30a05a; }
+
+/* ---------- Botones ---------- */
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.btnPrimary,
+.btnSecondary {
+  display: inline-block;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.btnPrimary {
+  border: 0;
+  background-color: #f6950a;
+  color: #000000;
+  box-shadow: 0 6px 20px rgba(246, 149, 10, 0.3);
+}
+
+.btnPrimary:hover {
+  background-color: #ffa933;
+  transform: translateY(-2px);
+}
+
+.btnSecondary {
+  border: 1px solid #0b78fb;
+  color: #ffffff;
+}
+
+.btnSecondary:hover {
+  background-color: rgba(11, 120, 251, 0.12);
+  transform: translateY(-2px);
+}
+
+.btnPrimary:focus-visible,
+.btnSecondary:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
+}
+
+/* ---------- Hero ---------- */
+.heroFondo {
+  background:
+    radial-gradient(ellipse at 10% 0%, rgba(11, 120, 251, 0.18), transparent 55%),
+    radial-gradient(ellipse at 90% 70%, rgba(246, 149, 10, 0.1), transparent 45%);
+}
+
+.hero {
+  display: grid;
+  gap: 2.5rem;
+  align-items: center;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2.5rem 20px 3rem;
+}
+
+.heroTexto {
+  min-width: 0;
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 1.25rem;
+  font-size: 1.35rem;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+
+.marca img {
+  border-radius: 11px;
+  box-shadow: 0 0 0 1px #262c35;
+}
+
+.badge {
+  display: inline-block;
+  margin-bottom: 1.25rem;
+  padding: 0.4rem 1rem;
+  border: 1px solid #30a05a;
+  border-radius: 50px;
+  color: #30a05a;
+  font-size: 0.78rem;
+  letter-spacing: 0.12rem;
+  text-transform: uppercase;
+}
+
+.heroTitle {
+  margin: 0 0 1.25rem;
+  color: #ffffff;
+  font-size: clamp(2.1rem, 6vw, 4rem);
+  font-weight: 900;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.heroSubtitle {
+  max-width: 60ch;
+  margin: 0 0 1.75rem;
+  color: #cfcfcf;
+  font-size: clamp(1rem, 2.2vw, 1.2rem);
+  line-height: 1.6;
+}
+
+.servicios {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.servicios li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid #262c35;
+  border-radius: 999px;
+  background: #0d0f13;
+  color: #cfd5dd;
+  font-size: 0.88rem;
+}
+
+.servicios li svg {
+  color: #f6950a;
+}
+
+.heroVisual {
+  min-width: 0;
+}
+
+.pieVisual {
+  margin: 1.25rem auto 0;
+  max-width: 34ch;
+  color: #7d8590;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* ---------- Secciones ---------- */
+.seccion {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 56px 20px;
+  border-top: 1px solid rgba(246, 149, 10, 0.1);
+  scroll-margin-top: 80px;
+}
+
+.titulo {
+  margin: 0 0 1rem;
+  color: #ffffff;
+  font-size: clamp(1.6rem, 4vw, 2.3rem);
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.bajada {
+  max-width: 70ch;
+  margin: 0 0 1.25rem;
+  color: #cfcfcf;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.etiqueta {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  color: #f6950a;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ---------- Problema y resumen por puesto ---------- */
+.problema {
+  margin-bottom: 2rem;
+}
+
+.puestos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.puesto {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  height: 100%;
+  padding: 1rem;
+  border: 1px solid #1f2937;
+  border-radius: 14px;
+  background: #0d0d0d;
+  color: #ffffff;
+  text-decoration: none;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.puesto:hover {
+  border-color: #0b78fb;
+  transform: translateY(-3px);
+}
+
+.puesto strong {
+  display: block;
+  font-size: 0.98rem;
+}
+
+.puesto small {
+  display: block;
+  margin-top: 0.2rem;
+  color: #9aa4b2;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.puestoIcono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.3rem;
+  height: 2.3rem;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: rgba(11, 120, 251, 0.14);
+  color: #5aa6ff;
+  font-size: 1.15rem;
+}
+
+/* ---------- Bloques por puesto ---------- */
+.bloques {
+  max-width: 1200px;
+  margin: 0 auto;
+  border-top: 1px solid rgba(246, 149, 10, 0.1);
+}
+
+.bloque {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+  padding: 56px 20px;
+  scroll-margin-top: 80px;
+}
+
+.bloque + .bloque {
+  border-top: 1px solid #111418;
+}
+
+.bloqueTexto {
+  min-width: 0;
+}
+
+.bloqueTexto h2 {
+  margin: 0 0 1.1rem;
+  color: #ffffff;
+  font-size: clamp(1.45rem, 3.4vw, 2rem);
+  font-weight: 900;
+  line-height: 1.18;
+  text-wrap: balance;
+}
+
+.bloqueVisual {
+  min-width: 0;
+}
+
+.features {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.features li {
+  position: relative;
+  margin-bottom: 10px;
+  padding-left: 24px;
+  color: #cfcfcf;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.features li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: #f6950a;
+  font-weight: bold;
+}
+
+/* ---------- Seguridad ---------- */
+.tarjetas {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.tarjeta {
+  padding: 1.4rem;
+  border: 1px solid #262626;
+  border-radius: 14px;
+  background: rgba(15, 15, 15, 0.6);
+}
+
+.tarjeta h3 {
+  margin: 0.9rem 0 0.4rem;
+  color: #ffffff;
+  font-size: 1.1rem;
+}
+
+.tarjeta p {
+  margin: 0;
+  color: #c8c8c8;
+  line-height: 1.6;
+}
+
+.tarjetaIcono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 12px;
+  background: rgba(48, 160, 90, 0.14);
+  color: #5fd08a;
+  font-size: 1.3rem;
+}
+
+/* ---------- Cómo empezamos ---------- */
+.pasosMarco {
+  position: relative;
+  margin-top: 1.5rem;
+}
+
+/* La línea que une los pasos solo se ve cuando van uno al lado del otro */
+.pasosLinea {
+  display: none;
+}
+
+.pasos {
+  position: relative;
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pasos li {
+  min-width: 0;
+  padding: 1.25rem;
+  border: 1px solid #262626;
+  border-radius: 14px;
+  background: #0b0b0b;
+  color: #cfcfcf;
+  line-height: 1.55;
+}
+
+.pasoIcono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 0.9rem;
+  border: 2px solid #0b78fb;
+  border-radius: 50%;
+  background: #000000;
+  color: #5aa6ff;
+  font-size: 1.3rem;
+}
+
+.pasoNumero {
+  display: block;
+  color: #f6950a;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.pasos strong {
+  display: block;
+  margin: 0.25rem 0 0.35rem;
+  color: #ffffff;
+  font-size: 1.1rem;
+}
+
+.pasos p {
+  margin: 0;
+}
+
+/* ---------- Preguntas frecuentes ---------- */
+.faq {
+  display: grid;
+  gap: 0.6rem;
+  max-width: 860px;
+}
+
+.faqItem {
+  border: 1px solid #262626;
+  border-radius: 10px;
+  background: #0d0d0d;
+}
+
+.faqItem[open] {
+  border-color: #0b78fb;
+}
+
+.faqItem summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+}
+
+.faqItem summary::-webkit-details-marker {
+  display: none;
+}
+
+.faqItem summary::after {
+  content: "+";
+  flex-shrink: 0;
+  color: #f6950a;
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.faqItem[open] summary::after {
+  content: "−";
+}
+
+.faqItem p {
+  margin: 0;
+  padding: 0 1.1rem 1rem;
+  color: #c8c8c8;
+  line-height: 1.6;
+}
+
+/* ---------- Pedido de demo ---------- */
+.demo {
+  display: grid;
+  gap: 2rem;
+  padding: 28px 20px;
+  border: 1px solid rgba(246, 149, 10, 0.3);
+  border-radius: 16px;
+  background: rgba(246, 149, 10, 0.05);
+}
+
+.demoTexto {
+  min-width: 0;
+}
+
+.contacto {
+  margin: 0;
+  color: #9a9a9a;
+  font-size: 0.92rem;
+  overflow-wrap: anywhere;
+}
+
+.contacto a {
+  color: #f6950a;
+}
+
+.formulario {
+  display: grid;
+  gap: 1.25rem;
+  min-width: 0;
+}
+
+.campos {
+  display: grid;
+  gap: 1rem;
+}
+
+.campo {
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.campo > span,
+.grupo legend {
+  color: #e5e7eb;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.campo small,
+.grupo legend small {
+  color: #8a8f98;
+  font-weight: 400;
+}
+
+.campo input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid #333a44;
+  border-radius: 10px;
+  background: #0d0f13;
+  color: #ffffff;
+  font: inherit;
+  font-size: 1rem;
+}
+
+.campo input:focus-visible {
+  outline: 2px solid #0b78fb;
+  outline-offset: 1px;
+  border-color: #0b78fb;
+}
+
+.grupo {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.grupo legend {
+  margin-bottom: 0.6rem;
+  padding: 0;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chip {
+  position: relative;
+  cursor: pointer;
+}
+
+.chip input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.chip span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 42px;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid #333a44;
+  border-radius: 999px;
+  background: #0d0f13;
+  color: #cfd5dd;
+  font-size: 0.92rem;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.chip input:checked + span {
+  border-color: #0b78fb;
+  background: rgba(11, 120, 251, 0.18);
+  color: #ffffff;
+}
+
+.chip input:focus-visible + span {
+  outline: 2px solid #f6950a;
+  outline-offset: 2px;
+}
+
+.formulario .btnPrimary {
+  justify-self: start;
+}
+
+.formNota {
+  margin: -0.5rem 0 0;
+  color: #8a8f98;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.formListo {
+  margin: 0;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  background: rgba(48, 160, 90, 0.14);
+  color: #9fe0b5;
+  font-size: 0.92rem;
+}
+
+.formListo a {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* ---------- Volver ---------- */
+.backSection {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 20px 48px;
+  border-top: 1px solid rgba(246, 149, 10, 0.1);
+}
+
+.backLink {
+  display: inline-block;
+  color: #f6950a;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.backLink:hover {
+  color: #ffa933;
+  transform: translateX(-4px);
+}
+
+/* ---------- Pantallas más anchas ---------- */
+@media (max-width: 520px) {
+  .acciones a,
+  .formulario .btnPrimary {
+    width: 100%;
+  }
+
+  .puestos {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* En el celular, las tarjetas de seguridad llevan el ícono al costado para no ocupar tanto */
+@media (max-width: 699px) {
+  .tarjeta {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.35rem 0.9rem;
+    padding: 1.1rem;
+  }
+
+  .tarjetaIcono {
+    grid-row: span 2;
+  }
+
+  .tarjeta h3 {
+    margin: 0;
+  }
+}
+
+@media (min-width: 700px) {
+  .seccion,
+  .bloque {
+    padding: 72px 20px;
+  }
+
+  .tarjetas {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .campos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .campoAncho {
+    grid-column: 1 / -1;
+  }
+
+  .demo {
+    padding: 40px 32px;
+  }
+}
+
+@media (min-width: 900px) {
+  .hero {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    padding: 3.5rem 20px 4.5rem;
+  }
+
+  .heroTitle {
+    font-size: clamp(2.2rem, 4vw, 3.5rem);
+  }
+
+  .puestos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .bloque {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: 3.5rem;
+  }
+
+  /* Alterna: en los bloques invertidos, la animación va a la izquierda */
+  .bloqueInvertido .bloqueVisual {
+    order: -1;
+  }
+
+  /* Uno al lado del otro, como una línea de tiempo: la línea une los íconos */
+  .pasos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem;
+  }
+
+  .pasos li {
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+
+  .pasosLinea {
+    position: absolute;
+    top: calc(1.5rem - 1px);
+    right: calc((100% - 4rem) / 3 - 1.5rem);
+    left: 1.5rem;
+    display: block;
+    height: 2px;
+    background: linear-gradient(90deg, #0b78fb, #f6950a);
+    transform-origin: left center;
+  }
+
+  .demo {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: start;
+    padding: 44px 40px;
+  }
+}

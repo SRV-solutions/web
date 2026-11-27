@@ -18,6 +18,7 @@ const menuData = [
       },
       { label: "Sentryx", to: "/sentryx", isExternal: false, isNew: true },
       { label: "Event Box", to: "/eventbox", isExternal: false, isNew: true },
+      { label: "GestiónCoop", to: "/gestioncoop", isExternal: false, isNew: true },
       { label: "Empresas e Instituciones", to: "/empresas", isExternal: false, isNew: true },
     ],
   },

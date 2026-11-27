@@ -422,10 +422,16 @@
 }
 
 /* ---------- Preguntas frecuentes ---------- */
+/* La lista es más angosta que la sección (para leer cómodo): va centrada, con su título */
+.tituloFaq {
+  text-align: center;
+}
+
 .faq {
   display: grid;
   gap: 0.6rem;
   max-width: 860px;
+  margin-inline: auto;
 }
 
 .faqItem {

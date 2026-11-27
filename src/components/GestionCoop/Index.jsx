@@ -461,7 +461,7 @@ export default function GestionCoop() {
 
           {/* Preguntas frecuentes: las mismas del JSON-LD FAQPage */}
           <section className={styles.seccion}>
-            <h2 className={styles.titulo}>Preguntas frecuentes</h2>
+            <h2 className={`${styles.titulo} ${styles.tituloFaq}`}>Preguntas frecuentes</h2>
             <div className={styles.faq}>
               {FAQ.map((f) => (
                 <details key={f.q} className={styles.faqItem}>

@@ -157,8 +157,8 @@ function FormularioDemo() {
     return (
       <div className={styles.formulario}>
         <p className={styles.formListo} role="status">
-          ¡Listo, {nombre.trim().split(" ")[0]}! Recibimos tu pedido: te escribimos en menos de un día hábil. ¿Preferís hablar
-          ya?{" "}
+          ¡Listo, {nombre.trim().split(" ")[0]}! Recibimos tu pedido y te mandamos un mail de confirmación a {email.trim()}. Te
+          escribimos en menos de un día hábil. ¿Preferís hablar ya?{" "}
           <a href={linkWhatsapp()} target="_blank" rel="noopener noreferrer" onClick={medirContacto}>
             Escribinos por WhatsApp
           </a>
@@ -211,10 +211,15 @@ function FormularioDemo() {
           />
         </label>
         <label className={styles.campo}>
-          <span>
-            Email <small>(opcional)</small>
-          </span>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" maxLength={120} />
+          <span>Email</span>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email"
+            maxLength={120}
+            required
+          />
         </label>
         <label className={`${styles.campo} ${styles.campoAncho}`}>
           <span>
@@ -260,7 +265,7 @@ function FormularioDemo() {
         {estado === "enviando" ? "Enviando…" : "Enviar pedido →"}
       </button>
       <p className={styles.formNota}>
-        Te escribimos en menos de un día hábil. Usamos tus datos solo para responderte.
+        Te llega un mail de confirmación y te escribimos en menos de un día hábil. Usamos tus datos solo para responderte.
       </p>
       {estado?.whatsapp && (
         <p className={styles.formError} role="alert">

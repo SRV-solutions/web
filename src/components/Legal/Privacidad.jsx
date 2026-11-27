@@ -36,6 +36,11 @@ export default function Privacidad() {
             botón de arrepentimiento, y el mail con el que te suscribís al newsletter para desbloquear una guía gratis.
           </li>
           <li>
+            <strong>Los del amigo invisible:</strong> el nombre y el mail de quien lo organiza y de cada participante
+            (los carga quien organiza, que tiene que contar con el acuerdo de cada uno), y las pistas, respuestas e
+            intentos de adivinar que se mandan durante el juego.
+          </li>
+          <li>
             <strong>Los de la compra:</strong> Mercado Pago procesa el pago y nos informa el estado, el monto y el mail
             del comprador. No vemos ni guardamos los datos de tu tarjeta.
           </li>
@@ -51,6 +56,10 @@ export default function Privacidad() {
           <li>Darte acceso al material gratuito de Fundamentos IA y avisarte cuando sumamos material nuevo.</li>
           <li>Avisarte cuando abre la inscripción de un curso en cuya lista de espera te anotaste.</li>
           <li>Mandarte el newsletter (guías gratis y novedades) si te suscribiste, por ejemplo al desbloquear una guía.</li>
+          <li>
+            Hacer el sorteo del amigo invisible y mandar los mails del juego. Esos mails no se usan para nada más,
+            salvo los de quienes tildan que quieren recibir novedades.
+          </li>
           <li>Mandarte comprobantes, avisos de la cursada y certificados.</li>
           <li>Responder consultas y pedidos de arrepentimiento o de baja.</li>
           <li>Medir y mejorar nuestros anuncios y la web.</li>
@@ -110,7 +119,9 @@ export default function Privacidad() {
         <h2 className={styles.h2}>8. Cuánto tiempo guardamos los datos</h2>
         <p>
           Mientras seas alumno y durante el tiempo que exijan las obligaciones fiscales y de defensa del consumidor.
-          Los datos de Fundamentos IA, de las listas de espera y del newsletter, hasta que pidas la baja.
+          Los datos de Fundamentos IA, de las listas de espera y del newsletter, hasta que pidas la baja. Los del
+          amigo invisible quedan guardados como registro de quienes usaron el juego, salvo que pidas la supresión
+          como dice el punto 5; solo le mandamos novedades a quien lo pidió, hasta que pida la baja.
         </p>
 
         <h2 className={styles.h2}>9. Cambios en esta política</h2>

@@ -1,0 +1,664 @@
+/* Amigo invisible: inicio, panel del organizador y página de cada participante */
+.page {
+  background-color: #000;
+  color: #fff;
+  padding: 3rem 1rem 5rem;
+}
+
+.inner {
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.kicker {
+  margin: 0;
+  color: #30a05a;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.title {
+  margin: 0.4rem 0 1rem;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 900;
+  line-height: 1.1;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.orange {
+  color: #f6950a;
+}
+
+.lead {
+  margin: 0 0 2rem;
+  max-width: 68ch;
+  color: #ccc;
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.cargando {
+  padding: 3rem 0;
+  color: #9ca3af;
+  text-align: center;
+}
+
+/* Links para pasar de una vista a otra */
+.volver {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.btnLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0;
+  border: none;
+  background: none;
+  color: #f6950a;
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btnLink:hover {
+  text-decoration: underline;
+}
+
+/* Cómo se juega */
+.pasos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1rem;
+  margin: 0 0 2.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.paso {
+  padding: 1.3rem;
+  border: 1px solid #1f1f1f;
+  border-radius: 12px;
+  background-color: #0d0d0d;
+}
+
+.pasoIcono {
+  color: #0b78fb;
+  font-size: 1.6rem;
+}
+
+.paso h2 {
+  margin: 0.6rem 0 0.4rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.paso p {
+  margin: 0;
+  color: #c8c8c8;
+  font-size: 0.93rem;
+  line-height: 1.55;
+}
+
+/* Recuadros */
+.panel {
+  margin-top: 1.5rem;
+  padding: 1.6rem 1.25rem;
+  border: 1px solid #1f1f1f;
+  border-radius: 14px;
+  background-color: #0d0d0d;
+  min-width: 0;
+}
+
+.panelArmar {
+  border-color: #0b78fb;
+  background: rgba(11, 120, 251, 0.07);
+}
+
+.panelCabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.panelTitulo {
+  margin: 0 0 0.8rem;
+  font-size: 1.3rem;
+  font-weight: 900;
+  overflow-wrap: anywhere;
+}
+
+.panelCabecera .panelTitulo {
+  margin: 0;
+}
+
+.ayuda {
+  margin: 0.4rem 0 0.9rem;
+  color: #a8a8a8;
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.ok,
+.error {
+  margin: 0.8rem 0 0;
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  line-height: 1.55;
+}
+
+.ok {
+  border: 1px solid #30a05a;
+  background: rgba(48, 160, 90, 0.08);
+  color: #c8f0d6;
+}
+
+.error {
+  border: 1px solid #7a2a2a;
+  background: rgba(255, 90, 90, 0.07);
+  color: #ff9b9b;
+}
+
+/* Formularios */
+.form {
+  display: grid;
+  gap: 1.2rem;
+}
+
+.bloque {
+  margin: 0;
+  padding: 0;
+  border: none;
+  min-width: 0;
+}
+
+.bloque legend {
+  margin-bottom: 0.7rem;
+  padding: 0;
+  color: #f6950a;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.grilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.etiqueta {
+  display: grid;
+  gap: 0.35rem;
+  color: #c8c8c8;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.campo {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background-color: #000;
+  color: #fff;
+  font: inherit;
+  font-size: 1rem;
+}
+
+.campo:focus {
+  border-color: #0b78fb;
+  outline: none;
+}
+
+textarea.campo {
+  resize: vertical;
+  line-height: 1.5;
+}
+
+input[type="date"].campo {
+  color-scheme: dark;
+}
+
+select.campo {
+  color-scheme: dark;
+}
+
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+  color: #ddd;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.check input {
+  width: 1.1rem;
+  height: 1.1rem;
+  margin: 0.1rem 0 0;
+  flex-shrink: 0;
+  accent-color: #f6950a;
+}
+
+.filas {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fila {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.filaAcciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  margin-top: 0.9rem;
+}
+
+.contador {
+  color: #888;
+  font-size: 0.85rem;
+}
+
+.formLinea {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.formLinea .ayuda,
+.formLinea .error {
+  grid-column: 1 / -1;
+}
+
+.formLinea .ayuda {
+  margin-top: 0;
+}
+
+.formMensaje,
+.formMensajeCompacto {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.formMensajeCompacto {
+  margin: 0.5rem 0 0;
+}
+
+.formMensajePie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+/* Campo trampa para bots: fuera de la vista */
+.trampa {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.consentimiento {
+  margin: -0.4rem 0 0;
+  color: #888;
+  font-size: 0.82rem;
+}
+
+.consentimiento a,
+.preguntas a,
+.firma a {
+  color: #f6950a;
+}
+
+/* Botones */
+.btnPrimario,
+.btnSecundario,
+.btnChico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border-radius: 8px;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.btnPrimario {
+  padding: 0.85rem 1.3rem;
+  border: none;
+  background-color: #f6950a;
+  color: #000;
+}
+
+.form > .btnPrimario {
+  justify-self: start;
+}
+
+.btnSecundario {
+  padding: 0.8rem 1.1rem;
+  border: 1px solid #0b78fb;
+  background-color: transparent;
+  color: #fff;
+}
+
+.btnChico {
+  padding: 0.4rem 0.7rem;
+  border: 1px solid #333;
+  background-color: #141414;
+  color: #ddd;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.btnIcono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background: #000;
+  color: #aaa;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.btnPrimario:disabled,
+.btnSecundario:disabled,
+.btnChico:disabled,
+.btnIcono:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Etiquetas de estado */
+.chip,
+.chipOk,
+.chipNo {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.chip {
+  border: 1px solid #0b78fb;
+  color: #8cc2ff;
+}
+
+.chipOk {
+  border: 1px solid #30a05a;
+  color: #7fd09c;
+}
+
+.chipNo {
+  border: 1px solid #555;
+  color: #aaa;
+}
+
+/* Panel del organizador */
+.tabla {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0 0 1.2rem;
+  padding: 0;
+  list-style: none;
+}
+
+.tablaFila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid #1f1f1f;
+  border-radius: 10px;
+  background: #000;
+}
+
+.tablaPersona {
+  display: grid;
+  min-width: 0;
+}
+
+.tablaPersona span {
+  color: #999;
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+
+.tablaEstado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.confirmar {
+  padding: 1rem;
+  border: 1px dashed #f6950a;
+  border-radius: 10px;
+}
+
+.confirmar p {
+  margin: 0;
+  color: #f6c27a;
+}
+
+/* Página del participante */
+.destacado {
+  margin-bottom: 0.5rem;
+  padding: 1.6rem 1.4rem;
+  border: 1px solid #f6950a;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(246, 149, 10, 0.12), rgba(11, 120, 251, 0.08));
+}
+
+.destacadoEtiqueta {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+  color: #f6c27a;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.destacadoNombre {
+  margin: 0.3rem 0 0.6rem;
+  font-size: clamp(1.7rem, 5vw, 2.4rem);
+  font-weight: 900;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.destacadoDatos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.2rem;
+  margin: 0;
+  color: #ddd;
+}
+
+.sorteoFinal {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0.4rem 0 0;
+  padding-left: 1.2rem;
+  color: #ddd;
+}
+
+.columnas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 0 1.5rem;
+}
+
+.mensajes {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mensajeItem {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.burbuja,
+.burbujaMia {
+  padding: 0.75rem 0.9rem;
+  border-radius: 10px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.burbuja {
+  border: 1px solid #333;
+  background: #141414;
+}
+
+.burbujaMia {
+  border: 1px solid rgba(11, 120, 251, 0.5);
+  background: rgba(11, 120, 251, 0.1);
+}
+
+/* La pista va al margen y su respuesta (o el cuadro para contestarla) con sangría, sea de quien sea:
+   lo propio se distingue por el color */
+.mensajeItem > :not(:first-child) {
+  margin-left: 1.2rem;
+}
+
+.burbujaMeta {
+  display: block;
+  margin-bottom: 0.2rem;
+  color: #999;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: normal;
+}
+
+.sinRespuesta {
+  margin: 0;
+  color: #777;
+  font-size: 0.85rem;
+}
+
+.intentosAjenos {
+  margin-top: 1rem;
+}
+
+.intentos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Preguntas frecuentes y firma */
+.preguntas {
+  margin-top: 2.5rem;
+}
+
+.preguntas h2 {
+  margin: 0 0 0.8rem;
+  padding-left: 0.75rem;
+  border-left: 3px solid #0b78fb;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.preguntas details {
+  border-bottom: 1px solid #1f1f1f;
+}
+
+.preguntas summary {
+  padding: 0.9rem 0;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.preguntas details p {
+  margin: 0 0 1rem;
+  color: #c8c8c8;
+  line-height: 1.65;
+}
+
+.firma {
+  margin: 2.5rem 0 0;
+  color: #888;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .fila {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .fila .campo:nth-child(2) {
+    grid-column: 1 / 2;
+  }
+
+  .fila .btnIcono {
+    grid-row: 1 / 3;
+    grid-column: 2;
+    align-self: center;
+  }
+
+  .formLinea {
+    grid-template-columns: 1fr;
+  }
+
+  .formLinea .btnPrimario,
+  .formLinea .btnSecundario {
+    width: 100%;
+  }
+
+  .mensajeItem > :not(:first-child) {
+    margin-left: 0.6rem;
+  }
+}

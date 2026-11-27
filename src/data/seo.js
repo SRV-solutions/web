@@ -52,6 +52,11 @@ export const SEO_PAGINAS = {
     description:
       "Event Box ordena el stock, los contenedores y las órdenes de servicio de tu empresa de eventos. Cada orden con su recorrido, su responsable por etapa y su PDF. Por SRV.",
   },
+  "/amigo-invisible": {
+    title: "Amigo invisible online gratis, con sorteo por mail y pistas anónimas | WEARESRV",
+    description:
+      "Sorteá el amigo invisible gratis y sin registrarte: a cada uno le llega por mail a quién le regala, y puede mandarle pistas anónimas y adivinar quién es el suyo.",
+  },
   "/terminos": {
     title: "Términos y condiciones | WEARESRV",
     description:

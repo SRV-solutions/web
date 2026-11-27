@@ -22,7 +22,7 @@ export const LEGAL = {
   dataFiscalUrl: "http://qr.afip.gob.ar/?qr=2fo6inei48mGOnEZH3MeZg,,",
   dataFiscalImg: "/data-fiscal.jpg",
   actualizacion: "20 de noviembre de 2026", // preventa de SQL y Bases de Datos
-  actualizacionPrivacidad: "1 de noviembre de 2026", // se sumó el newsletter de las guías gratis
+  actualizacionPrivacidad: "26 de noviembre de 2026", // se sumó el amigo invisible
 };
 
 export const whatsappLink = (texto) => `https://wa.me/${LEGAL.whatsappNumero}?text=${encodeURIComponent(texto)}`;

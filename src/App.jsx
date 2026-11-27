@@ -7,6 +7,8 @@ import {
   useLocation,
 } from "react-router-dom";
 import { initMetaPixel, trackPageView, generateEventId } from "./data/metaPixel.js";
+// Saca de la URL el código de los links del amigo invisible antes de que el píxel cuente la visita
+import "./components/AmigoInvisible/sesion.js";
 
 // Layout estático
 import Header from "./components/Header/Index";
@@ -33,6 +35,7 @@ const GuiaRedes = lazy(() => import("./components/GuiaRedes/Index.jsx"));
 const ElDevelop = lazy(() => import("./components/ElDevelop/Index.jsx"));
 const Sentryx = lazy(() => import("./components/Sentryx/Index.jsx"));
 const EventBox = lazy(() => import("./components/EventBox/Index.jsx"));
+const AmigoInvisible = lazy(() => import("./components/AmigoInvisible/Index.jsx"));
 // Páginas legales para vender online (Ley 24.240, Disp. 954/2025 y Ley 25.326)
 const Terminos = lazy(() => import("./components/Legal/Terminos.jsx"));
 const Privacidad = lazy(() => import("./components/Legal/Privacidad.jsx"));
@@ -230,6 +233,9 @@ function AppContent() {
           <Route path="/el-develop" element={<ElDevelop />} />
           <Route path="/sentryx" element={<Sentryx />} />
           <Route path="/eventbox" element={<EventBox />} />
+          {/* Amigo invisible gratis: una sola ruta para armar el grupo, el panel del organizador (#admin=...)
+              y la página de cada participante (#c=...) */}
+          <Route path="/amigo-invisible" element={<AmigoInvisible />} />
           <Route path="/potrero-it" element={<Navigate to="/el-develop" replace />} />
           <Route path="/terminos" element={<Terminos />} />
           <Route path="/privacidad" element={<Privacidad />} />

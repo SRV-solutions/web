@@ -129,6 +129,9 @@ export default function Footer() {
           <Link className={styles.footer_link} to="/el-develop">
             El Develop · Juego gratis
           </Link>
+          <Link className={styles.footer_link} to="/amigo-invisible">
+            Amigo invisible · Gratis
+          </Link>
         </div>
 
         {/* Formaciones */}

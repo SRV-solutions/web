@@ -96,6 +96,7 @@ const menuData = [
     links: [
       { label: "El Develop", to: "/el-develop", isNew: true },
       { label: "Dev Clicker", to: "https://dev-clicker.wearesrv.com/", isNew: true },
+      { label: "Amigo invisible", to: "/amigo-invisible", isNew: true },
     ],
   },
   {

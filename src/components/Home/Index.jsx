@@ -2,11 +2,11 @@ import React, { useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import styles from "./style.module.css";
 import Seo, { SITE_URL } from "../Seo";
-import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, estaEnEstellarium, textoPreventa, linkInscripcion } from "../../data/cursosGrabados";
+import { CURSOS_GRABADOS, formatearPrecio, estaEnPreventa, estaEnEstellarium, linkInscripcion, promoDe } from "../../data/cursosGrabados";
 import { seoInicio } from "../../data/seoCursos";
 import { linkPackTodo, packTodo } from "../../data/packs";
 import { TESTIMONIOS, ENCUESTA, promedioEncuesta } from "../../data/testimonios";
-import { LuBanknote, LuBuilding2, LuChartColumn, LuClapperboard, LuCloud, LuCompass, LuDatabase, LuGift, LuHourglass, LuOrbit, LuPuzzle, LuQuote, LuRocket, LuStar, LuTarget, LuTrophy } from "react-icons/lu";
+import { LuBanknote, LuBuilding2, LuClapperboard, LuCompass, LuGift, LuHourglass, LuOrbit, LuQuote, LuRocket, LuStar, LuTarget, LuTrophy } from "react-icons/lu";
 import Icono from "../Icono";
 
 const WHATSAPP_URL = `https://wa.me/5491123869799?text=${encodeURIComponent("Hola, quiero cotizar un software")}`;
@@ -20,6 +20,66 @@ const ETIQUETAS = {
   "backend-avanzado": "Paso 3 · Nivel profesional",
   "fullstack-csharp": "Paso 3 · App completa con C#",
 };
+
+// Los cursos que no son de la ruta de programación: van en su propia grilla, con tarjetas como las de la ruta,
+// para que se vean con su precio (y el de la promo, cuando hay) al entrar por "Ver cursos"
+const MAS = ["redes", "excel", "sql", "scratch"];
+const ETIQUETAS_MAS = {
+  redes: "Certificación AWS",
+  excel: "Sin saber programar",
+  sql: "Para trabajar con datos",
+  scratch: "Chicos de 8 a 13 años",
+};
+
+// Debajo del precio: hasta cuándo vale el de la promo y, en una preventa, cuándo están las clases
+function notaPrecio(c) {
+  const promo = promoDe(c);
+  const partes = [];
+  if (promo) partes.push(`Precio ${promo.nombre}, solo ${promo.fechasTexto}.`);
+  if (estaEnPreventa(c)) {
+    partes.push(
+      c.preventa.yaHayClases
+        ? `Preventa: empezás hoy y el curso queda completo el ${c.preventa.fechaTexto}.`
+        : `Preventa: las clases se habilitan el ${c.preventa.fechaTexto}.`
+    );
+  }
+  return partes.join(" ") || null;
+}
+
+function TarjetaCurso({ c, etiqueta, destacado = false, verde = false }) {
+  const nota = notaPrecio(c);
+  return (
+    <article className={`${styles.courseCard} ${destacado ? styles.courseFeatured : ""}`}>
+      <span className={`${styles.courseStep} ${verde ? styles.courseStepVerde : ""}`}>{etiqueta}</span>
+      <h3>
+        {c.tituloInicio} <span className={styles.orange}>{c.tituloDestacado}</span>
+      </h3>
+      <p className={styles.courseHook}>{c.gancho}</p>
+      <ul className={styles.courseMeta}>
+        <li>
+          <Icono de={LuClapperboard} /> {c.clases} clases grabadas
+        </li>
+        <li>
+          <Icono de={LuTarget} /> {c.nivel.split(" · ")[0]}
+        </li>
+        {estaEnEstellarium(c) && (
+          <li className={styles.enEstellarium}>
+            <Icono de={LuOrbit} /> En E-stellarium
+          </li>
+        )}
+      </ul>
+      <div className={styles.coursePrice}>
+        {/* Tachado solo si es un precio real (preventa con fecha): nada de "precios regulares" que nunca se cobraron */}
+        {c.precioRegular > c.precio && <span className={styles.oldPrice}>{formatearPrecio(c.precioRegular)}</span>}
+        <strong>{formatearPrecio(c.precio)}</strong>
+      </div>
+      {nota && <p className={styles.courseNota}>{nota}</p>}
+      <Link to={linkInscripcion(c)} className={destacado ? styles.btnPrimary : styles.btnSecondary}>
+        Ver el curso
+      </Link>
+    </article>
+  );
+}
 
 // Combo de los dos cursos de backend (no va en RUTA para no duplicar clases ni precios)
 const COMBO = CURSOS_GRABADOS["ruta-backend"];
@@ -242,40 +302,18 @@ export default function Home() {
         </div>
 
         <div className={styles.coursesGrid}>
-          {RUTA.map((key) => {
-            const c = CURSOS_GRABADOS[key];
-            const destacado = key === "scripting";
-            return (
-              <article key={key} className={`${styles.courseCard} ${destacado ? styles.courseFeatured : ""}`}>
-                <span className={styles.courseStep}>{ETIQUETAS[key]}</span>
-                <h3>
-                  {c.tituloInicio} <span className={styles.orange}>{c.tituloDestacado}</span>
-                </h3>
-                <p className={styles.courseHook}>{c.gancho}</p>
-                <ul className={styles.courseMeta}>
-                  <li>
-                    <Icono de={LuClapperboard} /> {c.clases} clases grabadas
-                  </li>
-                  <li>
-                    <Icono de={LuTarget} /> {c.nivel.split(" · ")[0]}
-                  </li>
-                  {estaEnEstellarium(c) && (
-                    <li className={styles.enEstellarium}>
-                      <Icono de={LuOrbit} /> En E-stellarium
-                    </li>
-                  )}
-                </ul>
-                <div className={styles.coursePrice}>
-                  {/* Tachado solo si es un precio real (preventa con fecha): nada de "precios regulares" que nunca se cobraron */}
-                  {c.precioRegular > c.precio && <span className={styles.oldPrice}>{formatearPrecio(c.precioRegular)}</span>}
-                  <strong>{formatearPrecio(c.precio)}</strong>
-                </div>
-                <Link to={linkInscripcion(c)} className={destacado ? styles.btnPrimary : styles.btnSecondary}>
-                  Ver el curso
-                </Link>
-              </article>
-            );
-          })}
+          {RUTA.map((key) => (
+            <TarjetaCurso key={key} c={CURSOS_GRABADOS[key]} etiqueta={ETIQUETAS[key]} destacado={key === "scripting"} />
+          ))}
+        </div>
+
+        <h3 className={styles.coursesSubtitle}>
+          Más <span className={styles.green}>cursos</span>
+        </h3>
+        <div className={styles.coursesGrid}>
+          {MAS.map((key) => (
+            <TarjetaCurso key={key} c={CURSOS_GRABADOS[key]} etiqueta={ETIQUETAS_MAS[key]} verde />
+          ))}
         </div>
 
         <Link to={`/${COMBO.ruta}/inscripcion`} className={styles.comboBanner}>
@@ -300,54 +338,6 @@ export default function Home() {
             </span>
           </Link>
         )}
-
-        <Link to="/scratch/inscripcion" className={styles.kidsBanner}>
-          <span className={styles.kidsIcon}>
-            <Icono de={LuPuzzle} />
-          </span>
-          <span>
-            <strong>Nuevo: Scratch para Chicos (8 a 13 años).</strong>{" "}
-            {estaEnPreventa(CURSOS_GRABADOS.scratch)
-              ? `${textoPreventa(CURSOS_GRABADOS.scratch)} →`
-              : "Que cree su primer videojuego desde cero →"}
-          </span>
-        </Link>
-
-        <Link to="/redes/inscripcion" className={styles.kidsBanner}>
-          <span className={styles.kidsIcon}>
-            <Icono de={LuCloud} />
-          </span>
-          <span>
-            <strong>Nuevo: Redes, Linux y AWS.</strong> Preparate para rendir la certificación AWS Cloud Practitioner.{" "}
-            {estaEnPreventa(CURSOS_GRABADOS.redes)
-              ? `${textoPreventa(CURSOS_GRABADOS.redes)} →`
-              : "Ver el curso →"}
-          </span>
-        </Link>
-
-        <Link to="/excel/inscripcion" className={styles.kidsBanner}>
-          <span className={styles.kidsIcon}>
-            <Icono de={LuChartColumn} />
-          </span>
-          <span>
-            <strong>Nuevo: Master en Excel y Sheets con IA.</strong> De tu primera fórmula a Power Query, VBA y Apps Script.{" "}
-            {estaEnPreventa(CURSOS_GRABADOS.excel)
-              ? `${textoPreventa(CURSOS_GRABADOS.excel)} →`
-              : "Ver el curso →"}
-          </span>
-        </Link>
-
-        <Link to="/sql/inscripcion" className={styles.kidsBanner}>
-          <span className={styles.kidsIcon}>
-            <Icono de={LuDatabase} />
-          </span>
-          <span>
-            <strong>Nuevo: SQL y Bases de Datos.</strong> De tu primer SELECT a programar la base con PostgreSQL.{" "}
-            {estaEnPreventa(CURSOS_GRABADOS.sql)
-              ? `${textoPreventa(CURSOS_GRABADOS.sql)} →`
-              : "Ver el curso →"}
-          </span>
-        </Link>
 
         <Link to="/full-stack/inscripcion" className={styles.liveBanner}>
           <span className={styles.liveDot} />

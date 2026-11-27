@@ -509,6 +509,28 @@
   font-size: 0.9rem;
 }
 
+/* Grilla "Más cursos" (Redes, Excel, SQL y Scratch), debajo de la ruta */
+.coursesSubtitle {
+  margin: 2.8rem 0 1.2rem;
+  text-align: center;
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.courseStepVerde {
+  background: rgba(48, 160, 90, 0.15);
+  color: #5fd08a;
+}
+
+.courseNota {
+  margin: -0.4rem 0 1rem;
+  color: #9a9a9a;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
 .liveBanner {
   display: flex;
   align-items: center;
